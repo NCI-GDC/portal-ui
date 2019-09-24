@@ -3,7 +3,7 @@ import {
   compose, withProps, withPropsOnChange, withState,
 } from 'recompose';
 import Color from 'color';
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import { scaleOrdinal, schemeCategory20 } from 'd3';
 
 import withRouter from '@ncigdc/utils/withRouter';
@@ -128,7 +128,7 @@ const enhance = compose(
     },
   }),
   withPropsOnChange(
-    ['viewer'],
+    (props, nextProps) => !(isEqual(props.filters, nextProps.filters)),
     async ({
       setArcData,
       setIsLoading,
@@ -142,6 +142,8 @@ const enhance = compose(
         },
       },
     }) => {
+      // this is updating multiple times, looks like something happening in the summary parent?
+      // console.log('updating: ', viewer);
       const primarySites = (aggregations && aggregations.primary_site.buckets);
       const data = await updateData({
         primarySites: primarySites.map(p => p.key),
@@ -150,30 +152,6 @@ const enhance = compose(
       });
 
       const { data: { viewer: { explore: { cases } } } } = data;
-
-      // const parsedData = primarySites.map((primarySite, i) => {
-      //   return {
-      //     clickHandler: () => null,
-      //     color: colors[primarySite.key] || secondaryColors[i],
-      //     id: primarySite.key,
-      //     key: primarySite.key,
-      //     outer: cases
-      //       ? cases[`${getStringName(primarySite.key)}Aggs`].disease_type.buckets.map(bucket => {
-      //         return {
-      //           clickHandler: () => null,
-      //           color: Color(colors[primarySite.key] ||
-      //           secondaryColors[i]).lighten(0.3).rgbString(),
-      //           id: `${primarySite.key}-${bucket.key}`,
-      //           key: bucket.key,
-      //           tooltip: <DiseaseTypeTooltip diseaseType={bucket} primarySite={primarySite} />,
-      //           value: bucket.doc_count,
-      //         };
-      //       })
-      //       : [],
-      //     tooltip: <PrimarySiteTooltip primarySite={primarySite} />,
-      //     value: primarySite.doc_count,
-      //   };
-      // });
 
       // map through all the diseaseType buckets
       // add applicable doc_count to existing Types
@@ -232,6 +210,7 @@ const enhance = compose(
             {
               ...currentItem,
               outer: [...currentItem.outer, ...diseaseTypes],
+              primarySites: [...currentItem.primarySites, primarySite.key], // for json download data
               tooltip: <PrimarySiteTooltip
                 primarySite={{
                   doc_count: currentItem.value + primarySite.doc_count,
@@ -269,6 +248,7 @@ const enhance = compose(
                 };
               })
               : [],
+            primarySites: [primarySite.key], // for json download data
             tooltip: <PrimarySiteTooltip
               primarySite={{
                 key: humanBodyMatch,
@@ -279,7 +259,7 @@ const enhance = compose(
           },
         ];
       }, []);
-      console.log(parsedData);
+      // console.log(parsedData);
       setArcData(parsedData, () => setIsLoading(false));
     }
   ),
@@ -293,8 +273,9 @@ const ExploreSummaryPrimarySite = ({
     <Loader loading={isLoading}>
       <Column
         style={{
+          height: '95%',
           padding: '1rem',
-          width: '40%',
+          width: '95%',
         }}
         >
         <Row
@@ -305,6 +286,18 @@ const ExploreSummaryPrimarySite = ({
           >
           <h3>Primary Sites & Disease Types</h3>
           <DownloadVisualizationButton
+            data={arcData.map(d => {
+              return {
+                key: d.key,
+                primarySites: d.primarySites,
+                value: d.value,
+                diseaseTypes: d.outer.map(y => ({
+                  key: y.key,
+                  value: y.value,
+                })),
+              };
+            })}
+            disabled={isLoading}
             noText
             slug="summary-primary-site-donut-chart"
             style={{ marginRight: '2rem' }}
@@ -316,24 +309,24 @@ const ExploreSummaryPrimarySite = ({
             />
         </Row>
         {!isLoading && (
-          isEmpty(arcData)
-          ? (
-            <Column
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              >
-              No Data
+            isEmpty(arcData)
+            ? (
+              <Column
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                >
+                No Data
+              </Column>
+          ) : (
+            <Column id="summary-primary-site-donut" style={{ padding: '2rem 0rem 1rem' }}>
+              <DoubleRingChart
+                data={arcData}
+                outerRingWidth={30}
+                />
             </Column>
-        ) : (
-          <Column id="summary-primary-site-donut" style={{ padding: '2rem 0rem 1rem' }}>
-            <DoubleRingChart
-              data={arcData}
-              outerRingWidth={30}
-              />
-          </Column>
-      ))}
+        ))}
       </Column>
     </Loader>
   );

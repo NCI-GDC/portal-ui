@@ -10,23 +10,18 @@ import withSize from '@ncigdc/utils/withSize';
 
 const DoubleRingChart = ({
   data = [],
-  margin = {
-    bottom: 50,
-    left: 50,
-    right: 50,
-    top: 50,
-  },
+  margin = 50,
   outerRingWidth = 30,
   setTooltip,
-  size: { width },
+  size: { height, width },
 }) => {
-  const chartWidth = width - margin.left - margin.right;
-  const height = chartWidth;
-  const centerRingWidth = chartWidth - outerRingWidth * 2;
-  const centerRingHeight = height - outerRingWidth * 2;
-  const centerRadius = Math.min(centerRingWidth, centerRingHeight) / 2;
-  const radius = Math.min(chartWidth, height) / 2;
-
+  const diameter = Math.max(Math.min(width, height - (margin * 2)), 260);
+  const centerRingDiameter = diameter - outerRingWidth * 2;
+  // const centerRingHeight = diameter - outerRingWidth * 2;
+  const centerRadius = centerRingDiameter / 2;
+  // const centerRadius = Math.min(centerRingWidth, centerRingHeight) / 2;
+  // const radius = Math.min(chartWidth, chartHeight) / 2;
+  const radius = diameter / 2;
   const node = ReactFauxDOM.createElement('div');
   node.style.setProperty('display', 'flex');
   node.style.setProperty('justify-content', 'center');
@@ -35,10 +30,10 @@ const DoubleRingChart = ({
   const svg = d3
     .select(node)
     .append('svg')
-    .attr('width', chartWidth)
-    .attr('height', height)
+    .attr('width', diameter)
+    .attr('height', diameter)
     .append('g')
-    .attr('transform', `translate(${chartWidth / 2}, ${height / 2})`);
+    .attr('transform', `translate(${diameter / 2}, ${diameter / 2})`);
 
   // const HALF_DEGREE_IN_RAD = 0.00872665;
   // const HALF_OF_HALF_DEGREE_IN_RAD = 0.004363325;
@@ -47,7 +42,7 @@ const DoubleRingChart = ({
     clickHandler: d.clickHandler,
     color: d.color,
     id: d.id,
-    innerRadius: chartWidth / 3.3,
+    innerRadius: diameter / 3.3,
     key: d.key,
     // innerRadius: 0,
     // outerRadius: centerRadius - 5,
@@ -171,5 +166,5 @@ DoubleRingChart.propTypes = {
 
 export default compose(
   withTooltip,
-  withSize()
+  withSize({ monitorHeight: true }),
 )(DoubleRingChart);

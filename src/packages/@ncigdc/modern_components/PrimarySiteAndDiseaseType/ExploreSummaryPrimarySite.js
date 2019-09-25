@@ -142,8 +142,6 @@ const enhance = compose(
         },
       },
     }) => {
-      // this is updating multiple times, looks like something happening in the summary parent?
-      // console.log('updating: ', viewer);
       const primarySites = (aggregations && aggregations.primary_site.buckets);
       const data = await updateData({
         primarySites: primarySites.map(p => p.key),
@@ -156,9 +154,11 @@ const enhance = compose(
       // map through all the diseaseType buckets
       // add applicable doc_count to existing Types
       // append new types as needed
+
+      // this can use some cleanup
       const parsedData = primarySites.reduce((acc, primarySite, i) => {
         const lowerCaseSite = (primarySite.key || '').toLowerCase();
-        const humanBodyMatch = HUMAN_BODY_SITES_MAP[lowerCaseSite];
+        const humanBodyMatch = HUMAN_BODY_SITES_MAP[lowerCaseSite] || lowerCaseSite;
         const currentIndex = acc.findIndex(site => site.key === humanBodyMatch);
 
         if (currentIndex >= 0) {
@@ -258,11 +258,13 @@ const enhance = compose(
         ];
       }, []);
       // console.log(parsedData);
+      // possibly causing setState console error with update placement
       setArcData(parsedData, () => setIsLoading(false));
     }
   ),
 );
 
+// this is rendering multiple times, looks like something happening in the summary parent?
 const ExploreSummaryPrimarySite = ({
   arcData,
   isLoading,

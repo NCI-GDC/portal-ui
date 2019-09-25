@@ -8,18 +8,19 @@ import { compose } from 'recompose';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import withSize from '@ncigdc/utils/withSize';
 
+const MAX_DIAMETER = 260;
+
 const DoubleRingChart = ({
   data = [],
   margin = 50,
+  maxDiameter = MAX_DIAMETER,
   outerRingWidth = 30,
   setTooltip,
   size: { height, width },
 }) => {
-  const diameter = Math.max(Math.min(width, height - (margin * 2)), 260);
+  const diameter = Math.max(Math.min(width, height - (margin * 2)), maxDiameter);
   const centerRingDiameter = diameter - outerRingWidth * 2;
-  // const centerRingHeight = diameter - outerRingWidth * 2;
   const centerRadius = centerRingDiameter / 2;
-  // const centerRadius = Math.min(centerRingWidth, centerRingHeight) / 2;
   const radius = diameter / 2;
 
   const node = ReactFauxDOM.createElement('div');
@@ -33,17 +34,24 @@ const DoubleRingChart = ({
     .attr('width', diameter)
     .attr('height', diameter)
     .append('g')
-    .attr('transform', `translate(${diameter / 2}, ${diameter / 2})`);
+    .attr('transform', `translate(${radius}, ${radius})`);
 
-  const innerPieData = data.map(d => ({
-    clickHandler: d.clickHandler,
-    color: d.color,
-    id: d.id,
+  const innerPieData = data.map(({
+    clickHandler,
+    color,
+    id,
+    key,
+    tooltip,
+    value,
+  }) => ({
+    clickHandler,
+    color,
+    id,
     innerRadius: diameter / 3.8,
-    key: d.key,
+    key,
     outerRadius: centerRadius - 1.5,
-    tooltip: d.tooltip,
-    v: d.value,
+    tooltip,
+    v: value,
   }));
 
   const innerPie = d3
@@ -52,13 +60,20 @@ const DoubleRingChart = ({
 
   const outerPieData = data.map(d => ({
     innerRadius: centerRadius,
-    items: d.outer.map(p => ({
-      clickHandler: p.clickHandler,
-      color: p.color,
-      id: p.id,
-      key: p.key,
-      tooltip: p.tooltip,
-      v: p.value,
+    items: d.outer.map(({
+      clickHandler,
+      color,
+      id,
+      key,
+      tooltip,
+      value,
+    }) => ({
+      clickHandler,
+      color,
+      id,
+      key,
+      tooltip,
+      v: value,
     })),
     outerRadius: radius,
   }));

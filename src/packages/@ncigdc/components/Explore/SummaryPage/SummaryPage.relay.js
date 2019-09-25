@@ -3,9 +3,8 @@ import { graphql } from 'react-relay';
 import { BaseQuery } from '@ncigdc/modern_components/Query';
 import { compose, setDisplayName } from 'recompose';
 
-
 const EnhancedSummaryPageQuery = (Component) => compose(
-  setDisplayName('SummaryPageQuery')
+  setDisplayName('SummaryPageQuery'),
 )(
   (props) => (
     <BaseQuery

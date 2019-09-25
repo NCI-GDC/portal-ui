@@ -323,7 +323,7 @@ const ExploreSummaryPrimarySite = ({
             <Column id="summary-primary-site-donut" style={{ padding: '2rem 0rem 1rem' }}>
               <DoubleRingChart
                 data={arcData}
-                outerRingWidth={30}
+                outerRingWidth={25}
                 />
             </Column>
         ))}

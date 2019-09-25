@@ -20,8 +20,8 @@ const DoubleRingChart = ({
   // const centerRingHeight = diameter - outerRingWidth * 2;
   const centerRadius = centerRingDiameter / 2;
   // const centerRadius = Math.min(centerRingWidth, centerRingHeight) / 2;
-  // const radius = Math.min(chartWidth, chartHeight) / 2;
   const radius = diameter / 2;
+
   const node = ReactFauxDOM.createElement('div');
   node.style.setProperty('display', 'flex');
   node.style.setProperty('justify-content', 'center');
@@ -35,17 +35,12 @@ const DoubleRingChart = ({
     .append('g')
     .attr('transform', `translate(${diameter / 2}, ${diameter / 2})`);
 
-  // const HALF_DEGREE_IN_RAD = 0.00872665;
-  // const HALF_OF_HALF_DEGREE_IN_RAD = 0.004363325;
-
   const innerPieData = data.map(d => ({
     clickHandler: d.clickHandler,
     color: d.color,
     id: d.id,
-    innerRadius: diameter / 3.3,
+    innerRadius: diameter / 3.8,
     key: d.key,
-    // innerRadius: 0,
-    // outerRadius: centerRadius - 5,
     outerRadius: centerRadius - 1.5,
     tooltip: d.tooltip,
     v: d.value,
@@ -53,8 +48,6 @@ const DoubleRingChart = ({
 
   const innerPie = d3
     .pie()
-    // .padAngle(HALF_OF_HALF_DEGREE_IN_RAD * 1.2)
-    // .padAngle(HALF_DEGREE_IN_RAD)
     .value(d => d.v)(innerPieData);
 
   const outerPieData = data.map(d => ({
@@ -72,16 +65,13 @@ const DoubleRingChart = ({
 
   const outerPie = outerPieData.map((p, i) => d3
     .pie()
-    // .padAngle(HALF_OF_HALF_DEGREE_IN_RAD / 1.5)
-    // .padAngle(HALF_DEGREE_IN_RAD)
     .startAngle(innerPie[i].startAngle)
-    .endAngle(innerPie[i].endAngle)(p.items.map(i => i.v)),);
+    .endAngle(innerPie[i].endAngle)(p.items.map(item => item.v)),);
 
   const dataWithPie = [
     innerPieData.map((p, i) => ({
       ...p,
       pie: innerPie[i],
-      // color: colors[innerPieData[i].key].color,
     })),
     outerPieData.reduce(
       (acc, p, i) => [
@@ -94,7 +84,6 @@ const DoubleRingChart = ({
           key: item.key,
           pie: outerPie[i][j],
           tooltip: item.tooltip,
-          // color: colors[innerPieData[i].key].projects[item.key],
           v: item.v,
         })),
       ],
@@ -123,7 +112,7 @@ const DoubleRingChart = ({
     .style('fill', d => d.color);
 
   fill
-    .attr('class', d => `pointer arc-hover-${snakeCase(d.id)}`)
+    .attr('class', d => `arc-hover-${snakeCase(d.id)}`)
     .on('mouseenter', d => {
       const target = document.querySelector(`.arc-hover-${snakeCase(d.id)}`);
       target.style.fill = Color(d.color).darken(0.4).rgbString();

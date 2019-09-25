@@ -185,7 +185,7 @@ const enhance = compose(
                       />,
                     value: currentDiseaseType.value + bucket.doc_count,
                   },
-                  ...dTypeAcc.slice(currentDiseaseTypeIndex + Infinity),
+                  ...dTypeAcc.slice(currentDiseaseTypeIndex + 1, Infinity),
                 ];
               }
               return [
@@ -210,7 +210,6 @@ const enhance = compose(
             {
               ...currentItem,
               outer: [...currentItem.outer, ...diseaseTypes],
-              primarySites: [...currentItem.primarySites, primarySite.key], // for json download data
               tooltip: <PrimarySiteTooltip
                 primarySite={{
                   doc_count: currentItem.value + primarySite.doc_count,
@@ -248,7 +247,6 @@ const enhance = compose(
                 };
               })
               : [],
-            primarySites: [primarySite.key], // for json download data
             tooltip: <PrimarySiteTooltip
               primarySite={{
                 key: humanBodyMatch,
@@ -269,6 +267,28 @@ const ExploreSummaryPrimarySite = ({
   arcData,
   isLoading,
 }) => {
+  // download keys set in this order specifically
+  const jsonData = arcData.map(d => ({
+    key: d.key,
+    doc_count: d.value,
+    disease_types: d.outer.map(type => ({
+      key: type.key,
+      doc_count: type.value,
+    })),
+  }));
+
+  const tsvData = jsonData.reduce((acc, item) => (
+    [
+      ...acc,
+      ...item.disease_types.map(type => ({
+        primary_site: item.key,
+        primary_site_total: item.doc_count,
+        disease_type: type.key,
+        doc_count: type.doc_count,
+      })),
+    ]
+  ), []);
+
   return (
     <Loader loading={isLoading}>
       <Column>
@@ -281,18 +301,7 @@ const ExploreSummaryPrimarySite = ({
           >
           <h3>Primary Sites & Disease Types</h3>
           <DownloadVisualizationButton
-            data={arcData.map(d => {
-              // keys set in this order specifically for json download
-              return {
-                key: d.key,
-                primarySites: d.primarySites,
-                value: d.value,
-                diseaseTypes: d.outer.map(y => ({
-                  key: y.key,
-                  value: y.value,
-                })),
-              };
-            })}
+            data={jsonData}
             disabled={isLoading}
             noText
             slug="summary-primary-site-donut-chart"
@@ -301,6 +310,7 @@ const ExploreSummaryPrimarySite = ({
               title: 'Primary Sites & Disease Types',
             })}
             tooltipHTML="Download image or data"
+            tsvData={tsvData}
             />
         </Row>
         <Row

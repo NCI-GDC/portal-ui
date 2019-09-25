@@ -12,13 +12,13 @@ export default {
   Esophagus: 'rgb(52, 133, 34)',
   Eye: 'rgb(233, 110, 31)',
   'Head and Neck': 'rgb(240, 142, 26)',
-  'Other And Ill-Defined Sites': 'red', // fix
+  'Other And Ill-Defined Sites': 'red', // need to choose color
   Kidney: 'rgb(38, 193, 86)',
   Liver: 'rgb(67, 221, 207)',
   Lung: 'rgb(158, 9, 219)',
   'Lymph Nodes': 'rgb(222, 61, 211)',
   'Nervous System': 'rgb(27, 114, 246)',
-  'Not Reported': '#ff7f0e', // fix
+  'Not Reported': '#ff7f0e', // need to choose color
   Ovary: 'rgb(68, 213, 45)',
   Pancreas: 'rgb(199, 54, 207)',
   Pleura: 'rgb(215, 188, 88)',

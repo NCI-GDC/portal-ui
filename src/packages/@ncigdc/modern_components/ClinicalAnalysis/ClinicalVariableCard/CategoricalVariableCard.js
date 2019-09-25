@@ -270,7 +270,7 @@ export default compose(
               return {
                 ...bin,
                 chart_doc_count: bin.doc_count,
-                displayName: isMissing ? 'Missing' : bin.key,
+                displayName: isMissing ? 'missing' : bin.key,
                 doc_count: getCountLink({
                   doc_count: bin.doc_count,
                   filters: isMissing

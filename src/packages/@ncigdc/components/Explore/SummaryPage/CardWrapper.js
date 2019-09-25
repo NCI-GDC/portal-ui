@@ -16,6 +16,12 @@ const CardWrapper = ({
     maxBy(data
       .map(d => d[subProps.mappingLabel] || ''), (item) => item.length) || ''
   ).length;
+  const downloadData = data.map(datum => pick(datum, [
+    'doc_count',
+    'key',
+    'color',
+  ]));
+
   return (
     <React.Fragment>
       <Row
@@ -29,7 +35,7 @@ const CardWrapper = ({
         >
         <h3>{title}</h3>
         <DownloadVisualizationButton
-          data={data}
+          data={downloadData}
           key="download"
           noText
           onClick={(e) => {
@@ -47,11 +53,7 @@ const CardWrapper = ({
             title,
           })}
           tooltipHTML="Download image or data"
-          tsvData={data.map(datum => pick(datum, [
-            'doc_count',
-            'key',
-            'color',
-          ]))}
+          tsvData={downloadData}
           />
       </Row>
       <div className={className}>

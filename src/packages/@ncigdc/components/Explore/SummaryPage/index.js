@@ -29,7 +29,7 @@ const SummaryPage = ({
   const color = scaleOrdinal(schemeCategory20);
   const dataDecor = (data, name, setColor = false) => data.map((datum, i) => ({
     ...datum,
-    tooltip: Tooltip(datum.key, datum.count),
+    tooltip: Tooltip(datum.key, datum.doc_count),
     ...setColor && { color: color(i) },
   }));
 

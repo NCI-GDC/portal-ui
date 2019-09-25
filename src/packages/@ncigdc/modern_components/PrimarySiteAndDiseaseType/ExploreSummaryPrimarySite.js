@@ -271,22 +271,18 @@ const ExploreSummaryPrimarySite = ({
 }) => {
   return (
     <Loader loading={isLoading}>
-      <Column
-        style={{
-          height: '95%',
-          padding: '1rem',
-          width: '95%',
-        }}
-        >
+      <Column>
         <Row
           style={{
             alignItems: 'center',
             justifyContent: 'space-between',
+            margin: '0px 10px 10px',
           }}
           >
           <h3>Primary Sites & Disease Types</h3>
           <DownloadVisualizationButton
             data={arcData.map(d => {
+              // keys set in this order specifically for json download
               return {
                 key: d.key,
                 primarySites: d.primarySites,
@@ -300,7 +296,6 @@ const ExploreSummaryPrimarySite = ({
             disabled={isLoading}
             noText
             slug="summary-primary-site-donut-chart"
-            style={{ marginRight: '2rem' }}
             svg={() => wrapSvg({
               selector: '#summary-primary-site-donut svg',
               title: 'Primary Sites & Disease Types',
@@ -308,7 +303,12 @@ const ExploreSummaryPrimarySite = ({
             tooltipHTML="Download image or data"
             />
         </Row>
-        {!isLoading && (
+        <Row
+          style={{
+            justifyContent: 'center',
+          }}
+          >
+          {!isLoading && (
             isEmpty(arcData)
             ? (
               <Column
@@ -327,6 +327,7 @@ const ExploreSummaryPrimarySite = ({
                 />
             </Column>
         ))}
+        </Row>
       </Column>
     </Loader>
   );

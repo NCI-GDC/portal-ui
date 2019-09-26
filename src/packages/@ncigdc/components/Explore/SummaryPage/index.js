@@ -1,7 +1,6 @@
 import React from 'react';
 import HistogramCard from '@ncigdc/components/Explore/SummaryPage/HistogramCard';
 import SampleTypeCard from '@ncigdc/components/Explore/SummaryPage/SampleTypeCard';
-import CategoricalCompletenessCard from '@ncigdc/components/Explore/SummaryPage/CategoricalCompletenessCard';
 import SummaryPageQuery from '@ncigdc/components/Explore/SummaryPage/SummaryPage.relay';
 import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
@@ -24,12 +23,6 @@ const Tooltip = (title, key, count) => (
 
   </span>
 );
-
-const dataDecor = (data, name) => data.map(el => ({
-  ...el,
-  tooltip: Tooltip(name, el.key, el.doc_count),
-}));
-
 const SummaryPage = ({
   numPerRow = 3,
   viewer,
@@ -40,6 +33,11 @@ const SummaryPage = ({
   const ageAtDiagnosisData = get(viewer, 'explore.cases.aggregations.diagnoses__age_at_diagnosis.histogram.buckets', []);
   const sampleTypeData = get(viewer, 'explore.cases.aggregations.samples__sample_type.buckets', []);
   const experimentalStrategyData = get(viewer, 'explore.cases.aggregations.summary__experimental_strategies__experimental_strategy.buckets', []);
+  const dataDecor = (data, name) => data.map(el => ({
+    ...el,
+    tooltip: Tooltip(name, el.key, el.doc_count),
+  }));
+
 
   const elementsData = [
     {
@@ -117,11 +115,8 @@ const SummaryPage = ({
       title: 'Gender',
     },
     {
-      component: CategoricalCompletenessCard,
+      component: () => '',
       data: [],
-      props: {
-        typeName: 'ExploreCases',
-      },
       space: 3,
       title: 'Categorical Completeness',
     },

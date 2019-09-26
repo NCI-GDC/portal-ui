@@ -31,6 +31,8 @@ import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 
 import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 
+import { DISPLAY_SUMMARY_PAGE } from '@ncigdc/utils/constants';
+
 export type TProps = {
   filters: {},
   relay: Object,
@@ -246,6 +248,20 @@ const ExplorePageComponent = ({
           <TabbedLinks
             defaultIndex={0}
             links={[
+              ...(DISPLAY_SUMMARY_PAGE && [
+                {
+                  component: hasCaseHits ? (
+                    <SummaryPage
+                      filters={filters}
+                      numPerRow={showFacets ? 3 : 4}
+                      />
+                  ) : (
+                    <NoResultsMessage>No Cases Found.</NoResultsMessage>
+                    ),
+                  id: 'summary',
+                  text: 'Summary',
+                },
+              ]),
               {
                 component: hasCaseHits ? (
                   <SummaryPage

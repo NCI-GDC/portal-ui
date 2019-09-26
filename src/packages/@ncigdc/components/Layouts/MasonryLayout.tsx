@@ -17,7 +17,7 @@ interface IMasonryLayoutProps {
 
 
 const MasonryLayout = ({
-  customizeStyle, // Replace it with your own style
+  customizeStyle = {}, // Replace it with your own style
   elements,
   gutter = 0.7, // percentage
   minWidth = 354, // px

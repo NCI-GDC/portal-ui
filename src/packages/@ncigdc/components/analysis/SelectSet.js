@@ -119,7 +119,9 @@ const SetTable = ({
                   const setIdPath = [setType, targetId];
                   setSelectedSets(
                     get(selectedSets, setIdPath)
-                      ? { [setType]: omit(selectedSets[setType], setIdPath) }
+                      ? Object.keys(omit(selectedSets[setType], setIdPath)).length !== 0
+                        ? { [setType]: omit(selectedSets[setType], setIdPath) }
+                        : {}
                       : set(isClinical ? {} : { ...selectedSets }, setIdPath, mappedSets[targetId]),
                   );
                 }}
@@ -191,7 +193,7 @@ const SetTable = ({
           </h2>
 
           <div style={{ marginBottom: 15 }}>
-            You can create and save case sets from the
+            You can create and save case, gene and mutation sets of interest from the
             {' '}
             <ExploreLink query={defaultExploreQuery}>Exploration Page</ExploreLink>
             .

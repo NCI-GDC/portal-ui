@@ -34,7 +34,13 @@ const PieChart = compose(
     setTooltip,
     width = 160,
   }) => {
+    const dataHasColors = data.every(datum =>
+      typeof datum.color !== 'undefined' && datum.color !== '');
     const color = d3.scaleOrdinal(d3.schemeCategory20);
+    const getSliceColor = i => (dataHasColors
+      ? data[i].color
+      : color(i));
+
     const outerRadius = height / 2 + 10;
     const innerRadius = enableInnerRadius ? outerRadius / 2 : 0;
     const node = ReactFauxDOM.createElement('div');
@@ -81,11 +87,11 @@ const PieChart = compose(
     const gPath = g.append('path');
     const gHoverPath = gHover.append('path');
 
-    gPath.attr('d', arc).style('fill', (d, i) => color(i));
+    gPath.attr('d', arc).style('fill', (d, i) => getSliceColor(i));
 
     const fillHover = gHoverPath
       .attr('d', arc)
-      .style('fill', (d, i) => color(i))
+      .style('fill', (d, i) => getSliceColor(i))
       .style('opacity', 0);
 
     fillHover

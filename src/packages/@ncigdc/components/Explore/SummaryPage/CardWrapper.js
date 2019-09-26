@@ -1,8 +1,9 @@
 import React from 'react';
+
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import { Row } from '@ncigdc/uikit/Flex';
-import { maxBy } from 'lodash';
+import { maxBy, pick } from 'lodash';
 
 const CardWrapper = ({
   Component,
@@ -15,6 +16,12 @@ const CardWrapper = ({
     maxBy(data
       .map(d => d[subProps.mappingLabel] || ''), (item) => item.length) || ''
   ).length;
+  const downloadData = data.map(datum => pick(datum, [
+    'doc_count',
+    'key',
+    'color',
+  ]));
+
   return (
     <React.Fragment>
       <Row
@@ -28,7 +35,7 @@ const CardWrapper = ({
         >
         <h3>{title}</h3>
         <DownloadVisualizationButton
-          data={data}
+          data={downloadData}
           key="download"
           noText
           onClick={(e) => {
@@ -46,7 +53,7 @@ const CardWrapper = ({
             title,
           })}
           tooltipHTML="Download image or data"
-          tsvData={data}
+          tsvData={downloadData}
           />
       </Row>
       <div className={className}>

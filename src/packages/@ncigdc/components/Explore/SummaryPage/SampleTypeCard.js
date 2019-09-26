@@ -52,7 +52,7 @@ const SampleTypeCard = ({ data, mappingId }) => (
                 height: 10,
                 left: '-20px',
                 position: 'absolute',
-                top: 6,
+                top: 5,
                 width: 10,
               }}
               />

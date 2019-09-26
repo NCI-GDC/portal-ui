@@ -23,11 +23,13 @@ const CardWrapper = ({
   ]));
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+      }}
+      >
       <Row
         style={{
           alignItems: 'center',
@@ -60,7 +62,7 @@ const CardWrapper = ({
           tsvData={downloadData}
           />
       </Row>
-      <div 
+      <div
         className={className}
         style={{
           display: 'flex',

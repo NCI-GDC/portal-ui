@@ -15,11 +15,11 @@ const SampleTypeCard = ({ data, mappingId }) => (
       padding: '0 15px',
     }}
     >
-    <div style={{width: '50%'}}>
+    <div style={{ width: '60%' }}>
       <PieChart
         data={data}
-        enableInnerRadius
         diameter={280}
+        enableInnerRadius
         isResponsive
         mappingId={mappingId}
         marginTop={0}
@@ -27,8 +27,11 @@ const SampleTypeCard = ({ data, mappingId }) => (
         />
     </div>
     <div style={{ flex: '0 0 160px' }}>
-      {data.length > LEGEND_COUNT &&
-        <h3 style={{marginTop: 0}}>Top {LEGEND_COUNT}</h3>}
+      {data.length > LEGEND_COUNT && (
+        <h3 style={{ marginTop: 0 }}>
+          {`Top ${LEGEND_COUNT}`}
+        </h3>
+      )}
       <ul
         style={{
           listStyleType: 'none',
@@ -37,12 +40,13 @@ const SampleTypeCard = ({ data, mappingId }) => (
           paddingLeft: 20,
         }}
         >
-          {data.slice(0, LEGEND_COUNT).map(datum => (
-            <li 
-              key={datum.key}
-              style={{ position: 'relative' }}
-              >
-              <div style={{
+        {data.slice(0, LEGEND_COUNT).map(datum => (
+          <li
+            key={datum.key}
+            style={{ position: 'relative' }}
+            >
+            <div
+              style={{
                 backgroundColor: datum.color,
                 border: `1px solid ${theme.greyScale4}`,
                 height: 10,
@@ -52,9 +56,9 @@ const SampleTypeCard = ({ data, mappingId }) => (
                 width: 10,
               }}
               />
-              {datum.key}
-            </li>
-          ))}
+            {datum.key}
+          </li>
+        ))}
       </ul>
     </div>
   </Row>

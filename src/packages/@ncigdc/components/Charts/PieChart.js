@@ -1,6 +1,5 @@
 // @flow
 
-import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import _ from 'lodash';
 import ReactFauxDOM from 'react-faux-dom';
@@ -23,7 +22,7 @@ const getNestedValue = (item, path) => {
 
 const PieChart = ({
   data,
-  diameter = 160,
+  diameter = 160, // if the pie chart is responsive, this is the MAX diameter
   enableInnerRadius = false,
   isResponsive = false,
   mappingId = 'id',
@@ -32,12 +31,19 @@ const PieChart = ({
   setTooltip,
   size: { width: responsiveDiameter },
 }) => {
+  const dataHasColors = data.every(datum =>
+    typeof datum.color !== 'undefined' && datum.color !== '');
+  const color = d3.scaleOrdinal(d3.schemeCategory20);
+  const getSliceColor = i => (dataHasColors
+    ? data[i].color
+    : color(i));
+
   const pieDiameter = isResponsive && responsiveDiameter < diameter
     ? responsiveDiameter
     : diameter;
-  const color = d3.scaleOrdinal(d3.schemeCategory20);
   const outerRadius = pieDiameter / 2 + 10;
   const innerRadius = enableInnerRadius ? outerRadius / 2 : 0;
+
   const node = ReactFauxDOM.createElement('div');
   node.style.setProperty('margin-top', `${marginTop}px`);
   node.style.setProperty('display', 'flex');
@@ -82,11 +88,11 @@ const PieChart = ({
   const gPath = g.append('path');
   const gHoverPath = gHover.append('path');
 
-  gPath.attr('d', arc).style('fill', (d, i) => color(i));
+  gPath.attr('d', arc).style('fill', (d, i) => getSliceColor(i));
 
   const fillHover = gHoverPath
     .attr('d', arc)
-    .style('fill', (d, i) => color(i))
+    .style('fill', (d, i) => getSliceColor(i))
     .style('opacity', 0);
 
   fillHover
@@ -111,10 +117,6 @@ const PieChart = ({
     });
 
   return node.toReact();
-};
-
-PieChart.propTypes = {
-  data: PropTypes.array,
 };
 
 /*----------------------------------------------------------------------------*/

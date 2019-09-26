@@ -1,4 +1,6 @@
 import React from 'react';
+
+import { scaleOrdinal, schemeCategory20 } from 'd3';
 import HistogramCard from '@ncigdc/components/Explore/SummaryPage/HistogramCard';
 import SampleTypeCard from '@ncigdc/components/Explore/SummaryPage/SampleTypeCard';
 import SummaryPageQuery from '@ncigdc/components/Explore/SummaryPage/SummaryPage.relay';
@@ -6,21 +8,11 @@ import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
 import { get } from 'lodash';
 
-const Tooltip = (title, key, count) => (
+const Tooltip = (key, count) => (
   <span>
-    <b>
-      {title}
-      :
-      {' '}
-      {key}
-      <br />
-      {count.toLocaleString()}
-      {' '}
-      case
-      {count > 1 ? 's' : ''}
-    </b>
+    <b>{key}</b>
     <br />
-
+    {`${count} Case${count > 1 ? 's' : ''}`}
   </span>
 );
 const SummaryPage = ({
@@ -33,29 +25,31 @@ const SummaryPage = ({
   const ageAtDiagnosisData = get(viewer, 'explore.cases.aggregations.diagnoses__age_at_diagnosis.histogram.buckets', []);
   const sampleTypeData = get(viewer, 'repository.cases.aggregations.samples__sample_type.buckets', []);
   const experimentalStrategyData = get(viewer, 'explore.cases.aggregations.summary__experimental_strategies__experimental_strategy.buckets', []);
-  const dataDecor = (data, name) => data.map(el => ({
-    ...el,
-    tooltip: Tooltip(name, el.key, el.doc_count),
+
+  const color = scaleOrdinal(schemeCategory20);
+  const dataDecor = (data, name, setColor = false) => data.map((datum, i) => ({
+    ...datum,
+    tooltip: Tooltip(datum.key, datum.doc_count),
+    ...setColor && { color: color(i) },
   }));
 
   const elementsData = [
     {
       component: SampleTypeCard,
-      data: dataDecor(sampleTypeData, 'Sample Types'),
+      data: dataDecor(sampleTypeData, 'Sample Types', true),
       props: { mappingId: 'key' },
       space: 1,
       title: 'Sample Types',
     },
     {
       component: HistogramCard,
-      data: dataDecor(experimentalStrategyData, 'Data Types'),
+      data: dataDecor(experimentalStrategyData, 'Experimental Strategies'),
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: '',
       },
       space: 1,
-      title: 'Data Types',
+      title: 'Experimental Strategies',
     },
     {
       component: () => '',
@@ -86,7 +80,6 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: 'Vital Status',
       },
       space: 1,
       title: 'Vital Status',
@@ -97,7 +90,6 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: 'Race',
       },
       space: 1,
       title: 'Race',
@@ -108,7 +100,6 @@ const SummaryPage = ({
       props: {
         mappingLabel: 'key',
         mappingValue: 'doc_count',
-        xAxisTitle: 'Gender',
       },
       space: 1,
       title: 'Gender',

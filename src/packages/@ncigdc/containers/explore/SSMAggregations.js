@@ -198,8 +198,8 @@ export const SSMAggregationsComponent = compose(
         collapsed={props.cosmicIdCollapsed}
         field="ssms.cosmic_id"
         setCollapsed={props.setCosmicIdCollapsed}
-        title="COSMIC ID"
         style={{ borderTop: `1px solid ${props.theme.greyScale5}` }}
+        title="COSMIC ID"
         />
       <NotMissingFacet
         collapsed={props.cosmicIdCollapsed}
@@ -208,11 +208,11 @@ export const SSMAggregationsComponent = compose(
         title="COSMIC ID"
         />
       <FacetHeader
-        collapsed={props.cosmicIdCollapsed}
+        collapsed={props.dbSNPCollapsed}
         field="ssms.consequence.transcript.annotation.dbsnp_rs"
-        setCollapsed={props.setCosmicIdCollapsed}
+        setCollapsed={props.setDbSNPCollapsed}
+        style={{ borderTop: `1px solid ${props.theme.greyScale5}` }}
         title="dbSNP rs ID"
-        style={{borderTop: `1px solid ${props.theme.greyScale5}`}}
         />
       <NotMissingFacet
         collapsed={props.dbSNPCollapsed}

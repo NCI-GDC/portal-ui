@@ -27,6 +27,7 @@ export default compose(
     onMouseOver = _.noop,
     onMouseOut = _.noop,
     style = {},
+    title = '',
     ...props
   }) => {
     const margin = 1;
@@ -68,7 +69,7 @@ export default compose(
 
     const svg = d3
       .select(root)
-      .append(`svg`)
+      .append('svg')
       .style('display', 'block')
       .attr('viewBox', `0 0 ${width} ${height}`);
 
@@ -81,7 +82,7 @@ export default compose(
     offsets.forEach((offset, i) => {
       defs
         .append('svg:clipPath')
-        .attr('id', `circle_${i}`)
+        .attr('id', `circle_${title}_${i}`)
         .append('svg:circle')
         .attr('cx', cx + offset.x)
         .attr('cy', cy - offset.y)
@@ -89,7 +90,7 @@ export default compose(
 
       defs
         .append('svg:clipPath')
-        .attr('id', `circle_${i}_outline`)
+        .attr('id', `circle_${title}_${i}_outline`)
         .append('svg:circle')
         .attr('cx', cx + offset.x)
         .attr('cy', cy - offset.y)
@@ -100,7 +101,7 @@ export default compose(
       ops.slice(1).forEach((d, i) =>
         svg
           .append('svg:rect')
-          .attr('clip-path', `url(#circle_${i}_outline)`)
+          .attr('clip-path', `url(#circle_${title}_${i}_outline)`)
           .attr('class', 'inner')
           .attr('width', width)
           .attr('height', height)
@@ -110,7 +111,7 @@ export default compose(
       ops.slice(1).forEach((d, i) =>
         svg
           .append('svg:rect')
-          .attr('clip-path', `url(#circle_${i})`)
+          .attr('clip-path', `url(#circle_${title}_${i})`)
           .attr('class', 'inner')
           .attr('width', width)
           .attr('height', height)
@@ -124,7 +125,7 @@ export default compose(
       ops.slice(4).forEach((d, i) =>
         svg
           .append('svg:rect')
-          .attr('clip-path', `url(#circle_${i}_outline)`)
+          .attr('clip-path', `url(#circle_${title}_${i}_outline)`)
           .attr('class', 'inner')
           .attr('width', width)
           .attr('height', height)
@@ -134,7 +135,7 @@ export default compose(
       ops.slice(4).forEach((d, i) =>
         svg
           .append('svg:rect')
-          .attr('clip-path', `url(#circle_${i})`)
+          .attr('clip-path', `url(#circle_${title}_${i})`)
           .attr('class', 'inner')
           .attr('width', width)
           .attr('height', height)
@@ -148,9 +149,9 @@ export default compose(
       ops.slice(1, 4).forEach((d, i) =>
         svg
           .append('svg:g')
-          .attr('clip-path', `url(#circle_${i}_outline)`)
+          .attr('clip-path', `url(#circle_${title}_${i}_outline)`)
           .append('svg:rect')
-          .attr('clip-path', `url(#circle_${(i + 1) % numCircles}_outline)`)
+          .attr('clip-path', `url(#circle_${title}_${(i + 1) % numCircles}_outline)`)
           .attr('width', width)
           .attr('height', height)
           .style('fill', outlineColour),
@@ -159,10 +160,10 @@ export default compose(
       ops.slice(1, 4).forEach((d, i) =>
         svg
           .append('svg:g')
-          .attr('clip-path', `url(#circle_${i})`)
+          .attr('clip-path', `url(#circle_${title}_${i})`)
           .append('svg:rect')
           .attr('class', 'inner')
-          .attr('clip-path', `url(#circle_${(i + 1) % numCircles})`)
+          .attr('clip-path', `url(#circle_${title}_${(i + 1) % numCircles})`)
           .attr('width', width)
           .attr('height', height)
           .style('cursor', cursor)
@@ -177,35 +178,35 @@ export default compose(
 
     let innerOutline = svg
       .append('svg:g')
-      .attr('clip-path', `url(#circle_${numCircles - 1}_outline)`);
+      .attr('clip-path', `url(#circle_${title}_${numCircles - 1}_outline)`);
 
     _.range(numCircles - 1, 0).forEach(
       x =>
         (innerOutline = innerOutline
           .append('svg:g')
-          .attr('clip-path', `url(#circle_${x}_outline)`)),
+          .attr('clip-path', `url(#circle_${title}_${x}_outline)`)),
     );
 
     innerOutline
       .append('svg:rect')
-      .attr('clip-path', 'url(#circle_0_outline)')
+      .attr('clip-path', `url(#circle_${title}_0_outline)`)
       .attr('width', width)
       .attr('height', height)
       .style('fill', outlineColour);
 
     let inner = svg
       .append('svg:g')
-      .attr('clip-path', `url(#circle_${numCircles - 1})`);
+      .attr('clip-path', `url(#circle_${title}_${numCircles - 1})`);
 
     _.range(numCircles - 1, 0).forEach(
       x =>
-        (inner = inner.append('svg:g').attr('clip-path', `url(#circle_${x})`)),
+        (inner = inner.append('svg:g').attr('clip-path', `url(#circle_${title}_${x})`)),
     );
 
     inner
       .append('svg:rect')
       .attr('class', 'inner')
-      .attr('clip-path', `url(#circle_${0})`)
+      .attr('clip-path', `url(#circle_${title}_${0})`)
       .attr('width', width)
       .attr('height', height)
       .style('cursor', cursor)

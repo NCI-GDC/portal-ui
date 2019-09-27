@@ -8580,16 +8580,22 @@ fieldset[disabled] .btn-primary.active {
   background-color: #dbdbdb;
 }
 
-#projects-table th {
-  word-wrap: break-word !important;
-  white-space: normal !important;
-  vertical-align: bottom;
+#projects-table th,
+#projects-table td {
+  hyphens: auto;
   max-width: 100px !important;
+  overflow-wrap: break-word;
+  white-space: normal !important;
+  word-wrap: break-word !important;
 }
 
-#projects-table td {
-  white-space: normal !important;
-  max-width: 100px !important;
+#projects-table th {
+  vertical-align: bottom;
+}
+
+#projects-table td > ul {
+  hyphens: auto;
+  width: 100%;
 }
 
 abbr span {

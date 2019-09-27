@@ -201,12 +201,13 @@ export const SSMAggregationsComponent = compose(
         style={{ borderTop: `1px solid ${props.theme.greyScale5}` }}
         title="COSMIC ID"
         />
-      <NotMissingFacet
-        collapsed={props.cosmicIdCollapsed}
-        field="ssms.cosmic_id"
-        notMissingDocCount={props.ssms.cosmic_id_not_missing.total}
-        title="COSMIC ID"
-        />
+      {props.cosmicIdCollapsed || (
+        <NotMissingFacet
+          field="ssms.cosmic_id"
+          notMissingDocCount={props.ssms.cosmic_id_not_missing.total}
+          title="COSMIC ID"
+          />
+      )}
       <FacetHeader
         collapsed={props.dbSNPCollapsed}
         field="ssms.consequence.transcript.annotation.dbsnp_rs"
@@ -214,12 +215,13 @@ export const SSMAggregationsComponent = compose(
         style={{ borderTop: `1px solid ${props.theme.greyScale5}` }}
         title="dbSNP rs ID"
         />
-      <NotMissingFacet
-        collapsed={props.dbSNPCollapsed}
-        field="ssms.consequence.transcript.annotation.dbsnp_rs"
-        notMissingDocCount={props.ssms.dbsnp_rs_not_missing.total}
-        title="dbSNP rs ID"
-        />
+      {props.dbSNPCollapsed || (
+        <NotMissingFacet
+          field="ssms.consequence.transcript.annotation.dbsnp_rs"
+          notMissingDocCount={props.ssms.dbsnp_rs_not_missing.total}
+          title="dbSNP rs ID"
+          />
+      )}
     </div>
   </div>
 ));

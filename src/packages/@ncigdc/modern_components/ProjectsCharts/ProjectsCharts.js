@@ -235,16 +235,9 @@ export default compose(
         },
         tooltip: (
           <span>
-            <b>
-              {project.project_id}
-:
-              {project.name}
-            </b>
+            <b>{`${project.project_id}: ${project.name}`}</b>
             <br />
-            {count.toLocaleString()}
-            {' '}
-case
-            {count > 1 ? 's' : ''}
+            {`${count.toLocaleString()} case ${count > 1 ? 's' : ''}`}
           </span>
         ),
       };

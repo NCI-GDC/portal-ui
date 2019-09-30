@@ -28,10 +28,13 @@ const BarChart = ({
   styles,
   theme,
   title,
-  xAxis = {},
+  xAxis = {}, // Must have titleForSVG and title if showXAxisLabels is false.
   xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
   yAxis = {},
 }) => {
+  if (showXAxisLabels && (!xAxis.title || !xAxis.titleForSVG)) {
+    throw new Error('For GDC Developers, when showXAxisLabels is false, value of titleForSVG or title in xAxis should not be blank.');
+  }
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
 
@@ -122,7 +125,6 @@ const BarChart = ({
 
   if (showXAxisLabels) {
     // hidden x axis for full length labels in svg download
-
     const hiddenXG = svg
       .append('g')
       .attr('class', 'svgDownload')
@@ -180,7 +182,7 @@ const BarChart = ({
       .style('fontSize', '1.2rem')
       .style('fontWeight', '500')
       .attr('fill', yAxisStyle.textFill)
-      .text(xAxis.title || '');
+      .text(xAxis.title);
 
     svg
       .append('text')
@@ -193,7 +195,7 @@ const BarChart = ({
       .style('fontSize', '1.2rem')
       .style('fontWeight', '500')
       .attr('fill', xAxisStyle.textFill)
-      .text(xAxis.titleForSVG || '');
+      .text(xAxis.titleForSVG);
   }
 
   const barGs = svg

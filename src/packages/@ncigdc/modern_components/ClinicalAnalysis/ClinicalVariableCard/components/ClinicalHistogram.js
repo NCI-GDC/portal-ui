@@ -32,7 +32,6 @@ const ClinicalHistogram = ({
           },
           xAxis: {
             textFill: theme.greyScaleD3,
-
           },
           yAxis: {
             stroke: theme.greyScale4,

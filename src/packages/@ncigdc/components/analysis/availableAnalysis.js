@@ -171,6 +171,7 @@ const availableAnalysis: [TAnalysis] = [
         ? (
           <Demo {...props}>
             <SetOperations
+              id={props.id}
               message={props.message}
               sets={props.sets[type]}
               type={type}
@@ -179,6 +180,7 @@ const availableAnalysis: [TAnalysis] = [
         )
         : (
           <SetOperations
+            id={props.id}
             message={props.message}
             sets={props.sets[type]}
             type={type}

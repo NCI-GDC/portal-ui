@@ -17,12 +17,6 @@ const EnhancedSummaryPageQuery = (Component) => compose(
             explore {
               cases {
                 aggregations(filters: $filters){
-                  samples__sample_type{
-                    buckets{
-                      doc_count
-                      key
-                    }
-                  }
                   summary__experimental_strategies__experimental_strategy{
                     buckets{
                       doc_count
@@ -60,7 +54,7 @@ const EnhancedSummaryPageQuery = (Component) => compose(
             }
             repository {
               cases {
-                aggregations(filters: $filters, aggregations_filter_themselves: true) {
+                aggregations(filters: $filters) {
                   samples__sample_type {
                     buckets {
                       doc_count

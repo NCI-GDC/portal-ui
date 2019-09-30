@@ -43,7 +43,7 @@ const ClinicalHistogram = ({
           style: {
             ...histogramStyles(theme).axis,
             fontWeight: '700',
-            forntSize: '1.2rem',
+            fontSize: '1.2rem',
           },
           title: 'Roll over the graph to see X axis labels',
           titleForSVG: 'For the list of histogram values, download the separate TSV file',

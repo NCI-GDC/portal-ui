@@ -32,7 +32,7 @@ const BarChart = ({
   xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
   yAxis = {},
 }) => {
-  if (showXAxisLabels && (!xAxis.title || !xAxis.titleForSVG)) {
+  if (!showXAxisLabels && (!xAxis.title || !xAxis.titleForSVG)) {
     throw new Error('For GDC Developers, when showXAxisLabels is false, value of titleForSVG or title in xAxis should not be blank.');
   }
   const el = ReactFauxDOM.createElement('div');

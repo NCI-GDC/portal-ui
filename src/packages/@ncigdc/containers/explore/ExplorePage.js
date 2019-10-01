@@ -21,6 +21,7 @@ import ExploreCasesAggregations from '@ncigdc/modern_components/ExploreCasesAggr
 import GeneAggregations from '@ncigdc/modern_components/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import ClinicalAggregations from '@ncigdc/modern_components/ClinicalAggregations';
+// import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
@@ -28,7 +29,6 @@ import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import ResizeDetector from 'react-resize-detector';
 import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
-
 import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
 
 import { DISPLAY_SUMMARY_PAGE } from '@ncigdc/utils/constants';

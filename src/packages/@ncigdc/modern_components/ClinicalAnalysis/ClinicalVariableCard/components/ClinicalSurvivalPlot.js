@@ -8,7 +8,9 @@ const ClinicalSurvivalPlot = ({
   plotType,
   survivalData: { id, legend, rawData },
   survivalPlotLoading,
-}) => (
+}) => {
+  // console.log('id', id);
+  return (
   <div
     style={{
       display: 'flex',
@@ -29,6 +31,6 @@ const ClinicalSurvivalPlot = ({
       uniqueClass="clinical-survival-plot"
       />
   </div>
-);
+)};
 
 export default ClinicalSurvivalPlot;

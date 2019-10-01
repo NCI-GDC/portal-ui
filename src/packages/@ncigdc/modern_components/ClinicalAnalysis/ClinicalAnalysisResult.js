@@ -13,6 +13,7 @@ import {
   isEqual,
   map,
   mapKeys,
+  maxBy,
   trim,
 } from 'lodash';
 
@@ -23,6 +24,7 @@ import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizatio
 import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
+import { humanify } from '@ncigdc/utils/string';
 
 import Input from '@ncigdc/uikit/Form/Input';
 import {
@@ -43,6 +45,7 @@ import './survivalPlot.css';
 import ControlPanel from './ControlPanel';
 import ContinuousAggregationQuery from './ContinuousAggregationQuery';
 import { CategoricalVariableCard } from './ClinicalVariableCard';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -65,13 +68,61 @@ const makeDownloadSlugs = displayVariables => Object.keys(displayVariables)
   .map(dVar => {
     const fieldName = dVar.split('.')[1];
     const chart = displayVariables[dVar].active_chart;
-
     return chart === 'histogram'
       ? `${fieldName}-bar-chart`
       : chart === 'survival'
         ? 'survival-plot'
         : [`qq-plot-${fieldName}`, `boxplot-${fieldName}`];
   }).reduce((acc, curr) => acc.concat(curr), []);
+
+const getMaxKeyNameLength = bins => (
+  maxBy(bins, item => item.length) || ''
+).length;
+
+const makeDownloadSvgs = displayVariables => Object.keys(displayVariables)
+  .reduce((acc, curr) => {
+    const fieldName = curr.split('.')[1];
+    const chart = displayVariables[curr].active_chart;
+
+    if (chart === 'histogram') {
+      const bins = Object.keys(displayVariables[curr].bins);
+      const maxKeyNameLength = getMaxKeyNameLength(bins);
+      return acc.concat({
+        bottomBuffer: maxKeyNameLength * 3,
+        rightBuffer: maxKeyNameLength * 2, 
+        selector: `#${fieldName}-chart-container .test-bar-chart svg`,
+        title: humanify({ term: fieldName }),
+      });
+    } else if (chart === 'survival') {
+      return acc.concat({
+        selector: `.survival-plot .survival-plot svg`,
+        title: '',
+        // embed: {
+        //   top: {
+        //     elements: legend
+        //       .map((l, i) => {
+        //         const legendItem = document.querySelector(
+        //           `.survivalPlot .legend-${i}`
+        //         ).cloneNode(true);
+        //         const legendTitle = legendItem.querySelector('span.print-only.inline');
+        //         if (legendTitle !== null) legendTitle.className = '';
+        //         return legendItem;
+        //       })
+        //       .concat(
+        //         pValue
+        //           ? document.querySelector(
+        //             `.${uniqueClass} .p-value`
+        //           )
+        //           : null
+        //       ),
+        //   },
+        // },
+      })
+    } else if (chart === 'box') {
+      // console.log('box');
+      return acc;
+    }
+  }, []);
 
 const CopyAnalysisModal = compose(
   setDisplayName('EnhancedCopyAnalysisModal'),
@@ -151,6 +202,8 @@ const ClinicalAnalysisResult = ({
 }: IAnalysisResultProps) => {
   // TODO: get slugs & svgs
   const downloadSlugs = makeDownloadSlugs(displayVariables);
+  const downloadSvgs = makeDownloadSvgs(displayVariables);
+  console.log('downloadSvgs', downloadSvgs);
 
   return hits.total === 0
     ? (
@@ -243,7 +296,10 @@ const ClinicalAnalysisResult = ({
                 height: '100%',
               }}
               // TODO: get all SVGs
-              svg={[
+              svg={downloadSvgs
+                .map(dSvg => () => wrapSvg(dSvg))
+              }
+              // svg={[
                 // () => wrapSvg({
                 //   className: 'qq-plot',
                 //   selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
@@ -254,7 +310,7 @@ const ClinicalAnalysisResult = ({
                 //   selector: `#${wrapperId}-boxplot-container figure svg`,
                 //   title: `${humanify({ term: fieldName })} Box Plot`,
                 // }),
-              ]}
+              // ]}
               tooltipHTML="Download all images"
               />
           </Row>

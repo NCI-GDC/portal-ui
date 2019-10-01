@@ -230,6 +230,10 @@ const ClinicalVariableCard = ({
       .map(d => d.fullLabel), (item) => item.length) || ''
   ).length;
 
+  // console.log('histogramData', histogramData.map(d => d.fullLabel))
+
+  // console.log('maxKeyNameLength', maxKeyNameLength);
+
   const tsvSubstring = fieldName.replace(/\./g, '-');
   const cardFilters = getCardFilters(
     variable.plotTypes, selectedBins, fieldName, filters

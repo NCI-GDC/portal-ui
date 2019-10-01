@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import {
   isEqual,
   map,
+  mapKeys,
   trim,
 } from 'lodash';
 
@@ -59,6 +60,18 @@ const plotTypes = {
     'box',
   ],
 };
+
+const makeDownloadSlugs = displayVariables => Object.keys(displayVariables)
+  .map(dVar => {
+    const fieldName = dVar.split('.')[1];
+    const chart = displayVariables[dVar].active_chart;
+
+    return chart === 'histogram'
+      ? `${fieldName}-bar-chart`
+      : chart === 'survival'
+        ? 'survival-plot'
+        : [`qq-plot-${fieldName}`, `boxplot-${fieldName}`];
+  }).reduce((acc, curr) => acc.concat(curr), []);
 
 const CopyAnalysisModal = compose(
   setDisplayName('EnhancedCopyAnalysisModal'),
@@ -136,6 +149,9 @@ const ClinicalAnalysisResult = ({
   setId,
   survivalPlotLoading,
 }: IAnalysisResultProps) => {
+  // TODO: get slugs & svgs
+  const downloadSlugs = makeDownloadSlugs(displayVariables);
+
   return hits.total === 0
     ? (
       <DeprecatedSetResult
@@ -221,8 +237,7 @@ const ClinicalAnalysisResult = ({
             </Button>
             <DownloadVisualizationButton
               noText
-              // TODO: get all slugs
-              // slug={[`qq-plot-${fieldName}`, `boxplot-${fieldName}`]}
+              slug={downloadSlugs}
               buttonStyle={{
                 ...visualizingButton,
                 height: '100%',

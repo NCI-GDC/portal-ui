@@ -18,9 +18,7 @@ import {
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import {
-  PrintIcon,
-} from '@ncigdc/theme/icons';
+import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
@@ -221,20 +219,29 @@ const ClinicalAnalysisResult = ({
               >
               Copy Analysis
             </Button>
-            <Tooltip Component={<span>Print</span>}>
-              <Button
-                onClick={() => {
-                  window.print();
-                }}
-                style={{
-                  ...visualizingButton,
-                  height: '100%',
-                }}
-                >
-                <PrintIcon />
-                <Hidden>Print</Hidden>
-              </Button>
-            </Tooltip>
+            <DownloadVisualizationButton
+              noText
+              // TODO: get all slugs
+              // slug={[`qq-plot-${fieldName}`, `boxplot-${fieldName}`]}
+              buttonStyle={{
+                ...visualizingButton,
+                height: '100%',
+              }}
+              // TODO: get all SVGs
+              svg={[
+                // () => wrapSvg({
+                //   className: 'qq-plot',
+                //   selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
+                //   title: `${humanify({ term: fieldName })} QQ Plot`,
+                // }),
+                // () => wrapSvg({
+                //   className: `${type.toLowerCase()}-boxplot`,
+                //   selector: `#${wrapperId}-boxplot-container figure svg`,
+                //   title: `${humanify({ term: fieldName })} Box Plot`,
+                // }),
+              ]}
+              tooltipHTML="Download all images"
+              />
           </Row>
         </Row>
         <Row>

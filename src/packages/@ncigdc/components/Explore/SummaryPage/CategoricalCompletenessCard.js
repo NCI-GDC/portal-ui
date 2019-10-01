@@ -41,39 +41,39 @@ const CategoricalCompletenessCard = ({
   const fakeData = [
     {
       symbol: 'Demographics',
-      completed: 135,
+      withData: 135,
       total: 260,
     },
     {
       symbol: 'Diagnosis',
-      completed: 42,
+      withData: 42,
       total: 260,
     },
     {
       symbol: 'Exposure',
-      completed: 130,
+      withData: 130,
       total: 260,
     },
     {
       symbol: 'Family History',
-      completed: 100,
+      withData: 100,
       total: 260,
     },
     {
       symbol: 'Treatment',
-      completed: 230,
+      withData: 230,
       total: 260,
     },
   ];
   const colors = [
     {
-      key: 'completed',
-      name: 'Completed',
+      key: 'withData',
+      name: 'With Data',
       color: '#2a9e2c',
     },
     {
-      key: 'uncompleted',
-      name: 'Uncompleted',
+      key: 'withoutData',
+      name: 'Without Data',
       color: '#cecece',
     },
   ];
@@ -179,12 +179,12 @@ const CategoricalCompletenessCard = ({
         )}
         data={fakeData.map(el => ({
           ...el,
-          completed: el.completed / (isPercent ? (el.total / 100) : 1),
-          uncompleted: (el.total - el.completed) / (isPercent ? (el.total / 100) : 1),
+          withData: el.withData / (isPercent ? (el.total / 100) : 1),
+          withoutData: (el.total - el.withData) / (isPercent ? (el.total / 100) : 1),
         }))}
         displayFilters={{
-          completed: true,
-          uncompleted: true,
+          withData: true,
+          withoutData: true,
         }}
         height={CHART_HEIGHT}
         labelX={-9}

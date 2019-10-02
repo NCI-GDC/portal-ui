@@ -140,8 +140,15 @@ const ClinicalAnalysisResult = ({
   // TODO: get slugs & svgs
   const downloadSlugs = getDownloadSlugs(displayVariables);
   const downloadSvgs = getDownloadSvgs(displayVariables);
-  console.log('downloadSvgs', downloadSvgs);
-  console.log('downloadSlugs', downloadSlugs);
+  console.log('downloadSvgs elements', downloadSvgs[0].embed.top.elements);
+  // console.log('downloadSlugs', downloadSlugs);
+
+  const testing = Array.prototype.map.call(
+    document.querySelectorAll(`.age_at_diagnosis-survival-plot .legend-item`), (l, i) => i);
+  const testing2 = Array.prototype.map.call(
+    document.querySelectorAll(`.age_at_diagnosis-survival-plot .legend-item`), element => element);
+    console.log('testing', testing);
+    console.log('testing2', testing2);
 
   return hits.total === 0
     ? (
@@ -234,9 +241,37 @@ const ClinicalAnalysisResult = ({
                 height: '100%',
               }}
               // TODO: get all SVGs
-              svg={downloadSvgs
-                .map(dSvg => () => wrapSvg(dSvg))
-              }
+              // onClick={() => 
+              //   getDownloadSvgs(displayVariables)
+              //   .map(dSvg => () => wrapSvg(dSvg))
+              // }
+              // svg={getDownloadSvgs(displayVariables)
+              //   .map(dSvg => () => wrapSvg(dSvg))
+              // }
+              svg={[
+                () => wrapSvg({
+                  className: 'survival-plot',
+                  selector: `.age_at_diagnosis-survival-plot .survival-plot svg`,
+                  slug: 'age_at_diagnosis-survival-plot',
+                  title: '',
+                  embed: {
+                    top: {
+                      elements: [...document.querySelectorAll('.age_at_diagnosis-survival-plot .legend-item')].map((l, i) => {
+                          const legendItem = document.querySelector(
+                            `.age_at_diagnosis-survival-plot .legend-${i}`
+                          ).cloneNode(true);
+                          const legendTitle = legendItem.querySelector('span.print-only.inline');
+                          if (legendTitle !== null) legendTitle.className = '';
+                          console.log('legendItem', legendTitle, legendItem);
+                          console.log('BOOP')
+                          // return 'BOOP';
+                          return legendItem;
+                        })
+                        .concat(document.querySelector(`.age_at_diagnosis-survival-plot .p-value`) || []),
+                    },
+                  },
+                })
+              ]}
               // svg={[
                 // () => wrapSvg({
                 //   className: 'qq-plot',

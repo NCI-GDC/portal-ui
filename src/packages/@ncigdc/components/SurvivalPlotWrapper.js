@@ -127,7 +127,7 @@ const SurvivalPlotWrapper = ({
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
   const { pValue } = overallStats;
-  const plotName = slug || uniqueClass;
+  const plotName = slug === '' ? uniqueClass : slug;
   return (
     <Loader
       className={plotName}

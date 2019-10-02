@@ -41,9 +41,9 @@ import DeprecatedSetResult from './DeprecatedSetResult';
 import { 
   getMaxKeyNameLength,
   getDownloadSlugs,
-  getDownloadSvgs,
   OVERALL_SURVIVAL_SLUG,
   PLOT_TYPES,
+  getSurvivalDownload,
 } from './helpers';
 import './print.css';
 import './survivalPlot.css';
@@ -137,18 +137,7 @@ const ClinicalAnalysisResult = ({
   setId,
   survivalPlotLoading,
 }: IAnalysisResultProps) => {
-  // TODO: get slugs & svgs
   const downloadSlugs = getDownloadSlugs(displayVariables);
-  const downloadSvgs = getDownloadSvgs(displayVariables);
-  console.log('downloadSvgs elements', downloadSvgs[0].embed.top.elements);
-  // console.log('downloadSlugs', downloadSlugs);
-
-  const testing = Array.prototype.map.call(
-    document.querySelectorAll(`.age_at_diagnosis-survival-plot .legend-item`), (l, i) => i);
-  const testing2 = Array.prototype.map.call(
-    document.querySelectorAll(`.age_at_diagnosis-survival-plot .legend-item`), element => element);
-    console.log('testing', testing);
-    console.log('testing2', testing2);
 
   return hits.total === 0
     ? (
@@ -240,50 +229,14 @@ const ClinicalAnalysisResult = ({
                 ...visualizingButton,
                 height: '100%',
               }}
-              // TODO: get all SVGs
-              // onClick={() => 
-              //   getDownloadSvgs(displayVariables)
-              //   .map(dSvg => () => wrapSvg(dSvg))
-              // }
-              // svg={getDownloadSvgs(displayVariables)
-              //   .map(dSvg => () => wrapSvg(dSvg))
-              // }
-              svg={[
-                () => wrapSvg({
-                  className: 'survival-plot',
-                  selector: `.age_at_diagnosis-survival-plot .survival-plot svg`,
-                  slug: 'age_at_diagnosis-survival-plot',
-                  title: '',
-                  embed: {
-                    top: {
-                      elements: [...document.querySelectorAll('.age_at_diagnosis-survival-plot .legend-item')].map((l, i) => {
-                          const legendItem = document.querySelector(
-                            `.age_at_diagnosis-survival-plot .legend-${i}`
-                          ).cloneNode(true);
-                          const legendTitle = legendItem.querySelector('span.print-only.inline');
-                          if (legendTitle !== null) legendTitle.className = '';
-                          console.log('legendItem', legendTitle, legendItem);
-                          console.log('BOOP')
-                          // return 'BOOP';
-                          return legendItem;
-                        })
-                        .concat(document.querySelector(`.age_at_diagnosis-survival-plot .p-value`) || []),
-                    },
-                  },
-                })
-              ]}
-              // svg={[
-                // () => wrapSvg({
-                //   className: 'qq-plot',
-                //   selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
-                //   title: `${humanify({ term: fieldName })} QQ Plot`,
-                // }),
-                // () => wrapSvg({
-                //   className: `${type.toLowerCase()}-boxplot`,
-                //   selector: `#${wrapperId}-boxplot-container figure svg`,
-                //   title: `${humanify({ term: fieldName })} Box Plot`,
-                // }),
-              // ]}
+              svg={Object.keys(displayVariables).reduce((acc, dVar) => {
+                const fieldName = dVar.split('.')[1];
+                const chartType = displayVariables[dVar].active_chart;
+
+                return chartType === 'survival'
+                  ? acc.concat(() => wrapSvg(getSurvivalDownload(fieldName)))
+                  : acc;
+              }, [() => wrapSvg(getSurvivalDownload(OVERALL_SURVIVAL_SLUG))])}
               tooltipHTML="Download all images"
               />
           </Row>

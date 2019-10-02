@@ -11,9 +11,10 @@ import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
 let DataCategoryColumns = withData(props => {
-  var dataColumns = Object.keys(DATA_CATEGORIES).reduce((acc, k) => {
-    const type = props.repository.cases.aggregations.files__data_category.buckets.find(
-      item => item.key === DATA_CATEGORIES[k].full,
+  var dataColumns = Object.keys(DATA_CATEGORIES).reduce((acc, dataCategory) => {
+    const type = props.repository.cases.aggregations.files__data_category.buckets
+      .find(({ key = '' } = {}) =>
+        key.toLowerCase() === DATA_CATEGORIES[dataCategory].full.toLowerCase()
     );
     const linkQuery = {
       searchTableTab: 'cases',
@@ -22,7 +23,10 @@ let DataCategoryColumns = withData(props => {
           field: 'cases.project.project_id',
           value: props.projectId,
         },
-        { field: 'files.data_category', value: DATA_CATEGORIES[k].full },
+        { 
+          field: 'files.data_category', 
+          value: DATA_CATEGORIES[dataCategory].full,
+        },
         {
           field: 'cases.primary_site',
           value: [props.primarySite],
@@ -38,7 +42,7 @@ let DataCategoryColumns = withData(props => {
           alignItems: 'center',
           minWidth: '40px',
         }}
-        key={k}
+        key={dataCategory}
       >
         {type ? (
           <RepositoryFilesLink query={linkQuery}>

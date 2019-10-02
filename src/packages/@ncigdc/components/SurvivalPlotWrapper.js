@@ -123,6 +123,7 @@ const SurvivalPlotWrapper = ({
     textColors[4],
   ],
   plotType,
+  slug = '',
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
   const { pValue } = overallStats;
@@ -146,7 +147,7 @@ const SurvivalPlotWrapper = ({
                 }))}
                 key="download"
                 noText
-                slug="survival-plot"
+                slug={slug || 'survival-plot'}
                 stylePrefix={`.${CLASS_NAME}`}
                 svg={() => wrapSvg({
                   selector: `.${uniqueClass} .${CLASS_NAME} svg`,

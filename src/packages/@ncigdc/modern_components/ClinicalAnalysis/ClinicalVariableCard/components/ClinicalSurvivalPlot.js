@@ -3,14 +3,13 @@ import React from 'react';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
 import '../../survivalPlot.css';
+import { OVERALL_SURVIVAL_SLUG } from '../../helpers';
 
 const ClinicalSurvivalPlot = ({
   plotType,
   survivalData: { id, legend, rawData },
   survivalPlotLoading,
-}) => {
-  // console.log('id', id);
-  return (
+}) => (
   <div
     style={{
       display: 'flex',
@@ -27,10 +26,11 @@ const ClinicalSurvivalPlot = ({
       legend={legend}
       plotType={plotType}
       rawData={rawData}
+      slug={OVERALL_SURVIVAL_SLUG}
       survivalPlotLoading={survivalPlotLoading}
-      uniqueClass="clinical-survival-plot"
+      uniqueClass={OVERALL_SURVIVAL_SLUG}
       />
   </div>
-)};
+);
 
 export default ClinicalSurvivalPlot;

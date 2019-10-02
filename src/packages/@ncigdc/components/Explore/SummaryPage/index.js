@@ -62,7 +62,7 @@ const SummaryPage = ({
       title: 'Data Types',
     },
     {
-      component: () => <PrimarySiteAndDiseaseType />,
+      component: PrimarySiteAndDiseaseType,
       data: [],
       isCustomComponent: true,
       space: 1,
@@ -82,8 +82,15 @@ const SummaryPage = ({
     {
       component: SurvivalAnalysisCard,
       data: [],
-      space: 2,
+      hideDownloadButton: true,
+      space: 1,
       title: 'Survival Analysis',
+    },
+    {
+      component: () => '',
+      data: [],
+      space: 1,
+      title: 'Treatment Type',
     },
     {
       component: HistogramCard,
@@ -132,6 +139,7 @@ const SummaryPage = ({
           CardWrapper({
             Component: element.component,
             data: element.data,
+            hideDownloadButton: element.hideDownloadButton,
             isCustomComponent: element.isCustomComponent,
             subProps: element.props,
             title: element.title,

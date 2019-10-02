@@ -2,7 +2,7 @@ import React from 'react';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import { Row } from '@ncigdc/uikit/Flex';
 
-const survivalData = {
+const fakeSurvivalData = {
   rawData: {
     overallStats: {},
     results: [
@@ -289,7 +289,7 @@ const survivalData = {
   legend: [
     {
       key: 'Clinical Analysis',
-      value: 'Where you need to change the legend',
+      value: '14,254 Cases',
     },
   ],
 };
@@ -298,14 +298,16 @@ const SurvivalAnalysisCard = ({ overallSurvivalData }) => (
   <Row>
     <div
       style={{
-        width: '50%',
+        width: '100%',
         padding: '10px',
       }}
       >
       <SurvivalPlotWrapper
-        {...survivalData}
-        enableButton={false}
-        height={250}
+        {...fakeSurvivalData}
+        buttonStyle={{
+          margin: '-47px 0 0 10px',
+        }}
+        height={280}
         plotType="clinicalOverall"
         />
     </div>

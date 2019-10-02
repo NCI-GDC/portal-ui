@@ -6,6 +6,8 @@ import SampleTypeCard from '@ncigdc/components/Explore/SummaryPage/SampleTypeCar
 import SummaryPageQuery from '@ncigdc/components/Explore/SummaryPage/SummaryPage.relay';
 import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
+import CategoricalCompletenessCard from '@ncigdc/components/Explore/SummaryPage/CategoricalCompletenessCard';
+
 import PrimarySiteAndDiseaseType from '@ncigdc/modern_components/PrimarySiteAndDiseaseType';
 
 const Tooltip = (title, key, count) => (
@@ -61,7 +63,7 @@ const SummaryPage = ({
       title: 'Data Types',
     },
     {
-      component: () => <PrimarySiteAndDiseaseType />,
+      component: PrimarySiteAndDiseaseType,
       data: [],
       isCustomComponent: true,
       space: 1,
@@ -118,8 +120,11 @@ const SummaryPage = ({
       title: 'Gender',
     },
     {
-      component: () => '',
+      component: CategoricalCompletenessCard,
       data: [],
+      props: {
+        typeName: 'ExploreCases',
+      },
       space: 3,
       title: 'Categorical Completeness',
     },

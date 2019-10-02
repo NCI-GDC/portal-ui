@@ -147,7 +147,7 @@ const SurvivalPlotWrapper = ({
                 }))}
                 key="download"
                 noText
-                slug={slug || 'survival-plot'}
+                slug={slug || uniqueClass}
                 stylePrefix={`.${CLASS_NAME}`}
                 svg={() => wrapSvg({
                   selector: `.${uniqueClass} .${CLASS_NAME} svg`,

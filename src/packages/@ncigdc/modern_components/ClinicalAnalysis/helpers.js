@@ -30,8 +30,8 @@ export const makeDownloadSlugs = displayVariables => Object.keys(displayVariable
   return chart === 'histogram'
     ? `${fieldName}-bar-chart`
     : chart === 'survival'
-      ? 'survival-plot'
-      : [`qq-plot-${fieldName}`, `boxplot-${fieldName}`];
+      ? `${fieldName}-survival-plot`
+      : [`${fieldName}-qq-plot`, `${fieldName}-box-plot`];
 }).reduce((acc, curr) => acc.concat(curr), [OVERALL_SURVIVAL_SLUG]);
 
 export const makeDownloadSvgs = displayVariables => Object.keys(displayVariables)
@@ -49,11 +49,14 @@ export const makeDownloadSvgs = displayVariables => Object.keys(displayVariables
       title: humanify({ term: fieldName }),
     });
   } else if (chart === 'survival') {
-    return acc.concat('survival');
+    return acc;
   } else if (chart === 'box') {
-    return acc.concat('box');
+    return acc;
   }
-}, [{
-  selector: `.${OVERALL_SURVIVAL_SLUG} .survival-plot svg`,
-  slug: OVERALL_SURVIVAL_SLUG,
-}]);
+}, 
+[]
+// [{
+//   selector: `.${OVERALL_SURVIVAL_SLUG} .survival-plot svg`,
+//   slug: OVERALL_SURVIVAL_SLUG,
+// }]
+);

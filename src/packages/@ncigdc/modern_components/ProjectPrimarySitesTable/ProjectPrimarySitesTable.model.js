@@ -13,7 +13,7 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 let DataCategoryColumns = withData(props => {
   var dataColumns = Object.keys(DATA_CATEGORIES).reduce((acc, dataCategory) => {
     const type = props.repository.cases.aggregations.files__data_category.buckets
-      .find(({ key: key = '' }) =>
+      .find(({ key = '' } = {}) =>
         key.toLowerCase() === DATA_CATEGORIES[dataCategory].full.toLowerCase()
     );
     const linkQuery = {

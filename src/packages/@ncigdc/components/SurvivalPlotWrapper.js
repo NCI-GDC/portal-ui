@@ -123,6 +123,7 @@ const SurvivalPlotWrapper = ({
     textColors[4],
   ],
   plotType,
+  enableButton = true,
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
   const { pValue } = overallStats;
@@ -135,63 +136,65 @@ const SurvivalPlotWrapper = ({
       {!survivalPlotLoading && (
         <Column className="test-survival-plot-meta">
           <VisualizationHeader
-            buttons={[
-              <DownloadVisualizationButton
-                data={results.map((set, i) => ({
-                  ...set,
-                  meta: {
-                    ...set.meta,
-                    label: set.meta.label || `S${i + 1}`,
-                  },
-                }))}
-                key="download"
-                noText
-                slug="survival-plot"
-                stylePrefix={`.${CLASS_NAME}`}
-                svg={() => wrapSvg({
-                  selector: `.${uniqueClass} .${CLASS_NAME} svg`,
-                  title: plotType === 'mutation' ? TITLE : '',
-                  className: CLASS_NAME,
-                  embed: {
-                    top: {
-                      elements: legend
-                        .map((l, i) => {
-                          const legendItem = document.querySelector(
+            buttons={enableButton
+              ? [
+                <DownloadVisualizationButton
+                  data={results.map((set, i) => ({
+                    ...set,
+                    meta: {
+                      ...set.meta,
+                      label: set.meta.label || `S${i + 1}`,
+                    },
+                  }))}
+                  key="download"
+                  noText
+                  slug="survival-plot"
+                  stylePrefix={`.${CLASS_NAME}`}
+                  svg={() => wrapSvg({
+                    selector: `.${uniqueClass} .${CLASS_NAME} svg`,
+                    title: plotType === 'mutation' ? TITLE : '',
+                    className: CLASS_NAME,
+                    embed: {
+                      top: {
+                        elements: legend
+                          .map((l, i) => {
+                            const legendItem = document.querySelector(
                             `.${uniqueClass} .legend-${i}`
-                          ).cloneNode(true);
-                          const legendTitle = legendItem.querySelector('span.print-only.inline');
-                          if (legendTitle !== null) legendTitle.className = '';
-                          return legendItem;
-                        })
-                        .concat(
+                            ).cloneNode(true);
+                            const legendTitle = legendItem.querySelector('span.print-only.inline');
+                            if (legendTitle !== null) legendTitle.className = '';
+                            return legendItem;
+                          })
+                          .concat(
                           pValue
                             ? document.querySelector(
                               `.${uniqueClass} .p-value`
                             )
                             : null
-                        ),
+                          ),
+                      },
                     },
-                  },
-                })
+                  })
                 }
-                tooltipHTML="Download SurvivalPlot data or image"
-                tsvData={results.reduce((data, set, i) => {
-                  const mapData = set.donors.map(d => toMap(d));
-                  return [
-                    ...data,
-                    ...(results.length > 1
+                  tooltipHTML="Download SurvivalPlot data or image"
+                  tsvData={results.reduce((data, set, i) => {
+                    const mapData = set.donors.map(d => toMap(d));
+                    return [
+                      ...data,
+                      ...(results.length > 1
                       ? mapData.map(m => m.set('label', set.meta.label || `S${i + 1}`))
                       : mapData),
-                  ];
-                }, [])}
-                />,
-              <Tooltip Component="Reset SurvivalPlot Zoom" key="reset">
-                <Button onClick={() => setXDomain()} style={visualizingButton}>
-                  <i className="fa fa-undo" />
-                  <Hidden>Reset</Hidden>
-                </Button>
-              </Tooltip>,
-            ]}
+                    ];
+                  }, [])}
+                  />,
+                <Tooltip Component="Reset SurvivalPlot Zoom" key="reset">
+                  <Button onClick={() => setXDomain()} style={visualizingButton}>
+                    <i className="fa fa-undo" />
+                    <Hidden>Reset</Hidden>
+                  </Button>
+                </Tooltip>,
+              ]
+               : []}
             title={plotType === 'mutation' ? TITLE : ''}
             />
           <div>

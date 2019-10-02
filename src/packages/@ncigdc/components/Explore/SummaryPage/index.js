@@ -7,6 +7,7 @@ import SummaryPageQuery from '@ncigdc/components/Explore/SummaryPage/SummaryPage
 import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
 import PrimarySiteAndDiseaseType from '@ncigdc/modern_components/PrimarySiteAndDiseaseType';
+import SurvivalAnalysisCard from '@ncigdc/components/Explore/SummaryPage/SurvivalAnalysisCard';
 
 const Tooltip = (title, key, count) => (
   <span>
@@ -79,7 +80,7 @@ const SummaryPage = ({
       title: 'Age at Diagnosis',
     },
     {
-      component: () => '',
+      component: SurvivalAnalysisCard,
       data: [],
       space: 2,
       title: 'Survival Analysis',

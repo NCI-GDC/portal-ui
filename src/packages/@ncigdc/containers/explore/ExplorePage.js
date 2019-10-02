@@ -265,6 +265,18 @@ const ExplorePageComponent = ({
               ]),
               {
                 component: hasCaseHits ? (
+                  <SummaryPage
+                    filters={filters}
+                    numPerRow={showFacets ? 3 : 4}
+                    />
+                  ) : (
+                    <NoResultsMessage>No Cases Found.</NoResultsMessage>
+                    ),
+                id: 'summary',
+                text: 'Summary',
+              },
+              {
+                component: hasCaseHits ? (
                   <CasesTab />
                   ) : (
                     <NoResultsMessage>No Cases Found.</NoResultsMessage>

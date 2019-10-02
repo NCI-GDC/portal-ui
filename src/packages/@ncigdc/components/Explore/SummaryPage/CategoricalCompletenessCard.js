@@ -22,7 +22,86 @@ const chartStyles = {
   },
 };
 const CHART_HEIGHT = 250;
-
+const CHART_MARGINS = {
+  bottom: 90,
+  left: 70,
+  right: 40,
+  top: 20,
+};
+const fakeData = [
+  {
+    symbol: 'Demographics',
+    withData: 135,
+    total: 260,
+  },
+  {
+    symbol: 'Diagnosis',
+    withData: 42,
+    total: 260,
+  },
+  {
+    symbol: 'Exposure',
+    withData: 130,
+    total: 260,
+  },
+  {
+    symbol: 'Family History',
+    withData: 100,
+    total: 260,
+  },
+  {
+    symbol: 'Treatment',
+    withData: 230,
+    total: 260,
+  },
+];
+const colors = [
+  {
+    key: 'withData',
+    name: 'With Data',
+    color: '#2a9e2c',
+  },
+  {
+    key: 'withoutData',
+    name: 'Without Data',
+    color: '#cecece',
+  },
+];
+const Legends = () => (
+  <Row
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+    }}
+    >
+    {colors.map(f => (
+      <label
+        key={f.key}
+        style={{
+          paddingRight: '10px',
+          display: 'inline-block,',
+        }}
+        >
+        <span
+          style={{
+            color: f.color,
+            backgroundColor: f.color,
+            textAlign: 'center',
+            border: '2px solid',
+            height: '18px',
+            width: '18px',
+            cursor: 'pointer',
+            display: 'inline-block',
+            marginRight: '6px',
+            verticalAlign: 'text-top',
+            lineHeight: '16px',
+          }}
+          />
+        {f.name}
+      </label>
+    ))}
+  </Row>
+);
 const CategoricalCompletenessCard = ({
   bottomMarginForxAxisTitle,
   data,
@@ -30,88 +109,7 @@ const CategoricalCompletenessCard = ({
   theme,
   xAxisTitle,
   yAxisUnit,
-  ...props
 }) => {
-  const CHART_MARGINS = {
-    bottom: 90,
-    left: 70,
-    right: 40,
-    top: 20,
-  };
-  const fakeData = [
-    {
-      symbol: 'Demographics',
-      withData: 135,
-      total: 260,
-    },
-    {
-      symbol: 'Diagnosis',
-      withData: 42,
-      total: 260,
-    },
-    {
-      symbol: 'Exposure',
-      withData: 130,
-      total: 260,
-    },
-    {
-      symbol: 'Family History',
-      withData: 100,
-      total: 260,
-    },
-    {
-      symbol: 'Treatment',
-      withData: 230,
-      total: 260,
-    },
-  ];
-  const colors = [
-    {
-      key: 'withData',
-      name: 'With Data',
-      color: '#2a9e2c',
-    },
-    {
-      key: 'withoutData',
-      name: 'Without Data',
-      color: '#cecece',
-    },
-  ];
-  const Legends = () => (
-    <Row
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-      }}
-      >
-      {colors.map(f => (
-        <label
-          key={f.key}
-          style={{
-            paddingRight: '10px',
-            display: 'inline-block,',
-          }}
-          >
-          <span
-            style={{
-              color: f.color,
-              backgroundColor: f.color,
-              textAlign: 'center',
-              border: '2px solid',
-              height: '18px',
-              width: '18px',
-              cursor: 'pointer',
-              display: 'inline-block',
-              marginRight: '6px',
-              verticalAlign: 'text-top',
-              lineHeight: '16px',
-            }}
-            />
-          {f.name}
-        </label>
-      ))}
-    </Row>
-  );
   const isPercent = yAxisUnit === 'percent';
   return (
     <div

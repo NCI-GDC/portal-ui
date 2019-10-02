@@ -23,8 +23,7 @@ export const getMaxKeyNameLength = bins => (
   maxBy(bins, item => item.length) || ''
 ).length;
 
-export const getSurvivalDownload = fieldName => {
-  const slug = `${fieldName}-survival-plot`;
+export const getSurvivalDownload = slug => {
   const legend = [...document.querySelectorAll(`.${slug} .legend-item`)];
   return ({
   className: 'survival-plot',

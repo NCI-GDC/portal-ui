@@ -232,9 +232,10 @@ const ClinicalAnalysisResult = ({
               svg={Object.keys(displayVariables).reduce((acc, dVar) => {
                 const fieldName = dVar.split('.')[1];
                 const chartType = displayVariables[dVar].active_chart;
+                const survivalSlug = `${fieldName}-survival-plot`;
 
                 return chartType === 'survival'
-                  ? acc.concat(() => wrapSvg(getSurvivalDownload(fieldName)))
+                  ? acc.concat(() => wrapSvg(getSurvivalDownload(survivalSlug)))
                   : acc;
               }, [() => wrapSvg(getSurvivalDownload(OVERALL_SURVIVAL_SLUG))])}
               tooltipHTML="Download all images"

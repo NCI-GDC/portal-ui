@@ -49,75 +49,43 @@ export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
   k => localStorage[k]
 );
 
-const DATA_CATEGORIES_COMMON = {
-  CNV: {
-    abbr: 'CNV',
-    full: 'Copy Number Variation',
+const DATA_CATEGORIES_COMMON = { // this object is "sorted" on purpose, do not rearrange the keys
+  SEQ: {
+    abbr: 'Seq',
+    full: 'Sequencing Reads',
   },
   EXP: {
     abbr: 'Exp',
     full: 'Transcriptome Profiling',
   },
-  METH: {
-    abbr: 'Meth',
-    full: 'DNA Methylation',
-  },
-  SEQ: {
-    abbr: 'Seq',
-    full: 'Sequencing Reads',
-  },
   SNV: {
     abbr: 'SNV',
     full: 'Simple Nucleotide Variation',
+  },
+  CNV: {
+    abbr: 'CNV',
+    full: 'Copy Number Variation',
+  },
+  METH: {
+    abbr: 'Meth',
+    full: 'DNA Methylation',
   },
 };
 
-export const DATA_CATEGORIES = {
-  CNV: {
-    abbr: 'CNV',
-    full: 'Copy Number Variation',
-  },
-  EXP: {
-    abbr: 'Exp',
-    full: 'Transcriptome Profiling',
-  },
-  METH: {
-    abbr: 'Meth',
-    full: 'DNA Methylation',
-  },
-  SEQ: {
-    abbr: 'Seq',
-    full: 'Sequencing Reads',
-  },
-  SNV: {
-    abbr: 'SNV',
-    full: 'Simple Nucleotide Variation',
-  },
+export const DATA_CATEGORIES = { // this object is "sorted" on purpose, do not rearrange the keys
   ...DATA_CATEGORIES_COMMON,
-  BIOSPECIMEN: {
-    abbr: 'Bio',
-    full: 'Biospecimen',
-  },
   CLINICAL: {
     abbr: 'Clinical',
     full: 'Clinical',
   },
+  BIOSPECIMEN: {
+    abbr: 'Bio',
+    full: 'Biospecimen',
+  },
 };
 
-export const DATA_CATEGORIES_FOR_PROJECTS_TABLE = {
+export const DATA_CATEGORIES_FOR_PROJECTS_TABLE = { // this object is "sorted" on purpose, do not rearrange the keys
   ...DATA_CATEGORIES_COMMON,
-  BIOSPECIMEN_METADATA: {
-    abbr: 'Bio',
-    full: '',
-    hasTotalLink: false,
-    tooltip: 'Biospecimen Metadata',
-  },
-  BIOSPECIMEN_SUPPLEMENT: {
-    abbr: 'Bio Supplement',
-    dataCategory: 'Bio',
-    full: 'Biospecimen',
-    tooltip: 'Biospecimen Supplement',
-  },
   CLINICAL_METADATA: {
     abbr: 'Clinical',
     full: '',
@@ -129,6 +97,18 @@ export const DATA_CATEGORIES_FOR_PROJECTS_TABLE = {
     dataCategory: 'Clinical',
     full: 'Clinical',
     tooltip: 'Clinical Supplement',
+  },
+  BIOSPECIMEN_METADATA: {
+    abbr: 'Bio',
+    full: '',
+    hasTotalLink: false,
+    tooltip: 'Biospecimen Metadata',
+  },
+  BIOSPECIMEN_SUPPLEMENT: {
+    abbr: 'Bio Supplement',
+    dataCategory: 'Bio',
+    full: 'Biospecimen',
+    tooltip: 'Biospecimen Supplement',
   },
 };
 

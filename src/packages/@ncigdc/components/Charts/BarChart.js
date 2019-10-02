@@ -28,10 +28,13 @@ const BarChart = ({
   styles,
   theme,
   title,
-  xAxis = {},
+  xAxis = {}, // Must have titleForSVG and title if showXAxisLabels is false.
   xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
   yAxis = {},
 }) => {
+  if (!showXAxisLabels && (!xAxis.title || !xAxis.titleForSVG)) {
+    throw new Error('For GDC Developers, when showXAxisLabels is false, value of titleForSVG or title in xAxis should not be blank.');
+  }
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
 
@@ -167,6 +170,32 @@ const BarChart = ({
       .on('mouseleave', () => {
         setTooltip();
       });
+  } else {
+    svg
+      .append('text')
+      .attr('class', 'displayOnly')
+      .attr('transform', 'rotate(0)')
+      .attr('y', height + 20)
+      .attr('x', width / 2 - margin.left)
+      .attr('dx', '1em')
+      .style('text-anchor', 'middle')
+      .style('fontSize', '1.2rem')
+      .style('fontWeight', '500')
+      .attr('fill', yAxisStyle.textFill)
+      .text(xAxis.title);
+
+    svg
+      .append('text')
+      .attr('class', 'svgDownload')
+      .attr('transform', 'rotate(0)')
+      .attr('y', height + 20)
+      .attr('x', width / 2 - margin.left)
+      .attr('dx', '1em')
+      .style('text-anchor', 'middle')
+      .style('fontSize', '1.2rem')
+      .style('fontWeight', '500')
+      .attr('fill', xAxisStyle.textFill)
+      .text(xAxis.titleForSVG);
   }
 
   const barGs = svg

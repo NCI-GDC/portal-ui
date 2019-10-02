@@ -40,8 +40,8 @@ import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import { 
   getMaxKeyNameLength,
-  makeDownloadSlugs,
-  makeDownloadSvgs,
+  getDownloadSlugs,
+  getDownloadSvgs,
   OVERALL_SURVIVAL_SLUG,
   PLOT_TYPES,
 } from './helpers';
@@ -138,8 +138,8 @@ const ClinicalAnalysisResult = ({
   survivalPlotLoading,
 }: IAnalysisResultProps) => {
   // TODO: get slugs & svgs
-  const downloadSlugs = makeDownloadSlugs(displayVariables);
-  const downloadSvgs = makeDownloadSvgs(displayVariables);
+  const downloadSlugs = getDownloadSlugs(displayVariables);
+  const downloadSvgs = getDownloadSvgs(displayVariables);
   console.log('downloadSvgs', downloadSvgs);
   console.log('downloadSlugs', downloadSlugs);
 

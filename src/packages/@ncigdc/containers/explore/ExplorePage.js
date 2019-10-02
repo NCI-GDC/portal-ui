@@ -21,6 +21,7 @@ import ExploreCasesAggregations from '@ncigdc/modern_components/ExploreCasesAggr
 import GeneAggregations from '@ncigdc/modern_components/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import ClinicalAggregations from '@ncigdc/containers/explore/ClinicalAggregations';
+// import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';

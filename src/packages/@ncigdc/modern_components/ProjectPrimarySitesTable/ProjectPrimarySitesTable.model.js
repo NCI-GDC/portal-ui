@@ -29,7 +29,7 @@ let DataCategoryColumns = withData(props => {
         },
         {
           field: 'cases.primary_site',
-          value: [props.primarySite],
+          value: [props.primarySite.toLowerCase()],
         },
       ]),
     };
@@ -106,7 +106,7 @@ let FilesByPrimarySite = withData(props => {
               },
               {
                 field: 'cases.primary_site',
-                value: [props.primarySite],
+                value: [props.primarySite.toLowerCase()],
               },
             ]),
           }}
@@ -139,7 +139,7 @@ let ExploreByPrimarySiteButton = props => {
               op: 'IN',
               content: {
                 field: 'cases.primary_site',
-                value: [props.primarySite],
+                value: [props.primarySite.toLowerCase()],
               },
             },
           ],
@@ -161,7 +161,7 @@ let CasesByPrimarySite = withData(props => {
       },
       {
         field: 'cases.primary_site',
-        value: [props.primarySite],
+        value: [props.primarySite.toLowerCase()],
       },
     ]),
   };

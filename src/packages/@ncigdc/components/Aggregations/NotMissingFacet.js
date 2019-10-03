@@ -10,7 +10,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import CountBubble from '@ncigdc/uikit/CountBubble';
 import styled from '@ncigdc/theme/styled';
 
-import { Container, BucketLink } from './';
+import { Container, BucketLink } from '.';
 
 type TProps = {
   field: string,
@@ -24,8 +24,12 @@ const BucketRow = styled(Row, {
   padding: '0.3rem 0',
 });
 
-const NotMissingFacet = (props: TProps) => {
-  const { collapsed, field, notMissingDocCount, style, title } = props
+const NotMissingFacet = ({
+  field,
+  notMissingDocCount,
+  style,
+  title,
+}: TProps) => {
   const dotField = field.replace(/__/g, '.');
   return (
     <LocationSubscriber>
@@ -35,55 +39,56 @@ const NotMissingFacet = (props: TProps) => {
             parseFilterParam((ctx.query || {}).filters, {}).content) ||
           [];
         return (
-          <Container style={style} className="test-not-missing-facet">
-            {!collapsed && (
-              <Column>
-                <BucketRow>
-                  <BucketLink
-                    merge="toggle"
-                    query={{
-                      offset: 0,
-                      filters: {
-                        op: 'and',
-                        content: [
-                          {
-                            op: 'not',
-                            content: { field: dotField, value: ['missing'] },
+          <Container className="test-not-missing-facet" style={style}>
+            <Column>
+              <BucketRow>
+                <BucketLink
+                  merge="toggle"
+                  query={{
+                    offset: 0,
+                    filters: {
+                      op: 'and',
+                      content: [
+                        {
+                          op: 'not',
+                          content: {
+                            field: dotField,
+                            value: ['missing'],
                           },
-                        ],
-                      },
-                    }}
+                        },
+                      ],
+                    },
+                  }}
                   >
-                    <input
-                      readOnly
-                      type="checkbox"
-                      style={{
-                        pointerEvents: 'none',
-                        marginRight: '5px',
-                        verticalAlign: 'middle',
-                      }}
-                      checked={currentFilters.some(
-                        ({ op, content: { field, value } }) =>
-                          op === 'not' &&
-                          field === dotField &&
-                          value.includes('missing'),
-                      )}
-                      id={`input-${title}-not-missing`}
-                      name={`input-${title}-not-missing`}
+                  <input
+                    checked={currentFilters.some(
+                      ({ content: { field, value }, op }) =>
+                        op === 'not' &&
+                        field === dotField &&
+                        value.includes('missing'),
+                    )}
+                    id={`input-${title}-not-missing`}
+                    name={`input-${title}-not-missing`}
+                    readOnly
+                    style={{
+                      pointerEvents: 'none',
+                      marginRight: '5px',
+                      verticalAlign: 'middle',
+                    }}
+                    type="checkbox"
                     />
-                    <label
-                      htmlFor={`input-${title}-not-missing`}
-                      style={{ verticalAlign: 'middle' }}
+                  <label
+                    htmlFor={`input-${title}-not-missing`}
+                    style={{ verticalAlign: 'middle' }}
                     >
-                      Not Missing
-                    </label>
-                  </BucketLink>
-                  <CountBubble>
-                    {notMissingDocCount.toLocaleString()}
-                  </CountBubble>
-                </BucketRow>
-              </Column>
-            )}
+                    Not Missing
+                  </label>
+                </BucketLink>
+                <CountBubble>
+                  {notMissingDocCount.toLocaleString()}
+                </CountBubble>
+              </BucketRow>
+            </Column>
           </Container>
         );
       }}

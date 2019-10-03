@@ -1,12 +1,16 @@
 import React from 'react';
 
 import { scaleOrdinal, schemeCategory20 } from 'd3';
+import { get } from 'lodash';
+
 import HistogramCard from '@ncigdc/components/Explore/SummaryPage/HistogramCard';
 import SampleTypeCard from '@ncigdc/components/Explore/SummaryPage/SampleTypeCard';
 import SummaryPageQuery from '@ncigdc/components/Explore/SummaryPage/SummaryPage.relay';
 import MasonryLayout from '@ncigdc/components/Layouts/MasonryLayout';
 import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
-import { get } from 'lodash';
+import CategoricalCompletenessCard from '@ncigdc/components/Explore/SummaryPage/CategoricalCompletenessCard';
+
+import PrimarySiteAndDiseaseType from '@ncigdc/modern_components/PrimarySiteAndDiseaseType';
 
 const Tooltip = (key, count) => (
   <span>
@@ -52,8 +56,9 @@ const SummaryPage = ({
       title: 'Experimental Strategies',
     },
     {
-      component: () => '',
+      component: PrimarySiteAndDiseaseType,
       data: [],
+      isCustomComponent: true,
       space: 1,
       title: 'Primary Sites & Disease Types',
     },
@@ -105,8 +110,11 @@ const SummaryPage = ({
       title: 'Gender',
     },
     {
-      component: () => '',
+      component: CategoricalCompletenessCard,
       data: [],
+      props: {
+        typeName: 'ExploreCases',
+      },
       space: 3,
       title: 'Categorical Completeness',
     },
@@ -118,6 +126,7 @@ const SummaryPage = ({
           CardWrapper({
             Component: element.component,
             data: element.data,
+            isCustomComponent: element.isCustomComponent,
             subProps: element.props,
             title: element.title,
           })

@@ -38,12 +38,12 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import DeprecatedSetResult from './DeprecatedSetResult';
-import { 
-  getMaxKeyNameLength,
+import {
   getDownloadSlugs,
+  getHistogramDownload,
+  getSurvivalDownload,
   OVERALL_SURVIVAL_SLUG,
   PLOT_TYPES,
-  getSurvivalDownload,
 } from './helpers';
 import './print.css';
 import './survivalPlot.css';
@@ -229,15 +229,26 @@ const ClinicalAnalysisResult = ({
                 ...visualizingButton,
                 height: '100%',
               }}
-              svg={Object.keys(displayVariables).reduce((acc, dVar) => {
-                const fieldName = dVar.split('.')[1];
-                const chartType = displayVariables[dVar].active_chart;
-                const survivalSlug = `${fieldName}-survival-plot`;
+              svg={Object.keys(displayVariables).sort()
+                .reduce((acc, dVar, i) => {
+                  const fieldName = dVar.split('.')[1];
+                  const chartType = displayVariables[dVar].active_chart;
+                  const slug = downloadSlugs[i+1]; // offset by 1, because the slug for overall survival is at 0 index
+                  console.log('slug', slug);
 
-                return chartType === 'survival'
-                  ? acc.concat(() => wrapSvg(getSurvivalDownload(survivalSlug)))
-                  : acc;
-              }, [() => wrapSvg(getSurvivalDownload(OVERALL_SURVIVAL_SLUG))])}
+                  // need to repeat `() => wrapSvg(...)` or survival legend
+                  // will not get picked up by wrapSvg
+
+                  return chartType === 'box'
+                    ? []
+                    // : chartType === 'histogram'
+                    //   ? acc.concat(() => wrapSvg(getHistogramDownload(slug)))
+                      : chartType === 'survival'
+                        ? acc.concat(() => wrapSvg(getSurvivalDownload(slug)))
+                        : [];
+                }, 
+                [() => wrapSvg(getSurvivalDownload(OVERALL_SURVIVAL_SLUG))]
+              )}
               tooltipHTML="Download all images"
               />
           </Row>

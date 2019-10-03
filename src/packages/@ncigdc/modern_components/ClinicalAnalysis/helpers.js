@@ -50,17 +50,20 @@ export const getSurvivalDownload = slug => {
   },
 })};
 
-export const getHistogramDownload = slug => {
-  // const maxKeyNameLength = getMaxKeyNameLength(bins);
-  const maxKeyNameLength = 100;
-  const human = humanify(slug);
-  console.log('humanify', human);
-  // need to get bottom/right buffer...
+export const getHistogramDownload = (fieldName, slug) => {
+  const selector = `#${fieldName}-chart-container .test-bar-chart svg`;
+  const labelElements = [...document.querySelectorAll(`${selector} .svgDownload .tick text`)];
+  const labels = labelElements.map(el => el.textContent);
+  const maxKeyNameLength = getMaxKeyNameLength(labels);
+  // const maxKeyNameLength = 100;
+  // const human = humanify(s
+  console.log('labels', labels);
+  console.log('maxKeyNameLength', maxKeyNameLength)
   return ({
     bottomBuffer: maxKeyNameLength * 3,
     rightBuffer: maxKeyNameLength * 2,
-    selector: `#${slug}-chart-container .test-bar-chart svg`,
-    title: humanify(slug),
+    selector,
+    title: humanify({term: fieldName}),
   });
 };
 
@@ -73,8 +76,8 @@ export const getDownloadSlugs = displayVariables =>
       return chartType === 'box'
         ? []
         // ? [`${fieldName}-qq-plot`, `${fieldName}-box-plot`]
-        // : chartType === 'histogram'
-        //   ? `${fieldName}-bar-chart`
+        : chartType === 'histogram'
+          ? `${fieldName}-bar-chart`
           : chartType === 'survival'
             ? `${fieldName}-survival-plot`
             : [];

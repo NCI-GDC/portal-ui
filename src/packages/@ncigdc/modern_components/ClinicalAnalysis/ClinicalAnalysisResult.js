@@ -139,6 +139,8 @@ const ClinicalAnalysisResult = ({
 }: IAnalysisResultProps) => {
   const downloadSlugs = getDownloadSlugs(displayVariables);
 
+  const getHistogram = getHistogramDownload('gender');
+
   return hits.total === 0
     ? (
       <DeprecatedSetResult
@@ -241,8 +243,8 @@ const ClinicalAnalysisResult = ({
 
                   return chartType === 'box'
                     ? []
-                    // : chartType === 'histogram'
-                    //   ? acc.concat(() => wrapSvg(getHistogramDownload(slug)))
+                    : chartType === 'histogram'
+                      ? acc.concat(() => wrapSvg(getHistogramDownload(fieldName, slug)))
                       : chartType === 'survival'
                         ? acc.concat(() => wrapSvg(getSurvivalDownload(slug)))
                         : [];

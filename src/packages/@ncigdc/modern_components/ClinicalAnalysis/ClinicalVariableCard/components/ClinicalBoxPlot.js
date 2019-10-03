@@ -93,11 +93,11 @@ const ClinicalBoxPlot = ({
           svg={[
             () => wrapSvg({
               className: 'qq-plot',
-              selector: `#${downloadChartName}-qqplot-container .qq-plot svg`,
+              selector: `#${downloadChartName}-qq-plot-container .qq-plot svg`,
               title: `${humanify({ term: fieldName })} QQ Plot`,
             }),
             () => wrapSvg({
-              className: `${type.toLowerCase()}-boxplot`,
+              className: `${type.toLowerCase()}-box-plot`,
               selector: `#${downloadChartName}-box-plot-container figure svg`,
               title: `${humanify({ term: fieldName })} Box Plot`,
             }),

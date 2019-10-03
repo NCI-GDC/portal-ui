@@ -39,6 +39,7 @@ import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import {
+  getBoxQQDownload,
   getDownloadSlugs,
   getHistogramDownload,
   getSurvivalDownload,
@@ -138,9 +139,6 @@ const ClinicalAnalysisResult = ({
   survivalPlotLoading,
 }: IAnalysisResultProps) => {
   const downloadSlugs = getDownloadSlugs(displayVariables);
-
-  const getHistogram = getHistogramDownload('gender');
-
   return hits.total === 0
     ? (
       <DeprecatedSetResult
@@ -237,16 +235,15 @@ const ClinicalAnalysisResult = ({
                   const chartType = displayVariables[dVar].active_chart;
                   const slug = downloadSlugs[i+1]; // offset by 1, because the slug for overall survival is at 0 index
 
-                  // need to repeat `() => wrapSvg(...)` or survival legend
-                  // will not get picked up by wrapSvg
-
-                  return chartType === 'box'
-                    ? []
-                    : chartType === 'histogram'
-                      ? acc.concat(() => wrapSvg(getHistogramDownload(fieldName, slug)))
-                      : chartType === 'survival'
-                        ? acc.concat(() => wrapSvg(getSurvivalDownload(slug)))
-                        : [];
+                  return ['box', 'histogram', 'survival'].includes(chartType)
+                    ? acc.concat(() => wrapSvg(
+                      chartType === 'box'
+                        ? getBoxQQDownload(fieldName, slug)
+                        : chartType === 'histogram'
+                          ? getHistogramDownload(fieldName, slug)
+                          : getSurvivalDownload(slug)
+                      ))
+                    : acc;
                 }, 
                 [() => wrapSvg(getSurvivalDownload(OVERALL_SURVIVAL_SLUG))]
               )}

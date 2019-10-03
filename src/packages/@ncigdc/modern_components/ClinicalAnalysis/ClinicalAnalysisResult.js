@@ -236,7 +236,6 @@ const ClinicalAnalysisResult = ({
                   const fieldName = dVar.split('.')[1];
                   const chartType = displayVariables[dVar].active_chart;
                   const slug = downloadSlugs[i+1]; // offset by 1, because the slug for overall survival is at 0 index
-                  console.log('slug', slug);
 
                   // need to repeat `() => wrapSvg(...)` or survival legend
                   // will not get picked up by wrapSvg

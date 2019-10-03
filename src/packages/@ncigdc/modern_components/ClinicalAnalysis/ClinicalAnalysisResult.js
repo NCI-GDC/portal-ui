@@ -40,7 +40,8 @@ import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import {
   getBoxQQDownload,
-  getDownloadSlugs,
+  getDownloadSlug,
+  getDownloadSlugArray,
   getHistogramDownload,
   getSurvivalDownload,
   OVERALL_SURVIVAL_SLUG,
@@ -138,11 +139,13 @@ const ClinicalAnalysisResult = ({
   setId,
   survivalPlotLoading,
 }: IAnalysisResultProps) => {
-  const downloadSlugs = getDownloadSlugs(displayVariables);
-
-  console.log('downloadSlugs', downloadSlugs);
-
-  // console.log('boxDl', boxDl);
+  const downloadSvgInfo = Object.keys(displayVariables).sort()
+    .map(dVar => {
+      const fieldName = dVar.split('.')[1];
+      const chartType = displayVariables[dVar].active_chart;
+      const slug = getDownloadSlug(chartType, fieldName);
+      return { chartType, fieldName, slug };
+    });
   return hits.total === 0
     ? (
       <DeprecatedSetResult
@@ -228,35 +231,30 @@ const ClinicalAnalysisResult = ({
             </Button>
             <DownloadVisualizationButton
               noText
-              slug={downloadSlugs}
+              slug={getDownloadSlugArray(downloadSvgInfo)}
               buttonStyle={{
                 ...visualizingButton,
                 height: '100%',
               }}
-              svg={Object.keys(displayVariables).sort()
-                .reduce((acc, dVar, i) => {
-                  const fieldName = dVar.split('.')[1];
-                  const chartType = displayVariables[dVar].active_chart;
-                  const slug = downloadSlugs[i+1]; // offset by 1, because the slug for overall survival is at 0 index
-
-                  return [
-                    ...acc,
-                    ...['box', 'histogram', 'survival'].includes(chartType) &&
-                      [() => wrapSvg(
-                        chartType === 'box'
-                          ? getBoxQQDownload(fieldName, 'Box')
-                          : chartType === 'histogram'
-                            ? getHistogramDownload(fieldName, slug)
-                            : getSurvivalDownload(slug)
-                      )],
-                    ...chartType === 'box' &&
-                      [() => wrapSvg(
-                        getBoxQQDownload(fieldName, 'QQ')
-                      )],
-                  ];
-                }, 
+              svg={downloadSvgInfo
+                .reduce((acc, { chartType, fieldName, slug }) => ([
+                  ...acc,
+                  ...['box', 'histogram', 'survival'].includes(chartType) &&
+                    [() => wrapSvg(
+                      chartType === 'box'
+                        ? getBoxQQDownload(fieldName, 'Box')
+                        : chartType === 'histogram'
+                          ? getHistogramDownload(fieldName)
+                          : getSurvivalDownload(slug)
+                    )],
+                  ...chartType === 'box' &&
+                    [() => wrapSvg(
+                      getBoxQQDownload(fieldName, 'QQ')
+                    )],
+                ]), 
                 [() => wrapSvg(getSurvivalDownload(OVERALL_SURVIVAL_SLUG))]
-              )}
+                )
+              }
               tooltipHTML="Download all images"
               />
           </Row>

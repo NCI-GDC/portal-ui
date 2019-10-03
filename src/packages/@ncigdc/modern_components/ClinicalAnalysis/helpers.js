@@ -19,39 +19,37 @@ export const PLOT_TYPES = {
 // helpers for downloading SVGs/PNGs
 
 export const OVERALL_SURVIVAL_SLUG = 'clinical-overall-survival-plot';
+
 const getMaxKeyNameLength = bins => (
   maxBy(bins, item => item.length) || ''
 ).length;
 
-export const getDownloadSlugs = displayVariables =>
-  Object.keys(displayVariables).sort()
-    .reduce((acc, dVar) => {
-      const fieldName = dVar.split('.')[1];
-      const chartType = displayVariables[dVar].active_chart;
-      return [
-        ...acc, 
-        ...['box', 'histogram', 'survival'].includes(chartType) &&
-          [
-            chartType === 'box'
-              ? null
-              : chartType === 'histogram'
-                ? `${fieldName}-bar-chart`
-                : `${fieldName}-survival-plot`
-          ]
-      ];
-    },
-    [OVERALL_SURVIVAL_SLUG]);
+export const getDownloadSlug = (chartType, fieldName) => 
+  chartType === 'box'
+    ? [`${fieldName}-box-plot`, `${fieldName}-qq-plot`]
+    : chartType === 'histogram'
+      ? `${fieldName}-bar-chart`
+      : chartType === 'survival'
+        ? `${fieldName}-survival-plot`
+        : [];
+
+export const getDownloadSlugArray = obj => obj
+  .reduce((acc, { slug }) => 
+    acc.concat(slug),
+    [OVERALL_SURVIVAL_SLUG]
+  );
 
 export const getBoxQQDownload = (fieldName, type) => {
+  console.log('getBoxQQDownload', fieldName, type);
   return ({
-  selector: `#${fieldName}-${type.toLowerCase()}-plot-container ${
-    type === 'Box' ? 'figure' : '.qq-plot'
-  } svg`,
-  slug: `${fieldName}-${type.toLowerCase()}-plot`,
-  title: `${humanify({ term: fieldName })} ${type} Plot`,
-})};
+    selector: `#${fieldName}-${type.toLowerCase()}-plot-container ${
+      type === 'Box' ? 'figure' : '.qq-plot'
+    } svg`,
+    title: `${humanify({ term: fieldName })} ${type} Plot`,
+  })
+};
 
-export const getHistogramDownload = (fieldName, slug) => {
+export const getHistogramDownload = fieldName => {
   const selector = `#${fieldName}-chart-container .test-bar-chart svg`;
   const labelElements = [...document.querySelectorAll(`${selector} .svgDownload .tick text`)];
   const labels = labelElements.map(el => el.textContent);
@@ -60,7 +58,6 @@ export const getHistogramDownload = (fieldName, slug) => {
     bottomBuffer: maxKeyNameLength * 3,
     rightBuffer: maxKeyNameLength * 2,
     selector,
-    slug,
     title: humanify({term: fieldName}),
   });
 };

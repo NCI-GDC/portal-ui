@@ -45,14 +45,15 @@ export const getSurvivalDownload = slug => {
   },
 })};
 
+
 export const getDownloadSlugs = displayVariables => Object.keys(displayVariables)
 .map(dVar => {
   const fieldName = dVar.split('.')[1];
   const chart = displayVariables[dVar].active_chart;
   // return [];
   return chart === 'histogram'
-    ? []
-    // ? `${fieldName}-bar-chart`
+    // ? []
+    ? `${fieldName}-bar-chart`
     : chart === 'survival'
       ? `${fieldName}-survival-plot`
       :[];

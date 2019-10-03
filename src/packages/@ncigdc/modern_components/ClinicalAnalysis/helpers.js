@@ -24,12 +24,12 @@ const getMaxKeyNameLength = bins => (
   maxBy(bins, item => item.length) || ''
 ).length;
 
-export const getDownloadSlug = (chartType, fieldName) => 
-  chartType === 'box'
+export const getDownloadSlug = (chart, fieldName) => 
+  chart === 'box'
     ? [`${fieldName}-box-plot`, `${fieldName}-qq-plot`]
-    : chartType === 'histogram'
+    : chart === 'histogram'
       ? `${fieldName}-bar-chart`
-      : chartType === 'survival'
+      : chart === 'survival'
         ? `${fieldName}-survival-plot`
         : [];
 
@@ -39,14 +39,17 @@ export const getDownloadSlugArray = obj => obj
     [OVERALL_SURVIVAL_SLUG]
   );
 
-export const getBoxQQDownload = (fieldName, type) => {
+export const getBoxQQDownload = (fieldName, plot, type) => {
   console.log('getBoxQQDownload', fieldName, type);
   return ({
-    selector: `#${fieldName}-${type.toLowerCase()}-plot-container ${
-      type === 'Box' ? 'figure' : '.qq-plot'
+    className: `${plot === 'Box' 
+      ? type.toLowerCase() + '-' 
+      : ''}${plot.toLowerCase()}-plot`,
+    selector: `#${fieldName}-${plot.toLowerCase()}-plot-container ${
+      plot === 'Box' ? 'figure' : '.qq-plot'
     } svg`,
-    title: `${humanify({ term: fieldName })} ${type} Plot`,
-  })
+    title: `${humanify({ term: fieldName })} ${plot} Plot`,
+  });
 };
 
 export const getHistogramDownload = fieldName => {

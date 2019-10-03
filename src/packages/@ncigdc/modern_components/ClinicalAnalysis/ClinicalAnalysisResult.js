@@ -49,6 +49,8 @@ import {
 } from './helpers';
 import './print.css';
 import './survivalPlot.css';
+import './boxplot.css';
+import './qq.css';
 
 import ControlPanel from './ControlPanel';
 import ContinuousAggregationQuery from './ContinuousAggregationQuery';
@@ -142,9 +144,9 @@ const ClinicalAnalysisResult = ({
   const downloadSvgInfo = Object.keys(displayVariables).sort()
     .map(dVar => {
       const fieldName = dVar.split('.')[1];
-      const chartType = displayVariables[dVar].active_chart;
-      const slug = getDownloadSlug(chartType, fieldName);
-      return { chartType, fieldName, slug };
+      const { active_chart: chart, type, } = displayVariables[dVar];
+      const slug = getDownloadSlug(chart, fieldName);
+      return { chart, fieldName, slug, type };
     });
   return hits.total === 0
     ? (
@@ -237,19 +239,19 @@ const ClinicalAnalysisResult = ({
                 height: '100%',
               }}
               svg={downloadSvgInfo
-                .reduce((acc, { chartType, fieldName, slug }) => ([
+                .reduce((acc, { chart, fieldName, slug, type }) => ([
                   ...acc,
-                  ...['box', 'histogram', 'survival'].includes(chartType) &&
+                  ...['box', 'histogram', 'survival'].includes(chart) &&
                     [() => wrapSvg(
-                      chartType === 'box'
-                        ? getBoxQQDownload(fieldName, 'Box')
-                        : chartType === 'histogram'
+                      chart === 'box'
+                        ? getBoxQQDownload(fieldName, 'Box', type)
+                        : chart === 'histogram'
                           ? getHistogramDownload(fieldName)
                           : getSurvivalDownload(slug)
                     )],
-                  ...chartType === 'box' &&
+                  ...chart === 'box' &&
                     [() => wrapSvg(
-                      getBoxQQDownload(fieldName, 'QQ')
+                      getBoxQQDownload(fieldName, 'QQ', type)
                     )],
                 ]), 
                 [() => wrapSvg(getSurvivalDownload(OVERALL_SURVIVAL_SLUG))]

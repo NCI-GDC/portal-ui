@@ -142,6 +142,11 @@ const ClinicalAnalysisResult = ({
   survivalPlotLoading,
 }: IAnalysisResultProps) => {
   const downloadSvgInfo = Object.keys(displayVariables).sort()
+    .filter(dVar => {
+      const bins = displayVariables[dVar].bins;
+      return !(bins === undefined ||
+          Object.keys(bins).filter(key => key !== '_missing').length === 0);
+    })
     .map(dVar => {
       const fieldName = dVar.split('.')[1];
       const { active_chart: chart, type, } = displayVariables[dVar];

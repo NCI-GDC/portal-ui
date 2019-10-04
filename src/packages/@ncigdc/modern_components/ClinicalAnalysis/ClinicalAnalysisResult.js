@@ -321,7 +321,6 @@ const ClinicalAnalysisResult = ({
                     plotType="clinicalOverall"
                     slug={OVERALL_SURVIVAL_SLUG}
                     survivalPlotLoading={survivalPlotLoading}
-                    uniqueClass={OVERALL_SURVIVAL_SLUG}
                     />
                 </div>
               </Column>

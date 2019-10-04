@@ -42,6 +42,7 @@ import {
   getBoxQQDownload,
   getDownloadSlug,
   getDownloadSlugArray,
+  getDownloadSvgInfo,
   getHistogramDownload,
   getSurvivalDownload,
   OVERALL_SURVIVAL_SLUG,
@@ -141,18 +142,7 @@ const ClinicalAnalysisResult = ({
   setId,
   survivalPlotLoading,
 }: IAnalysisResultProps) => {
-  const downloadSvgInfo = Object.keys(displayVariables).sort()
-    .filter(dVar => {
-      const bins = displayVariables[dVar].bins;
-      return !(bins === undefined ||
-          Object.keys(bins).filter(key => key !== '_missing').length === 0);
-    })
-    .map(dVar => {
-      const fieldName = dVar.split('.')[1];
-      const { active_chart: chart, type, } = displayVariables[dVar];
-      const slug = getDownloadSlug(chart, fieldName);
-      return { chart, fieldName, slug, type };
-    });
+  const downloadSvgInfo = getDownloadSvgInfo(displayVariables);
   return hits.total === 0
     ? (
       <DeprecatedSetResult

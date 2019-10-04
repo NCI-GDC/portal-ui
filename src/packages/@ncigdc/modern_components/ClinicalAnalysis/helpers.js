@@ -39,18 +39,15 @@ export const getDownloadSlugArray = obj => obj
     [OVERALL_SURVIVAL_SLUG]
   );
 
-export const getBoxQQDownload = (fieldName, plot, type) => {
-  console.log('getBoxQQDownload', fieldName, type);
-  return ({
-    className: `${plot === 'Box' 
-      ? type.toLowerCase() + '-' 
-      : ''}${plot.toLowerCase()}-plot`,
-    selector: `#${fieldName}-${plot.toLowerCase()}-plot-container ${
-      plot === 'Box' ? 'figure' : '.qq-plot'
-    } svg`,
-    title: `${humanify({ term: fieldName })} ${plot} Plot`,
-  });
-};
+export const getBoxQQDownload = (fieldName, chart, type) => ({
+  className: `${chart === 'Box' 
+    ? type.toLowerCase() + '-' 
+    : ''}${chart.toLowerCase()}-plot`,
+  selector: `#${fieldName}-${chart.toLowerCase()}-plot-container ${
+    chart === 'Box' ? 'figure' : '.qq-plot'
+  } svg`,
+  title: `${humanify({ term: fieldName })} ${chart} Plot`,
+});
 
 export const getHistogramDownload = fieldName => {
   const selector = `#${fieldName}-chart-container .test-bar-chart svg`;
@@ -87,3 +84,17 @@ export const getSurvivalDownload = slug => {
     },
   });
 };
+
+export const getDownloadSvgInfo = displayVariables =>
+  Object.keys(displayVariables).sort()
+    .filter(dVar => {
+      const bins = displayVariables[dVar].bins;
+      return !(bins === undefined ||
+          Object.keys(bins).filter(key => key !== '_missing').length === 0);
+    })
+    .map(dVar => {
+      const fieldName = dVar.split('.')[1];
+      const { active_chart: chart, type, } = displayVariables[dVar];
+      const slug = getDownloadSlug(chart, fieldName);
+      return { chart, fieldName, slug, type };
+    });

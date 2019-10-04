@@ -111,6 +111,16 @@ const DoubleRingChart = ({
     .data(dataWithPie)
     .enter()
     .append('g');
+    console.log(diameter);
+
+  svg
+    .append('text')
+    .attr('transform', 'rotate(0)')
+    .attr('y', 0)
+    .attr('x', 0)
+    .style('text-anchor', 'middle')
+    .style('fontWeight', '500')
+    .text('boop');
 
   const fill = g
     .selectAll('path')

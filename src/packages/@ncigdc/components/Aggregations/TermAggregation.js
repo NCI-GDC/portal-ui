@@ -68,9 +68,16 @@ const TermAggregation = (props: TProps) => {
     <LocationSubscriber>
       {(ctx: { pathname: string, query: IRawQuery }) => {
         const currentFilters =
-          (ctx.query &&
+          ((ctx.query &&
             parseFilterParam((ctx.query || {}).filters, {}).content) ||
-          [];
+          [])
+          .map(filter => ({
+            ...filter,
+            content: {
+              ...filter.content,
+              value: filter.content.value.map(val => val.toLowerCase()),
+            },
+          }));
         return (
           <Container className="test-term-aggregation" style={{...props.style, paddingBottom: props.collapsed ? 0 : 10}}>
             {!props.collapsed && props.showingValueSearch && (
@@ -136,7 +143,7 @@ const TermAggregation = (props: TProps) => {
                         >
                         <input
                           checked={inCurrentFilters({
-                            key: bucket.name,
+                            key: bucket.name.toLowerCase(),
                             dotField,
                             currentFilters,
                           })}

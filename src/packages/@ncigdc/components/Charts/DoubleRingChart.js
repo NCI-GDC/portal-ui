@@ -10,6 +10,8 @@ import withSize from '@ncigdc/utils/withSize';
 
 const MAX_DIAMETER = 260;
 
+const downloadMessage = 'Please download the TSV to view data for this chart.';
+
 const DoubleRingChart = ({
   data = [],
   margin = 50,
@@ -33,6 +35,7 @@ const DoubleRingChart = ({
     .append('svg')
     .attr('width', diameter)
     .attr('height', diameter)
+    .attr('border', 1)
     .append('g')
     .attr('transform', `translate(${radius}, ${radius})`);
 
@@ -111,16 +114,17 @@ const DoubleRingChart = ({
     .data(dataWithPie)
     .enter()
     .append('g');
-    console.log(diameter);
 
   svg
     .append('text')
+    .attr('class', 'svgDownload')
     .attr('transform', 'rotate(0)')
-    .attr('y', 0)
+    .attr('y', radius + 20)
     .attr('x', 0)
+    .attr('width', width)
     .style('text-anchor', 'middle')
-    .style('fontWeight', '500')
-    .text('boop');
+    .style('fontWeight', '400')
+    .text(downloadMessage);
 
   const fill = g
     .selectAll('path')

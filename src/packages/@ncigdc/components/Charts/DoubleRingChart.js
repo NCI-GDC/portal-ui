@@ -35,7 +35,6 @@ const DoubleRingChart = ({
     .append('svg')
     .attr('width', diameter)
     .attr('height', diameter)
-    .attr('border', 1)
     .append('g')
     .attr('transform', `translate(${radius}, ${radius})`);
 

@@ -84,7 +84,7 @@ const SummaryPage = ({
       data: [],
       hideDownloadButton: true,
       space: 1,
-      title: 'Survival Analysis',
+      title: 'Overall Survival',
     },
     {
       component: () => '',

@@ -10,7 +10,7 @@ import withSize from '@ncigdc/utils/withSize';
 
 const MAX_DIAMETER = 260;
 
-const downloadMessage = 'Please download the TSV to view data for this chart.';
+const downloadMessage = 'To view data for this chart, download the separate TSV file';
 
 const DoubleRingChart = ({
   data = [],

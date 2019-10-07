@@ -20,6 +20,8 @@ const getNestedValue = (item, path) => {
   return getNestedValue(nextItem, path);
 };
 
+const downloadMessage = 'Please download the TSV to view data for this chart.';
+
 const PieChart = ({
   data,
   diameter = 160, // if the pie chart is responsive, this is the MAX diameter
@@ -41,7 +43,8 @@ const PieChart = ({
   const pieDiameter = isResponsive && responsiveDiameter < diameter
     ? responsiveDiameter
     : diameter;
-  const outerRadius = pieDiameter / 2 + 10;
+  const radius = pieDiameter / 2;
+  const outerRadius = radius + 10;
   const innerRadius = enableInnerRadius ? outerRadius / 2 : 0;
 
   const node = ReactFauxDOM.createElement('div');
@@ -63,7 +66,14 @@ const PieChart = ({
     .attr('width', pieDiameter)
     .attr('height', pieDiameter)
     .append('g')
-    .attr('transform', `translate(${pieDiameter / 2}, ${pieDiameter / 2})`);
+    .attr('transform', `translate(${radius}, ${radius})`);
+
+  svg
+    .append('text')
+    .attr('class', 'svgDownload')
+    .attr('y', radius + 20)
+    .style('text-anchor', 'middle')
+    .text(downloadMessage);
 
   const g = svg
     .selectAll('.arc')

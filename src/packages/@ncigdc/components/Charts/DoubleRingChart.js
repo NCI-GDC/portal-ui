@@ -118,12 +118,8 @@ const DoubleRingChart = ({
   svg
     .append('text')
     .attr('class', 'svgDownload')
-    .attr('transform', 'rotate(0)')
     .attr('y', radius + 20)
-    .attr('x', 0)
-    .attr('width', width)
     .style('text-anchor', 'middle')
-    .style('fontWeight', '400')
     .text(downloadMessage);
 
   const fill = g

@@ -22,7 +22,6 @@ import { internalHighlight } from '@ncigdc/uikit/Highlight';
 import { Container, BucketLink } from '.';
 
 import { IBucket } from './types';
-import { parse } from 'querystring';
 
 type TProps = {
   buckets: [IBucket],

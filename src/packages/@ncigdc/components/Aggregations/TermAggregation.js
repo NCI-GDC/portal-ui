@@ -22,6 +22,7 @@ import { internalHighlight } from '@ncigdc/uikit/Highlight';
 import { Container, BucketLink } from '.';
 
 import { IBucket } from './types';
+import { parse } from 'querystring';
 
 type TProps = {
   buckets: [IBucket],
@@ -75,9 +76,12 @@ const TermAggregation = (props: TProps) => {
             ...filter,
             content: {
               ...filter.content,
-              value: filter.content.value.map(val => val.toLowerCase()),
-            },
-          }));
+              value: typeof filter.content.value === 'string'
+                ? filter.content.value.toLowerCase()
+                : filter.content.value.map(val => val.toLowerCase())
+              },
+            }
+          ));
         return (
           <Container className="test-term-aggregation" style={{...props.style, paddingBottom: props.collapsed ? 0 : 10}}>
             {!props.collapsed && props.showingValueSearch && (

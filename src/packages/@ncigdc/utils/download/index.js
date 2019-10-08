@@ -70,7 +70,6 @@ const progressChecker = (
 
   const finished = () => {
     //console.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
-    console.log('finished function')
     timeoutPromise = null;
     window.store.dispatch(closeNotification());
     iFrame.parentNode.removeChild(iFrame);
@@ -127,30 +126,20 @@ const progressChecker = (
 
   const checker = () => {
     attempts++;
-    console.log('attempts', attempts);
-    console.log('iFrame', iFrame);
     if (iFrame.__frame__loaded) {
-      console.log('iFrame loaded', iFrame);
-      
       // The downloadToken cookie is removed before the server sends the response
       if (cookieStillThere()) {
         const error = handleError();
-        console.log('cookieStillThere cookieKey', cookieKey);
         Cookies.remove(cookieKey);
         finished();
         showErrorModal(error);
       } else {
         // A download should be now initiated.
-        console.log('cookie is not still there - FINISHED');
         finished();
       }
     } else if (cookieStillThere()) {
-      console.log('iframe NOT loaded, cookie still there');
-      console.log('altMessage', altMessage);
       if (altMessage) { 
-        console.log('altMessage');
         if (attempts === 5 || attempts === 2) {
-          console.log('5 or 2 attempts, dispatch simple message');
           window.store.dispatch(
             notify({
               action: 'add',
@@ -160,7 +149,6 @@ const progressChecker = (
             }),
           );
         } else if (attempts === 6) {
-          console.log('6 attempts');
           window.store.dispatch(
             notify({
               action: 'add',
@@ -171,7 +159,6 @@ const progressChecker = (
           );
         }
       } else {
-        console.log('no altMessage')
         window.store.dispatch(
           notify({
             action: 'add',
@@ -184,7 +171,6 @@ const progressChecker = (
 
       timeoutPromise = setTimeout(checker, waitTime);
     } else {
-      console.log('finished, no cookie');
       
       // In case the download is initiated without triggering the iFrame to reload
       finished();
@@ -192,7 +178,6 @@ const progressChecker = (
   };
 
   timeoutPromise = setTimeout(checker, waitTime);
-  console.log('timeoutPromise', timeoutPromise)
 };
 
 const cookielessChecker = (iFrame, inProgress, done) => {

@@ -112,8 +112,8 @@ export default compose(
             'demographic',
             'diagnoses',
             'diagnoses.treatments',
-            'family_histories',
             'exposures',
+            'family_histories',
             'follow_ups',
             'follow_ups.molecular_tests',
           ]}

@@ -112,10 +112,8 @@ export default compose(
             'demographic',
             'diagnoses',
             'diagnoses.treatments',
-            'exposures',
             'family_histories',
-            'follow_ups',
-            'follow_ups.molecular_tests',
+            'exposures',
           ]}
           filename={`clinical.project-${projectId}.${timestamp()}.json`}
         />

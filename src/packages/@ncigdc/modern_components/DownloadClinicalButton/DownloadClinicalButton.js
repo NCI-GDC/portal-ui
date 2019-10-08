@@ -1,7 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import { compose, setDisplayName, withState } from 'recompose';
+import { compose, withState } from 'recompose';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import { makeFilter } from '@ncigdc/utils/filters';
 import Dropdown from '@ncigdc/uikit/Dropdown';
@@ -36,7 +36,6 @@ const styles = {
 };
 
 export default compose(
-  setDisplayName('DownloadClinicalButton'),
   withState('state', 'setState', {
     tsvDownloading: false,
     jsonDownloading: false,

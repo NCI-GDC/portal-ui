@@ -171,7 +171,6 @@ const progressChecker = (
 
       timeoutPromise = setTimeout(checker, waitTime);
     } else {
-      
       // In case the download is initiated without triggering the iFrame to reload
       finished();
     }

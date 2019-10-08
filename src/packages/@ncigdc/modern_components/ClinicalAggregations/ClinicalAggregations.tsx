@@ -200,8 +200,10 @@ const enhance = compose<IClinicalProps, IClinicalProps>(
       'cases.diagnoses',
       'cases.diagnoses.treatments',
       'cases.exposures',
-      'cases.follow_up',
-      'cases.molecular_tests',
+      // 'cases.follow_up',
+      // 'cases.molecular_tests',
+      'cases.follow_ups',
+      'cases.follow_ups.molecular_tests',
     ],
   }),
   withPropsOnChange(

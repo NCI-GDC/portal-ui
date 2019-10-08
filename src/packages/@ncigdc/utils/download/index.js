@@ -138,7 +138,7 @@ const progressChecker = (
         finished();
       }
     } else if (cookieStillThere()) {
-      if (altMessage) { 
+      if (altMessage) {
         if (attempts === 5 || attempts === 2) {
           window.store.dispatch(
             notify({

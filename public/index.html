@@ -33,16 +33,22 @@
     <script>
       NR = '%NODE_ENV%' === 'production';
     </script>
-    <script>
-      window.onload = function() {
-        document.getElementById('ie-warning').style.display = "table";
+    <style type="text/css">
+      #ie {
+        display: none;
       }
-    </script>
+      @media all and (-ms-high-contrast:none) {
+        #ie { display: block; } /* IE10 */ 
+        *::-ms-backdrop, #ie { display: table; } /* IE11 */
+      }  
+    </style>
+    <!-- IE9 and below -->
+    <!--[if IE]><style type="text/css">#ie { display: block; }</style><![endif]-->
   </head>
 
   <body>
     <noscript> You need to enable JavaScript to run this app. </noscript>
-    <div id="ie-warning" style="display: none; height: 100%; width: 100%;">
+    <div id="ie" style="height: 100%; width: 100%;">
       <p style="display: table-cell; text-align: center; vertical-align: middle;">
         We detected you are using Internet Explorer. This site is best viewed with Chrome or Firefox.
       </p>

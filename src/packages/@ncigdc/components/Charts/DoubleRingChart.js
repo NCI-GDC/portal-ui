@@ -10,6 +10,8 @@ import withSize from '@ncigdc/utils/withSize';
 
 const MAX_DIAMETER = 260;
 
+const downloadMessage = 'To view data for this chart, download the separate TSV file';
+
 const DoubleRingChart = ({
   data = [],
   margin = 50,
@@ -111,6 +113,13 @@ const DoubleRingChart = ({
     .data(dataWithPie)
     .enter()
     .append('g');
+
+  svg
+    .append('text')
+    .attr('class', 'svgDownload')
+    .attr('y', radius + 20)
+    .style('text-anchor', 'middle')
+    .text(downloadMessage);
 
   const fill = g
     .selectAll('path')

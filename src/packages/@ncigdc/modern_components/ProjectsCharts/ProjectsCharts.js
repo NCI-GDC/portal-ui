@@ -235,16 +235,9 @@ export default compose(
         },
         tooltip: (
           <span>
-            <b>
-              {project.project_id}
-:
-              {project.name}
-            </b>
+            <b>{`${project.project_id}: ${project.name}`}</b>
             <br />
-            {count.toLocaleString()}
-            {' '}
-case
-            {count > 1 ? 's' : ''}
+            {`${count.toLocaleString()} case${count > 1 ? 's' : ''}`}
           </span>
         ),
       };
@@ -519,11 +512,10 @@ missense_variant, frameshift_variant, start_lost,
             </div>,
             <PieChart
               data={pieChartData}
-              height={150}
+              diameter={150}
               key="pie-chart"
               marginTop={25}
               path="count"
-              width={150}
               />,
           ]}
         </Column>

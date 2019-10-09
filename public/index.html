@@ -36,6 +36,13 @@
     <style type="text/css">
       #ie {
         display: none;
+        height: 100%;
+        width: 100%;
+      }
+      #ie p {
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
       }
       @media all and (-ms-high-contrast:none) {
         #ie { display: block; } /* IE10 */ 
@@ -48,12 +55,12 @@
 
   <body>
     <noscript> You need to enable JavaScript to run this app. </noscript>
-    <div id="ie" style="height: 100%; width: 100%;">
-      <p style="display: table-cell; text-align: center; vertical-align: middle;">
+    <div id="ie">
+      <p>
         We detected you are using Internet Explorer. This site is best viewed with Chrome or Firefox.
       </p>
     </div>
-    <!-- <div id="root"></div> -->
+    <div id="root"></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
@@ -65,19 +72,19 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <!-- legacy Angular stuff -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.14/angular.min.js"></script>
     <script src="/gdc-ng-plugins.js"></script>
     <script src="/gdc-gql.js"></script>
     <script src="/gdc-templates.js"></script>
     <script src="/gdc-config.js"></script>
-    <script src="/gdc-app-modified.js"></script> -->
+    <script src="/gdc-app-modified.js"></script>
     <!-- END legacy Angular stuff -->
 
-    <!-- <script
+    <script
       language="JavaScript"
       type="text/javascript"
       src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"
-    ></script> -->
+    ></script>
   </body>
 </html>

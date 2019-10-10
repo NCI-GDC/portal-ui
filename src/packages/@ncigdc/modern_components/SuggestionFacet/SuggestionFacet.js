@@ -6,10 +6,11 @@ import { get, trim } from 'lodash';
 import {
   compose,
   pure,
-  withState,
-  withHandlers,
   renameProp,
+  setDisplayName,
+  withHandlers,
   withPropsOnChange,
+  withState,
 } from 'recompose';
 
 import SearchIcon from 'react-icons/lib/fa/search';
@@ -78,6 +79,7 @@ const StyledDropdownLink = styled(Link, {
 });
 
 const SuggestionFacet = compose(
+  setDisplayName('SuggestionFacet'),
   withDropdown,
   withState('inputValue', 'setInputValue', ''),
   withState('historyResults', 'setHistoryResults', []),
@@ -214,6 +216,14 @@ const SuggestionFacet = compose(
                       id={fieldNoDoctype}
                       name={fieldNoDoctype}
                       onChange={e => {
+                        const value = e.target.value;
+                        setInputValue(value);
+                        setActive(!!value);
+                        if (!!value) {
+                          setFacetSearch(value);
+                        }
+                      }}
+                      onClick={e => {
                         const value = e.target.value;
                         setInputValue(value);
                         setActive(!!value);

@@ -208,6 +208,22 @@ const SuggestionFacet = compose(
                           );
                         }
                       }}
+                      onClick={e => {
+                        const { value } = e.target;
+                        setInputValue(value);
+                        setActive(!!value);
+                        if (value) {
+                          setIsLoading(true);
+                          setAutocomplete(
+                            value,
+                            readyState => _.some([
+                              readyState.ready,
+                              readyState.aborted,
+                              readyState.error,
+                            ]) && setIsLoading(false),
+                          );
+                        }
+                      }}
                       onKeyDown={selectableList.handleKeyEvent}
                       placeholder={placeholder}
                       style={{ borderRadius: '0 4px 4px 0' }}

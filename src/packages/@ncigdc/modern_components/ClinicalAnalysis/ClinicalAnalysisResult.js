@@ -12,15 +12,15 @@ import { connect } from 'react-redux';
 import {
   isEqual,
   map,
+  mapKeys,
+  maxBy,
   trim,
 } from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import {
-  PrintIcon,
-} from '@ncigdc/theme/icons';
+import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
@@ -38,12 +38,25 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import DeprecatedSetResult from './DeprecatedSetResult';
+import {
+  getBoxQQDownload,
+  getDownloadSlug,
+  getDownloadSlugArray,
+  getDownloadSvgInfo,
+  getHistogramDownload,
+  getSurvivalDownload,
+  OVERALL_SURVIVAL_SLUG,
+  PLOT_TYPES,
+} from './helpers';
 import './print.css';
 import './survivalPlot.css';
+import './boxplot.css';
+import './qq.css';
 
 import ControlPanel from './ControlPanel';
 import ContinuousAggregationQuery from './ContinuousAggregationQuery';
 import { CategoricalVariableCard } from './ClinicalVariableCard';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -52,15 +65,6 @@ interface IAnalysisResultProps {
   Icon: () => React.Component<any>;
   analysis: any;
 }
-
-const plotTypes = {
-  categorical: ['histogram', 'survival'],
-  continuous: [
-    'histogram',
-    'survival',
-    'box',
-  ],
-};
 
 const CopyAnalysisModal = compose(
   setDisplayName('EnhancedCopyAnalysisModal'),
@@ -138,6 +142,7 @@ const ClinicalAnalysisResult = ({
   setId,
   survivalDataLoading,
 }: IAnalysisResultProps) => {
+  const downloadSvgInfo = getDownloadSvgInfo(displayVariables);
   return hits.total === 0
     ? (
       <DeprecatedSetResult
@@ -227,20 +232,42 @@ const ClinicalAnalysisResult = ({
               >
               Copy Analysis
             </Button>
-            <Tooltip Component={<span>Print</span>}>
-              <Button
-                onClick={() => {
-                  window.print();
-                }}
-                style={{
-                  ...visualizingButton,
-                  height: '100%',
-                }}
-                >
-                <PrintIcon />
-                <Hidden>Print</Hidden>
-              </Button>
-            </Tooltip>
+            <DownloadVisualizationButton
+              buttonStyle={{
+                ...visualizingButton,
+                height: '100%',
+              }}
+              noText
+              slug={getDownloadSlugArray(downloadSvgInfo)}
+              svg={downloadSvgInfo
+                .reduce((acc, {
+                  chart, fieldName, slug, type,
+                }) => ([
+                  ...acc,
+                  ...[
+                    'box',
+                    'histogram',
+                    'survival',
+                  ].includes(chart) &&
+                    [
+                      () => wrapSvg(
+                      chart === 'box'
+                        ? getBoxQQDownload(fieldName, 'Box', type)
+                        : chart === 'histogram'
+                          ? getHistogramDownload(fieldName)
+                          : getSurvivalDownload(slug)
+                      ),
+                    ],
+                  ...chart === 'box' &&
+                    [
+                      () => wrapSvg(
+                        getBoxQQDownload(fieldName, 'QQ', type)
+                      ),
+                    ],
+                ]),
+                        [() => wrapSvg(getSurvivalDownload(OVERALL_SURVIVAL_SLUG))])}
+              tooltipHTML="Download all images"
+              />
           </Row>
         </Row>
         <Row>
@@ -307,6 +334,7 @@ const ClinicalAnalysisResult = ({
                     {...overallSurvivalData}
                     height={430}
                     plotType="clinicalOverall"
+                    slug={OVERALL_SURVIVAL_SLUG}
                     survivalDataLoading={survivalDataLoading}
                     uniqueClass="clinical-survival-plot"
                     />
@@ -337,7 +365,7 @@ const ClinicalAnalysisResult = ({
                       id={id}
                       key={varFieldName}
                       overallSurvivalData={overallSurvivalData}
-                      plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                      plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
                       setId={setId}
                       stats={parsedFacets[varFieldName].stats}
                       style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
@@ -357,7 +385,7 @@ const ClinicalAnalysisResult = ({
                       id={id}
                       key={varFieldName}
                       overallSurvivalData={overallSurvivalData}
-                      plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                      plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
                       setId={setId}
                       style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                       variable={varProperties}

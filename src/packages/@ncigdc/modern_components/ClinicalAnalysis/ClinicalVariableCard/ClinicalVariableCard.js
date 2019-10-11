@@ -237,6 +237,8 @@ const ClinicalVariableCard = ({
   const disabledCharts = plotType => isEmpty(tableData) &&
     plotType !== 'delete';
 
+  const downloadChartName = fieldName.split('.')[1];
+
   return (
     <Column
       className="clinical-analysis-card"
@@ -367,7 +369,7 @@ const ClinicalVariableCard = ({
                       onClick={(e) => {
                         e.preventDefault();
                       }}
-                      slug={`${fieldName}-bar-chart`}
+                      slug={`${downloadChartName}-bar-chart`}
                       style={{
                         float: 'right',
                         marginRight: 2,
@@ -387,6 +389,7 @@ const ClinicalVariableCard = ({
               {variable.active_chart === 'histogram' && (
                 <ClinicalHistogram
                   active_calculation={variable.active_calculation}
+                  downloadChartName={downloadChartName}
                   histogramData={histogramData}
                   histogramStyles={styles.histogram}
                   theme={theme}
@@ -396,6 +399,7 @@ const ClinicalVariableCard = ({
 
               {variable.active_chart === 'survival' && (
                 <ClinicalSurvivalPlot
+                  downloadChartName={downloadChartName}
                   plotType={selectedSurvivalBins.length === 0
                     ? 'clinicalOverall'
                     : 'categorical'}
@@ -411,6 +415,7 @@ const ClinicalVariableCard = ({
                   boxPlotValues={boxPlotValues}
                   cardFilters={cardFilters}
                   dataBuckets={dataBuckets}
+                  downloadChartName={downloadChartName}
                   fieldName={fieldName}
                   qqData={qqData}
                   setId={setId}

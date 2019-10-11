@@ -123,13 +123,14 @@ const SurvivalPlotWrapper = ({
     textColors[4],
   ],
   plotType,
-  buttonStyle,
+  slug = '',
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
   const { pValue } = overallStats;
+  const plotName = slug === '' ? uniqueClass : slug;
   return (
     <Loader
-      className={uniqueClass}
+      className={plotName}
       height={height}
       loading={survivalPlotLoading}
       >
@@ -147,10 +148,10 @@ const SurvivalPlotWrapper = ({
                 }))}
                 key="download"
                 noText
-                slug="survival-plot"
+                slug={plotName}
                 stylePrefix={`.${CLASS_NAME}`}
                 svg={() => wrapSvg({
-                  selector: `.${uniqueClass} .${CLASS_NAME} svg`,
+                  selector: `.${plotName} .${CLASS_NAME} svg`,
                   title: plotType === 'mutation' ? TITLE : '',
                   className: CLASS_NAME,
                   embed: {
@@ -158,7 +159,7 @@ const SurvivalPlotWrapper = ({
                       elements: legend
                         .map((l, i) => {
                           const legendItem = document.querySelector(
-                            `.${uniqueClass} .legend-${i}`
+                            `.${plotName} .legend-${i}`
                           ).cloneNode(true);
                           const legendTitle = legendItem.querySelector('span.print-only.inline');
                           if (legendTitle !== null) legendTitle.className = '';
@@ -167,7 +168,7 @@ const SurvivalPlotWrapper = ({
                         .concat(
                           pValue
                             ? document.querySelector(
-                              `.${uniqueClass} .p-value`
+                              `.${plotName} .p-value`
                             )
                             : null
                         ),
@@ -208,7 +209,7 @@ const SurvivalPlotWrapper = ({
               {legend &&
                 legend.map((l, i) => (
                   <div
-                    className={`legend-${i}`}
+                    className={`legend-item legend-${i}`}
                     key={l.key}
                     style={l.style || {}}
                     >

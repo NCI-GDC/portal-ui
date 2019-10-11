@@ -5,6 +5,7 @@ import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import '../../survivalPlot.css';
 
 const ClinicalSurvivalPlot = ({
+  downloadChartName,
   plotType,
   survivalData: { id, legend, rawData },
   survivalPlotLoading,
@@ -25,8 +26,8 @@ const ClinicalSurvivalPlot = ({
       legend={legend}
       plotType={plotType}
       rawData={rawData}
+      slug={`${downloadChartName}-survival-plot`}
       survivalPlotLoading={survivalPlotLoading}
-      uniqueClass="clinical-survival-plot"
       />
   </div>
 );

@@ -13,9 +13,6 @@ import QQPlotQuery from '@ncigdc/modern_components/QQPlot/QQPlotQuery';
 
 import { CHART_HEIGHT } from '../helpers';
 
-import '../../boxplot.css';
-import '../../qq.css';
-
 const QQ_PLOT_RATIO = '70%';
 const BOX_PLOT_RATIO = '30%';
 
@@ -23,6 +20,7 @@ const ClinicalBoxPlot = ({
   boxPlotValues,
   cardFilters,
   dataBuckets,
+  downloadChartName,
   fieldName,
   qqData,
   setId,
@@ -30,7 +28,7 @@ const ClinicalBoxPlot = ({
   setQQDataIsSet,
   theme,
   totalDocs,
-  type,
+  type = '',
   wrapperId,
 }) => (
   <Column
@@ -81,7 +79,10 @@ const ClinicalBoxPlot = ({
         <DownloadVisualizationButton
           data={qqData}
           noText
-          slug={[`qq-plot-${fieldName}`, `boxplot-${fieldName}`]}
+          slug={[
+            `${downloadChartName}-qq-plot`,
+            `${downloadChartName}-box-plot`,
+          ]}
           style={{
             float: 'right',
             marginRight: 2,
@@ -89,12 +90,12 @@ const ClinicalBoxPlot = ({
           svg={[
             () => wrapSvg({
               className: 'qq-plot',
-              selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
+              selector: `#${downloadChartName}-qq-plot-container .qq-plot svg`,
               title: `${humanify({ term: fieldName })} QQ Plot`,
             }),
             () => wrapSvg({
-              className: `${type.toLowerCase()}-boxplot`,
-              selector: `#${wrapperId}-boxplot-container figure svg`,
+              className: `${type.toLowerCase()}-box-plot`,
+              selector: `#${downloadChartName}-box-plot-container figure svg`,
               title: `${humanify({ term: fieldName })} Box Plot`,
             }),
           ]}
@@ -110,7 +111,7 @@ const ClinicalBoxPlot = ({
       }}
       >
       <Column
-        id={`${wrapperId}-boxplot-container`}
+        id={`${downloadChartName}-box-plot-container`}
         style={{
           height: CHART_HEIGHT + 10,
           maxHeight: CHART_HEIGHT + 10,
@@ -126,7 +127,7 @@ const ClinicalBoxPlot = ({
         </TooltipInjector>
       </Column>
       <Column
-        id={`${wrapperId}-qqplot-container`}
+        id={`${downloadChartName}-qq-plot-container`}
         style={{
           height: CHART_HEIGHT + 10,
           maxHeight: CHART_HEIGHT + 10,

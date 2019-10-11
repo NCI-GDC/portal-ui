@@ -124,7 +124,6 @@ const SurvivalPlotWrapper = ({
   ],
   plotType,
   slug = '',
-  buttonStyle,
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
   const { pValue } = overallStats;

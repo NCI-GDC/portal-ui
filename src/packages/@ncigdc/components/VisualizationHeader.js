@@ -35,13 +35,16 @@ const VisualizationHeader = ({
 
   return (
     <Row
-      style={{ ...style, margin: '0 1.2rem' }}
       className="test-visualization-header"
-    >
-      <Title
-        style={{ marginLeft: buttonsWidth + SPACING }}
-        className="test-visualization-title"
+      style={{
+        margin: '0 1.2rem',
+        ...style,
+      }}
       >
+      <Title
+        className="test-visualization-title"
+        style={{ marginLeft: buttonsWidth + SPACING }}
+        >
         {title}
       </Title>
       {!!buttons.length && <Row spacing={SPACING}>{buttons}</Row>}

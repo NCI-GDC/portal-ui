@@ -123,6 +123,7 @@ const SurvivalPlotWrapper = ({
     textColors[4],
   ],
   plotType,
+  buttonStyle,
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
   const { pValue } = overallStats;
@@ -192,6 +193,7 @@ const SurvivalPlotWrapper = ({
                 </Button>
               </Tooltip>,
             ]}
+            style={buttonStyle}
             title={plotType === 'mutation' ? TITLE : ''}
             />
           <div>

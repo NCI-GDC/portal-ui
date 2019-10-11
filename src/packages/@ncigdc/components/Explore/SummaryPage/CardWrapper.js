@@ -8,6 +8,7 @@ import { maxBy, pick } from 'lodash';
 const CardWrapper = ({
   Component,
   data,
+  hideDownloadButton,
   isCustomComponent = false,
   subProps,
   title,
@@ -45,29 +46,31 @@ const CardWrapper = ({
               }}
               >
               <h3>{title}</h3>
-              <DownloadVisualizationButton
-                data={downloadData}
-                key="download"
-                noText
-                onClick={(e) => {
-                  e.preventDefault();
-                }}
-                slug={`${title}-chart`}
-                style={{
-                  float: 'right',
-                  marginRight: 2,
-                }}
-                svg={() => wrapSvg({
-                  bottomBuffer: maxKeyNameLength * 3,
-                  rightBuffer: maxKeyNameLength * 2,
-                  selector: `.${className} svg`,
-                  title,
-                })}
-                tooltipHTML="Download image or data"
-                tsvData={downloadData}
-                />
+              {!hideDownloadButton && (
+                <DownloadVisualizationButton
+                  data={downloadData}
+                  key="download"
+                  noText
+                  onClick={(e) => {
+                    e.preventDefault();
+                  }}
+                  slug={`${title}-chart`}
+                  style={{
+                    float: 'right',
+                    marginRight: 2,
+                  }}
+                  svg={() => wrapSvg({
+                    bottomBuffer: maxKeyNameLength * 3,
+                    rightBuffer: maxKeyNameLength * 2,
+                    selector: `.${className} svg`,
+                    title,
+                  })}
+                  tooltipHTML="Download image or data"
+                  tsvData={downloadData}
+                  />
+              )}
             </Row>
-            <div 
+            <div
               className={className}
               style={{
                 display: 'flex',

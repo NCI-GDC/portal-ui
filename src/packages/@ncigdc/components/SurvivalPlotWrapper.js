@@ -86,6 +86,7 @@ const Container = ({
 );
 
 const SurvivalPlotWrapper = ({
+  buttonStyle = {},
   height = 0,
   legend = [],
   rawData: {
@@ -171,6 +172,7 @@ const SurvivalPlotWrapper = ({
               </Button>
             </Tooltip>,
           ]}
+            style={buttonStyle}
           title={plotType === 'mutation' ? TITLE : ''}
           />
 

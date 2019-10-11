@@ -11,6 +11,7 @@ import CardWrapper from '@ncigdc/components/Explore/SummaryPage/CardWrapper';
 import CategoricalCompletenessCard from '@ncigdc/components/Explore/SummaryPage/CategoricalCompletenessCard';
 
 import PrimarySiteAndDiseaseType from '@ncigdc/modern_components/PrimarySiteAndDiseaseType';
+import SurvivalAnalysisCard from '@ncigdc/components/Explore/SummaryPage/SurvivalAnalysisCard';
 
 const Tooltip = (key, count) => (
   <span>
@@ -74,10 +75,17 @@ const SummaryPage = ({
       title: 'Age at Diagnosis',
     },
     {
+      component: SurvivalAnalysisCard,
+      data: [],
+      hideDownloadButton: true,
+      space: 1,
+      title: 'Overall Survival',
+    },
+    {
       component: () => '',
       data: [],
-      space: 2,
-      title: 'Survival Analysis',
+      space: 1,
+      title: 'Treatment Type',
     },
     {
       component: HistogramCard,
@@ -126,6 +134,7 @@ const SummaryPage = ({
           CardWrapper({
             Component: element.component,
             data: element.data,
+            hideDownloadButton: element.hideDownloadButton,
             isCustomComponent: element.isCustomComponent,
             subProps: element.props,
             title: element.title,

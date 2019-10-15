@@ -33,10 +33,34 @@
     <script>
       NR = '%NODE_ENV%' === 'production';
     </script>
+    <style type="text/css">
+      #ie {
+        display: none;
+        height: 100%;
+        width: 100%;
+      }
+      #ie p {
+        display: table-cell;
+        font-size: 1.5rem;
+        text-align: center;
+        vertical-align: middle;
+      }
+      @media all and (-ms-high-contrast:none) {
+        #ie { display: block; } /* IE10 */ 
+        *::-ms-backdrop, #ie { display: table; } /* IE11 */
+      }  
+    </style>
+    <!-- IE9 and below -->
+    <!--[if IE]><style type="text/css">#ie { display: block; }</style><![endif]-->
   </head>
 
   <body>
     <noscript> You need to enable JavaScript to run this app. </noscript>
+    <div id="ie">
+      <p>
+        We detected you are using Internet Explorer.<br>This site is best viewed with Chrome, Edge, or Firefox.
+      </p>
+    </div>
     <div id="root"></div>
     <!--
       This HTML file is a template.

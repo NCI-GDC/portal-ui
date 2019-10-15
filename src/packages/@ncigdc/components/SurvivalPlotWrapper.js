@@ -86,6 +86,7 @@ const Container = ({
 );
 
 const SurvivalPlotWrapper = ({
+  buttonStyle = {},
   height = 0,
   legend = [],
   rawData: {

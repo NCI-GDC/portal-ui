@@ -433,7 +433,8 @@ export default compose(
           })
           : [];
 
-      const isUsingCustomSurvival = customBinMatches.length > 0;
+      const isUsingCustomSurvival = isSurvivalCustom ||
+        customBinMatches.length > 0;
 
       const survivalBins = (isUsingCustomSurvival
         ? filterSurvivalData(getContinuousBins({
@@ -489,7 +490,8 @@ export default compose(
         variable: {
           customSurvivalPlots: nextCustomSurvivalPlots,
           isSurvivalCustom: isUsingCustomSurvival,
-          showOverallSurvival: false,
+          showOverallSurvival: isUsingCustomSurvival &&
+            survivalBins.length === 0,
         },
       }));
 

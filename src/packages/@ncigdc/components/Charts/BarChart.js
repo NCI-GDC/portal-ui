@@ -162,6 +162,10 @@ const BarChart = ({
     .text(d => d)
     .attr('transform', 'rotate(45)');
 
+  hiddenXG.selectAll('path').style('stroke', xAxisStyle.stroke);
+    
+  hiddenXG.selectAll('line').style('stroke', xAxisStyle.stroke);
+
   // display x axis
   const xG = svg
     .append('g')

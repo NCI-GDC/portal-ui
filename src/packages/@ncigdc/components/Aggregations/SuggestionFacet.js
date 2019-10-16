@@ -192,8 +192,7 @@ const SuggestionFacet = compose(
                       }
                       id={fieldNoDoctype}
                       name={fieldNoDoctype}
-                      onChange={e => {
-                        const { value } = e.target;
+                      onChange={({ target: { value = '' }}) => {
                         setInputValue(value);
                         setActive(!!value);
                         if (value) {
@@ -208,8 +207,7 @@ const SuggestionFacet = compose(
                           );
                         }
                       }}
-                      onClick={e => {
-                        const { value } = e.target;
+                      onClick={({ target: { value = '' }}) => {
                         setInputValue(value);
                         setActive(!!value);
                         if (value) {

@@ -7,7 +7,7 @@ import {
   setDisplayName,
   withState,
 } from 'recompose';
-import _ from 'lodash';
+import { isEqual, isNumber, pick, sum, uniqueId } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { renderPlot } from '@oncojs/survivalplot';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
@@ -108,6 +108,7 @@ const Container = ({
 );
 
 const SurvivalPlotWrapper = ({
+  buttonStyle = {},
   height = 0,
   legend = [],
   rawData,
@@ -166,7 +167,7 @@ const SurvivalPlotWrapper = ({
                           return legendItem;
                         })
                         .concat(
-                          pValue
+                          isNumber(pValue)
                             ? document.querySelector(
                               `.${plotName} .p-value`
                             )
@@ -244,7 +245,7 @@ const SurvivalPlotWrapper = ({
               >
               <div className="p-value">
                 <div style={styles.pValue}>
-                  {_.isNumber(pValue) &&
+                  {isNumber(pValue) &&
                     `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
                 </div>
               </div>
@@ -331,7 +332,7 @@ function renderSurvivalPlot(props: TProps): void {
     });
     const performanceContext = {
       data_sets: results.length,
-      donors: _.sum(results.map(x => x.donors.length)),
+      donors: sum(results.map(x => x.donors.length)),
     };
     performanceTracker.end('survival:render', performanceContext);
   }
@@ -343,7 +344,7 @@ const enhance = compose(
   withRouter,
   withState('xDomain', 'setXDomain', undefined),
   withState('survivalContainer', 'setSurvivalContainer', null),
-  withState('uniqueClass', 'setUniqueClass', () => CLASS_NAME + _.uniqueId()),
+  withState('uniqueClass', 'setUniqueClass', () => CLASS_NAME + uniqueId()),
   withSize({ refreshRate: 16 }),
   lifecycle({
     shouldComponentUpdate(nextProps: TProps): void {
@@ -354,7 +355,7 @@ const enhance = compose(
         'survivalPlotLoading',
         'survivalContainer',
       ];
-      return !_.isEqual(_.pick(this.props, props), _.pick(nextProps, props));
+      return !isEqual(pick(this.props, props), pick(nextProps, props));
     },
 
     componentDidUpdate(): void {

@@ -75,13 +75,15 @@ const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
     <h2>BAM Slicing</h2>
     <h3>File name: {file.file_name}</h3>
     <label htmlFor="bed">
-      Please enter one or more slices' genome coordinates below in one of the
-      following formats:
+    Please enter one or more slices' genome coordinates below in one of the following formats:
     </label>
     <pre>
       chr7:140505783-140511649<br />
       {'chr1	150505782	150511648'}
     </pre>
+    <label htmlFor="bed" style={{marginBottom: 5}}>
+    Alternatively, enter "unmapped" to retrieve unmapped reads on this file.
+    </label>
     <textarea
       id="bed"
       style={{

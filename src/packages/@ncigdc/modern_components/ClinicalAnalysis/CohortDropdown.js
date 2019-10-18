@@ -1,8 +1,9 @@
 import React from 'react';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
-import _ from 'lodash';
+import {
+  first, keys, map, values,
+} from 'lodash';
 
-import { Column, Row } from '@ncigdc/uikit/Flex';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Button from '@ncigdc/uikit/Button';
@@ -11,20 +12,25 @@ import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 
 import { updateClinicalAnalysisSet } from '@ncigdc/dux/analysis';
 
-export default ({
-  sets,
+const CohortDropdown = ({
   currentAnalysis,
-  dispatch,
   disabled,
   disabledMessage,
+  dispatch,
+  sets,
 }) => {
-  const dropdownItems = _.map(sets.case, (name, setKey) => {
-    if (setKey !== _.keys(currentAnalysis.sets.case)[0]) {
-      return (
+  const dropdownItems = map(sets.case, (name, setKey) => {
+    if (setKey === keys(currentAnalysis.sets.case)[0]) {
+      return null;
+    }
+    return (
+      <Tooltip
+        Component={name.length > 20 ? name : null}
+        key={setKey}
+        >
         <DropdownItem
           aria-label={`Switch selected set to ${name}`}
           className="all-sets-item"
-          key={setKey}
           onClick={() => {
             dispatch(
               updateClinicalAnalysisSet({
@@ -33,50 +39,76 @@ export default ({
                 setName: name,
               })
             );
-          }}>
-          {name}
+          }}
+          >
+          <span
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+            >
+            {name}
+          </span>
         </DropdownItem>
-      );
-    }
+      </Tooltip>
+    );
   });
 
-  const setName = _.first(_.values(currentAnalysis.sets.case));
+  const setName = first(values(currentAnalysis.sets.case));
   return (
     <Dropdown
       button={(
         <Tooltip
           Component={
-            disabled ? disabledMessage : setName.length > 13 ? setName : null
-          }>
+            disabled ? disabledMessage : setName.length > 20 ? setName : null
+          }
+          >
           <Button
-            buttonContentStyle={{
-              width: '100%',
-              justifyContent: 'space-between',
-            }}
             className="cohort-dropdown"
             disabled={disabled}
-            rightIcon={<DownCaretIcon />}
             style={{
               ...visualizingButton,
-              padding: '0 4px 0 6px',
-              width: 145,
               justifyContent: 'flex-start',
-            }}>
-            {_.truncate(setName, {
-              length: 13,
-            })}
+              padding: '0 6px 0 4px',
+              width: 170,
+            }}
+            >
+            <span
+              style={{
+                display: 'inline-block',
+                overflow: 'hidden',
+                textAlign: 'left',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                width: 150,
+              }}
+              >
+              {setName}
+            </span>
+            <DownCaretIcon
+              style={{
+                position: 'absolute',
+                right: 2,
+              }}
+              />
           </Button>
         </Tooltip>
       )}
       dropdownStyle={{
-        left: 0,
         cursor: 'pointer',
+        left: 0,
+        maxHeight: '400px',
+        overflow: 'auto',
       }}
       isDisabled={disabled}
       style={{
         justifyContent: 'flex-start',
-      }}>
+      }}
+      >
       {dropdownItems}
     </Dropdown>
   );
 };
+
+export default CohortDropdown;

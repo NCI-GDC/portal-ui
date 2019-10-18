@@ -3,7 +3,9 @@
 import React from 'react';
 import _ from 'lodash';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
-import { compose, withState, withPropsOnChange, pure } from 'recompose';
+import {
+  compose, withState, withPropsOnChange, pure,
+} from 'recompose';
 
 import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
 import { IRawQuery } from '@ncigdc/utils/uri/types';
@@ -16,7 +18,8 @@ import styled from '@ncigdc/theme/styled';
 import Input from '@ncigdc/uikit/Form/Input';
 import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
 
-import { Container, BucketLink } from './';
+import { internalHighlight } from '@ncigdc/uikit/Highlight';
+import { Container, BucketLink } from '.';
 
 import { IBucket } from './types';
 
@@ -30,6 +33,9 @@ type TProps = {
   collapsed: boolean,
   setShowingMore: Function,
   showingMore: boolean,
+  maxShowing: number,
+  searchValue: string,
+  isMatchingSearchValue: boolean,
 };
 
 export const ToggleMoreLink = styled.div({
@@ -49,38 +55,55 @@ const BucketRow = styled(Row, {
   padding: '0.3rem 0',
 });
 
-const BottomRow = styled(Row, {
+export const BottomRow = styled(Row, {
   padding: '0.5rem',
 });
 
 let input;
 const TermAggregation = (props: TProps) => {
   const dotField = props.field.replace(/__/g, '.');
-  const { filteredBuckets } = props;
+  const { filteredBuckets, maxShowing, filter } = props;
 
   return (
     <LocationSubscriber>
       {(ctx: { pathname: string, query: IRawQuery }) => {
         const currentFilters =
-          (ctx.query &&
+          ((ctx.query &&
             parseFilterParam((ctx.query || {}).filters, {}).content) ||
-          [];
+          [])
+          .map(filter => ({
+            ...filter,
+            content: {
+              ...filter.content,
+              value: typeof filter.content.value === 'string'
+                ? filter.content.value.toLowerCase()
+                : filter.content.value.map(val => val.toLowerCase())
+              },
+            }
+          ));
         return (
-          <Container style={props.style} className="test-term-aggregation">
+          <Container className="test-term-aggregation" style={{...props.style, paddingBottom: props.collapsed ? 0 : 10}}>
             {!props.collapsed && props.showingValueSearch && (
               <Row>
                 <Input
+                  aria-label="Search..."
+                  autoFocus
                   getNode={node => {
                     input = node;
                   }}
-                  style={{ borderRadius: '4px', marginBottom: '6px' }}
                   onChange={() => props.setFilter(input.value)}
-                  placeholder={'Search...'}
-                  aria-label="Search..."
-                  autoFocus
-                />
+                  placeholder="Search..."
+                  style={{
+                    borderRadius: '4px',
+                    marginBottom: '6px',
+                  }}
+                  />
                 {input && input.value && (
                   <CloseIcon
+                    onClick={() => {
+                      props.setFilter('');
+                      input.value = '';
+                    }}
                     style={{
                       position: 'absolute',
                       right: 0,
@@ -88,19 +111,18 @@ const TermAggregation = (props: TProps) => {
                       transition: 'all 0.3s ease',
                       outline: 0,
                     }}
-                    onClick={() => {
-                      props.setFilter('');
-                      input.value = '';
-                    }}
-                  />
+                    />
                 )}
               </Row>
             )}
             {!props.collapsed && (
               <Column>
                 {_.orderBy(filteredBuckets, 'doc_count', 'desc')
-                  .slice(0, props.showingMore ? Infinity : 5)
-                  .map(b => ({ ...b, name: b.key_as_string || b.key }))
+                  .slice(0, props.showingMore ? Infinity : maxShowing)
+                  .map(b => ({
+                    ...b,
+                    name: b.key_as_string || b.key,
+                  }))
                   .map(bucket => (
                     <BucketRow key={bucket.name}>
                       <BucketLink
@@ -121,18 +143,10 @@ const TermAggregation = (props: TProps) => {
                             ],
                           },
                         }}
-                      >
+                        >
                         <input
-                          readOnly
-                          type="checkbox"
-                          style={{
-                            pointerEvents: 'none',
-                            marginRight: '5px',
-                            flexShrink: 0,
-                            verticalAlign: 'middle',
-                          }}
                           checked={inCurrentFilters({
-                            key: bucket.name,
+                            key: bucket.name.toLowerCase(),
                             dotField,
                             currentFilters,
                           })}
@@ -144,7 +158,15 @@ const TermAggregation = (props: TProps) => {
                             /\s/g,
                             '-'
                           )}`}
-                        />
+                          readOnly
+                          style={{
+                            pointerEvents: 'none',
+                            marginRight: '5px',
+                            flexShrink: 0,
+                            verticalAlign: 'middle',
+                          }}
+                          type="checkbox"
+                          />
                         <OverflowTooltippedLabel
                           htmlFor={`input-${props.title}-${bucket.name.replace(
                             /\s/g,
@@ -154,8 +176,16 @@ const TermAggregation = (props: TProps) => {
                             marginLeft: '0.3rem',
                             verticalAlign: 'middle',
                           }}
-                        >
-                          {bucket.name}
+                          >
+                          {props.searchValue
+                            ? internalHighlight(
+                              props.searchValue,
+                              bucket.name,
+                              {
+                                backgroundColor: '#FFFF00',
+                              },
+                            )
+                            : bucket.name}
                         </OverflowTooltippedLabel>
                       </BucketLink>
                       <CountBubble className="bucket-count">
@@ -163,15 +193,15 @@ const TermAggregation = (props: TProps) => {
                       </CountBubble>
                     </BucketRow>
                   ))}
-                {filteredBuckets.length > 5 && (
+                {filteredBuckets.length > maxShowing && (
                   <BottomRow>
                     <ToggleMoreLink
                       onClick={() => props.setShowingMore(!props.showingMore)}
-                    >
+                      >
                       {props.showingMore
                         ? 'Less...'
                         : filteredBuckets.length - 5 &&
-                          `${filteredBuckets.length - 5} More...`}
+                        `${filteredBuckets.length - 5} More...`}
                     </ToggleMoreLink>
                   </BottomRow>
                 )}
@@ -195,15 +225,25 @@ const TermAggregation = (props: TProps) => {
 const enhance = compose(
   withState('showingMore', 'setShowingMore', false),
   withState('filter', 'setFilter', ''),
-  withPropsOnChange(['buckets', 'filter'], ({ buckets, filter }) => ({
-    filteredBuckets: buckets.filter(
-      b =>
-        b.key !== '_missing' &&
-        (b.key || '').length &&
-        b.key.toLowerCase().includes(filter.toLowerCase())
-    ),
-  })),
-  pure
+  withPropsOnChange(
+    [
+      'buckets',
+      'filter',
+      'searchValue',
+    ],
+    ({
+      buckets, filter, searchValue = '', isMatchingSearchValue,
+    }) => ({
+      filteredBuckets: buckets.filter(
+        b => b.key !== '_missing' &&
+          (b.key || '').length &&
+          b.key.toLowerCase().includes(filter.toLowerCase()) &&
+          (b.key.toLowerCase().includes(searchValue.toLowerCase()) ||
+            isMatchingSearchValue),
+      ),
+    }),
+  ),
+  pure,
 );
 
 export default enhance(TermAggregation);

@@ -1,17 +1,30 @@
 import React from 'react';
-import ClinicalAnalysisResult from '@ncigdc/modern_components/ClinicalAnalysis';
-import { compose, withProps, branch } from 'recompose';
-import withRouter from '@ncigdc/utils/withRouter';
 import { connect } from 'react-redux';
+import { head } from 'lodash';
+import {
+  branch,
+  compose,
+  lifecycle,
+  setDisplayName,
+  withProps,
+} from 'recompose';
 
-import { CLINICAL_BLACKLIST } from '@ncigdc/utils/constants';
+import withRouter from '@ncigdc/utils/withRouter';
+import ClinicalAnalysisResult from '@ncigdc/modern_components/ClinicalAnalysis';
+import testValidClinicalTypes from '@ncigdc/utils/clinicalBlacklist';
 
-const validClinicalTypesRegex = /(demographic)|(diagnoses)|(exposures)|(treatments)|(follow_ups)/;
-const blacklistRegex = new RegExp(
-  CLINICAL_BLACKLIST.map(item => `(${item})`).join('|')
+const ClinicalAnalysisContainer = ({
+  clinicalAnalysisFields,
+  ...props
+}) => (
+  <ClinicalAnalysisResult
+    clinicalAnalysisFields={clinicalAnalysisFields}
+    {...props}
+    />
 );
 
-const enhance = compose(
+export default compose(
+  setDisplayName('EnhancedClinicalAnalysisContainer'),
   withRouter,
   connect((state: any, props: any) => ({
     currentAnalysis: state.analysis.saved.find(a => a.id === props.id),
@@ -20,25 +33,28 @@ const enhance = compose(
     ({ currentAnalysis }) => !currentAnalysis,
     ({ push }) => push({ pathname: '/analysis' })
   ),
-  withProps(({ __type: { fields, name } }) => {
-    const filteredFields = _.head(
+  withProps(({ introspectiveType: { fields } }) => {
+    const filteredFields = head(
       fields.filter(field => field.name === 'aggregations')
     ).type.fields;
 
-    const clinicalAnalysisFields = filteredFields
-      .filter(field => validClinicalTypesRegex.test(field.name))
-      .filter(field => !blacklistRegex.test(field.name));
-    return { clinicalAnalysisFields };
-  })
-);
-
-const ClinicalAnalysisContainer = ({ clinicalAnalysisFields, ...props }) => {
-  return (
-    <ClinicalAnalysisResult
-      clinicalAnalysisFields={clinicalAnalysisFields}
-      {...props}
-    />
-  );
-};
-
-export default enhance(ClinicalAnalysisContainer);
+    return {
+      clinicalAnalysisFields: testValidClinicalTypes(filteredFields),
+    };
+  }),
+  lifecycle({
+    shouldComponentUpdate({
+      id: nextId,
+      loading: nextLoading,
+    }) {
+      const {
+        id,
+        loading,
+      } = this.props;
+      return !(
+        nextId === id &&
+        nextLoading === loading
+      );
+    },
+  }),
+)(ClinicalAnalysisContainer);

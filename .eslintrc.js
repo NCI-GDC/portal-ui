@@ -49,6 +49,7 @@ module.exports = {
     'comma-dangle': ['warn', 'always-multiline'],
     'func-names': ['warn', 'as-needed'],
     'function-paren-newline': ['warn', 'consistent'],
+    'implicit-arrow-linebreak': 'off',
     'indent': ['warn', 2, {
       ArrayExpression: 'first',
       CallExpression: { arguments: 'first' },
@@ -79,6 +80,7 @@ module.exports = {
       SwitchCase: 1,
       VariableDeclarator: 'first',
     }],
+    'multiline-ternary': ['warn', 'always-multiline'],
     'no-console': ['warn', {
       allow: [
         'info',
@@ -91,8 +93,11 @@ module.exports = {
       commentPattern: 'break[\\s\\w]*omitted',
     }],
     'no-nested-ternary': 'off',
+    'no-unneeded-ternary': 'warn',
     'no-unused-expressions': ['warn', {
       allowShortCircuit: true,
+      allowTaggedTemplates: true,
+      allowTernary: true,
     }],
     'no-var': 'error', // Must use const or let.
     'object-property-newline': ['warn', {
@@ -133,11 +138,20 @@ module.exports = {
       'packageDir': './'
     }],
     'react/jsx-closing-bracket-location': ['warn', 'props-aligned'],
+    'react/jsx-filename-extension': ['warn', {
+      extensions: [
+        '.js',
+        '.jsx',
+        '.tsx',
+      ],
+    }],
+    'react/jsx-first-prop-new-line': ['warn', 'multiline'],
+    'react/jsx-fragments': ['error', 'element'],
     'react/jsx-indent': ['warn', 2, {
       checkAttributes: true,
-      // indentLogicalExpressions: true,
+      indentLogicalExpressions: true,
     }],
-    'react/jsx-indent-props': ['warn', 'first'],
+    'react/jsx-indent-props': ['warn', 2],
     'react/jsx-max-props-per-line': ['warn', {
       maximum: 1,
       when: 'multiline',
@@ -153,7 +167,7 @@ module.exports = {
       closingSlash: 'never',
       beforeSelfClosing: 'always',
       afterOpening: 'never',
-      beforeClosing: 'allow',
+      beforeClosing: 'never',
     }],
     'react/jsx-wrap-multilines': ['error', {
       declaration: 'parens-new-line',
@@ -167,13 +181,6 @@ module.exports = {
     'react/no-did-mount-set-state': 'warn',
     'react/no-did-update-set-state': 'warn',
     'react/no-direct-mutation-state': 'warn',
-    'react/jsx-filename-extension': ['warn', {
-      extensions: [
-        '.js',
-        '.jsx',
-        '.tsx',
-      ],
-    }],
     'react/no-multi-comp': 'warn',
     'react/no-unknown-property': 'warn',
     'react/sort-comp': 'warn',

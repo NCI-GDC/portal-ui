@@ -35,7 +35,7 @@
         "multiline": {
           "objects": "always",
           "arrays": "always",
-          "functions": "never",
+          "functions": "ignore",
           "typeLiterals": "ignore"
         },
         "esSpecCompliant": true

@@ -20,17 +20,21 @@ export const DEFAULT_X_AXIS_LABEL_LENGTH = 10;
 
 const BarChart = ({
   data,
-  title,
-  yAxis = {},
-  xAxis = {},
-  styles,
   height: h,
+  showXAxisLabels = true,
   margin: m,
   setTooltip,
-  theme,
-  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
   size: { width },
+  styles,
+  theme,
+  title,
+  xAxis = {}, // Must have titleForSVG and title if showXAxisLabels is false.
+  xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
+  yAxis = {},
 }) => {
+  if (!showXAxisLabels && (!xAxis.title || !xAxis.titleForSVG)) {
+    throw new Error('For GDC Developers, when showXAxisLabels is false, value of titleForSVG or title in xAxis should not be blank.');
+  }
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
 
@@ -44,6 +48,7 @@ const BarChart = ({
     bottom: 65,
     left: 55,
   };
+
   const chartWidth = width - margin.left - margin.right;
   const height = (h || 200) - margin.top - margin.bottom;
   const yAxisStyle = yAxis.style || {
@@ -65,6 +70,7 @@ const BarChart = ({
     .rangeRound([0, chartWidth])
     .paddingInner(innerPadding)
     .paddingOuter(outerPadding);
+
   const maxY = d3.max(data, d => d.value);
   const y = d3
     .scaleLinear()
@@ -117,33 +123,80 @@ const BarChart = ({
     .attr('fill', yAxisStyle.textFill)
     .text(yAxis.title || '');
 
-  const xG = svg
-    .append('g')
-    .attr('transform', `translate(0, ${height})`)
-    .call(d3.axisBottom(x));
+  if (showXAxisLabels) {
+    // hidden x axis for full length labels in svg download
+    const hiddenXG = svg
+      .append('g')
+      .attr('class', 'svgDownload')
+      .attr('transform', `translate(0, ${height})`)
+      .call(d3.axisBottom(x));
 
-  xG.selectAll('text')
-    .style('text-anchor', 'start')
-    .style('fontSize', xAxisStyle.fontSize)
-    .style('fontWeight', xAxisStyle.fontWeight)
-    .attr('fill', xAxisStyle.textFill)
-    .attr('dx', '.8em')
-    .attr('dy', '.5em')
-    .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
-    .attr('transform', 'rotate(45)');
+    hiddenXG.selectAll('text')
+      .style('text-anchor', 'start')
+      .style('fontSize', xAxisStyle.fontSize)
+      .style('fontWeight', xAxisStyle.fontWeight)
+      .attr('fill', xAxisStyle.textFill)
+      .attr('dx', '.8em')
+      .attr('dy', '.5em')
+      .text(d => d)
+      .attr('transform', 'rotate(45)');
 
-  xG.selectAll('path').style('stroke', xAxisStyle.stroke);
+    // display x axis
+    const xG = svg
+      .append('g')
+      .attr('class', 'displayOnly')
+      .attr('transform', `translate(0, ${height})`)
+      .call(d3.axisBottom(x));
 
-  xG.selectAll('line').style('stroke', xAxisStyle.stroke);
+    xG.selectAll('text')
+      .style('text-anchor', 'start')
+      .style('fontSize', xAxisStyle.fontSize)
+      .style('fontWeight', xAxisStyle.fontWeight)
+      .attr('fill', xAxisStyle.textFill)
+      .attr('dx', '.8em')
+      .attr('dy', '.5em')
+      .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
+      .attr('transform', 'rotate(45)');
 
-  xG.selectAll('.tick')
-    .data(data)
-    .on('mouseenter', d => {
-      setTooltip(d.tooltip);
-    })
-    .on('mouseleave', () => {
-      setTooltip();
-    });
+    xG.selectAll('path').style('stroke', xAxisStyle.stroke);
+
+    xG.selectAll('line').style('stroke', xAxisStyle.stroke);
+
+    xG.selectAll('.tick')
+      .data(data)
+      .on('mouseenter', d => {
+        setTooltip(d.tooltip);
+      })
+      .on('mouseleave', () => {
+        setTooltip();
+      });
+  } else {
+    svg
+      .append('text')
+      .attr('class', 'displayOnly')
+      .attr('transform', 'rotate(0)')
+      .attr('y', height + 20)
+      .attr('x', width / 2 - margin.left)
+      .attr('dx', '1em')
+      .style('text-anchor', 'middle')
+      .style('fontSize', '1.2rem')
+      .style('fontWeight', '500')
+      .attr('fill', yAxisStyle.textFill)
+      .text(xAxis.title);
+
+    svg
+      .append('text')
+      .attr('class', 'svgDownload')
+      .attr('transform', 'rotate(0)')
+      .attr('y', height + 20)
+      .attr('x', width / 2 - margin.left)
+      .attr('dx', '1em')
+      .style('text-anchor', 'middle')
+      .style('fontSize', '1.2rem')
+      .style('fontWeight', '500')
+      .attr('fill', xAxisStyle.textFill)
+      .text(xAxis.titleForSVG);
+  }
 
   const barGs = svg
     .selectAll('g.chart')

@@ -1,151 +1,113 @@
 // @flow
 
 import React from 'react';
-import _ from 'lodash';
-import { compose } from 'recompose';
+import { map } from 'lodash';
+import {
+  compose,
+  pure,
+  setDisplayName,
+} from 'recompose';
 import styled from '@ncigdc/theme/styled';
-import QuickSearchResults from './QuickSearchResults';
 import { withSearch } from '@ncigdc/utils/withSearch';
 import namespace from '@ncigdc/utils/namespace';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
-import { Row, Column } from '@ncigdc/uikit/Flex';
+import QuickSearchResults from './QuickSearchResults';
 import FileHistoryResults from './FileHistoryResults';
 
 const styles = {
-  searchIconWrapper: {
-    marginRight: '4px',
-    position: 'relative',
-  },
-  searchIcon: {
-    // add a bit of transition delay to avoid jank with really fast queries
-    transition: 'opacity 0.2s ease 0.1s',
-  },
-  loadingIcon: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    transition: 'opacity 0.2s ease 0.1s',
-  },
-  invisible: {
-    opacity: 0,
-  },
-  visible: {
-    opacity: 1,
-  },
   container: {
     position: 'relative',
   },
+  inputIcon: {
+    transition: 'opacity 0.2s ease 0.1s',
+  },
+  inputIconWrapper: {
+    marginRight: '5px',
+    position: 'relative',
+  },
   noResults: {
-    position: 'absolute',
-    top: '100%',
-    right: 0,
     backgroundColor: '#fff',
+    boxShadow: 'rgba(0, 0, 0, 0.156863) 0px 2px 5px 0px, rgba(0, 0, 0, 0.117647) 0px 2px 10px 0px',
     padding: '4px 10px',
-    boxShadow:
-      'rgba(0, 0, 0, 0.156863) 0px 2px 5px 0px, rgba(0, 0, 0, 0.117647) 0px 2px 10px 0px',
-    zIndex: 90,
+    position: 'absolute',
+    right: 0,
+    top: '100%',
     width: '100%',
+    zIndex: 90,
   },
 };
 
 const SearchInput = styled.input({
-  fontSize: '14px',
-  height: '3rem',
-  padding: '0.7rem 1rem',
-  border: ({ theme }) => `1px solid ${theme.greyScale5}`,
-  width: '25.375rem',
-  borderRadius: '4px',
-  outline: 'none',
-  transition: 'all 0.2s ease',
-  marginTop: -10,
-  marginBottom: -10,
   ':focus': {
     borderColor: 'rgb(18, 141, 219) !important',
     boxShadow: '0px 0px 22px 0px rgba(18, 147, 219, 0.75)',
   },
+  border: ({ theme }) => `1px solid ${theme.greyScale5}`,
+  borderRadius: '4px',
+  fontSize: '14px',
+  height: '3rem',
+  marginBottom: -10,
+  marginTop: -10,
+  outline: 'none',
+  padding: '0.7rem 1rem',
+  transition: 'all 0.2s ease',
+  width: '25.375rem',
 });
 
-export default compose(
-  namespace('search', withSearch()),
-  namespace(
-    'selectableList',
-    withSelectableList(
-      {
-        keyHandlerName: 'handleKeyDown',
-        listSourcePropPath: 'search.state.results',
-      },
-      {
-        onSelectItem: (item, { search }) => item && search.selectItem(item),
-      },
-    ),
-  ),
-)(
-  ({
-    search: { state, setQuery, reset },
-    selectableList: { handleKeyDown, focusedItem, setFocusedItem, selectItem },
-    tabIndex,
-    isInSearchMode,
-    setIsInSearchMode,
-    style,
-  }) => (
-    <a
-      className="quick-search-toggle"
-      tabIndex={tabIndex}
-      onClick={() => !isInSearchMode && setIsInSearchMode(true)}
-      onBlur={event => {
-        const currentTarget = event.currentTarget;
-        const relatedTarget = event.relatedTarget;
-        // defer 1 frame to get correct value of document.activeElement, which is required for x-browser compat
-        setImmediate(() => {
-          const triggerElement = relatedTarget || document.activeElement;
-          if (
-            !(
-              currentTarget.contains(triggerElement) ||
-              currentTarget === triggerElement
-            )
-          ) {
-            setTimeout(() => {
-              setIsInSearchMode(false);
-              reset();
-            }, 300);
-          }
-        });
-      }}
-      style={{
-        ...style,
-        ...styles.container,
-      }}
+const QuickSearch = ({
+  isInSearchMode,
+  search: { reset, setQuery, state },
+  selectableList: {
+    focusedItem, handleKeyDown, selectItem, setFocusedItem,
+  },
+  setIsInSearchMode,
+  style,
+  tabIndex,
+}) => (
+  <a
+    className="quick-search-toggle"
+    onBlur={event => {
+      const { currentTarget } = event;
+      const { relatedTarget } = event;
+      // defer 1 frame to get correct value of document.activeElement, which is required for x-browser compat
+      setImmediate(() => {
+        const triggerElement = relatedTarget || document.activeElement;
+        if (
+          !(
+            currentTarget.contains(triggerElement) ||
+            currentTarget === triggerElement
+          )
+        ) {
+          setTimeout(() => {
+            setIsInSearchMode(false);
+            reset();
+          }, 300);
+        }
+      });
+    }}
+    onClick={() => !isInSearchMode && setIsInSearchMode(true)}
+    style={{
+      ...style,
+      ...styles.container,
+    }}
+    tabIndex={tabIndex}
     >
-      <span style={styles.searchIconWrapper}>
-        <i
-          className="fa fa-search stock-icon"
-          style={Object.assign(
-            {},
-            styles.searchIcon,
-            state.isLoading ? styles.invisible : styles.visible,
-          )}
+    <span style={styles.inputIconWrapper}>
+      <i
+        className={`fa ${state.isLoading
+          ? 'fa-spin fa-spinner'
+          : 'fa-search'
+        } stock-icon`}
+        style={styles.inputIcon}
         />
-        <i
-          className="fa fa-spin fa-spinner stock-icon"
-          style={Object.assign(
-            {},
-            styles.loadingIcon,
-            state.isLoading ? styles.visible : styles.invisible,
-          )}
-        />
-      </span>
-      {!isInSearchMode && (
-        <span className="header-hidden-sm header-hidden-md" data-translate>
-          Quick Search
-        </span>
-      )}
+    </span>
 
-      {isInSearchMode && (
+    {isInSearchMode
+      ? (
         <SearchInput
+          aria-label="Quick Search Input"
           autoFocus
           className="quick-search-input"
-          placeholder="Quick Search"
-          type="text"
           onChange={event => setQuery(event.target.value)}
           onKeyDown={event => {
             handleKeyDown(event);
@@ -159,48 +121,87 @@ export default compose(
               setIsInSearchMode(false);
             }
           }}
-          aria-label="Quick Search Input"
-        />
+          placeholder="Quick Search"
+          type="text"
+          />
+      )
+      : (
+        <span
+          className="header-hidden-sm header-hidden-md"
+          data-translate
+          >
+          Quick Search
+        </span>
       )}
-      <QuickSearchResults
-        results={_.map(
-          state.results,
-          item => (item === focusedItem ? { ...item, isSelected: true } : item),
-        )}
-        query={state.query}
-        onSelectItem={setFocusedItem}
+
+    <QuickSearchResults
+      isLoading={state.isLoading}
+      onActivateItem={item => {
+        selectItem(item);
+        reset();
+        setIsInSearchMode(false);
+      }}
+      onSelectItem={setFocusedItem}
+      query={state.query}
+      results={map(
+        state.results,
+        item => (item === focusedItem
+          ? Object.assign(
+            {},
+            item,
+            { isSelected: true },
+          )
+          : item
+        ),
+      )}
+      />
+
+    {state.isLoading || (
+      <FileHistoryResults
+        isLoading={state.isLoading}
         onActivateItem={item => {
           selectItem(item);
           reset();
           setIsInSearchMode(false);
         }}
-        isLoading={state.isLoading}
-      />
-      {!state.isLoading && (
-        <FileHistoryResults
-          query={state.query}
-          results={state.fileHistoryResult
-            .filter(f => f.file_change === 'released')
-            .map(
-              item =>
-                item === focusedItem ? { ...item, isSelected: true } : item,
-            )}
-          onSelectItem={setFocusedItem}
-          onActivateItem={item => {
-            selectItem(item);
-            reset();
-            setIsInSearchMode(false);
-          }}
-          isLoading={state.isLoading}
+        onSelectItem={setFocusedItem}
+        query={state.query}
+        results={state.fileHistoryResult
+          .filter(f => f.file_change === 'released')
+          .map(item => (item === focusedItem
+            ? Object.assign(
+              {},
+              item,
+              { isSelected: true },
+            )
+            : item
+          ))}
         />
-      )}
+    )}
 
-      {!state.isLoading &&
-        state.query &&
-        (state.results || []).length === 0 &&
-        (state.fileHistoryResult || []).length === 0 && (
-          <div style={styles.noResults}>No results found</div>
-        )}
-    </a>
-  ),
+    {!state.isLoading &&
+      state.query &&
+      (state.results || []).length === 0 &&
+      (state.fileHistoryResult || []).length === 0 && (
+        <div style={styles.noResults}>No results found</div>
+    )}
+  </a>
 );
+
+export default compose(
+  setDisplayName('EnhancedQuickSearch'),
+  namespace('search', withSearch()),
+  namespace(
+    'selectableList',
+    withSelectableList(
+      {
+        keyHandlerName: 'handleKeyDown',
+        listSourcePropPath: 'search.state.results',
+      },
+      {
+        onSelectItem: (item, { search }) => item && search.selectItem(item),
+      },
+    ),
+  ),
+  pure,
+)(QuickSearch);

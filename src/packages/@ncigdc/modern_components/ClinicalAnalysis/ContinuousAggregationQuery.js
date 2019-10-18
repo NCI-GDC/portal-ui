@@ -7,58 +7,89 @@ import {
 } from 'recompose';
 import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
-import _ from 'lodash';
+import {
+  isEqual,
+  isNull,
+  reduce,
+} from 'lodash';
 
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
+import { createFacetFieldString } from '@ncigdc/utils/string';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
+import { Column } from '@ncigdc/uikit/Flex';
+import Spinner from '@ncigdc/uikit/Loaders/Material';
+import { zDepth1 } from '@ncigdc/theme/mixins';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
-import ClinicalVariableCard from './ClinicalVariableCard';
+import { ContinuousVariableCard } from './ClinicalVariableCard';
+import { parseContinuousKey } from './ClinicalVariableCard/helpers';
 
 const simpleAggCache = {};
 const pendingAggCache = {};
-const DEFAULT_CONTINUOUS_BUCKETS = 4;
+const DEFAULT_CONTINUOUS_BUCKETS = 5;
 
-const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
+const getContinuousAggs = ({
+  bins,
+  continuousBinType,
+  fieldName,
+  filters,
+  stats,
+}) => {
   // prevent query failing if interval will equal 0
-  if (_.isNull(stats.min) || _.isNull(stats.max)) {
+  if (isNull(stats.min) || isNull(stats.max)) {
     return null;
   }
 
-  let rangeArr = _.reduce(bins, (acc, bin, key) => {
-    if (
-      !!bin &&
-      (typeof bin.from === 'number') &&
-      (typeof bin.to === 'number') &&
-      stats.min <= bin.from &&
-      bin.from < bin.to &&
-      bin.to <= stats.max
-    ) {
-      return [...acc, { from: bin.from, to: bin.to }];
-    }
-    return acc;
-  }, []);
-  const interval = Math.round((stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS);
-  if (rangeArr.length === 0) {
-    rangeArr = Array(DEFAULT_CONTINUOUS_BUCKETS).fill(1).map(
+  const interval = (stats.max - stats.min) / DEFAULT_CONTINUOUS_BUCKETS;
+
+  const makeDefaultBuckets = () => Array(DEFAULT_CONTINUOUS_BUCKETS)
+    .fill(1).map(
       (val, key) => ({
         from: key * interval + stats.min,
-        to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS ? stats.max : (stats.min + (key + 1) * interval - 1),
+        to: (key + 1) === DEFAULT_CONTINUOUS_BUCKETS
+          ? stats.max + 1
+          // api excludes max value
+          : stats.min + (key + 1) * interval,
       })
-    )
+    );
+
+  let rangeArr = continuousBinType === 'default'
+    ? makeDefaultBuckets()
+    : reduce(bins, (acc, bin) => {
+      const binValues = parseContinuousKey(bin.key);
+      const [from, to] = binValues;
+      if (
+        !!bin &&
+        (typeof from === 'number') &&
+        (typeof to === 'number') &&
+        (from < to)
+      ) {
+        const result = [
+          ...acc,
+          {
+            from,
+            to,
+          },
+        ];
+        return result;
+      }
+      return acc;
+    }, []);
+
+  if (rangeArr.length === 0) {
+    rangeArr = makeDefaultBuckets();
   }
 
-  const queryFieldName = fieldName.replace('.', '__');
   const filters2 = {
-    op: "range",
     content: [
       {
         ranges: rangeArr,
-      }
-    ]
-  }
-  const aggregationFieldName = fieldName.replace(/\./g, '__');
+      },
+    ],
+    op: 'range',
+  };
+  const aggregationFieldName = createFacetFieldString(fieldName);
 
   const variables = {
     filters,
@@ -127,11 +158,11 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
   return fetch(
     urlJoin(API, `graphql/ContinuousAggregationQuery?hash=${hash}`),
     {
-      method: 'POST',
+      body,
       headers: {
         'Content-Type': 'application/json',
       },
-      body,
+      method: 'POST',
     }
   ).then(response => response
     .json()
@@ -167,7 +198,7 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
         }
       } else {
         consoleDebug(
-          `Something went wrong in environment, but no error status: ${err}`
+          `Something went wrong in the environment, but no error status: ${err}`
         );
       }
     }));
@@ -175,37 +206,74 @@ const getContinuousAggs = ({ fieldName, stats, filters, bins }) => {
 
 export default compose(
   withState('aggData', 'setAggData', null),
-  withState('isLoading', 'setIsLoading', true),
+  withState('isLoading', 'setIsLoading', 'first time'),
   withProps({
     updateData: async ({
       fieldName,
-      stats,
       filters,
+      hits,
       setAggData,
       setIsLoading,
+      stats,
       variable,
-      hits,
     }) => {
       const res = await getContinuousAggs({
-        fieldName,
-        stats,
-        filters,
         bins: variable.bins,
+        continuousBinType: variable.continuousBinType,
+        fieldName,
+        filters,
         hits,
+        stats,
       });
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
-  withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props))
+  withPropsOnChange(
+    (
+      {
+        filters,
+        variable,
+      },
+      {
+        filters: nextFilters,
+        variable: nextVariable,
+      }
+    ) => !(
+      isEqual(filters, nextFilters) &&
+      isEqual(variable, nextVariable)
+    ),
+    ({
+      setIsLoading,
+      updateData,
+      ...props
+    }) => {
+      // TODO this update is forcing an avoidable double render
+      setIsLoading(true);
+      updateData({
+        setIsLoading,
+        ...props,
+      });
+    }
+  ),
 )(({
-  aggData, isLoading, setId, stats, hits, ...props
-}) => {
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  return (
-    <ClinicalVariableCard
+  aggData, hits, isLoading, setId, stats, ...props
+}) => isLoading 
+  ? (
+   <Column
+      className="clinical-analysis-card"
+      style={{
+        ...zDepth1,
+        height: 560,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: '0 1rem 1rem',
+      }}
+      >
+        <Spinner />
+    </Column>
+  )
+  : (
+    <ContinuousVariableCard
       data={{
         ...aggData,
         hits,
@@ -213,6 +281,6 @@ export default compose(
       setId={setId}
       stats={stats}
       {...props}
-    />
-  );
-});
+      />
+  )
+);

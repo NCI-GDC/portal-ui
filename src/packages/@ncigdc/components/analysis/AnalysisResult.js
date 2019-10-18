@@ -1,10 +1,13 @@
 import React from 'react';
 import {
   compose,
+  lifecycle,
+  pure,
   setDisplayName,
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
+  isEqual,
   omit,
   truncate,
 } from 'lodash';
@@ -25,35 +28,27 @@ import TabbedLinks from '@ncigdc/components/TabbedLinks';
 
 import availableAnalysis from './availableAnalysis';
 
-const enhance = compose(
-  setDisplayName('EnhancedAnalysisResult'),
-  connect(state => ({ analysis: state.analysis.saved })),
-  withRouter
-);
-
 function undoNotification(dispatch, analysis) {
   dispatch(
     notify({
-      id: `${new Date().getTime()}`,
       component: (
         <Column>
           Deleted
-          {analysis.length === 1 ? (
-            <span>
-              {' '}
-              Analysis
-              {' '}
-              <strong>
-                {availableAnalysis.find(a => analysis[0].type === a.type).label}
-              </strong>
-            </span>
-          ) : (
-            <span>
-              <strong>{analysis.length}</strong>
-              {' '}
-              Analyses
-            </span>
-          )}
+          {analysis.length === 1
+            ? (
+              <span>
+                {'Analysis '}
+                <strong>
+                  {availableAnalysis.find(a => analysis[0].type === a.type).label}
+                </strong>
+              </span>
+            )
+            : (
+              <span>
+                <strong>{analysis.length}</strong>
+                {' Analyses'}
+              </span>
+            )}
           <strong>
             <i
               className="fa fa-undo"
@@ -73,57 +68,69 @@ function undoNotification(dispatch, analysis) {
           </strong>
         </Column>
       ),
+      id: `${new Date().getTime()}`,
     })
   );
 }
 
 // analysis here is all analyses in localStorage
 const AnalysisResult = ({
-  analysis, dispatch, push, query,
+  analyses,
+  dispatch,
+  push,
+  query,
 }) => {
   const analysisId = query.analysisId || '';
   const currentIndex = Math.max(
-    analysis.findIndex(a => a.id === analysisId),
+    analyses.findIndex(a => a.id === analysisId),
     0
   );
-  const analysisType = analysis[currentIndex].type;
+  const analysisType = analyses[currentIndex].type;
   const tabMinWidth =
     analysisType === 'clinical_data' ? { minWidth: 1200 } : {};
   return (
     <TabbedLinks
       defaultIndex={currentIndex}
-      links={analysis
+      links={analyses
         .map(savedAnalysis => {
-          const analysis = availableAnalysis.find(
+          const foundAnalysis = availableAnalysis.find(
             a => a.type === savedAnalysis.type
           );
 
           const tabTitle =
-            analysis.type === 'clinical_data'
+            foundAnalysis.type === 'clinical_data'
               ? savedAnalysis.name
               : new Date(savedAnalysis.created).toLocaleDateString();
 
           return {
+            component: <foundAnalysis.ResultComponent {...savedAnalysis} {...foundAnalysis} />,
             id: savedAnalysis.id,
             text: (
               <Row>
                 <div style={{ marginRight: 15 }}>
                   <Row spacing="8px" style={{ alignItems: 'center' }}>
-                    <analysis.Icon style={{
-                      height: 25,
-                      width: 25,
-                    }}
-                     />
+                    <foundAnalysis.Icon
+                      style={{
+                        height: 25,
+                        width: 25,
+                      }}
+                      title={`${savedAnalysis.id}-icon`}
+                      />
+
                     <Column>
                       <Tooltip Component={tabTitle.length > 16 ? tabTitle : null}>
                         <span style={{ fontSize: '1.4rem' }}>
                           {truncate(tabTitle, { length: 16 })}
                         </span>
                       </Tooltip>
-                      <div style={{ fontSize: '1.2rem' }}>{analysis.label}</div>
+
+                      <div style={{ fontSize: '1.2rem' }}>
+                        {foundAnalysis.label}
+                      </div>
                     </Column>
                   </Row>
                 </div>
+
                 <UnstyledButton
                   onClick={e => {
                     e.preventDefault();
@@ -139,15 +146,12 @@ const AnalysisResult = ({
                 </UnstyledButton>
               </Row>
             ),
-            component: (
-              <analysis.ResultComponent {...savedAnalysis} {...analysis} />
-            ),
           };
         })
         .filter(Boolean)}
       linkStyle={{
-        width: '100%',
         padding: '1rem 0.8rem',
+        width: '100%',
       }}
       queryParam="analysisId"
       side
@@ -162,12 +166,11 @@ const AnalysisResult = ({
             push({
               query: omit(query, 'analysisId'),
             });
-            undoNotification(dispatch, analysis);
+            undoNotification(dispatch, analyses);
           }}
           style={{ margin: '5px 5px 0 0' }}
           >
-          <TrashIcon />
-          {' '}
+          <TrashIcon style={{ marginRight: '0.3rem' }} />
           Delete All
         </Button>
       )}
@@ -175,4 +178,19 @@ const AnalysisResult = ({
   );
 };
 
-export default enhance(AnalysisResult);
+export default compose(
+  setDisplayName('EnhancedAnalysisResult'),
+  connect(state => ({ analyses: state.analysis.saved })),
+  lifecycle({
+    shouldComponentUpdate({
+      analyses: nextAnalyses,
+    }) {
+      const {
+        analyses,
+      } = this.props;
+
+      return !isEqual(nextAnalyses, analyses);
+    },
+  }),
+  withRouter
+)(pure(AnalysisResult));

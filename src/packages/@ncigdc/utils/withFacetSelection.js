@@ -35,14 +35,18 @@ export default ({
   withState('shouldShowFacetSelection', 'setShouldShowFacetSelection', false),
   withProps(({ userSelectedFacets }) => ({
     facetExclusionTest: facet => {
-      const facetFieldNamesToExclude = presetFacetFields.concat(
-        userSelectedFacets.map(x => x.field),
-      );
+      // The list of facets that should be excluded. But for explore case tab, user selected facets have been replaced in clinical tab.
+      // So if entityType is 'ExploreCases', ignore the userSelectedFacets.
+      const facetFieldNamesToExclude =
+        entityType === 'ExploreCases'
+          ? presetFacetFields
+          : presetFacetFields.concat(userSelectedFacets.map(x => x.field));
+
       const match = _.some([
         !_.includes(validFacetDocTypes, facet.doc_type),
         _.includes(facetFieldNamesToExclude, facet.field),
         validFacetPrefixes &&
-            !_.includes(validFacetPrefixes.map(p => facet.full.indexOf(p)), 0),
+        !_.includes(validFacetPrefixes.map(p => facet.full.indexOf(p)), 0),
       ]);
       return match;
     },
@@ -52,7 +56,6 @@ export default ({
     handleSelectFacet: ({
       dispatch,
       setShouldShowFacetSelection,
-      userSelectedFacets,
     }) => facet => {
       setShouldShowFacetSelection(false);
       dispatch(add({
@@ -67,7 +70,6 @@ export default ({
       dispatch,
       push,
       query,
-      userSelectedFacets,
     }) => facet => {
       dispatch(remove({
         entityType,

@@ -1,8 +1,13 @@
-// @flow
 import React from 'react';
 import memoize from 'memoizee';
 import queryString from 'query-string';
-import _ from 'lodash';
+import {
+  get,
+  isNil,
+  omitBy,
+  sum,
+} from 'lodash';
+import { scaleOrdinal, schemeCategory10 } from 'd3';
 
 import { replaceFilters } from '@ncigdc/utils/filters';
 import styled from '@ncigdc/theme/styled';
@@ -21,6 +26,15 @@ type TPropsMulti = {
 
 export const MINIMUM_CASES = 10;
 export const MAXIMUM_CURVES = 5;
+
+const colors = scaleOrdinal(schemeCategory10);
+export const SURVIVAL_PLOT_COLORS = [
+  colors(0),
+  colors(1),
+  colors(2),
+  colors(3),
+  colors(4),
+];
 
 const Symbol = styled.span({
   fontSize: '1.2em',
@@ -41,12 +55,12 @@ async function fetchCurves(
   size: number,
   hasMultipleCurves: Boolean
 ): Promise<Object> {
-  const params = _.omitBy(
+  const params = omitBy(
     {
       filters: filters && JSON.stringify(filters),
       size,
     },
-    _.isNil
+    isNil
   );
   const url = `analysis/survival?${queryString.stringify(params)}`;
   performanceTracker.begin('survival:fetch');
@@ -70,14 +84,14 @@ async function fetchCurves(
   performanceTracker.end('survival:fetch', {
     filters: params.filters,
     data_sets: data.results.length,
-    donors: _.sum(data.results.map(x => x.donors.length)),
+    donors: sum(data.results.map(x => x.donors.length)),
   });
 
   return data;
 }
 
 export const getDefaultCurve = memoize(
-  async ({ slug, currentFilters, size }: TPropsDefault): Promise<Object> => {
+  async ({ currentFilters, size, slug }: TPropsDefault): Promise<Object> => {
     const rawData = await fetchCurves(
       Array.isArray(currentFilters)
         ? currentFilters
@@ -99,7 +113,6 @@ export const getDefaultCurve = memoize(
           value: <span>Not enough survival data</span>,
         },
       ];
-
     return {
       rawData,
       id: slug,
@@ -115,12 +128,12 @@ export const getDefaultCurve = memoize(
 
 export const getSurvivalCurves = memoize(
   async ({
-    value,
-    field,
-    slug,
     currentFilters,
-    size,
+    field,
     plotType,
+    size,
+    slug,
+    value,
   }: TPropsMulti): Promise<Object> => {
     const filters = [
       replaceFilters(
@@ -157,8 +170,8 @@ export const getSurvivalCurves = memoize(
 
     const rawData = await fetchCurves(filters, size);
     const hasEnoughData = enoughData(rawData);
-    const results2 = _.get(rawData, 'results[1].donors', []);
-    const results1 = _.get(rawData, 'results[0].donors', []);
+    const results2 = get(rawData, 'results[1].donors', []);
+    const results1 = get(rawData, 'results[0].donors', []);
 
     const getCaseCount = condition => (condition
       ? results1.length.toLocaleString()
@@ -229,7 +242,8 @@ export const getSurvivalCurves = memoize(
                   marginTop: 5,
                 },
               },
-            ] : []),
+            ]
+            : []),
         ]
         : [
           {
@@ -258,7 +272,8 @@ export const getSurvivalCurvesArray = memoize(
     plotType,
   }: TPropsMulti): Promise<Object> => {
     const filters = values.slice(0, MAXIMUM_CURVES).map(
-      value => (plotType === 'continuous'
+      value => {
+        return plotType === 'continuous'
         ? value.filters
         : replaceFilters(
           {
@@ -268,54 +283,40 @@ export const getSurvivalCurvesArray = memoize(
                 op: '=',
                 content: {
                   field,
-                  value,
+                  value: value.keyArray,
                 },
               },
             ],
           },
           currentFilters
-        ))
+        );
+      }
     );
 
     const rawData = await fetchCurves(filters, size, true);
     const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(rawData);
 
-    const getCaseCount = i => _.get(rawData, `results[${i}].donors`, []).length.toLocaleString();
+    const getCaseCount = i => get(rawData, `results[${i}].donors`, []).length.toLocaleString();
 
     return {
-      rawData: {
-        ...rawData,
-        results:
-          rawData.results.length > 0
-            ? rawData.results
-              .filter(r => r.donors.length >= MINIMUM_CASES)
-              .map((r, idx) => ({
-                ...r,
-                meta: {
-                  ...r.meta,
-                  label: `S${idx + 1}`,
-                },
-              }))
-            : [],
-      },
       id: field,
       legend: hasEnoughDataOnSomeCurves
         ? rawData.results.map((r, i) => {
-          const valueName =
-            plotType === 'categorical' ? values[i] : values[i].key;
-
+          const valueName = plotType === 'categorical'
+            ? values[i].keyName
+            : values[i].key;
           return r.length === 0
             ? {
               key: `${valueName}-cannot-compare`,
+              style: {
+                marginTop: 5,
+                width: '100%',
+              },
               value: (
                 <div>
                   <span>Not enough data to compare</span>
                 </div>
               ),
-              style: {
-                width: '100%',
-                marginTop: 5,
-              },
             }
             : r.donors.length < MINIMUM_CASES
               ? {
@@ -346,6 +347,20 @@ export const getSurvivalCurvesArray = memoize(
             value: <span>Not enough survival data for this facet</span>,
           },
         ],
+      rawData: {
+        ...rawData,
+        results:
+          rawData.results.length > 0
+            ? rawData.results
+              .map((r, idx) => ({
+                ...r,
+                meta: {
+                  ...r.meta,
+                  label: `S${idx + 1}`,
+                },
+              }))
+            : [],
+      },
     };
   },
   {

@@ -36,7 +36,7 @@ interface IArrangeColumnsProps {
       filteredTableColumns?: Array<IColumnProps<boolean>>;
       draggingIndex?: number | null;
       [x: string]: any;
-    }
+    },
   ) => void;
   state: IState;
   searchTerm: string;
@@ -58,7 +58,7 @@ const ArrangeColumns = compose<IArrangeColumnsProps, JSX.Element>(
         searchTerm: string;
         [x: string]: any;
         hideColumns: string[];
-      }
+      },
     ) => ({
       localTableColumns: state.tableColumns[props.entityType].filter(
         (t: IColumnProps<boolean>) => !(props.hideColumns || []).includes(t.id)

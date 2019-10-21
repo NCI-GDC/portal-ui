@@ -1,5 +1,6 @@
 // @flow
 
+export const FIRST_TIME_KEY = 'NCI-Warning';
 export const UI_VERSION = process.env.REACT_APP_COMMIT_TAG;
 export const UI_COMMIT_HASH = process.env.REACT_APP_COMMIT_HASH;
 
@@ -48,42 +49,42 @@ export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
   k => localStorage[k]
 );
 
-const DATA_CATEGORIES_COMMON = {
+const DATA_CATEGORIES_COMMON = { // this object is "sorted" on purpose, do not rearrange the keys
   SEQ: {
-    full: 'Sequencing Reads',
     abbr: 'Seq',
+    full: 'Sequencing Reads',
   },
   EXP: {
-    full: 'Transcriptome Profiling',
     abbr: 'Exp',
+    full: 'Transcriptome Profiling',
   },
   SNV: {
-    full: 'Simple Nucleotide Variation',
     abbr: 'SNV',
+    full: 'Simple Nucleotide Variation',
   },
   CNV: {
-    full: 'Copy Number Variation',
     abbr: 'CNV',
+    full: 'Copy Number Variation',
   },
   METH: {
-    full: 'DNA Methylation',
     abbr: 'Meth',
+    full: 'DNA Methylation',
   },
 };
 
-export const DATA_CATEGORIES = {
+export const DATA_CATEGORIES = { // this object is "sorted" on purpose, do not rearrange the keys
   ...DATA_CATEGORIES_COMMON,
   CLINICAL: {
-    full: 'Clinical',
     abbr: 'Clinical',
+    full: 'Clinical',
   },
   BIOSPECIMEN: {
-    full: 'Biospecimen',
     abbr: 'Bio',
+    full: 'Biospecimen',
   },
 };
 
-export const DATA_CATEGORIES_FOR_PROJECTS_TABLE = {
+export const DATA_CATEGORIES_FOR_PROJECTS_TABLE = { // this object is "sorted" on purpose, do not rearrange the keys
   ...DATA_CATEGORIES_COMMON,
   CLINICAL_METADATA: {
     abbr: 'Clinical',
@@ -92,9 +93,9 @@ export const DATA_CATEGORIES_FOR_PROJECTS_TABLE = {
     tooltip: 'Clinical Metadata',
   },
   CLINICAL_SUPPLEMENT: {
-    full: 'Clinical',
-    dataCategory: 'Clinical',
     abbr: 'Clinical Supplement',
+    dataCategory: 'Clinical',
+    full: 'Clinical',
     tooltip: 'Clinical Supplement',
   },
   BIOSPECIMEN_METADATA: {
@@ -104,17 +105,17 @@ export const DATA_CATEGORIES_FOR_PROJECTS_TABLE = {
     tooltip: 'Biospecimen Metadata',
   },
   BIOSPECIMEN_SUPPLEMENT: {
-    full: 'Biospecimen',
-    dataCategory: 'Bio',
     abbr: 'Bio Supplement',
+    dataCategory: 'Bio',
+    full: 'Biospecimen',
     tooltip: 'Biospecimen Supplement',
   },
 };
 
 export const DATA_TYPES = {
   GEQ: {
-    full: 'Gene Expression Quantification',
     abbr: 'GEQ',
+    full: 'Gene Expression Quantification',
   },
 };
 
@@ -185,23 +186,23 @@ export const HUMAN_BODY_SITES_MAP = {
   'bile duct': 'Bile Duct',
   bladder: 'Bladder',
   blood: 'Blood',
-  'bone marrow': 'Bone Marrow',
   bone: 'Bone',
+  'bone marrow': 'Bone Marrow',
   'bones, joints and articular cartilage of limbs': 'Bone',
   'bones, joints and articular cartilage of other and unspecified sites':
     'Bone',
   brain: 'Brain',
   breast: 'Breast',
   'bronchus and lung': 'Lung',
-  'cervix uteri': 'Cervix',
   cervix: 'Cervix',
+  'cervix uteri': 'Cervix',
   colon: 'Colorectal',
   colorectal: 'Colorectal',
   'connective, subcutaneous and other soft tissues': 'Soft Tissue',
   'corpus uteri': 'Uterus',
   esophagus: 'Esophagus',
-  'eye and adnexa': 'Eye',
   eye: 'Eye',
+  'eye and adnexa': 'Eye',
   'floor of mouth': 'Head and Neck',
   gallbladder: 'Other And Ill-Defined Sites',
   gum: 'Head and Neck',
@@ -212,8 +213,8 @@ export const HUMAN_BODY_SITES_MAP = {
   kidney: 'Kidney',
   larynx: 'Head and Neck',
   lip: 'Head and Neck',
-  'liver and intrahepatic bile ducts': 'Liver',
   liver: 'Liver',
+  'liver and intrahepatic bile ducts': 'Liver',
   lung: 'Lung',
   'lymph nodes': 'Lymph Nodes',
   meninges: 'Other And Ill-Defined Sites',
@@ -223,11 +224,9 @@ export const HUMAN_BODY_SITES_MAP = {
   'not reported': 'Not Reported',
   oropharynx: 'Head and Neck',
   'other and ill-defined digestive organs': 'Other And Ill-Defined Sites',
-  'other and ill-defined sites in lip, oral cavity and pharynx':
-    'Head and Neck',
-  'other and ill-defined sites within respiratory system and intrathoracic organs':
-    'Other And Ill-Defined Sites',
   'other and ill-defined sites': 'Other And Ill-Defined Sites',
+  'other and ill-defined sites in lip, oral cavity and pharynx': 'Head and Neck',
+  'other and ill-defined sites within respiratory system and intrathoracic organs': 'Other And Ill-Defined Sites',
   'other and unspecified female genital organs': 'Other And Ill-Defined Sites',
   'other and unspecified major salivary glands': 'Head and Neck',
   'other and unspecified male genital organs': 'Other And Ill-Defined Sites',
@@ -235,8 +234,7 @@ export const HUMAN_BODY_SITES_MAP = {
   'other and unspecified parts of mouth': 'Head and Neck',
   'other and unspecified parts of tongue': 'Head and Neck',
   'other and unspecified urinary organs': 'Other And Ill-Defined Sites',
-  'other endocrine glands and related structures':
-    'Other And Ill-Defined Sites',
+  'other endocrine glands and related structures': 'Other And Ill-Defined Sites',
   ovary: 'Ovary',
   palate: 'Head and Neck',
   pancreas: 'Pancreas',
@@ -246,8 +244,8 @@ export const HUMAN_BODY_SITES_MAP = {
     'Other And Ill-Defined Sites',
   placenta: 'Other And Ill-Defined Sites',
   pleura: 'Pleura',
-  'prostate gland': 'Prostate',
   prostate: 'Prostate',
+  'prostate gland': 'Prostate',
   'pyriform sinus': 'Head and Neck',
   'rectosigmoid junction': 'Colorectal',
   rectum: 'Colorectal',
@@ -261,15 +259,15 @@ export const HUMAN_BODY_SITES_MAP = {
   stomach: 'Stomach',
   testis: 'Testis',
   thymus: 'Thymus',
-  'thyroid gland': 'Thyroid',
   thyroid: 'Thyroid',
+  'thyroid gland': 'Thyroid',
   tonsil: 'Head and Neck',
   trachea: 'Head and Neck',
-  'unknown primary site': 'Other And Ill-Defined Sites',
   unknown: 'Not Reported',
+  'unknown primary site': 'Other And Ill-Defined Sites',
   ureter: 'Other And Ill-Defined Sites',
-  'uterus, nos': 'Uterus',
   uterus: 'Uterus',
+  'uterus, nos': 'Uterus',
   vagina: 'Other And Ill-Defined Sites',
   vulva: 'Other And Ill-Defined Sites',
 };
@@ -319,17 +317,17 @@ export const MAX_SET_NAME_LENGTH = 100;
 export const COHORT_COMPARISON_FACETS = {
   'demographic.ethnicity': 'Ethnicity',
   'demographic.gender': 'Gender',
-  'demographic.vital_status': 'Vital Status',
   'demographic.race': 'Race',
+  'demographic.vital_status': 'Vital Status',
   'diagnoses.age_at_diagnosis': 'Age at Diagnosis',
 };
 
 export const IMPACT_SHORT_FORMS = {
-  vep: {
-    high: 'HI',
-    moderate: 'MO',
-    modifier: 'MR',
-    low: 'LO',
+  polyphen: {
+    benign: 'BE',
+    possibly_damaging: 'PO',
+    probably_damaging: 'PR',
+    unknown: 'UN',
   },
   sift: {
     deleterious: 'DH',
@@ -337,26 +335,18 @@ export const IMPACT_SHORT_FORMS = {
     tolerated: 'TO',
     tolerated_low_confidence: 'TL',
   },
-  polyphen: {
-    probably_damaging: 'PR',
-    possibly_damaging: 'PO',
-    benign: 'BE',
-    unknown: 'UN',
+  vep: {
+    high: 'HI',
+    low: 'LO',
+    moderate: 'MO',
+    modifier: 'MR',
   },
 };
 
 export const FAKE_USER =
   localStorage.REACT_APP_ALLOW_FAKE_USER || process.env.REACT_APP_ALLOW_FAKE_USER
     ? {
-      username: 'DEV_USER',
       projects: {
-        phs_ids: {
-          phs000178: [
-            '_member_',
-            'read',
-            'delete',
-          ],
-        },
         gdc_ids: {
           'TCGA-LIHC': [
             'read',
@@ -379,18 +369,27 @@ export const FAKE_USER =
             'delete',
           ],
         },
+        phs_ids: {
+          phs000178: [
+            '_member_',
+            'read',
+            'delete',
+          ],
+        },
       },
+      username: 'DEV_USER',
     }
     : null;
 
 export const IS_DEV = process.env.NODE_ENV === 'development';
 
-export const DISPLAY_CDAVE =
-  localStorage.REACT_APP_DISPLAY_CDAVE ||
-  process.env.REACT_APP_DISPLAY_CDAVE ||
-  false;
+// Example feature flag
+// export const DISPLAY_CDAVE =
+//   localStorage.REACT_APP_DISPLAY_CDAVE ||
+//   process.env.REACT_APP_DISPLAY_CDAVE ||
+//   false;
 
-export const CLINICAL_BLACKLIST = [
+export const CLINICAL_FIELD_BLACKLIST = [
   'state',
   'score',
   'submitter_id',
@@ -402,14 +401,57 @@ export const CLINICAL_BLACKLIST = [
   'treatment_id',
 ];
 
-export const IS_CDAVE_DEV =
-  localStorage.REACT_APP_IS_CDAVE_DEV ||
-  process.env.NODE_ENV === 'development' ||
-  false;
+export const VALID_CLINICAL_TYPES = [
+  'demographic',
+  'diagnoses',
+  'exposures',
+  'treatments',
+];
 
 export const analysisColors = {
   Demographic: '#1f77b4',
   Diagnosis: '#ff7f0e',
-  Treatment: '#2ca02c',
   Exposure: '#9467bd',
+  Treatment: '#2ca02c',
+};
+
+// specific string values, in case of mixed casing e.g. 'MaRS'
+export const capitalisedTerms = {
+  '.bmi': '.BMI',
+  _bmi: '_BMI',
+  'aa.': 'AA.',
+  aa_: 'AA_',
+  'ajc.': 'AJC.',
+  ajcc: 'AJCC',
+  bmi: 'BMI',
+  'cog.': 'COG.',
+  cog_: 'COG_',
+  'dlco.': 'DLCO.',
+  dlco_: 'DLCO_',
+  'ecog.': 'ECOG.',
+  ecog_: 'ECOG_',
+  'fev1.': 'FEV1.',
+  fev1_: 'FEV1_',
+  'figo.': 'FIGO.',
+  figo_: 'FIGO_',
+  'fvc.': 'FVC.',
+  fvc_: 'FVC_',
+  'hiv.': 'HIV.',
+  hiv_: 'HIV_',
+  'hpv.': 'HPV.',
+  hpv_: 'HPV_',
+  'inpc.': 'INPC.',
+  inpc_: 'INPC_',
+  'inrg.': 'INRG.',
+  inrg_: 'INRG_',
+  'inss.': 'INSS.',
+  inss_: 'INSS_',
+  'irs.': 'IRS.',
+  irs_: 'IRS_',
+  'iss.': 'ISS.',
+  iss_: 'ISS_',
+  'ldh.': 'LDH.',
+  ldh_: 'LDH_',
+  'msts.': 'MSTS.',
+  msts_: 'MSTS_',
 };

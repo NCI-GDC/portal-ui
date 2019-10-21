@@ -4,17 +4,18 @@ import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
 import { groupBy } from 'lodash';
 
-import { Row } from '@ncigdc/uikit/Flex';
+import { Column, Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { setModal } from '@ncigdc/dux/modal';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
+import { theme } from '@ncigdc/theme/index';
 
 import SetInput from './SetInput';
 
 const styles = {
   horizontalPadding: {
-    paddingRight: 20,
     paddingLeft: 20,
+    paddingRight: 20,
   },
 };
 
@@ -24,13 +25,14 @@ const enhance = compose(
   withState('hits', 'setHits', []),
   withPropsOnChange(
     ['hits', 'validating'],
-    ({ hits, setValidating, validating, validateHits, idMap }) => {
+    ({
+      hits, idMap, setValidating, validateHits, validating,
+    }) => {
       const { noSpecialCharHits = [], specialCharHits = [] } = groupBy(
         hits,
-        id =>
-          /^[a-zA-Z0-9\->:.]*$/.test(id)
+        id => (/^[a-zA-Z0-9\->:.]*$/.test(id)
             ? 'noSpecialCharHits'
-            : 'specialCharHits',
+            : 'specialCharHits'),
       );
 
       if (!validating) {
@@ -39,10 +41,7 @@ const enhance = compose(
 
       return {
         matched: noSpecialCharHits.filter(g => idMap[g]),
-        unmatched: [
-          ...noSpecialCharHits.filter(g => idMap[g] === null),
-          ...specialCharHits,
-        ],
+        unmatched: [...noSpecialCharHits.filter(g => idMap[g] === null), ...specialCharHits],
       };
     },
   ),
@@ -50,27 +49,29 @@ const enhance = compose(
 
 class UploadSet extends React.Component {
   input = null;
+
   clear = () => {
     this.input && this.input.clear();
   };
+
   render() {
     const {
-      hits,
-      setHits,
-      unmatched,
-      matched,
-      validating,
+      content,
       CreateSetButton,
       dispatch,
+      heading,
+      hits,
       inputProps,
       MappingTable,
-      heading,
+      matched,
+      setHits,
+      unmatched,
+      validating,
       validatingMessage,
-      content,
     } = this.props;
 
     return (
-      <div>
+      <Column style={{ margin: '0 2rem 2rem' }}>
         <h2
           style={{
             ...styles.horizontalPadding,
@@ -78,50 +79,49 @@ class UploadSet extends React.Component {
             paddingBottom: 10,
             paddingTop: 15,
           }}
-        >
+          >
           {heading}
         </h2>
         <div
           style={{
             ...styles.horizontalPadding,
-            borderTop: '1px solid #e5e5e5',
-            borderBottom: '1px solid #e5e5e5',
-            paddingTop: 10,
-            paddingBottom: 10,
-            overflow: 'auto',
+            borderBottom: `1px solid ${theme.greyScale5}`,
+            borderTop: `1px solid ${theme.greyScale5}`,
             // calc instead of using flex because IE11 doesn't handle flex + max-height properly
             maxHeight: 'calc(100vh - 160px)',
+            overflow: 'auto',
+            paddingBottom: 10,
+            paddingTop: 10,
           }}
-        >
+          >
           {content}
           <SetInput
             {...inputProps}
             onUpdate={setHits}
             ref={n => (this.input = n)}
-          />
+            />
           {validating && validatingMessage}
           <MappingTable matched={matched} unmatched={unmatched} />
         </div>
         <Row
+          spacing="1rem"
           style={{
             ...styles.horizontalPadding,
             justifyContent: 'flex-end',
             paddingTop: 10,
-            paddingBottom: 15,
           }}
-          spacing="1rem"
-        >
+          >
           <Button onClick={() => dispatch(setModal(null))}>Cancel</Button>
-          <Button onClick={this.clear} disabled={!hits.length}>
+          <Button disabled={!hits.length} onClick={this.clear}>
             Clear
           </Button>
 
           <CreateSetButton
             hits={matched}
             onClose={() => dispatch(setModal(null))}
-          />
+            />
         </Row>
-      </div>
+      </Column>
     );
   }
 }

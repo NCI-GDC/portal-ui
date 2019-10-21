@@ -137,7 +137,7 @@ const SurvivalAnalysisCard = ({
           <div>
             <SurvivalPlotWrapper
               plotType="mutation"
-              survivalPlotLoading={loading}
+              survivalDataLoading={loading}
               {...survivalData}
               height={240}
               palette={palette}

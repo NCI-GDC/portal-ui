@@ -1,8 +1,11 @@
-// @flow
 import React from 'react';
 import { QueryRenderer } from 'react-relay';
 import Relay from 'react-relay/classic';
-import { withPropsOnChange } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withPropsOnChange,
+} from 'recompose';
 
 import environment from '@ncigdc/modern_components/environment';
 import { withLoader } from '@ncigdc/uikit/Loaders/Loader';
@@ -17,12 +20,17 @@ export const createClassicRenderer = (Route, Container, minHeight) => {
 
       render() {
         return (
-          <div style={{ position: 'relative', minHeight }}>
+          <div
+            style={{
+              position: 'relative',
+              minHeight,
+            }}
+            >
             <Relay.Renderer
+              Container={Container}
               environment={Relay.Store}
               queryConfig={new Route(this.props)}
-              Container={Container}
-              render={({ props: relayProps, error }) => {
+              render={({ error, props: relayProps }) => {
                 this.lastProps = relayProps || this.lastProps;
 
                 return (
@@ -32,10 +40,10 @@ export const createClassicRenderer = (Route, Container, minHeight) => {
                     {...this.props}
                     firstLoad={!this.lastProps}
                     loading={!relayProps && !error}
-                  />
+                    />
                 );
               }}
-            />
+              />
           </div>
         );
       }
@@ -53,9 +61,8 @@ export class BaseQuery extends React.Component {
       <QueryRenderer
         environment={environment}
         query={query}
-        variables={variables}
-        render={({ props: relayProps, error }) => {
-          const { parentProps, parentVariables, Component } = this.props;
+        render={({ error, props: relayProps }) => {
+          const { Component, parentProps, parentVariables } = this.props;
           // TODO: handle error
           this.lastProps = relayProps || this.lastProps;
 
@@ -71,14 +78,18 @@ export class BaseQuery extends React.Component {
               {...this.props}
               firstLoad={!this.lastProps}
               loading={!relayProps && !error}
-            />
+              />
           );
         }}
-      />
+        variables={variables}
+        />
     );
   }
 }
 
-export default withPropsOnChange(['Component'], ({ Component }) => ({
-  Component: withLoader(Component),
-}))(BaseQuery);
+export default compose(
+  setDisplayName('EnhancedBaseQuery'),
+  withPropsOnChange(['Component'], ({ Component }) => ({
+    Component: withLoader(Component),
+  })),
+)(BaseQuery);

@@ -6,9 +6,10 @@ import '../../survivalPlot.css';
 
 const ClinicalSurvivalPlot = ({
   downloadChartName,
+  palette,
   plotType,
   survivalData: { id, legend, rawData },
-  survivalPlotLoading,
+  survivalDataLoading,
 }) => (
   <div
     style={{
@@ -24,10 +25,11 @@ const ClinicalSurvivalPlot = ({
       height={202}
       id={id}
       legend={legend}
+      palette={palette}
       plotType={plotType}
       rawData={rawData}
       slug={`${downloadChartName}-survival-plot`}
-      survivalPlotLoading={survivalPlotLoading}
+      survivalDataLoading={survivalDataLoading}
       />
   </div>
 );

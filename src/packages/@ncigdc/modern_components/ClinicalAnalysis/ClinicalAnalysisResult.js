@@ -140,7 +140,7 @@ const ClinicalAnalysisResult = ({
   push,
   setControlPanelExpanded,
   setId,
-  survivalPlotLoading,
+  survivalDataLoading,
 }: IAnalysisResultProps) => {
   const downloadSvgInfo = getDownloadSvgInfo(displayVariables);
   return hits.total === 0
@@ -196,6 +196,7 @@ const ClinicalAnalysisResult = ({
                     text={currentAnalysis.name}
                     >
                     <h1
+                      className="print-w500"
                       style={{
                         fontSize: '2.5rem',
                         margin: 5,
@@ -206,7 +207,12 @@ const ClinicalAnalysisResult = ({
                   </EditableLabel>
                 </div>
               </Row>
-              <span style={{ margin: '0 0 5px 5px' }}>{label}</span>
+              <div
+                className="print-w500"
+                style={{ margin: '0 0 5px 5px' }}
+                >
+                {label}
+              </div>
             </Column>
           </Row>
           <Row spacing="5px">
@@ -227,31 +233,39 @@ const ClinicalAnalysisResult = ({
               Copy Analysis
             </Button>
             <DownloadVisualizationButton
-              noText
-              slug={getDownloadSlugArray(downloadSvgInfo)}
               buttonStyle={{
                 ...visualizingButton,
                 height: '100%',
               }}
+              noText
+              slug={getDownloadSlugArray(downloadSvgInfo)}
               svg={downloadSvgInfo
-                .reduce((acc, { chart, fieldName, slug, type }) => ([
+                .reduce((acc, {
+                  chart, fieldName, slug, type,
+                }) => ([
                   ...acc,
-                  ...['box', 'histogram', 'survival'].includes(chart) &&
-                    [() => wrapSvg(
+                  ...[
+                    'box',
+                    'histogram',
+                    'survival',
+                  ].includes(chart) &&
+                    [
+                      () => wrapSvg(
                       chart === 'box'
                         ? getBoxQQDownload(fieldName, 'Box', type)
                         : chart === 'histogram'
                           ? getHistogramDownload(fieldName)
                           : getSurvivalDownload(slug)
-                    )],
+                      ),
+                    ],
                   ...chart === 'box' &&
-                    [() => wrapSvg(
-                      getBoxQQDownload(fieldName, 'QQ', type)
-                    )],
-                ]), 
-                [() => wrapSvg(getSurvivalDownload(OVERALL_SURVIVAL_SLUG))]
-                )
-              }
+                    [
+                      () => wrapSvg(
+                        getBoxQQDownload(fieldName, 'QQ', type)
+                      ),
+                    ],
+                ]),
+                        [() => wrapSvg(getSurvivalDownload(OVERALL_SURVIVAL_SLUG))])}
               tooltipHTML="Download all images"
               />
           </Row>
@@ -287,6 +301,7 @@ const ClinicalAnalysisResult = ({
               }}
               >
               <Column
+                className="print-w500"
                 style={{
                   ...zDepth1,
                   height: 560,
@@ -320,7 +335,8 @@ const ClinicalAnalysisResult = ({
                     height={430}
                     plotType="clinicalOverall"
                     slug={OVERALL_SURVIVAL_SLUG}
-                    survivalPlotLoading={survivalPlotLoading}
+                    survivalDataLoading={survivalDataLoading}
+                    uniqueClass="clinical-survival-plot"
                     />
                 </div>
               </Column>
@@ -392,7 +408,7 @@ export default compose(
   })),
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
-  withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withState('survivalDataLoading', 'setSurvivalDataLoading', true),
   withState('setId', 'setSetId', ''),
   withPropsOnChange(
     ['viewer'],
@@ -411,20 +427,20 @@ export default compose(
     ({ currentAnalysis }, {
       currentAnalysis: nextCurrentAnalysis,
       overallSurvivalData,
-      survivalPlotLoading,
+      survivalDataLoading,
     }) => (
       !isEqual(currentAnalysis, nextCurrentAnalysis) ||
-      (Object.keys(overallSurvivalData).length < 1 && !survivalPlotLoading)
+      (Object.keys(overallSurvivalData).length < 1 && !survivalDataLoading)
     ),
     async ({
       currentAnalysis: nextCurrentAnalysis,
       setOverallSurvivalData,
       setSetId,
-      setSurvivalPlotLoading,
+      setSurvivalDataLoading,
     }) => {
       const setId = Object.keys(nextCurrentAnalysis.sets.case)[0];
       setSetId(setId);
-      setSurvivalPlotLoading(true);
+      setSurvivalDataLoading(true);
       const nextSurvivalData = await getDefaultCurve({
         currentFilters: {
           content: [
@@ -442,7 +458,7 @@ export default compose(
       });
 
       setOverallSurvivalData(nextSurvivalData);
-      setSurvivalPlotLoading(false);
+      setSurvivalDataLoading(false);
     }
   ),
   withHandlers({
@@ -455,20 +471,20 @@ export default compose(
       controlPanelExpanded: nextControlPanelExpanded,
       loading: nextLoading,
       populateSurvivalData: nextPopulateSurvivalData,
-      survivalPlotLoading: nextSurvivalPlotLoading,
+      survivalDataLoading: nextSurvivalDataLoading,
     }) {
       const {
         controlPanelExpanded,
         loading,
         populateSurvivalData,
-        survivalPlotLoading,
+        survivalDataLoading,
       } = this.props;
 
       return !(
         nextControlPanelExpanded === controlPanelExpanded &&
         nextLoading === loading &&
         isEqual(populateSurvivalData, nextPopulateSurvivalData) &&
-        nextSurvivalPlotLoading === survivalPlotLoading
+        nextSurvivalDataLoading === survivalDataLoading
       );
     },
   }),

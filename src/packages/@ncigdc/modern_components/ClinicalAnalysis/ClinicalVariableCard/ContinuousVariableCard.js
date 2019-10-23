@@ -433,7 +433,8 @@ export default compose(
           })
           : [];
 
-      // keep survival in the 'custom' state unless 
+      // once survival has been customized,
+      // retain the 'custom' flag unless
       // the user resets the whole card
       const isUsingCustomSurvival = isSurvivalCustom ||
         customBinMatches.length > 0;

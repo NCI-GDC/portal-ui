@@ -393,13 +393,13 @@ export default compose(
   ),
   lifecycle({
     shouldComponentUpdate({
-      currentAnalysis: { displayVariables: nextDisplayVariables },
+      currentAnalysis: nextCurrentAnalysis,
       searchValue: nextSearchValue,
       totalClinicalAnalysisFields: nextTotalClinicalAnalysisFields,
       totalUsefulFacets: nextTotalUsefulFacets,
     }) {
       const {
-        currentAnalysis: { displayVariables },
+        currentAnalysis,
         searchValue: prevSearchValue,
         totalClinicalAnalysisFields,
         totalUsefulFacets,
@@ -407,7 +407,7 @@ export default compose(
 
       return !(
         nextTotalClinicalAnalysisFields === totalClinicalAnalysisFields &&
-        isEqual(nextDisplayVariables, displayVariables) &&
+        isEqual(nextCurrentAnalysis, currentAnalysis) &&
         nextSearchValue === prevSearchValue &&
         nextTotalUsefulFacets === totalUsefulFacets
       );

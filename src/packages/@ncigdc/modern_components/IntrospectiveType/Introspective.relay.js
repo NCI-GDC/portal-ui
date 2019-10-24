@@ -30,7 +30,7 @@ export default (Component: ReactClass<*>) => compose(
     parentProps={props}
     query={graphql`
       query Introspective_relayQuery($typeName: String!) {
-        __type(name: $typeName) {
+        introspectiveType: __type(name: $typeName) {
           name
           fields {
             name

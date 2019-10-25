@@ -48,7 +48,7 @@ export const downloadToTSV = ({
           : td.innerText;
 
         const joinedText = hasDataList
-          ? JSON.parse(hasDataList).join(',')
+          ? JSON.parse(hasDataList).join(', ')
           : exportText
             .trim()
             .split(/\s*\n\s*/)

@@ -25,7 +25,9 @@ export const downloadToTSV = ({
     'Add all files to cart',
     'Remove all files from cart',
     'Select column',
-  ], filename, selector,
+  ],
+  filename,
+  selector,
 }) => {
   const tableEl = document.querySelector(selector);
   const headTrs = tableEl.querySelector('thead').querySelectorAll('tr');

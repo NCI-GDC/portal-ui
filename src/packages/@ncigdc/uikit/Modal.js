@@ -35,13 +35,18 @@ const modalStyles = {
 };
 
 const Modal = ({
-  children, isOpen, onRequestClose, style,
+  children,
+  isOpen,
+  onRequestClose,
+  shouldNotCloseOnEsc,
+  style,
 }) => (
   <ReactModal
     className="test-modal"
     contentLabel="Modal"
     isOpen={isOpen}
     onRequestClose={onRequestClose || (() => { })}
+    shouldCloseOnEsc={!shouldNotCloseOnEsc}
     style={{ ..._.merge({}, modalStyles, style) }}
     >
     {Children.map(children, child => cloneElement(child, { ...child.props }))}

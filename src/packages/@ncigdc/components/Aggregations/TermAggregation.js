@@ -62,7 +62,7 @@ export const BottomRow = styled(Row, {
 let input;
 const TermAggregation = (props: TProps) => {
   const dotField = props.field.replace(/__/g, '.');
-  const { filteredBuckets, maxShowing, filter } = props;
+  const { filter, filteredBuckets, maxShowing } = props;
 
   return (
     <LocationSubscriber>
@@ -71,149 +71,148 @@ const TermAggregation = (props: TProps) => {
           ((ctx.query &&
             parseFilterParam((ctx.query || {}).filters, {}).content) ||
           [])
-          .map(filter => ({
-            ...filter,
-            content: {
-              ...filter.content,
-              value: typeof filter.content.value === 'string'
+            .map(filter => ({
+              ...filter,
+              content: {
+                ...filter.content,
+                value: typeof filter.content.value === 'string'
                 ? filter.content.value.toLowerCase()
-                : filter.content.value.map(val => val.toLowerCase())
+                : filter.content.value.map(val => val && `${val}`.toLowerCase()),
               },
             }
-          ));
+            ));
         return (
-          <Container className="test-term-aggregation" style={{...props.style, paddingBottom: props.collapsed ? 0 : 10}}>
-            {!props.collapsed && props.showingValueSearch && (
-              <Row>
-                <Input
-                  aria-label="Search..."
-                  autoFocus
-                  getNode={node => {
-                    input = node;
-                  }}
-                  onChange={() => props.setFilter(input.value)}
-                  placeholder="Search..."
-                  style={{
-                    borderRadius: '4px',
-                    marginBottom: '6px',
-                  }}
-                  />
-                {input && input.value && (
-                  <CloseIcon
-                    onClick={() => {
-                      props.setFilter('');
-                      input.value = '';
-                    }}
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      padding: '10px',
-                      transition: 'all 0.3s ease',
-                      outline: 0,
-                    }}
-                    />
-                )}
-              </Row>
-            )}
-            {!props.collapsed && (
-              <Column>
-                {_.orderBy(filteredBuckets, 'doc_count', 'desc')
-                  .slice(0, props.showingMore ? Infinity : maxShowing)
-                  .map(b => ({
-                    ...b,
-                    name: b.key_as_string || b.key,
-                  }))
-                  .map(bucket => (
-                    <BucketRow key={bucket.name}>
-                      <BucketLink
-                        className="bucket-link"
-                        merge="toggle"
-                        query={{
-                          offset: 0,
-                          filters: {
-                            op: 'and',
-                            content: [
-                              {
-                                op: 'in',
-                                content: {
-                                  field: dotField,
-                                  value: [bucket.name],
-                                },
-                              },
-                            ],
-                          },
-                        }}
-                        >
-                        <input
-                          checked={inCurrentFilters({
-                            key: bucket.name.toLowerCase(),
-                            dotField,
-                            currentFilters,
-                          })}
-                          id={`input-${props.title}-${bucket.name.replace(
-                            /\s/g,
-                            '-'
-                          )}`}
-                          name={`input-${props.title}-${bucket.name.replace(
-                            /\s/g,
-                            '-'
-                          )}`}
-                          readOnly
-                          style={{
-                            pointerEvents: 'none',
-                            marginRight: '5px',
-                            flexShrink: 0,
-                            verticalAlign: 'middle',
-                          }}
-                          type="checkbox"
-                          />
-                        <OverflowTooltippedLabel
-                          htmlFor={`input-${props.title}-${bucket.name.replace(
-                            /\s/g,
-                            '-'
-                          )}`}
-                          style={{
-                            marginLeft: '0.3rem',
-                            verticalAlign: 'middle',
-                          }}
-                          >
-                          {props.searchValue
-                            ? internalHighlight(
-                              props.searchValue,
-                              bucket.name,
-                              {
-                                backgroundColor: '#FFFF00',
-                              },
-                            )
-                            : bucket.name}
-                        </OverflowTooltippedLabel>
-                      </BucketLink>
-                      <CountBubble className="bucket-count">
-                        {bucket.doc_count.toLocaleString()}
-                      </CountBubble>
-                    </BucketRow>
-                  ))}
-                {filteredBuckets.length > maxShowing && (
-                  <BottomRow>
-                    <ToggleMoreLink
-                      onClick={() => props.setShowingMore(!props.showingMore)}
-                      >
-                      {props.showingMore
-                        ? 'Less...'
-                        : filteredBuckets.length - 5 &&
-                        `${filteredBuckets.length - 5} More...`}
-                    </ToggleMoreLink>
-                  </BottomRow>
+          <Container
+            className="test-term-aggregation"
+            style={{
+              ...props.style,
+              paddingBottom: props.collapsed ? 0 : 10,
+            }}
+            >
+            {props.collapsed || (
+              <React.Fragment>
+                {props.showingValueSearch && (
+                  <Row>
+                    <Input
+                      aria-label="Search..."
+                      autoFocus
+                      getNode={node => {
+                        input = node;
+                      }}
+                      handleClear={() => {
+                        props.setFilter('');
+                        input.value = '';
+                      }}
+                      onChange={() => props.setFilter(input.value)}
+                      placeholder="Search..."
+                      style={{
+                        borderRadius: '4px',
+                        marginBottom: '6px',
+                      }}
+                      value={input ? input.value : ''}
+                      />
+                  </Row>
                 )}
 
-                {filteredBuckets.length === 0 && (
-                  <span>
-                    {(input || { value: '' }).value
-                      ? 'No matching values'
-                      : 'No data for this field'}
-                  </span>
-                )}
-              </Column>
+                <Column>
+                  {_.orderBy(filteredBuckets, 'doc_count', 'desc')
+                    .slice(0, props.showingMore ? Infinity : maxShowing)
+                    .map(b => ({
+                      ...b,
+                      name: b.key_as_string || b.key,
+                    }))
+                    .map(bucket => (
+                      <BucketRow key={bucket.name}>
+                        <BucketLink
+                          className="bucket-link"
+                          merge="toggle"
+                          query={{
+                            offset: 0,
+                            filters: {
+                              op: 'and',
+                              content: [
+                                {
+                                  op: 'in',
+                                  content: {
+                                    field: dotField,
+                                    value: [bucket.name],
+                                  },
+                                },
+                              ],
+                            },
+                          }}
+                          >
+                          <input
+                            checked={inCurrentFilters({
+                              key: bucket.name.toLowerCase(),
+                              dotField,
+                              currentFilters,
+                            })}
+                            id={`input-${props.title}-${bucket.name.replace(
+                              /\s/g,
+                              '-'
+                            )}`}
+                            name={`input-${props.title}-${bucket.name.replace(
+                              /\s/g,
+                              '-'
+                            )}`}
+                            readOnly
+                            style={{
+                              pointerEvents: 'none',
+                              marginRight: '5px',
+                              flexShrink: 0,
+                              verticalAlign: 'middle',
+                            }}
+                            type="checkbox"
+                            />
+                          <OverflowTooltippedLabel
+                            htmlFor={`input-${props.title}-${bucket.name.replace(
+                              /\s/g,
+                              '-'
+                            )}`}
+                            style={{
+                              marginLeft: '0.3rem',
+                              verticalAlign: 'middle',
+                            }}
+                            >
+                            {props.searchValue
+                              ? internalHighlight(
+                                props.searchValue,
+                                bucket.name,
+                                {
+                                  backgroundColor: '#FFFF00',
+                                },
+                              )
+                              : bucket.name}
+                          </OverflowTooltippedLabel>
+                        </BucketLink>
+                        <CountBubble className="bucket-count">
+                          {bucket.doc_count.toLocaleString()}
+                        </CountBubble>
+                      </BucketRow>
+                    ))}
+                  {filteredBuckets.length > maxShowing && (
+                    <BottomRow>
+                      <ToggleMoreLink
+                        onClick={() => props.setShowingMore(!props.showingMore)}
+                        >
+                        {props.showingMore
+                          ? 'Less...'
+                          : filteredBuckets.length - 5 &&
+                          `${filteredBuckets.length - 5} More...`}
+                      </ToggleMoreLink>
+                    </BottomRow>
+                  )}
+
+                  {filteredBuckets.length === 0 && (
+                    <span>
+                      {(input || { value: '' }).value
+                        ? 'No matching values'
+                        : 'No data for this field'}
+                    </span>
+                  )}
+                </Column>
+              </React.Fragment>
             )}
           </Container>
         );
@@ -232,7 +231,7 @@ const enhance = compose(
       'searchValue',
     ],
     ({
-      buckets, filter, searchValue = '', isMatchingSearchValue,
+      buckets, filter, isMatchingSearchValue, searchValue = '',
     }) => ({
       filteredBuckets: buckets.filter(
         b => b.key !== '_missing' &&

@@ -65,7 +65,7 @@ export interface ITProps {
 }
 
 const enhance = compose(
-  setDisplayName('ExploreCaseAggregations'),
+  setDisplayName('ExploreCaseAggregations_classic'),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
   withState('advancedFilter', 'setAdvancedFilter', false),
   withPropsOnChange(['filters'], ({ filters, relay }) => relay.setVariables({

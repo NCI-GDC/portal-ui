@@ -41,7 +41,7 @@ export interface ITProps {
 }
 
 const enhance = compose(
-  setDisplayName('ExploreCaseAggregations'),
+  setDisplayName('ExploreCaseAggregations_modern'),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
   withState('advancedFilter', 'setAdvancedFilter', false),
 );
@@ -64,6 +64,7 @@ const CaseAggregations = ({
       setCollapsed={setCaseIdCollapsed}
       title="Case"
       />
+
     <SuggestionFacet
       collapsed={caseIdCollapsed}
       doctype="cases"
@@ -81,13 +82,13 @@ const CaseAggregations = ({
             {caseItem.project.project_id}
           </div>
         </Row>
-      )
-      }
+      )}
       fieldNoDoctype="case_id"
       placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
       queryType="case"
       title="Case"
       />
+
     <UploadSetButton
       defaultQuery={{
         pathname: '/exploration',
@@ -101,8 +102,9 @@ const CaseAggregations = ({
       type="case"
       UploadModal={UploadCaseSet}
       >
-        Upload Case Set
+      Upload Case Set
     </UploadSetButton>
+
     <div
       style={{
         maxHeight: `${maxFacetsPanelHeight - totalHeaderHeight}px`,

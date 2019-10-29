@@ -433,11 +433,7 @@ export default compose(
           })
           : [];
 
-      // once survival has been customized,
-      // retain the 'custom' flag unless
-      // the user resets the whole card
-      const isUsingCustomSurvival = isSurvivalCustom ||
-        customBinMatches.length > 0;
+      const isUsingCustomSurvival = customBinMatches.length > 0;
 
       const survivalBins = (isUsingCustomSurvival
         ? filterSurvivalData(getContinuousBins({
@@ -493,8 +489,7 @@ export default compose(
         variable: {
           customSurvivalPlots: nextCustomSurvivalPlots,
           isSurvivalCustom: isUsingCustomSurvival,
-          showOverallSurvival: isUsingCustomSurvival &&
-            survivalBins.length === 0,
+          showOverallSurvival: false,
         },
       }));
 

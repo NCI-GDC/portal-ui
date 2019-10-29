@@ -391,6 +391,22 @@ export default compose(
       return getBinData(binsForBinData, dataBuckets);
     }
   ),
+  // WIP
+  // withPropsOnChange((props, nextProps) =>
+  //   props.setId !== nextProps.setId &&
+  //   !nextProps.binsAreCustom && 
+  //   nextProps.variable.isSurvivalCustom,
+  // ({
+  //   dispatch,
+  //   fieldName,
+  //   id,
+  // }) => {
+  //   dispatch(updateClinicalAnalysisVariable({
+  //     fieldName,
+  //     id,
+  //     variable: resetVariableDefaults.survival,
+  //   }));
+  // }),
   withPropsOnChange(
     (props, nextProps) => nextProps.variable.active_chart === 'survival' && !(
       isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&

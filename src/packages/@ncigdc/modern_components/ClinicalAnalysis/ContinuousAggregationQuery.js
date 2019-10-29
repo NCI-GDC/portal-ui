@@ -7,12 +7,19 @@ import {
 } from 'recompose';
 import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
-import _ from 'lodash';
+import {
+  isEqual,
+  isNull,
+  reduce,
+} from 'lodash';
 
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
-import { createFacetFieldString } from '@ncigdc/utils/string'
+import { createFacetFieldString } from '@ncigdc/utils/string';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
+import { Column } from '@ncigdc/uikit/Flex';
+import Spinner from '@ncigdc/uikit/Loaders/Material';
+import { zDepth1 } from '@ncigdc/theme/mixins';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { ContinuousVariableCard } from './ClinicalVariableCard';
@@ -22,15 +29,15 @@ const simpleAggCache = {};
 const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 5;
 
-const getContinuousAggs = ({ 
+const getContinuousAggs = ({
   bins,
   continuousBinType,
   fieldName,
   filters,
-  stats
+  stats,
 }) => {
   // prevent query failing if interval will equal 0
-  if (_.isNull(stats.min) || _.isNull(stats.max)) {
+  if (isNull(stats.min) || isNull(stats.max)) {
     return null;
   }
 
@@ -48,8 +55,8 @@ const getContinuousAggs = ({
     );
 
   let rangeArr = continuousBinType === 'default'
-    ? rangeArr = makeDefaultBuckets()
-    : _.reduce(bins, (acc, bin, key) => {
+    ? makeDefaultBuckets()
+    : reduce(bins, (acc, bin) => {
       const binValues = parseContinuousKey(bin.key);
       const [from, to] = binValues;
       if (
@@ -58,7 +65,13 @@ const getContinuousAggs = ({
         (typeof to === 'number') &&
         (from < to)
       ) {
-        const result = [...acc, { from, to }];
+        const result = [
+          ...acc,
+          {
+            from,
+            to,
+          },
+        ];
         return result;
       }
       return acc;
@@ -72,10 +85,10 @@ const getContinuousAggs = ({
     content: [
       {
         ranges: rangeArr,
-      }
+      },
     ],
-    op: "range",
-  }
+    op: 'range',
+  };
   const aggregationFieldName = createFacetFieldString(fieldName);
 
   const variables = {
@@ -145,11 +158,11 @@ const getContinuousAggs = ({
   return fetch(
     urlJoin(API, `graphql/ContinuousAggregationQuery?hash=${hash}`),
     {
-      method: 'POST',
+      body,
       headers: {
         'Content-Type': 'application/json',
       },
-      body,
+      method: 'POST',
     }
   ).then(response => response
     .json()
@@ -193,37 +206,73 @@ const getContinuousAggs = ({
 
 export default compose(
   withState('aggData', 'setAggData', null),
-  withState('isLoading', 'setIsLoading', true),
+  withState('isLoading', 'setIsLoading', 'first time'),
   withProps({
     updateData: async ({
       fieldName,
-      stats,
       filters,
+      hits,
       setAggData,
       setIsLoading,
+      stats,
       variable,
-      hits,
     }) => {
       const res = await getContinuousAggs({
+        bins: variable.bins,
         continuousBinType: variable.continuousBinType,
         fieldName,
-        stats,
         filters,
-        bins: variable.bins,
         hits,
+        stats,
       });
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
-  withPropsOnChange(['filters'], ({ updateData, ...props }) => updateData(props))
+  withPropsOnChange(
+    (
+      {
+        filters,
+        variable,
+      },
+      {
+        filters: nextFilters,
+        variable: nextVariable,
+      }
+    ) => !(
+      isEqual(filters, nextFilters) &&
+      isEqual(variable, nextVariable)
+    ),
+    ({
+      setIsLoading,
+      updateData,
+      ...props
+    }) => {
+      // TODO this update is forcing an avoidable double render
+      setIsLoading(true);
+      updateData({
+        setIsLoading,
+        ...props,
+      });
+    }
+  ),
 )(({
-  aggData, isLoading, setId, stats, hits, ...props
-}) => {
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  return (
+  aggData, hits, isLoading, setId, stats, ...props
+}) => isLoading 
+  ? (
+   <Column
+      className="clinical-analysis-card"
+      style={{
+        ...zDepth1,
+        height: 560,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: '0 1rem 1rem',
+      }}
+      >
+        <Spinner />
+    </Column>
+  )
+  : (
     <ContinuousVariableCard
       data={{
         ...aggData,
@@ -232,6 +281,6 @@ export default compose(
       setId={setId}
       stats={stats}
       {...props}
-    />
-  );
-});
+      />
+  )
+);

@@ -180,9 +180,10 @@ th {
 }
 /*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
 @media print {
-  *,
-  *:before,
-  *:after {
+  /* modified from source - exclude SVGs */
+  :not(circle):not(ellipse):not(g):not(line):not(path):not(polygon):not(polyline):not(rect):not(svg):not(text):not(textPath),
+  :not(circle):not(ellipse):not(g):not(line):not(path):not(polygon):not(polyline):not(rect):not(svg):not(text):not(textPath):after,
+  :not(circle):not(ellipse):not(g):not(line):not(path):not(polygon):not(polyline):not(rect):not(svg):not(text):not(textPath):before {
     background: transparent !important;
     color: #000 !important;
     box-shadow: none !important;
@@ -8579,16 +8580,22 @@ fieldset[disabled] .btn-primary.active {
   background-color: #dbdbdb;
 }
 
-#projects-table th {
-  word-wrap: break-word !important;
-  white-space: normal !important;
-  vertical-align: bottom;
+#projects-table th,
+#projects-table td {
+  hyphens: auto;
   max-width: 100px !important;
+  overflow-wrap: break-word;
+  white-space: normal !important;
+  word-wrap: break-word !important;
 }
 
-#projects-table td {
-  white-space: normal !important;
-  max-width: 100px !important;
+#projects-table th {
+  vertical-align: bottom;
+}
+
+#projects-table td > ul {
+  hyphens: auto;
+  width: 100%;
 }
 
 abbr span {
@@ -8600,9 +8607,12 @@ svg {
 }
 
 i.fa.fa-question-circle {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-} 
-.masonry { 
+  /* this causes a bug across the app. PRTL-2743
+   it was added for svg exports.... must resolve some other way
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; */
+}
+
+.masonry {
   display: flex;
   flex-flow: row wrap;
   width: 100%;

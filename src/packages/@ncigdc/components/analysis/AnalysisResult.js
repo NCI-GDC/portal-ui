@@ -114,6 +114,7 @@ const AnalysisResult = ({
                         height: 25,
                         width: 25,
                       }}
+                      title={`${savedAnalysis.id}-icon`}
                       />
 
                     <Column>

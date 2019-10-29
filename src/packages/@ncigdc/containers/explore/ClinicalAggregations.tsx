@@ -78,7 +78,7 @@ interface IAggregationProps {
 interface IParsedFacetsProps {
   [x: string]: IAggregationProps,
 }
-export interface IfilterdFacetsProps {
+export interface IFilteredFacetsProps {
   [x: string]: IFacetProps[],
 }
 interface INotificationProps {
@@ -90,7 +90,7 @@ interface INotificationProps {
   dismissed?: boolean,
 }
 interface IClinicalProps {
-  filteredFacets: IfilterdFacetsProps,
+  filteredFacets: IFilteredFacetsProps,
   theme: ITheme,
   setUselessFacetVisibility: (uselessFacetVisibility: boolean) => void,
   shouldHideUselessFacets: boolean,

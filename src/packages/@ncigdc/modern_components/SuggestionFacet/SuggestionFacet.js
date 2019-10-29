@@ -223,7 +223,7 @@ const SuggestionFacet = compose(
                           setFacetSearch(value);
                         }
                       }}
-                      onClick={e => {
+                      onClick={({ target: { value = '' }}) => {
                         setInputValue(value);
                         setActive(!!value);
                         if (!!value) {

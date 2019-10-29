@@ -211,7 +211,7 @@ const SurvivalPlotWrapper = ({
                 ))}
             </Row>
           </div>
-          
+
           <Tooltip
             Component={
               pValue === 0 && (

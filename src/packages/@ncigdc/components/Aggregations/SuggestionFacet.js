@@ -192,8 +192,22 @@ const SuggestionFacet = compose(
                       }
                       id={fieldNoDoctype}
                       name={fieldNoDoctype}
-                      onChange={e => {
-                        const { value } = e.target;
+                      onChange={({ target: { value = '' }}) => {
+                        setInputValue(value);
+                        setActive(!!value);
+                        if (value) {
+                          setIsLoading(true);
+                          setAutocomplete(
+                            value,
+                            readyState => _.some([
+                              readyState.ready,
+                              readyState.aborted,
+                              readyState.error,
+                            ]) && setIsLoading(false),
+                          );
+                        }
+                      }}
+                      onClick={({ target: { value = '' }}) => {
                         setInputValue(value);
                         setActive(!!value);
                         if (value) {

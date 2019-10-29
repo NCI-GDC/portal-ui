@@ -224,7 +224,6 @@ const SuggestionFacet = compose(
                         }
                       }}
                       onClick={e => {
-                        const value = e.target.value;
                         setInputValue(value);
                         setActive(!!value);
                         if (!!value) {

@@ -106,149 +106,154 @@ const SurvivalPlotWrapper = ({
     textColors[4],
   ],
   plotType,
-}) => (
-  <Loader
-    className={uniqueClass}
-    height={height}
-    // TODO must handle if no data comes back
-    loading={survivalDataLoading || survivalPlotLoading}
-    >
-    {survivalDataLoading || (
-      <Column className="test-survival-plot-meta">
-        <VisualizationHeader
-          buttons={[
-            <DownloadVisualizationButton
-              data={results.map((set, i) => ({
-                ...set,
-                meta: {
-                  ...set.meta,
-                  label: set.meta.label || `S${i + 1}`,
-                },
-              }))}
-              key="download"
-              noText
-              slug="survival-plot"
-              stylePrefix={`.${CLASS_NAME}`}
-              svg={() => wrapSvg({
-                className: CLASS_NAME,
-                embed: {
-                  top: {
-                    elements: legend
-                      .map((l, i) => {
-                        const legendItem = document.querySelector(
-                          `.${uniqueClass} .legend-${i}`
-                        ).cloneNode(true);
-                        const legendTitle = legendItem.querySelector('span.print-only.inline');
-                        if (legendTitle !== null) legendTitle.className = '';
-                        return legendItem;
-                      })
-                      .concat(
-                        pValue
-                          ? document.querySelector(
-                            `.${uniqueClass} .p-value`
-                          )
-                          : null
-                      ),
+  slug = '',
+}) => {
+  const plotName = slug === '' ? uniqueClass : slug;
+  return (
+    <Loader
+      className={plotName}
+      height={height}
+      // TODO must handle if no data comes back
+      loading={survivalDataLoading || survivalPlotLoading}
+      >
+      {survivalDataLoading || (
+        <Column className="test-survival-plot-meta">
+          <VisualizationHeader
+            buttons={[
+              <DownloadVisualizationButton
+                data={results.map((set, i) => ({
+                  ...set,
+                  meta: {
+                    ...set.meta,
+                    label: set.meta.label || `S${i + 1}`,
                   },
-                },
-                selector: `.${uniqueClass} .${CLASS_NAME} svg`,
-                title: plotType === 'mutation' ? TITLE : '',
-              })}
-              tooltipHTML="Download SurvivalPlot data or image"
-              tsvData={results.reduce((data, set, i) => {
-                const mapData = set.donors.map(d => toMap(d));
-                return [
-                  ...data,
-                  ...(results.length > 1
-                    ? mapData.map(m => m.set('label', set.meta.label || `S${i + 1}`))
-                    : mapData),
-                ];
-              }, [])}
-              />,
-            <Tooltip Component="Reset SurvivalPlot Zoom" key="reset">
-              <Button onClick={() => setXDomain()} style={visualizingButton}>
-                <i className="fa fa-undo" />
-                <Hidden>Reset</Hidden>
-              </Button>
-            </Tooltip>,
-          ]}
-          title={plotType === 'mutation' ? TITLE : ''}
-          />
+                }))}
+                key="download"
+                noText
+                slug={plotName}
+                stylePrefix={`.${CLASS_NAME}`}
+                svg={() => wrapSvg({
+                  className: CLASS_NAME,
+                  embed: {
+                    top: {
+                      elements: legend
+                        .map((l, i) => {
+                          const legendItem = document.querySelector(
+                            `.${plotName} .legend-${i}`
+                          ).cloneNode(true);
+                          const legendTitle = legendItem.querySelector('span.print-only.inline');
+                          if (legendTitle !== null) legendTitle.className = '';
+                          return legendItem;
+                        })
+                        .concat(
+                          pValue
+                            ? document.querySelector(
+                              `.${plotName} .p-value`
+                            )
+                            : null
+                        ),
+                    },
+                  },
+                  selector: `.${plotName} .${CLASS_NAME} svg`,
+                  title: plotType === 'mutation' ? TITLE : '',
+                })}
+                tooltipHTML="Download SurvivalPlot data or image"
+                tsvData={results.reduce((data, set, i) => {
+                  const mapData = set.donors.map(d => toMap(d));
+                  return [
+                    ...data,
+                    ...(results.length > 1
+                      ? mapData.map(m => m.set('label', set.meta.label || `S${i + 1}`))
+                      : mapData),
+                  ];
+                }, [])}
+                />,
+              <Tooltip Component="Reset SurvivalPlot Zoom" key="reset">
+                <Button onClick={() => setXDomain()} style={visualizingButton}>
+                  <i className="fa fa-undo" />
+                  <Hidden>Reset</Hidden>
+                </Button>
+              </Tooltip>,
+            ]}
+            style={buttonStyle}
+            title={plotType === 'mutation' ? TITLE : ''}
+            />
 
-        <div>
-          <Row
-            className="survival-legend-wrapper"
+          <div>
+            <Row
+              className="survival-legend-wrapper"
+              style={{
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+                marginTop: '0.5rem',
+              }}
+              >
+              {legend &&
+                legend.map((l, i) => (
+                  <div
+                    className={`legend-item legend-${i}`}
+                    key={l.key}
+                    style={l.style || {}}
+                    >
+                    <div
+                      style={{
+                        color: Color(palette[i]).darken(0.3)
+                          .rgbString(),
+                        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+                        fontSize: '1.35rem',
+                        padding: '0 1rem',
+                        textAlign: 'center',
+                      }}
+                      >
+                      {l.value}
+                    </div>
+                  </div>
+                ))}
+            </Row>
+          </div>
+
+          <Tooltip
+            Component={
+              pValue === 0 && (
+                <div>
+                  Value shows 0.00e+0 because the
+                  <br />
+                  P-Value is extremely low and goes beyond
+                  <br />
+                  the precision inherent in the code
+                </div>
+              )
+            }
+            >
+            <div className="p-value">
+              <div style={styles.pValue}>
+                {isNumber(pValue) &&
+                  `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
+              </div>
+            </div>
+          </Tooltip>
+
+          <div
+            className="no-print"
             style={{
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-              marginTop: '0.5rem',
+              fontSize: '1.1rem',
+              marginBottom: -SVG_MARGINS.top,
+              marginRight: SVG_MARGINS.right,
+              textAlign: 'right',
             }}
             >
-            {legend &&
-              legend.map((l, i) => (
-                <div
-                  className={`legend-${i}`}
-                  key={l.key}
-                  style={l.style || {}}
-                  >
-                  <div
-                    style={{
-                      color: Color(palette[i]).darken(0.3)
-                        .rgbString(),
-                      fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-                      fontSize: '1.35rem',
-                      padding: '0 1rem',
-                      textAlign: 'center',
-                    }}
-                    >
-                    {l.value}
-                  </div>
-                </div>
-              ))}
-          </Row>
-        </div>
-
-        <Tooltip
-          Component={
-            pValue === 0 && (
-              <div>
-                Value shows 0.00e+0 because the
-                <br />
-                P-Value is extremely low and goes beyond
-                <br />
-                the precision inherent in the code
-              </div>
-            )
-          }
-          >
-          <div className="p-value">
-            <div style={styles.pValue}>
-              {isNumber(pValue) &&
-                `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
-            </div>
+            drag to zoom
           </div>
-        </Tooltip>
+        </Column>
+      )}
 
-        <div
-          className="no-print"
-          style={{
-            fontSize: '1.1rem',
-            marginBottom: -SVG_MARGINS.top,
-            marginRight: SVG_MARGINS.right,
-            textAlign: 'right',
-          }}
-          >
-          drag to zoom
-        </div>
-      </Column>
-    )}
-
-    <Container
-      setSurvivalContainer={setSurvivalContainer}
-      survivalDataLoading={survivalDataLoading}
-      />
-  </Loader>
-);
+      <Container
+        setSurvivalContainer={setSurvivalContainer}
+        survivalDataLoading={survivalDataLoading}
+        />
+    </Loader>
+  );
+};
 
 function renderSurvivalPlot({
   height = 0,

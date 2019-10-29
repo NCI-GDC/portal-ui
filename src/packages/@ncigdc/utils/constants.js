@@ -455,3 +455,7 @@ export const capitalisedTerms = {
   'msts.': 'MSTS.',
   msts_: 'MSTS_',
 };
+
+export const DISPLAY_SUMMARY_PAGE = localStorage.REACT_APP_DISPLAY_SUMMARY_PAGE ||
+  process.env.REACT_APP_DISPLAY_SUMMARY_PAGE ||
+  false;

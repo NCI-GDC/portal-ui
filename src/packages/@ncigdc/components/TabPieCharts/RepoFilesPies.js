@@ -69,8 +69,7 @@ const RepoFilesPiesComponent = ({
               query={query}
               push={push}
               path="doc_count"
-              height={125}
-              width={125}
+              diameter={125}
             />
           </ColumnCenter>
           <ColumnCenter
@@ -90,8 +89,7 @@ const RepoFilesPiesComponent = ({
               query={query}
               push={push}
               path="doc_count"
-              height={125}
-              width={125}
+              diameter={125}
             />
           </ColumnCenter>
           <ColumnCenter
@@ -108,8 +106,7 @@ const RepoFilesPiesComponent = ({
               query={query}
               push={push}
               path="doc_count"
-              height={125}
-              width={125}
+              diameter={125}
             />
           </ColumnCenter>
           <ColumnCenter
@@ -126,8 +123,7 @@ const RepoFilesPiesComponent = ({
               query={query}
               push={push}
               path="doc_count"
-              height={125}
-              width={125}
+              diameter={125}
             />
           </ColumnCenter>
           <ColumnCenter
@@ -144,8 +140,7 @@ const RepoFilesPiesComponent = ({
               query={query}
               push={push}
               path="doc_count"
-              height={125}
-              width={125}
+              diameter={125}
             />
           </ColumnCenter>
           {showingMore && [
@@ -164,8 +159,7 @@ const RepoFilesPiesComponent = ({
                 query={query}
                 push={push}
                 path="doc_count"
-                height={125}
-                width={125}
+                diameter={125}
               />
             </ColumnCenter>,
             <ColumnCenter
@@ -183,8 +177,7 @@ const RepoFilesPiesComponent = ({
                 query={query}
                 push={push}
                 path="doc_count"
-                height={125}
-                width={125}
+                diameter={125}
               />
             </ColumnCenter>,
           ]}

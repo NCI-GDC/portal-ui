@@ -2919,17 +2919,32 @@ type CNVAggregations {
   occurrence__case__diagnoses__ann_arbor_b_symptoms: Aggregations
   occurrence__case__diagnoses__year_of_diagnosis: NumericAggregations
   occurrence__case__diagnoses__classification_of_tumor: Aggregations
+  occurrence__case__diagnoses__vascular_invasion_type: Aggregations
   occurrence__case__diagnoses__last_known_disease_status: Aggregations
   occurrence__case__diagnoses__method_of_diagnosis: Aggregations
-  occurrence__case__diagnoses__laterality: Aggregations
+  occurrence__case__diagnoses__secondary_gleason_grade: Aggregations
   occurrence__case__diagnoses__ann_arbor_pathologic_stage: Aggregations
   occurrence__case__diagnoses__primary_diagnosis: Aggregations
   occurrence__case__diagnoses__submitter_id: Aggregations
   occurrence__case__diagnoses__tumor_stage: Aggregations
   occurrence__case__diagnoses__age_at_diagnosis: NumericAggregations
   occurrence__case__diagnoses__hpv_positive_type: Aggregations
+  occurrence__case__diagnoses__metastasis_at_diagnosis: Aggregations
   occurrence__case__diagnoses__morphology: Aggregations
   occurrence__case__diagnoses__ann_arbor_clinical_stage: Aggregations
+  occurrence__case__diagnoses__treatments__days_to_treatment_start: NumericAggregations
+  occurrence__case__diagnoses__treatments__initial_disease_status: Aggregations
+  occurrence__case__diagnoses__treatments__treatment_type: Aggregations
+  occurrence__case__diagnoses__treatments__submitter_id: Aggregations
+  occurrence__case__diagnoses__treatments__treatment_id: Aggregations
+  occurrence__case__diagnoses__treatments__state: Aggregations
+  occurrence__case__diagnoses__treatments__therapeutic_agents: Aggregations
+  occurrence__case__diagnoses__treatments__regimen_or_line_of_therapy: Aggregations
+  occurrence__case__diagnoses__treatments__treatment_intent_type: Aggregations
+  occurrence__case__diagnoses__treatments__treatment_anatomic_site: Aggregations
+  occurrence__case__diagnoses__treatments__treatment_outcome: Aggregations
+  occurrence__case__diagnoses__treatments__days_to_treatment_end: NumericAggregations
+  occurrence__case__diagnoses__treatments__treatment_or_therapy: Aggregations
   occurrence__case__diagnoses__new_event_anatomic_site: Aggregations
   occurrence__case__diagnoses__days_to_last_known_disease_status: NumericAggregations
   occurrence__case__diagnoses__perineural_invasion_present: Aggregations
@@ -2942,8 +2957,8 @@ type CNVAggregations {
   occurrence__case__diagnoses__ajcc_clinical_m: Aggregations
   occurrence__case__diagnoses__ajcc_pathologic_m: Aggregations
   occurrence__case__diagnoses__ajcc_pathologic_n: Aggregations
-  occurrence__case__diagnoses__vascular_invasion_present: Aggregations
   occurrence__case__diagnoses__ldh_level_at_diagnosis: NumericAggregations
+  occurrence__case__diagnoses__laterality: Aggregations
   occurrence__case__diagnoses__residual_disease: Aggregations
   occurrence__case__diagnoses__days_to_recurrence: NumericAggregations
   occurrence__case__diagnoses__tumor_largest_dimension_diameter: NumericAggregations
@@ -2951,35 +2966,35 @@ type CNVAggregations {
   occurrence__case__diagnoses__tumor_grade: Aggregations
   occurrence__case__diagnoses__state: Aggregations
   occurrence__case__diagnoses__figo_stage: Aggregations
-  occurrence__case__diagnoses__treatments__days_to_treatment_start: NumericAggregations
-  occurrence__case__diagnoses__treatments__treatment_type: Aggregations
-  occurrence__case__diagnoses__treatments__submitter_id: Aggregations
-  occurrence__case__diagnoses__treatments__treatment_id: Aggregations
-  occurrence__case__diagnoses__treatments__state: Aggregations
-  occurrence__case__diagnoses__treatments__therapeutic_agents: Aggregations
-  occurrence__case__diagnoses__treatments__treatment_intent_type: Aggregations
-  occurrence__case__diagnoses__treatments__treatment_anatomic_site: Aggregations
-  occurrence__case__diagnoses__treatments__treatment_outcome: Aggregations
-  occurrence__case__diagnoses__treatments__days_to_treatment_end: NumericAggregations
-  occurrence__case__diagnoses__treatments__treatment_or_therapy: Aggregations
-  occurrence__case__diagnoses__lymphatic_invasion_present: Aggregations
+  occurrence__case__diagnoses__cause_of_death: Aggregations
+  occurrence__case__diagnoses__icd_10_code: Aggregations
+  occurrence__case__diagnoses__days_to_diagnosis: NumericAggregations
   occurrence__case__diagnoses__tissue_or_organ_of_origin: Aggregations
-  occurrence__case__diagnoses__progression_or_recurrence: Aggregations
   occurrence__case__diagnoses__hpv_status: Aggregations
+  occurrence__case__diagnoses__progression_or_recurrence: Aggregations
+  occurrence__case__diagnoses__igcccg_stage: Aggregations
+  occurrence__case__diagnoses__international_prognostic_index: Aggregations
   occurrence__case__diagnoses__prior_malignancy: Aggregations
   occurrence__case__diagnoses__ajcc_staging_system_edition: Aggregations
-  occurrence__case__diagnoses__circumferential_resection_margin: NumericAggregations
+  occurrence__case__diagnoses__vascular_invasion_present: Aggregations
   occurrence__case__diagnoses__new_event_type: Aggregations
+  occurrence__case__diagnoses__lymphatic_invasion_present: Aggregations
   occurrence__case__diagnoses__ajcc_pathologic_stage: Aggregations
   occurrence__case__diagnoses__burkitt_lymphoma_clinical_variant: Aggregations
-  occurrence__case__diagnoses__cause_of_death: Aggregations
+  occurrence__case__diagnoses__iss_stage: Aggregations
   occurrence__case__diagnoses__ldh_normal_range_upper: NumericAggregations
+  occurrence__case__diagnoses__cog_renal_stage: Aggregations
   occurrence__case__diagnoses__ann_arbor_extranodal_involvement: Aggregations
   occurrence__case__diagnoses__lymph_nodes_positive: NumericAggregations
+  occurrence__case__diagnoses__synchronous_malignancy: Aggregations
   occurrence__case__diagnoses__site_of_resection_or_biopsy: Aggregations
   occurrence__case__diagnoses__days_to_last_follow_up: NumericAggregations
+  occurrence__case__diagnoses__inss_stage: Aggregations
+  occurrence__case__diagnoses__circumferential_resection_margin: NumericAggregations
+  occurrence__case__diagnoses__primary_gleason_grade: Aggregations
   occurrence__case__diagnoses__ajcc_clinical_stage: Aggregations
   occurrence__case__diagnoses__days_to_new_event: NumericAggregations
+  occurrence__case__diagnoses__masaoka_stage: Aggregations
   occurrence__case__diagnoses__hiv_positive: Aggregations
   occurrence__case__ssm_acl: Aggregations
   occurrence__case__days_to_index: NumericAggregations
@@ -2990,11 +3005,13 @@ type CNVAggregations {
   occurrence__case__demographic__year_of_birth: NumericAggregations
   occurrence__case__demographic__race: Aggregations
   occurrence__case__demographic__days_to_birth: NumericAggregations
+  occurrence__case__demographic__age_at_index: NumericAggregations
   occurrence__case__demographic__vital_status: Aggregations
   occurrence__case__demographic__days_to_death: NumericAggregations
   occurrence__case__demographic__submitter_id: Aggregations
   occurrence__case__demographic__ethnicity: Aggregations
   occurrence__case__demographic__year_of_death: NumericAggregations
+  occurrence__case__index_date: Aggregations
   occurrence__case__submitter_id: Aggregations
   occurrence__case__project__project_id: Aggregations
   occurrence__case__project__disease_type: Aggregations
@@ -3005,6 +3022,7 @@ type CNVAggregations {
   occurrence__case__project__primary_site: Aggregations
   occurrence__case__project__dbgap_accession_number: Aggregations
   occurrence__case__project__name: Aggregations
+  occurrence__case__lost_to_followup: Aggregations
   occurrence__case__state: Aggregations
   occurrence__case__case_id: Aggregations
   occurrence__case__primary_site: Aggregations
@@ -3172,7 +3190,13 @@ type CNVOccurrenceCase {
   days_to_index: Float
 
   # keyword
+  index_date: String
+
+  # keyword
   submitter_id: String
+
+  # keyword
+  lost_to_followup: String
 
   # keyword
   state: String
@@ -3956,14 +3980,20 @@ type ECase implements Node {
   # keyword
   ssm_acl: String
 
+  # keyword
+  state: String
+
   # long
   days_to_index: Float
 
   # keyword
-  state: String
+  index_date: String
 
   # keyword
   submitter_id: String
+
+  # keyword
+  lost_to_followup: String
 
   # keyword
   case_autocomplete: String
@@ -4041,14 +4071,22 @@ type ECaseAggregations {
   # Text that describes the kind of disease present in the tumor specimen as related to a specific timepoint.
   diagnoses__classification_of_tumor: Aggregations
 
+  # Text term that represents the type of vascular tumor invasion.
+  diagnoses__vascular_invasion_type: Aggregations
+
   # Text term that describes the last known state or condition of an individual's neoplasm.
   diagnoses__last_known_disease_status: Aggregations
 
   # Text term used to describe the method used to confirm the patients malignant diagnosis.
   diagnoses__method_of_diagnosis: Aggregations
 
-  # For tumors in paired organs, designates the side on which the cancer originates.
-  diagnoses__laterality: Aggregations
+  # The text term used to describe the secondary Gleason score, which describes
+  # the pattern of cells making up the second largest area of the tumor. The
+  # primary and secondary Gleason pattern grades are combined to determine the
+  # patient's Gleason grade group, which is used to determine the aggresiveness of
+  # prostate cancer. Note that this grade describes the entire prostatectomy
+  # specimen and is not specific to the sample used for sequencing.
+  diagnoses__secondary_gleason_grade: Aggregations
 
   # The text term used to describe the pathologic classification of lymphoma, as
   # defined by the Ann Arbor Lymphoma Staging System.
@@ -4075,6 +4113,9 @@ type ECaseAggregations {
   diagnoses__age_at_diagnosis: NumericAggregations
   diagnoses__hpv_positive_type: Aggregations
 
+  # The text term used to describe the extent of metastatic disease present at diagnosis.
+  diagnoses__metastasis_at_diagnosis: Aggregations
+
   # The third edition of the International Classification of Diseases for
   # Oncology, published in 2000 used principally in tumor and cancer registries
   # for coding the site (topography) and the histology (morphology) of neoplasms.
@@ -4088,6 +4129,45 @@ type ECaseAggregations {
   # The text term used to describe the clinical classification of lymphoma, as
   # defined by the Ann Arbor Lymphoma Staging System.
   diagnoses__ann_arbor_clinical_stage: Aggregations
+
+  # Number of days between the date used for index and the date the treatment started.
+  diagnoses__treatments__days_to_treatment_start: NumericAggregations
+
+  # The text term used to describe the status of the patient's malignancy when the treatment began.
+  diagnoses__treatments__initial_disease_status: Aggregations
+
+  # Text term that describes the kind of treatment administered.
+  diagnoses__treatments__treatment_type: Aggregations
+
+  # A project-specific identifier for a node. This property is the calling
+  # card/nickname/alias for a unit of submission. It can be used in place of the
+  # UUID for identifying or recalling a node.
+  diagnoses__treatments__submitter_id: Aggregations
+  diagnoses__treatments__treatment_id: Aggregations
+
+  # The current state of the object.
+  diagnoses__treatments__state: Aggregations
+
+  # Text identification of the individual agent(s) used as part of a treatment regimen.
+  diagnoses__treatments__therapeutic_agents: Aggregations
+
+  # The text term used to describe the regimen or line of therapy.
+  diagnoses__treatments__regimen_or_line_of_therapy: Aggregations
+
+  # Text term to identify the reason for the administration of a treatment regimen. [Manually-curated]
+  diagnoses__treatments__treatment_intent_type: Aggregations
+
+  # The anatomic site or field targeted by a treatment regimen or single agent therapy.
+  diagnoses__treatments__treatment_anatomic_site: Aggregations
+
+  # Text term that describes the patient's final outcome after the treatment was administered.
+  diagnoses__treatments__treatment_outcome: Aggregations
+
+  # Number of days between the date used for index and the date the treatment ended.
+  diagnoses__treatments__days_to_treatment_end: NumericAggregations
+
+  # A yes/no/unknown/not applicable indicator related to the administration of therapeutic agents received.
+  diagnoses__treatments__treatment_or_therapy: Aggregations
   diagnoses__new_event_anatomic_site: Aggregations
 
   # Time interval from the date of last follow up to the date of initial
@@ -4129,10 +4209,10 @@ type ECaseAggregations {
   # stage) according to criteria based on multiple editions of the AJCC's Cancer
   # Staging Manual.
   diagnoses__ajcc_pathologic_n: Aggregations
-
-  # The yes/no indicator to ask if large vessel or venous invasion was detected by surgery or presence in a tumor specimen.
-  diagnoses__vascular_invasion_present: Aggregations
   diagnoses__ldh_level_at_diagnosis: NumericAggregations
+
+  # For tumors in paired organs, designates the side on which the cancer originates.
+  diagnoses__laterality: Aggregations
 
   # Text terms to describe the status of a tissue margin following surgical resection.
   diagnoses__residual_disease: Aggregations
@@ -4155,51 +4235,32 @@ type ECaseAggregations {
   # body, as described by the International Federation of Gynecology and
   # Obstetrics (FIGO) stages.
   diagnoses__figo_stage: Aggregations
+  diagnoses__cause_of_death: Aggregations
 
-  # Number of days between the date used for index and the date the treatment started.
-  diagnoses__treatments__days_to_treatment_start: NumericAggregations
+  # Alphanumeric value used to describe the  disease code from the tenth version
+  # of the International Classification of Disease (ICD-10).
+  diagnoses__icd_10_code: Aggregations
 
-  # Text term that describes the kind of treatment administered.
-  diagnoses__treatments__treatment_type: Aggregations
-
-  # A project-specific identifier for a node. This property is the calling
-  # card/nickname/alias for a unit of submission. It can be used in place of the
-  # UUID for identifying or recalling a node.
-  diagnoses__treatments__submitter_id: Aggregations
-  diagnoses__treatments__treatment_id: Aggregations
-
-  # The current state of the object.
-  diagnoses__treatments__state: Aggregations
-
-  # Text identification of the individual agent(s) used as part of a treatment regimen.
-  diagnoses__treatments__therapeutic_agents: Aggregations
-
-  # Text term to identify the reason for the administration of a treatment regimen. [Manually-curated]
-  diagnoses__treatments__treatment_intent_type: Aggregations
-
-  # The anatomic site or field targeted by a treatment regimen or single agent therapy.
-  diagnoses__treatments__treatment_anatomic_site: Aggregations
-
-  # Text term that describes the patient's final outcome after the treatment was administered.
-  diagnoses__treatments__treatment_outcome: Aggregations
-
-  # Number of days between the date used for index and the date the treatment ended.
-  diagnoses__treatments__days_to_treatment_end: NumericAggregations
-
-  # A yes/no/unknown/not applicable indicator related to the administration of therapeutic agents received.
-  diagnoses__treatments__treatment_or_therapy: Aggregations
-
-  # A yes/no indicator to ask if small or thin-walled vessel invasion is present, indicating lymphatic involvement
-  diagnoses__lymphatic_invasion_present: Aggregations
+  # Number of days between the date used for index and the date the patient was diagnosed with the malignant disease.
+  diagnoses__days_to_diagnosis: NumericAggregations
 
   # The text term used to describe the anatomic site of origin, of the patient's
   # malignant disease, as described by the World Health Organization's (WHO)
   # International Classification of Diseases for Oncology (ICD-O).
   diagnoses__tissue_or_organ_of_origin: Aggregations
+  diagnoses__hpv_status: Aggregations
 
   # Yes/No/Unknown indicator to identify whether a patient has had a new tumor event after initial treatment.
   diagnoses__progression_or_recurrence: Aggregations
-  diagnoses__hpv_status: Aggregations
+
+  # The text term used to describe the International Germ Cell Cancer
+  # Collaborative Group (IGCCCG), a grouping used to further classify metastatic
+  # testicular tumors.
+  diagnoses__igcccg_stage: Aggregations
+
+  # The text term used to describe the International Prognostic Index, which
+  # classifies the prognosis of patients with aggressive non-Hodgkin's lymphoma.
+  diagnoses__international_prognostic_index: Aggregations
 
   # The yes/no/unknown indicator used to describe the patient's history of prior cancer diagnosis.
   diagnoses__prior_malignancy: Aggregations
@@ -4211,11 +4272,12 @@ type ECaseAggregations {
   # classifications.
   diagnoses__ajcc_staging_system_edition: Aggregations
 
-  # Numeric value used to describe the non-peritonealised bare area of rectum,
-  # comprising anterior and posterior segments, when submitted as a surgical
-  # specimen resulting from excision of cancer of the rectum.
-  diagnoses__circumferential_resection_margin: NumericAggregations
+  # The yes/no indicator to ask if large vessel or venous invasion was detected by surgery or presence in a tumor specimen.
+  diagnoses__vascular_invasion_present: Aggregations
   diagnoses__new_event_type: Aggregations
+
+  # A yes/no indicator to ask if small or thin-walled vessel invasion is present, indicating lymphatic involvement
+  diagnoses__lymphatic_invasion_present: Aggregations
 
   # The extent of a cancer, especially whether the disease has spread from the
   # original site to other parts of the body based on AJCC staging criteria.
@@ -4223,14 +4285,26 @@ type ECaseAggregations {
 
   # Burkitt's lymphoma categorization based on clinical features that differ from other forms of the same disease.
   diagnoses__burkitt_lymphoma_clinical_variant: Aggregations
-  diagnoses__cause_of_death: Aggregations
+
+  # The multiple myeloma disease stage at diagnosis.
+  diagnoses__iss_stage: Aggregations
   diagnoses__ldh_normal_range_upper: NumericAggregations
+
+  # The text term used to describe the staging classification of renal tumors, as
+  # defined by the Children's Oncology Group (COG).
+  diagnoses__cog_renal_stage: Aggregations
 
   # Indicator that identifies whether a patient with malignant lymphoma has lymphomatous involvement of an extranodal site.
   diagnoses__ann_arbor_extranodal_involvement: Aggregations
 
   # The number of lymph nodes involved with disease as determined by pathologic examination.
   diagnoses__lymph_nodes_positive: NumericAggregations
+
+  # A yes/no/unknown indicator used to describe whether the patient had an
+  # additional malignant diagnosis at the same time the tumor used for sequencing
+  # was diagnosed. If both tumors were sequenced, both tumors would have
+  # synchronous malignancies.
+  diagnoses__synchronous_malignancy: Aggregations
 
   # The text term used to describe the anatomic site of origin, of the patient's
   # malignant disease, as described by the World Health Organization's (WHO)
@@ -4241,10 +4315,31 @@ type ECaseAggregations {
   # pathologic diagnosis, represented as a calculated number of days.
   diagnoses__days_to_last_follow_up: NumericAggregations
 
+  # Text term used to describe the staging classification of neuroblastic tumors,
+  # as defined by the International Neuroblastoma Staging System (INSS).
+  diagnoses__inss_stage: Aggregations
+
+  # Numeric value used to describe the non-peritonealised bare area of rectum,
+  # comprising anterior and posterior segments, when submitted as a surgical
+  # specimen resulting from excision of cancer of the rectum.
+  diagnoses__circumferential_resection_margin: NumericAggregations
+
+  # The text term used to describe the primary Gleason score, which describes the
+  # pattern of cells making up the largest area of the tumor. The primary and
+  # secondary Gleason pattern grades are combined to determine the patient's
+  # Gleason grade group, which is used to determine the aggresiveness of prostate
+  # cancer. Note that this grade describes the entire prostatectomy specimen and
+  # is not specific to the sample used for sequencing.
+  diagnoses__primary_gleason_grade: Aggregations
+
   # Stage group determined from clinical information on the tumor (T), regional
   # node (N) and metastases (M) and by grouping cases with similar prognosis for cancer.
   diagnoses__ajcc_clinical_stage: Aggregations
   diagnoses__days_to_new_event: NumericAggregations
+
+  # The text term used to describe the Masaoka staging system, a classification
+  # that defines prognostic indicators for thymic malignancies and predicts tumor recurrence.
+  diagnoses__masaoka_stage: Aggregations
   diagnoses__hiv_positive: Aggregations
   gene__cnv__ncbi_build: Aggregations
   gene__cnv__cnv_id: Aggregations
@@ -4334,6 +4429,7 @@ type ECaseAggregations {
   gene__is_cancer_gene_census: Aggregations
   gene__biotype: Aggregations
   ssm_acl: Aggregations
+  state: Aggregations
   days_to_index: NumericAggregations
 
   # Text term to identify the cause of death for a patient.
@@ -4364,6 +4460,9 @@ type ECaseAggregations {
   # date of birth represented as a calculated negative number of days.
   demographic__days_to_birth: NumericAggregations
 
+  # The patient's age (in years) on the reference or anchor date date used during date obfuscation.
+  demographic__age_at_index: NumericAggregations
+
   # The survival state of the person registered on the protocol.
   demographic__vital_status: Aggregations
 
@@ -4384,7 +4483,7 @@ type ECaseAggregations {
 
   # Numeric value to represent the year of the death of an individual.
   demographic__year_of_death: NumericAggregations
-  state: Aggregations
+  index_date: Aggregations
   submitter_id: Aggregations
   project__project_id: Aggregations
 
@@ -4409,6 +4508,7 @@ type ECaseAggregations {
 
   # Display name for the project
   project__name: Aggregations
+  lost_to_followup: Aggregations
   case_autocomplete: Aggregations
   case_id: Aggregations
   primary_site: Aggregations
@@ -4513,6 +4613,9 @@ type EDemographic {
   # date of birth represented as a calculated negative number of days.
   days_to_birth: Float
 
+  # The patient's age (in years) on the reference or anchor date date used during date obfuscation.
+  age_at_index: Float
+
   # The survival state of the person registered on the protocol.
   vital_status: String
 
@@ -4553,14 +4656,22 @@ type EDiagnosis implements Node {
   # Text that describes the kind of disease present in the tumor specimen as related to a specific timepoint.
   classification_of_tumor: String
 
+  # Text term that represents the type of vascular tumor invasion.
+  vascular_invasion_type: String
+
   # Text term that describes the last known state or condition of an individual's neoplasm.
   last_known_disease_status: String
 
   # Text term used to describe the method used to confirm the patients malignant diagnosis.
   method_of_diagnosis: String
 
-  # For tumors in paired organs, designates the side on which the cancer originates.
-  laterality: String
+  # The text term used to describe the secondary Gleason score, which describes
+  # the pattern of cells making up the second largest area of the tumor. The
+  # primary and secondary Gleason pattern grades are combined to determine the
+  # patient's Gleason grade group, which is used to determine the aggresiveness of
+  # prostate cancer. Note that this grade describes the entire prostatectomy
+  # specimen and is not specific to the sample used for sequencing.
+  secondary_gleason_grade: String
 
   # The text term used to describe the pathologic classification of lymphoma, as
   # defined by the Ann Arbor Lymphoma Staging System.
@@ -4588,6 +4699,9 @@ type EDiagnosis implements Node {
 
   # keyword
   hpv_positive_type: String
+
+  # The text term used to describe the extent of metastatic disease present at diagnosis.
+  metastasis_at_diagnosis: String
 
   # The third edition of the International Classification of Diseases for
   # Oncology, published in 2000 used principally in tumor and cancer registries
@@ -4650,11 +4764,11 @@ type EDiagnosis implements Node {
   # Staging Manual.
   ajcc_pathologic_n: String
 
-  # The yes/no indicator to ask if large vessel or venous invasion was detected by surgery or presence in a tumor specimen.
-  vascular_invasion_present: String
-
   # long
   ldh_level_at_diagnosis: Float
+
+  # For tumors in paired organs, designates the side on which the cancer originates.
+  laterality: String
 
   # Text terms to describe the status of a tissue margin following surgical resection.
   residual_disease: String
@@ -4680,19 +4794,35 @@ type EDiagnosis implements Node {
   # Obstetrics (FIGO) stages.
   figo_stage: String
 
-  # A yes/no indicator to ask if small or thin-walled vessel invasion is present, indicating lymphatic involvement
-  lymphatic_invasion_present: String
+  # keyword
+  cause_of_death: String
+
+  # Alphanumeric value used to describe the  disease code from the tenth version
+  # of the International Classification of Disease (ICD-10).
+  icd_10_code: String
+
+  # Number of days between the date used for index and the date the patient was diagnosed with the malignant disease.
+  days_to_diagnosis: Float
 
   # The text term used to describe the anatomic site of origin, of the patient's
   # malignant disease, as described by the World Health Organization's (WHO)
   # International Classification of Diseases for Oncology (ICD-O).
   tissue_or_organ_of_origin: String
 
+  # keyword
+  hpv_status: String
+
   # Yes/No/Unknown indicator to identify whether a patient has had a new tumor event after initial treatment.
   progression_or_recurrence: String
 
-  # keyword
-  hpv_status: String
+  # The text term used to describe the International Germ Cell Cancer
+  # Collaborative Group (IGCCCG), a grouping used to further classify metastatic
+  # testicular tumors.
+  igcccg_stage: String
+
+  # The text term used to describe the International Prognostic Index, which
+  # classifies the prognosis of patients with aggressive non-Hodgkin's lymphoma.
+  international_prognostic_index: String
 
   # The yes/no/unknown indicator used to describe the patient's history of prior cancer diagnosis.
   prior_malignancy: String
@@ -4704,13 +4834,14 @@ type EDiagnosis implements Node {
   # classifications.
   ajcc_staging_system_edition: String
 
-  # Numeric value used to describe the non-peritonealised bare area of rectum,
-  # comprising anterior and posterior segments, when submitted as a surgical
-  # specimen resulting from excision of cancer of the rectum.
-  circumferential_resection_margin: Float
+  # The yes/no indicator to ask if large vessel or venous invasion was detected by surgery or presence in a tumor specimen.
+  vascular_invasion_present: String
 
   # keyword
   new_event_type: String
+
+  # A yes/no indicator to ask if small or thin-walled vessel invasion is present, indicating lymphatic involvement
+  lymphatic_invasion_present: String
 
   # The extent of a cancer, especially whether the disease has spread from the
   # original site to other parts of the body based on AJCC staging criteria.
@@ -4719,17 +4850,27 @@ type EDiagnosis implements Node {
   # Burkitt's lymphoma categorization based on clinical features that differ from other forms of the same disease.
   burkitt_lymphoma_clinical_variant: String
 
-  # keyword
-  cause_of_death: String
+  # The multiple myeloma disease stage at diagnosis.
+  iss_stage: String
 
   # long
   ldh_normal_range_upper: Float
+
+  # The text term used to describe the staging classification of renal tumors, as
+  # defined by the Children's Oncology Group (COG).
+  cog_renal_stage: String
 
   # Indicator that identifies whether a patient with malignant lymphoma has lymphomatous involvement of an extranodal site.
   ann_arbor_extranodal_involvement: String
 
   # The number of lymph nodes involved with disease as determined by pathologic examination.
   lymph_nodes_positive: Float
+
+  # A yes/no/unknown indicator used to describe whether the patient had an
+  # additional malignant diagnosis at the same time the tumor used for sequencing
+  # was diagnosed. If both tumors were sequenced, both tumors would have
+  # synchronous malignancies.
+  synchronous_malignancy: String
 
   # The text term used to describe the anatomic site of origin, of the patient's
   # malignant disease, as described by the World Health Organization's (WHO)
@@ -4740,12 +4881,33 @@ type EDiagnosis implements Node {
   # pathologic diagnosis, represented as a calculated number of days.
   days_to_last_follow_up: Float
 
+  # Text term used to describe the staging classification of neuroblastic tumors,
+  # as defined by the International Neuroblastoma Staging System (INSS).
+  inss_stage: String
+
+  # Numeric value used to describe the non-peritonealised bare area of rectum,
+  # comprising anterior and posterior segments, when submitted as a surgical
+  # specimen resulting from excision of cancer of the rectum.
+  circumferential_resection_margin: Float
+
+  # The text term used to describe the primary Gleason score, which describes the
+  # pattern of cells making up the largest area of the tumor. The primary and
+  # secondary Gleason pattern grades are combined to determine the patient's
+  # Gleason grade group, which is used to determine the aggresiveness of prostate
+  # cancer. Note that this grade describes the entire prostatectomy specimen and
+  # is not specific to the sample used for sequencing.
+  primary_gleason_grade: String
+
   # Stage group determined from clinical information on the tumor (T), regional
   # node (N) and metastases (M) and by grouping cases with similar prognosis for cancer.
   ajcc_clinical_stage: String
 
   # long
   days_to_new_event: Float
+
+  # The text term used to describe the Masaoka staging system, a classification
+  # that defines prognostic indicators for thymic malignancies and predicts tumor recurrence.
+  masaoka_stage: String
 
   # keyword
   hiv_positive: String
@@ -4924,6 +5086,9 @@ type ETreatment implements Node {
   # Number of days between the date used for index and the date the treatment started.
   days_to_treatment_start: Float
 
+  # The text term used to describe the status of the patient's malignancy when the treatment began.
+  initial_disease_status: String
+
   # Text term that describes the kind of treatment administered.
   treatment_type: String
 
@@ -4940,6 +5105,9 @@ type ETreatment implements Node {
 
   # Text identification of the individual agent(s) used as part of a treatment regimen.
   therapeutic_agents: String
+
+  # The text term used to describe the regimen or line of therapy.
+  regimen_or_line_of_therapy: String
 
   # Text term to identify the reason for the administration of a treatment regimen. [Manually-curated]
   treatment_intent_type: String
@@ -6882,17 +7050,32 @@ type GeneAggregations {
   case__diagnoses__ann_arbor_b_symptoms: Aggregations
   case__diagnoses__year_of_diagnosis: NumericAggregations
   case__diagnoses__classification_of_tumor: Aggregations
+  case__diagnoses__vascular_invasion_type: Aggregations
   case__diagnoses__last_known_disease_status: Aggregations
   case__diagnoses__method_of_diagnosis: Aggregations
-  case__diagnoses__laterality: Aggregations
+  case__diagnoses__secondary_gleason_grade: Aggregations
   case__diagnoses__ann_arbor_pathologic_stage: Aggregations
   case__diagnoses__primary_diagnosis: Aggregations
   case__diagnoses__submitter_id: Aggregations
   case__diagnoses__tumor_stage: Aggregations
   case__diagnoses__age_at_diagnosis: NumericAggregations
   case__diagnoses__hpv_positive_type: Aggregations
+  case__diagnoses__metastasis_at_diagnosis: Aggregations
   case__diagnoses__morphology: Aggregations
   case__diagnoses__ann_arbor_clinical_stage: Aggregations
+  case__diagnoses__treatments__days_to_treatment_start: NumericAggregations
+  case__diagnoses__treatments__initial_disease_status: Aggregations
+  case__diagnoses__treatments__treatment_type: Aggregations
+  case__diagnoses__treatments__submitter_id: Aggregations
+  case__diagnoses__treatments__treatment_id: Aggregations
+  case__diagnoses__treatments__state: Aggregations
+  case__diagnoses__treatments__therapeutic_agents: Aggregations
+  case__diagnoses__treatments__regimen_or_line_of_therapy: Aggregations
+  case__diagnoses__treatments__treatment_intent_type: Aggregations
+  case__diagnoses__treatments__treatment_anatomic_site: Aggregations
+  case__diagnoses__treatments__treatment_outcome: Aggregations
+  case__diagnoses__treatments__days_to_treatment_end: NumericAggregations
+  case__diagnoses__treatments__treatment_or_therapy: Aggregations
   case__diagnoses__new_event_anatomic_site: Aggregations
   case__diagnoses__days_to_last_known_disease_status: NumericAggregations
   case__diagnoses__perineural_invasion_present: Aggregations
@@ -6905,8 +7088,8 @@ type GeneAggregations {
   case__diagnoses__ajcc_clinical_m: Aggregations
   case__diagnoses__ajcc_pathologic_m: Aggregations
   case__diagnoses__ajcc_pathologic_n: Aggregations
-  case__diagnoses__vascular_invasion_present: Aggregations
   case__diagnoses__ldh_level_at_diagnosis: NumericAggregations
+  case__diagnoses__laterality: Aggregations
   case__diagnoses__residual_disease: Aggregations
   case__diagnoses__days_to_recurrence: NumericAggregations
   case__diagnoses__tumor_largest_dimension_diameter: NumericAggregations
@@ -6914,35 +7097,35 @@ type GeneAggregations {
   case__diagnoses__tumor_grade: Aggregations
   case__diagnoses__state: Aggregations
   case__diagnoses__figo_stage: Aggregations
-  case__diagnoses__treatments__days_to_treatment_start: NumericAggregations
-  case__diagnoses__treatments__treatment_type: Aggregations
-  case__diagnoses__treatments__submitter_id: Aggregations
-  case__diagnoses__treatments__treatment_id: Aggregations
-  case__diagnoses__treatments__state: Aggregations
-  case__diagnoses__treatments__therapeutic_agents: Aggregations
-  case__diagnoses__treatments__treatment_intent_type: Aggregations
-  case__diagnoses__treatments__treatment_anatomic_site: Aggregations
-  case__diagnoses__treatments__treatment_outcome: Aggregations
-  case__diagnoses__treatments__days_to_treatment_end: NumericAggregations
-  case__diagnoses__treatments__treatment_or_therapy: Aggregations
-  case__diagnoses__lymphatic_invasion_present: Aggregations
+  case__diagnoses__cause_of_death: Aggregations
+  case__diagnoses__icd_10_code: Aggregations
+  case__diagnoses__days_to_diagnosis: NumericAggregations
   case__diagnoses__tissue_or_organ_of_origin: Aggregations
-  case__diagnoses__progression_or_recurrence: Aggregations
   case__diagnoses__hpv_status: Aggregations
+  case__diagnoses__progression_or_recurrence: Aggregations
+  case__diagnoses__igcccg_stage: Aggregations
+  case__diagnoses__international_prognostic_index: Aggregations
   case__diagnoses__prior_malignancy: Aggregations
   case__diagnoses__ajcc_staging_system_edition: Aggregations
-  case__diagnoses__circumferential_resection_margin: NumericAggregations
+  case__diagnoses__vascular_invasion_present: Aggregations
   case__diagnoses__new_event_type: Aggregations
+  case__diagnoses__lymphatic_invasion_present: Aggregations
   case__diagnoses__ajcc_pathologic_stage: Aggregations
   case__diagnoses__burkitt_lymphoma_clinical_variant: Aggregations
-  case__diagnoses__cause_of_death: Aggregations
+  case__diagnoses__iss_stage: Aggregations
   case__diagnoses__ldh_normal_range_upper: NumericAggregations
+  case__diagnoses__cog_renal_stage: Aggregations
   case__diagnoses__ann_arbor_extranodal_involvement: Aggregations
   case__diagnoses__lymph_nodes_positive: NumericAggregations
+  case__diagnoses__synchronous_malignancy: Aggregations
   case__diagnoses__site_of_resection_or_biopsy: Aggregations
   case__diagnoses__days_to_last_follow_up: NumericAggregations
+  case__diagnoses__inss_stage: Aggregations
+  case__diagnoses__circumferential_resection_margin: NumericAggregations
+  case__diagnoses__primary_gleason_grade: Aggregations
   case__diagnoses__ajcc_clinical_stage: Aggregations
   case__diagnoses__days_to_new_event: NumericAggregations
+  case__diagnoses__masaoka_stage: Aggregations
   case__diagnoses__hiv_positive: Aggregations
   case__ssm_acl: Aggregations
   case__days_to_index: NumericAggregations
@@ -6953,11 +7136,13 @@ type GeneAggregations {
   case__demographic__year_of_birth: NumericAggregations
   case__demographic__race: Aggregations
   case__demographic__days_to_birth: NumericAggregations
+  case__demographic__age_at_index: NumericAggregations
   case__demographic__vital_status: Aggregations
   case__demographic__days_to_death: NumericAggregations
   case__demographic__submitter_id: Aggregations
   case__demographic__ethnicity: Aggregations
   case__demographic__year_of_death: NumericAggregations
+  case__index_date: Aggregations
   case__submitter_id: Aggregations
   case__ssm__ncbi_build: Aggregations
   case__ssm__clinical_annotations__civic__gene_id: Aggregations
@@ -7029,6 +7214,7 @@ type GeneAggregations {
   case__ssm__mutation_type: Aggregations
   case__ssm__chromosome: Aggregations
   case__ssm__genomic_dna_change: Aggregations
+  case__lost_to_followup: Aggregations
   case__state: Aggregations
   case__case_id: Aggregations
   case__primary_site: Aggregations
@@ -7130,7 +7316,13 @@ type GeneCase implements Node {
   days_to_index: Float
 
   # keyword
+  index_date: String
+
+  # keyword
   submitter_id: String
+
+  # keyword
+  lost_to_followup: String
 
   # keyword
   state: String
@@ -8868,17 +9060,32 @@ type SsmAggregations {
   occurrence__case__diagnoses__ann_arbor_b_symptoms: Aggregations
   occurrence__case__diagnoses__year_of_diagnosis: NumericAggregations
   occurrence__case__diagnoses__classification_of_tumor: Aggregations
+  occurrence__case__diagnoses__vascular_invasion_type: Aggregations
   occurrence__case__diagnoses__last_known_disease_status: Aggregations
   occurrence__case__diagnoses__method_of_diagnosis: Aggregations
-  occurrence__case__diagnoses__laterality: Aggregations
+  occurrence__case__diagnoses__secondary_gleason_grade: Aggregations
   occurrence__case__diagnoses__ann_arbor_pathologic_stage: Aggregations
   occurrence__case__diagnoses__primary_diagnosis: Aggregations
   occurrence__case__diagnoses__submitter_id: Aggregations
   occurrence__case__diagnoses__tumor_stage: Aggregations
   occurrence__case__diagnoses__age_at_diagnosis: NumericAggregations
   occurrence__case__diagnoses__hpv_positive_type: Aggregations
+  occurrence__case__diagnoses__metastasis_at_diagnosis: Aggregations
   occurrence__case__diagnoses__morphology: Aggregations
   occurrence__case__diagnoses__ann_arbor_clinical_stage: Aggregations
+  occurrence__case__diagnoses__treatments__days_to_treatment_start: NumericAggregations
+  occurrence__case__diagnoses__treatments__initial_disease_status: Aggregations
+  occurrence__case__diagnoses__treatments__treatment_type: Aggregations
+  occurrence__case__diagnoses__treatments__submitter_id: Aggregations
+  occurrence__case__diagnoses__treatments__treatment_id: Aggregations
+  occurrence__case__diagnoses__treatments__state: Aggregations
+  occurrence__case__diagnoses__treatments__therapeutic_agents: Aggregations
+  occurrence__case__diagnoses__treatments__regimen_or_line_of_therapy: Aggregations
+  occurrence__case__diagnoses__treatments__treatment_intent_type: Aggregations
+  occurrence__case__diagnoses__treatments__treatment_anatomic_site: Aggregations
+  occurrence__case__diagnoses__treatments__treatment_outcome: Aggregations
+  occurrence__case__diagnoses__treatments__days_to_treatment_end: NumericAggregations
+  occurrence__case__diagnoses__treatments__treatment_or_therapy: Aggregations
   occurrence__case__diagnoses__new_event_anatomic_site: Aggregations
   occurrence__case__diagnoses__days_to_last_known_disease_status: NumericAggregations
   occurrence__case__diagnoses__perineural_invasion_present: Aggregations
@@ -8891,8 +9098,8 @@ type SsmAggregations {
   occurrence__case__diagnoses__ajcc_clinical_m: Aggregations
   occurrence__case__diagnoses__ajcc_pathologic_m: Aggregations
   occurrence__case__diagnoses__ajcc_pathologic_n: Aggregations
-  occurrence__case__diagnoses__vascular_invasion_present: Aggregations
   occurrence__case__diagnoses__ldh_level_at_diagnosis: NumericAggregations
+  occurrence__case__diagnoses__laterality: Aggregations
   occurrence__case__diagnoses__residual_disease: Aggregations
   occurrence__case__diagnoses__days_to_recurrence: NumericAggregations
   occurrence__case__diagnoses__tumor_largest_dimension_diameter: NumericAggregations
@@ -8900,35 +9107,35 @@ type SsmAggregations {
   occurrence__case__diagnoses__tumor_grade: Aggregations
   occurrence__case__diagnoses__state: Aggregations
   occurrence__case__diagnoses__figo_stage: Aggregations
-  occurrence__case__diagnoses__treatments__days_to_treatment_start: NumericAggregations
-  occurrence__case__diagnoses__treatments__treatment_type: Aggregations
-  occurrence__case__diagnoses__treatments__submitter_id: Aggregations
-  occurrence__case__diagnoses__treatments__treatment_id: Aggregations
-  occurrence__case__diagnoses__treatments__state: Aggregations
-  occurrence__case__diagnoses__treatments__therapeutic_agents: Aggregations
-  occurrence__case__diagnoses__treatments__treatment_intent_type: Aggregations
-  occurrence__case__diagnoses__treatments__treatment_anatomic_site: Aggregations
-  occurrence__case__diagnoses__treatments__treatment_outcome: Aggregations
-  occurrence__case__diagnoses__treatments__days_to_treatment_end: NumericAggregations
-  occurrence__case__diagnoses__treatments__treatment_or_therapy: Aggregations
-  occurrence__case__diagnoses__lymphatic_invasion_present: Aggregations
+  occurrence__case__diagnoses__cause_of_death: Aggregations
+  occurrence__case__diagnoses__icd_10_code: Aggregations
+  occurrence__case__diagnoses__days_to_diagnosis: NumericAggregations
   occurrence__case__diagnoses__tissue_or_organ_of_origin: Aggregations
-  occurrence__case__diagnoses__progression_or_recurrence: Aggregations
   occurrence__case__diagnoses__hpv_status: Aggregations
+  occurrence__case__diagnoses__progression_or_recurrence: Aggregations
+  occurrence__case__diagnoses__igcccg_stage: Aggregations
+  occurrence__case__diagnoses__international_prognostic_index: Aggregations
   occurrence__case__diagnoses__prior_malignancy: Aggregations
   occurrence__case__diagnoses__ajcc_staging_system_edition: Aggregations
-  occurrence__case__diagnoses__circumferential_resection_margin: NumericAggregations
+  occurrence__case__diagnoses__vascular_invasion_present: Aggregations
   occurrence__case__diagnoses__new_event_type: Aggregations
+  occurrence__case__diagnoses__lymphatic_invasion_present: Aggregations
   occurrence__case__diagnoses__ajcc_pathologic_stage: Aggregations
   occurrence__case__diagnoses__burkitt_lymphoma_clinical_variant: Aggregations
-  occurrence__case__diagnoses__cause_of_death: Aggregations
+  occurrence__case__diagnoses__iss_stage: Aggregations
   occurrence__case__diagnoses__ldh_normal_range_upper: NumericAggregations
+  occurrence__case__diagnoses__cog_renal_stage: Aggregations
   occurrence__case__diagnoses__ann_arbor_extranodal_involvement: Aggregations
   occurrence__case__diagnoses__lymph_nodes_positive: NumericAggregations
+  occurrence__case__diagnoses__synchronous_malignancy: Aggregations
   occurrence__case__diagnoses__site_of_resection_or_biopsy: Aggregations
   occurrence__case__diagnoses__days_to_last_follow_up: NumericAggregations
+  occurrence__case__diagnoses__inss_stage: Aggregations
+  occurrence__case__diagnoses__circumferential_resection_margin: NumericAggregations
+  occurrence__case__diagnoses__primary_gleason_grade: Aggregations
   occurrence__case__diagnoses__ajcc_clinical_stage: Aggregations
   occurrence__case__diagnoses__days_to_new_event: NumericAggregations
+  occurrence__case__diagnoses__masaoka_stage: Aggregations
   occurrence__case__diagnoses__hiv_positive: Aggregations
   occurrence__case__ssm_acl: Aggregations
   occurrence__case__days_to_index: NumericAggregations
@@ -8939,11 +9146,13 @@ type SsmAggregations {
   occurrence__case__demographic__year_of_birth: NumericAggregations
   occurrence__case__demographic__race: Aggregations
   occurrence__case__demographic__days_to_birth: NumericAggregations
+  occurrence__case__demographic__age_at_index: NumericAggregations
   occurrence__case__demographic__vital_status: Aggregations
   occurrence__case__demographic__days_to_death: NumericAggregations
   occurrence__case__demographic__submitter_id: Aggregations
   occurrence__case__demographic__ethnicity: Aggregations
   occurrence__case__demographic__year_of_death: NumericAggregations
+  occurrence__case__index_date: Aggregations
   occurrence__case__submitter_id: Aggregations
   occurrence__case__project__project_id: Aggregations
   occurrence__case__project__disease_type: Aggregations
@@ -8954,6 +9163,7 @@ type SsmAggregations {
   occurrence__case__project__primary_site: Aggregations
   occurrence__case__project__dbgap_accession_number: Aggregations
   occurrence__case__project__name: Aggregations
+  occurrence__case__lost_to_followup: Aggregations
   occurrence__case__state: Aggregations
   occurrence__case__case_id: Aggregations
   occurrence__case__primary_site: Aggregations
@@ -9255,7 +9465,13 @@ type SsmOccurrenceCase {
   days_to_index: Float
 
   # keyword
+  index_date: String
+
+  # keyword
   submitter_id: String
+
+  # keyword
+  lost_to_followup: String
 
   # keyword
   state: String

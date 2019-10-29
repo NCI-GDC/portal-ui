@@ -3,8 +3,10 @@ import withToggle from './withToggle';
 
 export default function withDropdown(ComposedComponent) {
   class Dropdown extends Component {
-    closeDropdown = () => {
-      this.props.setActive(false);
+    closeDropdown = ({ target: { id = '' }}) => {
+      if (id !== this.props.fieldNoDoctype) {
+        this.props.setActive(false);
+      }
     };
 
     constructor(props) {

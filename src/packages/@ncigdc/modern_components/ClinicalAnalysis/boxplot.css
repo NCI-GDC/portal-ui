@@ -1,37 +1,37 @@
-.boxplot .axis path,
-.boxplot .axis line,
-.boxplot .decadeBar path {
+.box-plot .axis path,
+.box-plot .axis line,
+.box-plot .decadeBar path {
   stroke: #ccc;
   shape-rendering: crispEdges;
 }
 
-.boxplot g text {
+.box-plot g text {
   fill: #888;
 }
 
-.boxplot .axis .tick text,
-.boxplot .axis text {
+.box-plot .axis .tick text,
+.box-plot .axis text {
   fill: #ccc;
   font-size: 1rem;
 }
 
-.boxplot .whisker path {
+.box-plot .whisker path {
   stroke: #333;
 }
-.demographic-boxplot .box line {
+.demographic-box-plot .box line {
   stroke: #1f77b4;
 }
-.diagnosis-boxplot .box line {
+.diagnosis-box-plot .box line {
   stroke: #ff7f0e;
 }
-.treatment-boxplot .box line {
+.treatment-box-plot .box line {
   stroke: #2ca02c;
 }
 
-.exposure-boxplot .box line {
+.exposure-box-plot .box line {
   stroke: #9467bd;
 }
 
-.boxplot .point {
+.box-plot .point {
   color: #333;
 }

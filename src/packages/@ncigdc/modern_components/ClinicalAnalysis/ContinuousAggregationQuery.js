@@ -217,9 +217,7 @@ const getContinuousAggs = ({
 export default compose(
   withState('aggData', 'setAggData', null),
   withState('isLoading', 'setIsLoading', 'first time'),
-  // withPropsOnChange(({stats, stats: nextStats}) => !isEqual(stats, nextStats),
-  withPropsOnChange((props, nextProps) => !isEqual(props.stats, nextProps.stats),
-  ({
+  withProps({
     updateData: async ({
       fieldName,
       filters,
@@ -228,8 +226,7 @@ export default compose(
       setIsLoading,
       stats,
       variable,
-    })
-  }) => {
+    }) => {
       const res = await getContinuousAggs({
         bins: variable.bins,
         continuousBinType: variable.continuousBinType,
@@ -238,9 +235,15 @@ export default compose(
         hits,
         stats,
       });
+
+      // const agg = res.data.viewer.explore.cases.aggregations.diagnoses__age_at_diagnosis;
+      // console.log(`getContinuousAggs - ${DEBUG_SET_IDS[filters.content[0].content.value[0]]} - RESPONSE`);
+      // console.table(agg.range.buckets);
+      // console.table(agg.stats);
+
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
-  ),
+  }),
   withPropsOnChange(
     (
       {

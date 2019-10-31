@@ -29,6 +29,11 @@ const simpleAggCache = {};
 const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 5;
 
+const DEBUG_SET_IDS = {
+  'set_id:AW4jAQJLn07KT3bO8Zrq': 'hematopoietic',
+  'set_id:AW4i__WGn07KT3bO8Zrp': 'bronchus',
+};
+
 const getContinuousAggs = ({
   bins,
   continuousBinType,
@@ -37,11 +42,9 @@ const getContinuousAggs = ({
   stats,
 }) => {
 
-  console.log('---------');
-  // console.log('set id', filters.content[0].content.value);
-  // console.log('stats', stats);
-  console.log('query bins', bins);
-  // console.log('=========');
+  // console.log(`getContinuousAggs - ${DEBUG_SET_IDS[filters.content[0].content.value[0]]} - ARGS`);
+  // console.table(bins);
+  // console.table(stats);
 
   // prevent query failing if interval will equal 0
   if (isNull(stats.min) || isNull(stats.max)) {
@@ -232,6 +235,12 @@ export default compose(
         hits,
         stats,
       });
+
+      // const agg = res.data.viewer.explore.cases.aggregations.diagnoses__age_at_diagnosis;
+      // console.log(`getContinuousAggs - ${DEBUG_SET_IDS[filters.content[0].content.value[0]]} - RESPONSE`);
+      // console.table(agg.range.buckets);
+      // console.table(agg.stats);
+
       setAggData(res && res.data.viewer, () => setIsLoading(false));
     },
   }),
@@ -264,7 +273,13 @@ export default compose(
   ),
 )(({
   aggData, hits, isLoading, setId, stats, ...props
-}) => isLoading 
+}) => {
+  // if (!isLoading) {
+  //   console.log(`ContinuousAggregationQuery - ${DEBUG_SET_IDS[`set_id:${setId}`]} - CARD IS LOADING`);
+  //   console.table(aggData.explore.cases.aggregations.diagnoses__age_at_diagnosis.range.buckets);
+  //   console.table(stats);
+  // }
+  return isLoading 
   ? (
    <Column
       className="clinical-analysis-card"
@@ -290,4 +305,5 @@ export default compose(
       {...props}
       />
   )
+    }
 );

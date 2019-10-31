@@ -126,6 +126,7 @@ export default compose(
     data: { explore },
     fieldName,
   }) => {
+    // 2904: correct
     const dataStats = explore
       ? explore.cases.aggregations[
         `${createFacetFieldString(fieldName)}`].stats
@@ -133,7 +134,8 @@ export default compose(
         Max: null,
         Min: null,
       };
-
+    // console.log('dataStats', dataStats);
+    
     const defaultMin = dataStats.Min;
     const defaultMax = dataStats.Max + 1; // api excludes the max number
 
@@ -244,10 +246,14 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName }) => {
+      // 2904: data stats & hits update, but not the bins
+      // console.log('data', data);
       const sanitisedId = fieldName.split('.').pop();
       const rawQueryData = getRawQueryData(data, fieldName);
       const dataDimension = dataDimensions[sanitisedId] &&
         dataDimensions[sanitisedId].unit;
+      
+      // console.log('rawQueryData', rawQueryData);
 
       return {
         boxPlotValues: map(
@@ -279,7 +285,6 @@ export default compose(
           axisTitle: dataDimensions[sanitisedId].axisTitle,
           boxPlotValues: map(
             {
-
               ...rawQueryData.stats,
               ...rawQueryData.percentiles,
             },
@@ -322,26 +327,25 @@ export default compose(
         continuousBinType,
       },
     }) => {
+      // 2904: these are both wrong/outdated
+      // console.log('dataBuckets', dataBuckets);
+      // console.log('card bins', bins);
       dispatch(updateClinicalAnalysisVariable({
         fieldName,
         id,
         variable: {
           bins: continuousBinType === 'default'
             ? dataBuckets.reduce((acc, curr, index) => ({
-
               ...acc,
               [dataBuckets[index].key]: {
-
                 ...dataBuckets[index],
                 groupName: dataBuckets[index].key,
               },
             }), {})
             : Object.keys(bins)
               .reduce((acc, curr, index) => ({
-
                 ...acc,
                 [curr]: {
-
                   ...bins[curr],
                   doc_count: dataBuckets[index]
                       ? dataBuckets[index].doc_count
@@ -361,6 +365,10 @@ export default compose(
         bins = {},
       },
     }) => {
+      // 2904: these are all wrong
+      // console.log('binData explore',explore);
+      // console.log('binData dataBuckets',dataBuckets);
+      // console.log('binData bins',bins);
       const fieldNameUnderscores = createFacetFieldString(fieldName);
 
       if (!(
@@ -387,6 +395,7 @@ export default compose(
             },
           };
         }, {});
+      // console.log('binsForBinData', binsForBinData);
 
       return getBinData(binsForBinData, dataBuckets);
     }

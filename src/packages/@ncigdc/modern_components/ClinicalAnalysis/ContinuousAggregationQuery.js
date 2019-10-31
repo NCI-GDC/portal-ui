@@ -36,6 +36,13 @@ const getContinuousAggs = ({
   filters,
   stats,
 }) => {
+
+  console.log('---------');
+  // console.log('set id', filters.content[0].content.value);
+  // console.log('stats', stats);
+  console.log('query bins', bins);
+  // console.log('=========');
+
   // prevent query failing if interval will equal 0
   if (isNull(stats.min) || isNull(stats.max)) {
     return null;

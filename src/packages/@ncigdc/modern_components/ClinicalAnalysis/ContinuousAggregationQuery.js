@@ -39,13 +39,9 @@ const getContinuousAggs = ({
   continuousBinType,
   fieldName,
   filters,
+  setId,
   stats,
 }) => {
-
-  // console.log(`getContinuousAggs - ${DEBUG_SET_IDS[filters.content[0].content.value[0]]} - ARGS`);
-  // console.table(bins);
-  // console.table(stats);
-
   // prevent query failing if interval will equal 0
   if (isNull(stats.min) || isNull(stats.max)) {
     return null;
@@ -223,10 +219,6 @@ const updateData = async ({
   stats,
   variable: { bins, continuousBinType },
 }) => {
-  console.log(`updateData - ${DEBUG_SET_IDS[filters.content[0].content.value[0]]} - ARGS`);
-  console.table(stats);
-  console.table(bins);
-
   const res = await getContinuousAggs({
     bins,
     continuousBinType,
@@ -236,11 +228,6 @@ const updateData = async ({
     stats,
   });
 
-  // const agg = res.data.viewer.explore.cases.aggregations.diagnoses__age_at_diagnosis;
-  // console.log(`getContinuousAggs - ${DEBUG_SET_IDS[filters.content[0].content.value[0]]} - RESPONSE`);
-  // console.table(agg.range.buckets);
-  // console.table(agg.stats);
-
   setAggData(res && res.data.viewer, () => setIsLoading(false));
 };
 
@@ -248,9 +235,10 @@ export default compose(
   withState('aggData', 'setAggData', null),
   withState('isLoading', 'setIsLoading', 'first time'),
   withPropsOnChange((props, nextProps) => 
-    !(isEqual(props.filters, nextProps.filters) &&
-      isEqual(props.variable, nextProps.variable) &&
-      isEqual(props.stats, nextProps.stats)),
+    !(
+      props.setIdWithData === nextProps.setIdWithData &&
+      isEqual(props.variable, nextProps.variable)
+      ),
     ({
       fieldName,
       filters,
@@ -275,15 +263,7 @@ export default compose(
   ),
 )(({
   aggData, hits, isLoading, setId, stats, ...props
-}) => {
-  if (!isLoading) {
-    // console.log(`ContinuousAggregationQuery - ${DEBUG_SET_IDS[`set_id:${setId}`]} - CARD IS LOADING`);
-    console.log('LOADING THE CARD');
-    
-    // console.table(aggData.explore.cases.aggregations.diagnoses__age_at_diagnosis.range.buckets);
-    console.table(stats);
-  }
-  return isLoading 
+}) => isLoading 
   ? (
    <Column
       className="clinical-analysis-card"
@@ -309,5 +289,4 @@ export default compose(
       {...props}
       />
   )
-    }
 );

@@ -145,6 +145,7 @@ const ClinicalAnalysisResult = ({
   push,
   setControlPanelExpanded,
   setId,
+  setIdWithData,
   survivalDataLoading,
 }: IAnalysisResultProps) => {
   const downloadSvgInfo = getDownloadSvgInfo(displayVariables);
@@ -306,7 +307,7 @@ const ClinicalAnalysisResult = ({
                 ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
               }}
               >
-              {/* <Column
+              <Column
                 className="print-w500"
                 style={{
                   ...zDepth1,
@@ -345,7 +346,7 @@ const ClinicalAnalysisResult = ({
                     uniqueClass="clinical-survival-plot"
                     />
                 </div>
-              </Column> */}
+              </Column>
 
               {setId && map(displayVariables, (varProperties, varFieldName) => {
                 const filters = {
@@ -361,23 +362,6 @@ const ClinicalAnalysisResult = ({
                   op: 'and',
                 };
 
-                const stats = varProperties.plotTypes === 'continuous' && parsedFacets[varFieldName].stats;
-
-                // 2904: 4:45pm - stats are correct but buckets aren't
-
-                // console.log(`ClinicalAnalysisResult - ${DEBUG_SET_IDS[setId]} - ${varFieldName.split('.')[1]}`);
-                // if (varProperties.plotTypes === 'continuous') {
-                //   console.log('stats: min:', stats.min, 'max:', stats.max);
-                // }
-                // console.log('displayVariables bins');
-                // console.table(currentAnalysis.displayVariables[varFieldName].bins);
-                // if (!isEqual(currentAnalysis.displayVariables[varFieldName].bins, varProperties.bins)) {
-                //   console.log('varProperties bins');
-                //   console.table(varProperties.bins);
-                // }
-
-                console.log('parsedFacets[varFieldName]', parsedFacets[varFieldName]);
-
                 return varProperties.plotTypes === 'continuous'
                   ? (
                     <ContinuousAggregationQuery
@@ -390,6 +374,7 @@ const ClinicalAnalysisResult = ({
                       overallSurvivalData={overallSurvivalData}
                       plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
                       setId={setId}
+                      setIdWithData={setIdWithData}
                       stats={parsedFacets[varFieldName].stats}
                       style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                       variable={varProperties}
@@ -433,17 +418,18 @@ export default compose(
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
   withState('survivalDataLoading', 'setSurvivalDataLoading', true),
   withState('setId', 'setSetId', ''),
-  withPropsOnChange(
-    ['viewer'],
+  withPropsOnChange(['viewer'],
     ({
+      setId,
       viewer: {
         explore: {
           cases: { facets, hits },
         },
       },
-    }) => ({
+    }) =>  ({
       hits,
       parsedFacets: facets ? tryParseJSON(facets) : {},
+      setIdWithData: setId,
     })
   ),
   withPropsOnChange(

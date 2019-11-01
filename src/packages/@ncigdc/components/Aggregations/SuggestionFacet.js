@@ -23,6 +23,7 @@ import styled from '@ncigdc/theme/styled';
 import { dropdown } from '@ncigdc/theme/mixins';
 import Link from '@ncigdc/components/Links/Link';
 import CheckCircleOIcon from '@ncigdc/theme/icons/CheckCircleOIcon';
+import { IRawQuery } from '@ncigdc/utils/uri/types';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 import namespace from '@ncigdc/utils/namespace';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';

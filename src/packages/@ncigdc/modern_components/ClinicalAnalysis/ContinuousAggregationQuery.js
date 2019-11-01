@@ -277,8 +277,10 @@ export default compose(
   aggData, hits, isLoading, setId, stats, ...props
 }) => {
   if (!isLoading) {
-    console.log(`ContinuousAggregationQuery - ${DEBUG_SET_IDS[`set_id:${setId}`]} - CARD IS LOADING`);
-    console.table(aggData.explore.cases.aggregations.diagnoses__age_at_diagnosis.range.buckets);
+    // console.log(`ContinuousAggregationQuery - ${DEBUG_SET_IDS[`set_id:${setId}`]} - CARD IS LOADING`);
+    console.log('LOADING THE CARD');
+    
+    // console.table(aggData.explore.cases.aggregations.diagnoses__age_at_diagnosis.range.buckets);
     console.table(stats);
   }
   return isLoading 

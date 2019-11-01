@@ -376,6 +376,8 @@ const ClinicalAnalysisResult = ({
                 //   console.table(varProperties.bins);
                 // }
 
+                console.log('parsedFacets[varFieldName]', parsedFacets[varFieldName]);
+
                 return varProperties.plotTypes === 'continuous'
                   ? (
                     <ContinuousAggregationQuery

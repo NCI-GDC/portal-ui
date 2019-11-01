@@ -1,7 +1,12 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withHandlers,
+  withState,
+} from 'recompose';
 import ArrangeIcon from 'react-icons/lib/fa/bars';
 import SI from 'react-icons/lib/fa/search';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -12,91 +17,118 @@ import Dropdown from '@ncigdc/uikit/Dropdown';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Hidden from '@ncigdc/components/Hidden';
 import styled from '@ncigdc/theme/styled';
+import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
 
 const SearchIcon = styled(SI, {
   backgroundColor: ({ theme }) => theme.greyScale5,
   color: ({ theme }) => theme.greyScale2,
+  height: '3rem',
   padding: '0.7rem',
   width: '3rem',
-  height: '3rem',
 });
 
 const RestoreDefaults = styled(Row, {
-  color: ({ theme }) => theme.secondaryHighContrast,
-  padding: '0.3rem 0.6rem',
-  cursor: 'pointer',
   ':hover': {
     textDecoration: 'underline',
   },
+  color: ({ theme }) => theme.secondaryHighContrast,
+  cursor: 'pointer',
+  padding: '0.3rem 0.6rem',
 });
 
-const ArrangeColumnsButton = compose(
-  connect(),
-  withState('searchTerm', 'setSearchTerm', '')
-)(
-  class extends React.Component {
-    searchInput;
-    render() {
-      const {
-        searchTerm,
-        setSearchTerm,
-        dispatch,
-        entityType,
-        style = {},
-        hideColumns,
-      } = this.props;
-      return (
-        <Dropdown
-          className="test-arrange-columns-button"
-          autoclose={false}
-          button={
-            <Tooltip Component={<span>Arrange Columns</span>}>
-              <Button style={style}>
-                <ArrangeIcon />
-                <Hidden>Sort Table</Hidden>
-              </Button>
-            </Tooltip>
-          }
-          dropdownStyle={{ top: '100%', marginTop: 5, whiteSpace: 'nowrap' }}
-        >
-          <Column style={{ minWidth: '22rem' }}>
-            <Row>
-              <SearchIcon />
-              <input
-                className="test-filter-columns"
-                style={{
-                  width: '100%',
-                  padding: '0.3rem 0.5rem',
-                }}
-                type="text"
-                aria-label="Filter Columns"
-                placeholder="Filter Columns"
-                ref={node => {
-                  this.searchInput = node;
-                }}
-                onChange={() => setSearchTerm(() => this.searchInput.value)}
-              />
-            </Row>
-            <RestoreDefaults
-              className="test-restore-defaults"
-              onClick={() => {
-                dispatch(restoreColumns(entityType));
-                setSearchTerm(() => '');
-                this.searchInput.value = '';
-              }}
-            >
-              Restore Defaults
-            </RestoreDefaults>
-            <ArrangeColumns
-              entityType={entityType}
-              searchTerm={searchTerm}
-              hideColumns={hideColumns}
+const ArrangeColumnsButton = ({
+  dispatch,
+  entityType,
+  handleQueryInputChange,
+  handleQueryInputClear,
+  hideColumns,
+  searchTerm,
+  style = {},
+}) => (
+  <Dropdown
+    autoclose={false}
+    button={(
+      <Tooltip Component={<span>Arrange Columns</span>}>
+        <Button style={style}>
+          <ArrangeIcon />
+          <Hidden>Sort Table</Hidden>
+        </Button>
+      </Tooltip>
+    )}
+    className="test-arrange-columns-button"
+    dropdownStyle={{
+      marginTop: 5,
+      top: '100%',
+      whiteSpace: 'nowrap',
+    }}
+    >
+    <Column style={{ minWidth: '22rem' }}>
+      <Row>
+        <SearchIcon />
+
+        <input
+          aria-label="Filter Columns"
+          className="test-filter-columns"
+          onChange={handleQueryInputChange}
+          onKeyDown={event => {
+            searchTerm &&
+              (event.key === 'Escape' || event.keyCode === 27) &&
+              handleQueryInputClear();
+          }}
+          placeholder="Filter Columns"
+          style={{
+            padding: '0.3rem 0.5rem',
+            width: '100%',
+          }}
+          type="text"
+          value={searchTerm}
+          />
+
+        {searchTerm && (
+          <CloseIcon
+            onClick={handleQueryInputClear}
+            style={{
+              cursor: 'pointer',
+              outline: 0,
+              padding: '10px',
+              position: 'absolute',
+              right: 0,
+              top: '-2px',
+              transition: 'all 0.3s ease',
+            }}
             />
-          </Column>
-        </Dropdown>
-      );
-    }
-  }
+        )}
+      </Row>
+
+      <RestoreDefaults
+        className="test-restore-defaults"
+        onClick={() => {
+          dispatch(restoreColumns(entityType));
+          handleQueryInputClear();
+        }}
+        >
+        Restore Defaults
+      </RestoreDefaults>
+
+      <ArrangeColumns
+        entityType={entityType}
+        hideColumns={hideColumns}
+        searchTerm={searchTerm}
+        />
+    </Column>
+  </Dropdown>
 );
 
-export default ArrangeColumnsButton;
+export default compose(
+  setDisplayName('EnhancedArrangeColumnsButton'),
+  connect(),
+  withState('searchTerm', 'setSearchTerm', ''),
+  withHandlers({
+    handleQueryInputChange: ({
+      setSearchTerm,
+    }) => event => setSearchTerm(event.target.value),
+    handleQueryInputClear: ({
+      setSearchTerm,
+    }) => () => setSearchTerm(''),
+  }),
+)(ArrangeColumnsButton);

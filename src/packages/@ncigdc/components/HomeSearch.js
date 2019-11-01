@@ -3,6 +3,7 @@ import React from 'react';
 import { compose } from 'recompose';
 
 import SearchIcon from 'react-icons/lib/fa/search';
+import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
 import styled from '@ncigdc/theme/styled';
 import { withSearch } from '@ncigdc/utils/withSearch';
 import namespace from '@ncigdc/utils/namespace';
@@ -53,14 +54,24 @@ const HomeSearch = compose(
   ),
 )(
   ({
-    search: { state, setQuery, focusItem, reset },
-    selectableList: { handleKeyDown, focusedItem, setFocusedItem, selectItem },
+    search: {
+      reset,
+      setQuery,
+      state,
+    },
+    selectableList: {
+      focusedItem,
+      handleKeyDown,
+      selectItem,
+      setFocusedItem,
+    },
   }) => (
     <Container
       className="test-home-search"
-      onBlur={event => {
-        const currentTarget = event.currentTarget;
-        const relatedTarget = event.relatedTarget;
+      onBlur={({
+        currentTarget,
+        relatedTarget,
+      }) => {
         setImmediate(() => {
           const triggerElement = relatedTarget || document.activeElement;
           if (
@@ -73,47 +84,77 @@ const HomeSearch = compose(
           }
         });
       }}
-    >
+      >
       <SearchIcon
         style={{
+          left: '15px',
           position: 'absolute',
           top: '34px',
-          left: '15px',
         }}
-      />
+        />
+
       <Input
-        className="test-search-input"
-        type="text"
-        placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
-        onChange={event => setQuery(event.target.value)}
-        onKeyDown={handleKeyDown}
         aria-label="Quick search: e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
-      />
+        className="test-search-input"
+        data-test="home-search-input"
+        onChange={event => setQuery(event.target.value)}
+        onKeyDown={event => {
+          state.query &&
+            (event.key === 'Escape' || event.keyCode === 27) &&
+            reset();
+
+          handleKeyDown(event);
+        }}
+        placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
+        type="text"
+        value={state.query}
+        />
+
+      {state.query && (
+        <CloseIcon
+          onClick={reset}
+          style={{
+            cursor: 'pointer',
+            outline: 0,
+            padding: '10px',
+            position: 'absolute',
+            right: '5px',
+            top: '25px',
+            transition: 'all 0.3s ease',
+          }}
+          />
+      )}
 
       <QuickSearchResults
-        results={state.results.map(
-          item => (item === focusedItem ? { ...item, isSelected: true } : item),
-        )}
-        query={state.query}
-        onSelectItem={setFocusedItem}
-        onActivateItem={selectItem}
         isLoading={state.isLoading}
+        onActivateItem={selectItem}
+        onSelectItem={setFocusedItem}
+        query={state.query}
+        results={state.results.map(
+          item => (item === focusedItem ? {
+            ...item,
+            isSelected: true,
+          } : item),
+        )}
         style={styles}
-      />
+        />
       {!state.isLoading && (
         <FileHistoryResults
+          isLoading={state.isLoading}
+          onActivateItem={selectItem}
+          onSelectItem={setFocusedItem}
           query={state.query}
           results={state.fileHistoryResult
             .filter(f => f.file_change === 'released')
             .map(
               item =>
-                item === focusedItem ? { ...item, isSelected: true } : item,
-            )}
-          onSelectItem={setFocusedItem}
-          onActivateItem={selectItem}
-          isLoading={state.isLoading}
+                (item === focusedItem ? {
+                  ...item,
+                  isSelected: true,
+                } : item),
+          )}
           style={styles}
-        />
+          />
       )}
     </Container>
   ),

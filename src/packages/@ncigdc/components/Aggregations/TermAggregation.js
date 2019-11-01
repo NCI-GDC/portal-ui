@@ -76,8 +76,10 @@ const TermAggregation = (props: TProps) => {
               content: {
                 ...filter.content,
                 value: typeof filter.content.value === 'string'
-                ? filter.content.value.toLowerCase()
-                : filter.content.value.map(val => val && `${val}`.toLowerCase()),
+                  ? filter.content.value.toLowerCase()
+                  : Array.isArray(filter.content.value)
+                    ? filter.content.value.map(val => val && `${val}`.toLowerCase())
+                    : [],
               },
             }
             ));

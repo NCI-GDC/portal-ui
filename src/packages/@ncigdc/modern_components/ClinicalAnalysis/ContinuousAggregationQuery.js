@@ -221,11 +221,15 @@ const updateData = async ({
   setAggData,
   setIsLoading,
   stats,
-  variable,
+  variable: { bins, continuousBinType },
 }) => {
+  console.log(`updateData - ${DEBUG_SET_IDS[filters.content[0].content.value[0]]} - ARGS`);
+  console.table(stats);
+  console.table(bins);
+
   const res = await getContinuousAggs({
-    bins: variable.bins,
-    continuousBinType: variable.continuousBinType,
+    bins,
+    continuousBinType,
     fieldName,
     filters,
     hits,
@@ -245,7 +249,8 @@ export default compose(
   withState('isLoading', 'setIsLoading', 'first time'),
   withPropsOnChange((props, nextProps) => 
     !(isEqual(props.filters, nextProps.filters) &&
-      isEqual(props.variable, nextProps.variable)),
+      isEqual(props.variable, nextProps.variable) &&
+      isEqual(props.stats, nextProps.stats)),
     ({
       fieldName,
       filters,
@@ -271,11 +276,11 @@ export default compose(
 )(({
   aggData, hits, isLoading, setId, stats, ...props
 }) => {
-  // if (!isLoading) {
-  //   console.log(`ContinuousAggregationQuery - ${DEBUG_SET_IDS[`set_id:${setId}`]} - CARD IS LOADING`);
-  //   console.table(aggData.explore.cases.aggregations.diagnoses__age_at_diagnosis.range.buckets);
-  //   console.table(stats);
-  // }
+  if (!isLoading) {
+    console.log(`ContinuousAggregationQuery - ${DEBUG_SET_IDS[`set_id:${setId}`]} - CARD IS LOADING`);
+    console.table(aggData.explore.cases.aggregations.diagnoses__age_at_diagnosis.range.buckets);
+    console.table(stats);
+  }
   return isLoading 
   ? (
    <Column

@@ -365,16 +365,16 @@ const ClinicalAnalysisResult = ({
 
                 // 2904: 4:45pm - stats are correct but buckets aren't
 
-                console.log(`ClinicalAnalysisResult - ${DEBUG_SET_IDS[setId]} - ${varFieldName.split('.')[1]}`);
-                if (varProperties.plotTypes === 'continuous') {
-                  console.log('stats: min:', stats.min, 'max:', stats.max);
-                }
-                console.log('displayVariables bins');
-                console.table(currentAnalysis.displayVariables[varFieldName].bins);
-                if (!isEqual(currentAnalysis.displayVariables[varFieldName].bins, varProperties.bins)) {
-                  console.log('varProperties bins');
-                  console.table(varProperties.bins);
-                }
+                // console.log(`ClinicalAnalysisResult - ${DEBUG_SET_IDS[setId]} - ${varFieldName.split('.')[1]}`);
+                // if (varProperties.plotTypes === 'continuous') {
+                //   console.log('stats: min:', stats.min, 'max:', stats.max);
+                // }
+                // console.log('displayVariables bins');
+                // console.table(currentAnalysis.displayVariables[varFieldName].bins);
+                // if (!isEqual(currentAnalysis.displayVariables[varFieldName].bins, varProperties.bins)) {
+                //   console.log('varProperties bins');
+                //   console.table(varProperties.bins);
+                // }
 
                 return varProperties.plotTypes === 'continuous'
                   ? (

@@ -214,60 +214,57 @@ const getContinuousAggs = ({
     }));
 };
 
+const updateData = async ({
+  fieldName,
+  filters,
+  hits,
+  setAggData,
+  setIsLoading,
+  stats,
+  variable,
+}) => {
+  const res = await getContinuousAggs({
+    bins: variable.bins,
+    continuousBinType: variable.continuousBinType,
+    fieldName,
+    filters,
+    hits,
+    stats,
+  });
+
+  // const agg = res.data.viewer.explore.cases.aggregations.diagnoses__age_at_diagnosis;
+  // console.log(`getContinuousAggs - ${DEBUG_SET_IDS[filters.content[0].content.value[0]]} - RESPONSE`);
+  // console.table(agg.range.buckets);
+  // console.table(agg.stats);
+
+  setAggData(res && res.data.viewer, () => setIsLoading(false));
+};
+
 export default compose(
   withState('aggData', 'setAggData', null),
   withState('isLoading', 'setIsLoading', 'first time'),
-  withProps({
-    updateData: async ({
+  withPropsOnChange((props, nextProps) => 
+    !(isEqual(props.filters, nextProps.filters) &&
+      isEqual(props.variable, nextProps.variable)),
+    ({
       fieldName,
       filters,
       hits,
       setAggData,
       setIsLoading,
       stats,
-      variable,
-    }) => {
-      const res = await getContinuousAggs({
-        bins: variable.bins,
-        continuousBinType: variable.continuousBinType,
-        fieldName,
-        filters,
-        hits,
-        stats,
-      });
-
-      // const agg = res.data.viewer.explore.cases.aggregations.diagnoses__age_at_diagnosis;
-      // console.log(`getContinuousAggs - ${DEBUG_SET_IDS[filters.content[0].content.value[0]]} - RESPONSE`);
-      // console.table(agg.range.buckets);
-      // console.table(agg.stats);
-
-      setAggData(res && res.data.viewer, () => setIsLoading(false));
-    },
-  }),
-  withPropsOnChange(
-    (
-      {
-        filters,
-        variable,
-      },
-      {
-        filters: nextFilters,
-        variable: nextVariable,
-      }
-    ) => !(
-      isEqual(filters, nextFilters) &&
-      isEqual(variable, nextVariable)
-    ),
-    ({
-      setIsLoading,
-      updateData,
-      ...props
+      variable
     }) => {
       // TODO this update is forcing an avoidable double render
       setIsLoading(true);
       updateData({
+        fieldName,
+        filters,
+        hits,
+        setAggData,
         setIsLoading,
-        ...props,
+        stats,
+        variable
       });
     }
   ),

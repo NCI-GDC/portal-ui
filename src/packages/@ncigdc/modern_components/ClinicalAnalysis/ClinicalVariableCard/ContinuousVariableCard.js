@@ -133,7 +133,7 @@ export default compose(
         Max: null,
         Min: null,
       };
-    
+
     const defaultMin = dataStats.Min;
     const defaultMax = dataStats.Max + 1; // api excludes the max number
 

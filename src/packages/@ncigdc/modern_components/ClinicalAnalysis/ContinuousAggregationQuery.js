@@ -229,10 +229,8 @@ export default compose(
   withState('aggData', 'setAggData', null),
   withState('isLoading', 'setIsLoading', 'first time'),
   withPropsOnChange((props, nextProps) => 
-    !(
-      props.setIdWithData === nextProps.setIdWithData &&
-      isEqual(props.variable, nextProps.variable)
-      ),
+    !(props.setIdWithData === nextProps.setIdWithData &&
+      isEqual(props.variable, nextProps.variable)),
     ({
       fieldName,
       filters,

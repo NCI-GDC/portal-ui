@@ -29,17 +29,11 @@ const simpleAggCache = {};
 const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 5;
 
-const DEBUG_SET_IDS = {
-  'set_id:AW4jAQJLn07KT3bO8Zrq': 'hematopoietic',
-  'set_id:AW4i__WGn07KT3bO8Zrp': 'bronchus',
-};
-
 const getContinuousAggs = ({
   bins,
   continuousBinType,
   fieldName,
   filters,
-  setId,
   stats,
 }) => {
   // prevent query failing if interval will equal 0

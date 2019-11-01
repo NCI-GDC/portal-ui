@@ -66,11 +66,6 @@ interface IAnalysisResultProps {
   analysis: any;
 }
 
-const DEBUG_SET_IDS = {
-  'AW4jAQJLn07KT3bO8Zrq': 'hematopoietic',
-  'AW4i__WGn07KT3bO8Zrp': 'bronchus',
-};
-
 const CopyAnalysisModal = compose(
   setDisplayName('EnhancedCopyAnalysisModal'),
   withState(
@@ -149,7 +144,6 @@ const ClinicalAnalysisResult = ({
   survivalDataLoading,
 }: IAnalysisResultProps) => {
   const downloadSvgInfo = getDownloadSvgInfo(displayVariables);
-
   return hits.total === 0
     ? (
       <DeprecatedSetResult
@@ -418,7 +412,8 @@ export default compose(
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
   withState('survivalDataLoading', 'setSurvivalDataLoading', true),
   withState('setId', 'setSetId', ''),
-  withPropsOnChange(['viewer'],
+  withPropsOnChange(
+    ['viewer'],
     ({
       setId,
       viewer: {
@@ -426,7 +421,7 @@ export default compose(
           cases: { facets, hits },
         },
       },
-    }) =>  ({
+    }) => ({
       hits,
       parsedFacets: facets ? tryParseJSON(facets) : {},
       setIdWithData: setId,

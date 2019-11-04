@@ -29,27 +29,6 @@ const simpleAggCache = {};
 const pendingAggCache = {};
 const DEFAULT_CONTINUOUS_BUCKETS = 5;
 
-const updateData = async ({
-  fieldName,
-  filters,
-  hits,
-  setAggData,
-  setIsLoading,
-  stats,
-  variable: { bins, continuousBinType },
-}) => {
-  const res = await getContinuousAggs({
-    bins,
-    continuousBinType,
-    fieldName,
-    filters,
-    hits,
-    stats,
-  });
-
-  setAggData(res && res.data.viewer, () => setIsLoading(false));
-};
-
 const getContinuousAggs = ({
   bins,
   continuousBinType,
@@ -225,20 +204,42 @@ const getContinuousAggs = ({
     }));
 };
 
-export default compose(
-  withState('aggData', 'setAggData', null),
-  withState('isLoading', 'setIsLoading', 'first time'),
-  withPropsOnChange((props, nextProps) => 
-  !(props.setIdWithData === nextProps.setIdWithData &&
-    isEqual(props.variable, nextProps.variable)),
-  ({
+const updateData = async ({
+  fieldName,
+  filters,
+  hits,
+  setAggData,
+  setIsLoading,
+  stats,
+  variable: { bins, continuousBinType },
+}) => {
+  const res = await getContinuousAggs({
+    bins,
+    continuousBinType,
     fieldName,
     filters,
     hits,
-    setAggData,
-    setIsLoading,
     stats,
-    variable,
+  });
+
+  setAggData(res && res.data.viewer, () => setIsLoading(false));
+};
+
+export default compose(
+  withState('aggData', 'setAggData', null),
+  withState('isLoading', 'setIsLoading', 'first time'),
+  withPropsOnChange(
+    (props, nextProps) => 
+      !(props.setIdWithData === nextProps.setIdWithData &&
+      isEqual(props.variable, nextProps.variable)),
+    ({
+      fieldName,
+      filters,
+      hits,
+      setAggData,
+      setIsLoading,
+      stats,
+      variable,
     }) => {
       // TODO this update is forcing an avoidable double render
       setIsLoading(true);

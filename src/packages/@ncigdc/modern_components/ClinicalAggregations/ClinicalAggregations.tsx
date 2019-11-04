@@ -84,7 +84,7 @@ interface IParsedFacetsProps {
   [x: string]: IAggregationProps,
 }
 
-export interface IfilterdFacetsProps {
+export interface IFilteredFacetsProps {
   [x: string]: IFacetProps[],
 }
 
@@ -98,7 +98,7 @@ interface INotificationProps {
 }
 
 interface IClinicalProps {
-  filteredFacets: IfilterdFacetsProps,
+  filteredFacets: IFilteredFacetsProps,
   theme: ITheme,
   setUselessFacetVisibility: (uselessFacetVisibility: boolean) => void,
   shouldHideUselessFacets: boolean,
@@ -138,6 +138,11 @@ interface IClinicalQueryProps extends IClinicalProps {
     viewer: IClinicalViewer
   },
   viewer: IClinicalViewer
+}
+
+interface IParsedClinicalAggs extends IClinicalQueryProps {
+  facetMapping: IFacetProps,
+  facetExclusionTest: (facet: IFacetProps) => IFacetProps
 }
 
 const headersHeight = 44;
@@ -245,13 +250,11 @@ const enhance = compose<IClinicalProps, IClinicalProps>(
       },
     }),
   ),
-  withPropsOnChange(
-    [
-      'customCaseFacets',
-      'facetMapping',
-      'searchValue',
-      'shouldHideUselessFacets',
-    ],
+  withPropsOnChange((props: IParsedClinicalAggs, nextProps: IParsedClinicalAggs) =>
+    !(isEqual(props.facetMapping, nextProps.facetMapping) &&
+      isEqual(props.viewer.explore.cases.customCaseFacets, nextProps.viewer.explore.cases.customCaseFacets) &&
+      props.shouldHideUselessFacets === nextProps.shouldHideUselessFacets &&
+      props.searchValue === nextProps.searchValue),
     ({
       dispatch,
       facetExclusionTest,

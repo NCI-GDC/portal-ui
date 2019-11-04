@@ -204,11 +204,35 @@ const getContinuousAggs = ({
     }));
 };
 
+const updateData = async ({
+  fieldName,
+  filters,
+  hits,
+  setAggData,
+  setIsLoading,
+  stats,
+  variable: { bins, continuousBinType },
+}) => {
+  const res = await getContinuousAggs({
+    bins,
+    continuousBinType,
+    fieldName,
+    filters,
+    hits,
+    stats,
+  });
+
+  setAggData(res && res.data.viewer, () => setIsLoading(false));
+};
+
 export default compose(
   withState('aggData', 'setAggData', null),
   withState('isLoading', 'setIsLoading', 'first time'),
-  withProps({
-    updateData: async ({
+  withPropsOnChange(
+    (props, nextProps) => 
+      !(props.setIdWithData === nextProps.setIdWithData &&
+      isEqual(props.variable, nextProps.variable)),
+    ({
       fieldName,
       filters,
       hits,
@@ -217,41 +241,16 @@ export default compose(
       stats,
       variable,
     }) => {
-      const res = await getContinuousAggs({
-        bins: variable.bins,
-        continuousBinType: variable.continuousBinType,
-        fieldName,
-        filters,
-        hits,
-        stats,
-      });
-      setAggData(res && res.data.viewer, () => setIsLoading(false));
-    },
-  }),
-  withPropsOnChange(
-    (
-      {
-        filters,
-        variable,
-      },
-      {
-        filters: nextFilters,
-        variable: nextVariable,
-      }
-    ) => !(
-      isEqual(filters, nextFilters) &&
-      isEqual(variable, nextVariable)
-    ),
-    ({
-      setIsLoading,
-      updateData,
-      ...props
-    }) => {
       // TODO this update is forcing an avoidable double render
       setIsLoading(true);
       updateData({
+        fieldName,
+        filters,
+        hits,
+        setAggData,
         setIsLoading,
-        ...props,
+        stats,
+        variable,
       });
     }
   ),

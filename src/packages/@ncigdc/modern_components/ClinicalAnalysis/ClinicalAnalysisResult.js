@@ -140,6 +140,7 @@ const ClinicalAnalysisResult = ({
   push,
   setControlPanelExpanded,
   setId,
+  setIdWithData,
   survivalDataLoading,
 }: IAnalysisResultProps) => {
   const downloadSvgInfo = getDownloadSvgInfo(displayVariables);
@@ -367,6 +368,7 @@ const ClinicalAnalysisResult = ({
                       overallSurvivalData={overallSurvivalData}
                       plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
                       setId={setId}
+                      setIdWithData={setIdWithData}
                       stats={parsedFacets[varFieldName].stats}
                       style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                       variable={varProperties}
@@ -413,6 +415,7 @@ export default compose(
   withPropsOnChange(
     ['viewer'],
     ({
+      setId,
       viewer: {
         explore: {
           cases: { facets, hits },
@@ -421,6 +424,7 @@ export default compose(
     }) => ({
       hits,
       parsedFacets: facets ? tryParseJSON(facets) : {},
+      setIdWithData: setId,
     })
   ),
   withPropsOnChange(

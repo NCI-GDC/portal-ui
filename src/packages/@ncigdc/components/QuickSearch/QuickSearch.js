@@ -8,6 +8,7 @@ import {
   setDisplayName,
 } from 'recompose';
 import styled from '@ncigdc/theme/styled';
+import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
 import { withSearch } from '@ncigdc/utils/withSearch';
 import namespace from '@ncigdc/utils/namespace';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
@@ -104,26 +105,49 @@ const QuickSearch = ({
 
     {isInSearchMode
       ? (
-        <SearchInput
-          aria-label="Quick Search Input"
-          autoFocus
-          className="quick-search-input"
-          onChange={event => setQuery(event.target.value)}
-          onKeyDown={event => {
-            handleKeyDown(event);
-            if (
-              state.query &&
-              state.results &&
-              focusedItem &&
-              event.key === 'Enter'
-            ) {
-              reset();
-              setIsInSearchMode(false);
-            }
-          }}
-          placeholder="Quick Search"
-          type="text"
-          />
+        <React.Fragment>
+          <SearchInput
+            aria-label="Quick Search Input"
+            autoFocus
+            className="quick-search-input"
+            onChange={event => setQuery(event.target.value)}
+            onKeyDown={event => {
+              (event.key === 'Escape' || event.keyCode === 27) && (
+                state.query
+                ? reset()
+                : setIsInSearchMode(false));
+
+              handleKeyDown(event);
+              if (
+                state.query &&
+                state.results &&
+                focusedItem &&
+                event.key === 'Enter'
+              ) {
+                reset();
+                setIsInSearchMode(false);
+              }
+            }}
+            placeholder="Quick Search"
+            type="text"
+            value={state.query || ''}
+            />
+
+          {state.query && (
+            <CloseIcon
+              onClick={reset}
+              style={{
+                cursor: 'pointer',
+                outline: 0,
+                padding: '10px',
+                position: 'absolute',
+                right: '10px',
+                top: '7px',
+                transition: 'all 0.3s ease',
+              }}
+              />
+          )}
+        </React.Fragment>
       )
       : (
         <span
@@ -146,11 +170,11 @@ const QuickSearch = ({
       results={map(
         state.results,
         item => (item === focusedItem
-          ? Object.assign(
-            {},
-            item,
-            { isSelected: true },
-          )
+          ? ({
+
+            ...item,
+            isSelected: true,
+          })
           : item
         ),
       )}
@@ -169,11 +193,11 @@ const QuickSearch = ({
         results={state.fileHistoryResult
           .filter(f => f.file_change === 'released')
           .map(item => (item === focusedItem
-            ? Object.assign(
-              {},
-              item,
-              { isSelected: true },
-            )
+            ? ({
+
+              ...item,
+              isSelected: true,
+            })
             : item
           ))}
         />

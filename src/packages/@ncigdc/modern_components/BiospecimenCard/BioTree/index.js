@@ -9,7 +9,6 @@ import {
   withState,
 } from 'recompose';
 import { style } from 'glamor';
-import Emitter from '@ncigdc/utils/emitter';
 import Highlight from '@ncigdc/uikit/Highlight';
 import { capitalize } from 'lodash';
 import Node from './Node';
@@ -204,25 +203,12 @@ const EnhancedBranch = compose(
         type: 'TOTAL_NODES',
       });
     },
-    componentWillMount(): void {
-      const {
-        setEmitterToken,
-        setExpanded,
-      } = this.props;
-      const token = Emitter.addListener('expand', toExpand => {
-        setExpanded(toExpand);
-      });
-
-      setEmitterToken(token);
-    },
     componentWillUnmount(): void {
       const {
-        emitterToken,
         expanded,
         setTreeStatus,
       } = this.props;
 
-      emitterToken.remove();
       setTreeStatus({
         payload: {
           expanded,

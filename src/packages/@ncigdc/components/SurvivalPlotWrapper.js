@@ -146,7 +146,7 @@ const SurvivalPlotWrapper = ({
                           return legendItem;
                         })
                         .concat(
-                          pValue
+                          isNumber(pValue)
                             ? document.querySelector(
                               `.${plotName} .p-value`
                             )

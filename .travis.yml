@@ -2,7 +2,7 @@ git:
   depth: 10
 language: node_js
 node_js:
-- '8'
+- '12'
 sudo: required
 dist: trusty
 group: edge
@@ -24,7 +24,7 @@ jobs:
     - bash docker.sh
     - bash awgbuild.sh
     - bash awgdocker.sh
-    
+
 notifications:
   email: false
   slack:

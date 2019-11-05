@@ -432,21 +432,23 @@ export default compose(
       const binsWithDisplayName = Object.keys(bins).map(bin => ({
         ...bins[bin],
         displayName: continuousBinType === 'default'
-            ? createContinuousGroupName(bins[bin].key)
-            : bins[bin].groupName,
+          ? createContinuousGroupName(bins[bin].key)
+          : bins[bin].groupName,
       }));
 
       const availableColors = SURVIVAL_PLOT_COLORS
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
       const customBinMatches = isSurvivalCustom
-        ? binsWithDisplayName.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])).map((b, i) => {
-          const match = find(customSurvivalPlots, ['keyName', b.displayName]);
-          return {
-            ...b,
-            color: (match && match.color) || availableColors[i],
-          };
-        })
+        ? binsWithDisplayName
+          .filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName]))
+          .map((bin, i) => {
+            const match = find(customSurvivalPlots, ['keyName', bin.displayName]);
+            return {
+              ...bin,
+              color: (match && match.color) || availableColors[i],
+            };
+          })
         : [];
 
       // once survival has been customized in a continuous card,

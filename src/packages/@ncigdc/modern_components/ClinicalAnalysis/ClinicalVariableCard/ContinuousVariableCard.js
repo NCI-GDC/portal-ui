@@ -429,7 +429,7 @@ export default compose(
         isSurvivalCustom,
       },
     }) => {
-      const binsWithNames = Object.keys(bins).map(bin => ({
+      const binsWithDisplayName = Object.keys(bins).map(bin => ({
         ...bins[bin],
         displayName: continuousBinType === 'default'
             ? createContinuousGroupName(bins[bin].key)
@@ -440,68 +440,57 @@ export default compose(
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
       const customBinMatches = isSurvivalCustom
-          ? binsWithNames.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])).map((b, i) => {
-            const match = find(customSurvivalPlots, ['keyName', b.displayName]);
-            return {
-              ...b,
-              color: (match && match.color) || availableColors[i],
-            };
-          })
-          : [];
+        ? binsWithDisplayName.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])).map((b, i) => {
+          const match = find(customSurvivalPlots, ['keyName', b.displayName]);
+          return {
+            ...b,
+            color: (match && match.color) || availableColors[i],
+          };
+        })
+        : [];
 
-      // once survival has been customized,
-      // retain the 'custom' flag unless
-      // the user resets the whole card
+      // once survival has been customized in a continuous card,
+      // retain the 'custom' flag unless the user resets the whole card
       const isUsingCustomSurvival = isSurvivalCustom ||
         customBinMatches.length > 0;
 
       const survivalBins = (isUsingCustomSurvival
         ? filterSurvivalData(getContinuousBins({
-          binData: customBinMatches,
-          continuousBinType,
-          fieldName,
-          setId,
-          totalDocs,
-        }))
-      : filterSurvivalData(getContinuousBins({
-        binData: binsWithNames.sort((a, b) => a.key - b.key),
-        continuousBinType,
-        fieldName,
-        setId,
-        totalDocs,
-      })).sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-        .map((bin, i) => {
-          return {
-            ...bin,
-            color: availableColors[i],
-          };
-        })
-      ).slice(0, isUsingCustomSurvival ? Infinity : 2);
+            binData: customBinMatches,
+            continuousBinType,
+            fieldName,
+            setId,
+            totalDocs,
+          }))
+        : filterSurvivalData(getContinuousBins({
+            binData: binsWithDisplayName.sort((a, b) => a.key - b.key),
+            continuousBinType,
+            fieldName,
+            setId,
+            totalDocs,
+          }))
+          .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+          .map((bin, i) => ({
+              ...bin,
+              color: availableColors[i],
+            }))
+          )
+          .slice(0, isUsingCustomSurvival ? Infinity : 2);
 
-      const survivalPlotValues = survivalBins.map(bin => {
-        return {
-          ...bin,
-          filters: bin.filters,
-          key: bin.key,
-          keyName: bin.key,
-        };
-      });
+      const survivalPlotValues = survivalBins.map(bin => ({
+        ...bin,
+        keyName: bin.key,
+      }));
 
-      const survivalTableValues = survivalBins
-        .map(bin => {
-          return {
-            ...bin,
-            keyName: bin.displayName,
-          };
-        });
+      const survivalTableValues = survivalBins.map(bin => ({
+        ...bin,
+        keyName: bin.displayName,
+      }));
 
-      const nextCustomSurvivalPlots = customBinMatches
-        .map(bin => {
-          return {
-            ...bin,
-            keyName: bin.displayName,
-          };
-        });
+      const nextCustomSurvivalPlots = customBinMatches.map(bin => ({
+        ...bin,
+        keyName: bin.displayName,
+      }));
 
       dispatch(updateClinicalAnalysisVariable({
         fieldName,

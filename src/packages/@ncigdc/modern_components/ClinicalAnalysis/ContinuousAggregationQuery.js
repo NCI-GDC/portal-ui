@@ -255,7 +255,7 @@ export default compose(
     }
   ),
 )(({
-  aggData, hits, isLoading, setId, stats, ...props
+  aggData, hits, isLoading, setIdWithData, stats, ...props
 }) => isLoading 
   ? (
    <Column
@@ -277,7 +277,7 @@ export default compose(
         ...aggData,
         hits,
       }}
-      setId={setId}
+      setId={setIdWithData}
       stats={stats}
       {...props}
       />

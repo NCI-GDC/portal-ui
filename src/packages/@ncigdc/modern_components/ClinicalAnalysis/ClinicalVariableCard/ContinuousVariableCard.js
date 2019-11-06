@@ -427,26 +427,26 @@ export default compose(
       const binsWithNames = Object.keys(bins).map(bin => ({
         ...bins[bin],
         displayName: continuousBinType === 'default'
-            ? createContinuousGroupName(bins[bin].key)
-            : bins[bin].groupName,
+          ? createContinuousGroupName(bins[bin].key)
+          : bins[bin].groupName,
       }));
 
       const availableColors = SURVIVAL_PLOT_COLORS
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
       const customBinMatches = isSurvivalCustom
-          ? binsWithNames.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])).map((b, i) => {
-            const match = find(customSurvivalPlots, ['keyName', b.displayName]);
-            return {
-              ...b,
-              color: (match && match.color) || availableColors[i],
-            };
-          })
-          : [];
+        ? binsWithNames.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])).map((b, i) => {
+          const match = find(customSurvivalPlots, ['keyName', b.displayName]);
+          return {
+            ...b,
+            color: (match && match.color) || availableColors[i],
+          };
+        })
+        : [];
 
       const isUsingCustomSurvival = customBinMatches.length > 0;
 
-      const survivalBins = (isUsingCustomSurvival
+      const survivalBins = isUsingCustomSurvival
         ? filterSurvivalData(getContinuousBins({
           binData: customBinMatches,
           continuousBinType,
@@ -460,14 +460,15 @@ export default compose(
         fieldName,
         setId,
         totalDocs,
-      })).sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+      }))
+        .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
         .map((bin, i) => {
           return {
             ...bin,
             color: availableColors[i],
           };
         })
-      ).slice(0, isUsingCustomSurvival ? Infinity : 2);
+        .slice(0, 2);
 
       const survivalPlotValues = survivalBins.map(bin => {
         return {

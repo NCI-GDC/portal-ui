@@ -395,7 +395,7 @@ export default compose(
     (props, nextProps) => nextProps.variable.active_chart === 'survival' && !(
       isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
       isEqual(props.variable.bins, nextProps.variable.bins) &&
-      isEqual(props.variable.customSurvivalPlots, props.variable.customSurvivalPlots) &&
+      isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
       props.setId === nextProps.setId &&
       props.variable.active_chart === nextProps.variable.active_chart &&
       props.variable.isSurvivalCustom === nextProps.variable.isSurvivalCustom

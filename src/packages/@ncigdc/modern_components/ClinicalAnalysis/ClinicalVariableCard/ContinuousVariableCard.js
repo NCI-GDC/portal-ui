@@ -407,12 +407,23 @@ export default compose(
       setId,
       totalDocs,
       variable: {
+        active_chart,
         bins = {},
         continuousBinType,
         customSurvivalPlots,
         isSurvivalCustom,
       },
     }) => {
+      // re-checking some withPropsOnChange conditions,
+      // because this component un-mounts and re-mounts
+      // when its props change. categorical cards don't do this.
+      if (active_chart !== 'survival' || bins.length === 0) {
+        return {
+          survivalPlotValues: [],
+          survivalTableValues: [],
+        }
+      };
+
       const binsWithNames = Object.keys(bins).map(bin => ({
         ...bins[bin],
         displayName: continuousBinType === 'default'

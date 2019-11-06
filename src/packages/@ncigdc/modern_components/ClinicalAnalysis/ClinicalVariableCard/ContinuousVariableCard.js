@@ -414,9 +414,9 @@ export default compose(
         isSurvivalCustom,
       },
     }) => {
-      // re-checking some withPropsOnChange conditions,
-      // because this component un-mounts and re-mounts
-      // when its props change. categorical cards don't do this.
+      // duplicate props check
+      // because this component re-mounts often
+      // and withPropsOnChange conditions are ignored on mount
       if (active_chart !== 'survival') {
         return {
           survivalPlotValues: [],

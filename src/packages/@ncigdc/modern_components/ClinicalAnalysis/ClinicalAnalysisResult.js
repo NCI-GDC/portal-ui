@@ -360,6 +360,7 @@ const ClinicalAnalysisResult = ({
                 return varProperties.plotTypes === 'continuous'
                   ? (
                     <ContinuousAggregationQuery
+                      continuousSetId={continuousSetId}
                       currentAnalysis={currentAnalysis}
                       fieldName={varFieldName}
                       filters={filters}
@@ -368,7 +369,7 @@ const ClinicalAnalysisResult = ({
                       key={varFieldName}
                       overallSurvivalData={overallSurvivalData}
                       plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
-                      continuousSetId={continuousSetId}
+                      setId={setId}
                       stats={parsedFacets[varFieldName].stats}
                       style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                       variable={varProperties}

@@ -136,8 +136,13 @@ export default compose(
       !isEqual(props.variable.bins, nextProps.variable.bins) ||
       (props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom &&
         !nextProps.variable.isSurvivalCustom)),
-    ({ populateSurvivalData }) => {
-      populateSurvivalData();
+    ({ populateSurvivalData, variable: { active_chart } }) => {
+      if (active_chart === 'survival') {
+        // duplicate props check
+        // because this component re-mounts often
+        // and withPropsOnChange conditions are ignored on mount
+        populateSurvivalData();
+      }
     }
   ),
   withPropsOnChange(

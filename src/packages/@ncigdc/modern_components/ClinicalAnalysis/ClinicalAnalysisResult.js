@@ -289,7 +289,7 @@ const ClinicalAnalysisResult = ({
               flex: 4,
               minWidth: 0,
             }}
-            >
+            >        
             <Column
               className="print-grid"
               style={{
@@ -301,6 +301,7 @@ const ClinicalAnalysisResult = ({
                 ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
               }}
               >
+                {/*
               <Column
                 className="print-w500"
                 style={{
@@ -341,7 +342,7 @@ const ClinicalAnalysisResult = ({
                     />
                 </div>
               </Column>
-
+                */}
               {setId && map(displayVariables, (varProperties, varFieldName) => {
                 const filters = {
                   content: [

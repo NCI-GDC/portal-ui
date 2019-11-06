@@ -144,6 +144,16 @@ export default compose(
         customSurvivalPlots, isSurvivalCustom,
       },
     }) => {
+      // duplicate props check
+      // because this component re-mounts often
+      // and withPropsOnChange conditions are ignored on mount
+      if (active_chart !== 'survival') {
+        return {
+          survivalPlotValues: [],
+          survivalTableValues: [],
+        }
+      };
+      
       const binDataSelected = isSurvivalCustom
         ? binData.filter(bin => {
           return find(customSurvivalPlots, ['keyName', bin.key]);

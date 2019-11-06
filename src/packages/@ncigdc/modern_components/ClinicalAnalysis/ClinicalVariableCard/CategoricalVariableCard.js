@@ -153,11 +153,9 @@ export default compose(
           survivalTableValues: [],
         }
       };
-      
+
       const binDataSelected = isSurvivalCustom
-        ? binData.filter(bin => {
-          return find(customSurvivalPlots, ['keyName', bin.key]);
-        })
+        ? binData.filter(bin => find(customSurvivalPlots, ['keyName', bin.key]))
         : binData;
 
       const availableColors = SURVIVAL_PLOT_COLORS
@@ -177,11 +175,12 @@ export default compose(
       )
         .slice(0, isSurvivalCustom ? Infinity : 2);
 
-      const survivalPlotValues = survivalBins.map(bin => ({
-        color: bin.color,
-        keyArray: bin.keyArray,
-        keyName: bin.key,
-      }));
+      const survivalPlotValues = survivalBins
+        .map(({ color, key, keyArray }) => ({ 
+          color,
+          keyArray,
+          keyName: key,
+        }));
 
       if (isSurvivalCustom) {
         dispatch(updateClinicalAnalysisVariable({

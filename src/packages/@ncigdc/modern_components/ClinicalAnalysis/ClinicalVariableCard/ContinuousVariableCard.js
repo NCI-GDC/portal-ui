@@ -417,7 +417,8 @@ export default compose(
       // re-checking some withPropsOnChange conditions,
       // because this component un-mounts and re-mounts
       // when its props change. categorical cards don't do this.
-      if (active_chart !== 'survival' || bins.length === 0) {
+      if (active_chart !== 'survival') {
+        // TODO: reset everything?
         return {
           survivalPlotValues: [],
           survivalTableValues: [],
@@ -473,8 +474,6 @@ export default compose(
       const survivalPlotValues = survivalBins.map(bin => {
         return {
           ...bin,
-          filters: bin.filters,
-          key: bin.key,
           keyName: bin.key,
         };
       });

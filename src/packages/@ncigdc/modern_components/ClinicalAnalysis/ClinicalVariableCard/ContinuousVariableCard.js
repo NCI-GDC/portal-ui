@@ -455,43 +455,40 @@ export default compose(
           totalDocs,
         }))
       : filterSurvivalData(getContinuousBins({
-        binData: binsWithNames.sort((a, b) => a.key - b.key),
-        continuousBinType,
-        fieldName,
-        setId,
-        totalDocs,
-      }))
+          binData: binsWithNames.sort((a, b) => a.key - b.key),
+          continuousBinType,
+          fieldName,
+          setId,
+          totalDocs,
+        }))
         .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-        .map((bin, i) => {
-          return {
-            ...bin,
-            color: availableColors[i],
-          };
-        })
-        .slice(0, 2);
-
-      const survivalPlotValues = survivalBins.map(bin => {
-        return {
+        .slice(0, 2)
+        .map((bin, i) => ({
           ...bin,
-          keyName: bin.key,
-        };
-      });
+          color: availableColors[i],
+        }));
 
+      const survivalPlotValues = survivalBins
+        .map(({ color, filters, key }) => ({ 
+          color, 
+          filters, 
+          key, 
+          keyName: key,
+        }));
+      
       const survivalTableValues = survivalBins
-        .map(bin => {
-          return {
-            ...bin,
-            keyName: bin.displayName,
-          };
-        });
+        .map(({ color, displayName, key }) => ({ 
+          color,
+          key,
+          keyName: displayName,
+        }));
 
       const nextCustomSurvivalPlots = customBinMatches
-        .map(bin => {
-          return {
-            ...bin,
-            keyName: bin.displayName,
-          };
-        });
+        .map(({ color, displayName, key }) => ({ 
+          color,
+          key,
+          keyName: displayName,
+        }));
 
       dispatch(updateClinicalAnalysisVariable({
         fieldName,

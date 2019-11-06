@@ -134,7 +134,9 @@ const getTableData = ({
               updateSelectedSurvivalBins(displayData, bin);
             }}
             style={{
-              backgroundColor: isSelectedForSurvival ? selectedBin.color : theme.greyScale3,
+              backgroundColor: isSelectedForSurvival
+                ? selectedBin.color
+                : theme.greyScale3,
               color: 'white',
               margin: '0 auto',
               opacity:

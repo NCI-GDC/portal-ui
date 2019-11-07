@@ -122,8 +122,8 @@ export default compose(
           id,
           variable: {
             customSurvivalPlots: survivalDeselectedAndDuplicatesRemoved,
-            isSurvivalCustom: true,
-            showOverallSurvival: survivalDeselectedAndDuplicatesRemoved.length === 0,
+            isSurvivalCustom: survivalDeselectedAndDuplicatesRemoved.length > 0,
+            // showOverallSurvival: false,
           },
         }));
       },

@@ -141,7 +141,9 @@ export default compose(
       fieldName,
       id,
       variable: {
-        customSurvivalPlots, isSurvivalCustom,
+        active_chart,
+        customSurvivalPlots,
+        isSurvivalCustom,
       },
     }) => {
       // duplicate props check

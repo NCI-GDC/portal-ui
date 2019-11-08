@@ -262,6 +262,7 @@ export default compose(
       error: nextError,
       isCollapsed: nextIsCollapsed,
       isInSearchMode: nextIsInSearchMode,
+      location: nextLocation,
       notifications: nextNotifications,
       user: nextUser,
     }) {
@@ -269,6 +270,7 @@ export default compose(
         error,
         isCollapsed,
         isInSearchMode,
+        location,
         notifications,
         user,
       } = this.props;
@@ -278,6 +280,7 @@ export default compose(
         nextIsCollapsed === isCollapsed &&
         nextIsInSearchMode === isInSearchMode &&
         isEqual(nextNotifications, notifications) &&
+        isEqual(nextLocation, location) &&
         nextUser === user
       );
     },

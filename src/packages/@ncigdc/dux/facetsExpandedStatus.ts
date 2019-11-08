@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { clinicalFacets } from '@ncigdc/containers/explore/presetFacets';
 import {
   IFacetProps,
-  IfilterdFacetsProps
+  IFilteredFacetsProps
 } from '@ncigdc/containers/explore/ClinicalAggregations';
 /*----------------------------------------------------------------------------*/
 
@@ -17,7 +17,7 @@ const facetsExpandedStatus = namespaceActions('facetsExpandedStatus', [
 export interface IExpandedStatusActionProps {
   type: string;
   payload: {
-    facets?: IfilterdFacetsProps;
+    facets?: IFilteredFacetsProps | {};
     category?: string;
     field?: string;
     isExpanded?: boolean;

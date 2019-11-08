@@ -204,6 +204,7 @@ const CaseAggregationsComponent = (props: TProps) => (
     </div>
     <Modal
       isOpen={props.shouldShowFacetSelection}
+      shouldNotCloseOnEsc
       style={{
         content: {
           border: 0,
@@ -248,11 +249,12 @@ const CaseAggregationsComponent = (props: TProps) => (
       doctype="cases"
       dropdownItem={x => (
         <Row>
-          <CaseIcon style={{
-            paddingRight: '1rem',
-            paddingTop: '1rem',
-          }}
-                    />
+          <CaseIcon
+            style={{
+              paddingRight: '1rem',
+              paddingTop: '1rem',
+            }}
+            />
           <div>
             <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
             <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>

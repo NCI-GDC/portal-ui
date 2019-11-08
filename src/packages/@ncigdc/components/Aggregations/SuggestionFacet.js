@@ -67,8 +67,207 @@ const StyledDropdownLink = styled(Link, {
   textDecoration: 'none',
 });
 
-const SuggestionFacet = compose(
-  setDisplayName('EnhancedSuggestionFacet'),
+const SuggestionFacet = ({
+  active,
+  collapsed,
+  doctype,
+  dropdownItem,
+  fieldNoDoctype,
+  inputValue,
+  isLoading,
+  placeholder,
+  results = [],
+  selectableList,
+  setActive,
+  setAutocomplete,
+  setInputValue,
+  setIsLoading,
+  style,
+  title,
+}) => {
+  const query = v => ({
+    offset: 0,
+    filters: {
+      op: 'and',
+      content: [
+        {
+          op: 'in',
+          content: {
+            field: `${doctype}.${fieldNoDoctype}`,
+            value: [v],
+          },
+        },
+      ],
+    },
+  });
+
+  const getCheckedValue = v => {
+    if (v.includes('set_id:')) {
+      return <SetId set={v} />;
+    }
+    if (fieldNoDoctype === 'gene_id') {
+      return <GeneSymbol geneId={v} />;
+    }
+    return v;
+  };
+
+  return (
+    <LocationSubscriber>
+      {(ctx: { pathname: string, query: IRawQuery }) => {
+        const { filters } = ctx.query || {};
+        const currentFilters = parseFilterParam(filters, { content: [] })
+          .content;
+        const currentValues = getFilterValue({
+          currentFilters,
+          dotField: `${doctype}.${fieldNoDoctype}`,
+        }) || { content: { value: [] } };
+        return (
+          <Container
+            className="test-suggestion-facet"
+            data-test="suggestion-facet"
+            style={style}
+            >
+            {collapsed || (
+              <Column>
+                {[].concat(currentValues.content.value || []).map(v => (
+                  <CheckedRow key={v}>
+                    <CheckedLink
+                      merge="toggle"
+                      query={{
+                        offset: 0,
+                        filters: {
+                          op: 'and',
+                          content: [
+                            {
+                              op: 'in',
+                              content: {
+                                field: `${doctype}.${fieldNoDoctype}`,
+                                value: [v],
+                              },
+                            },
+                          ],
+                        },
+                      }}
+                      >
+                      <CheckCircleOIcon style={{ paddingRight: '0.5rem' }} />
+                      {getCheckedValue(v)}
+                    </CheckedLink>
+                  </CheckedRow>
+                ))}
+
+                <Row>
+                  <label htmlFor={fieldNoDoctype}>
+                    <MagnifyingGlass />
+                    <Hidden>{title}</Hidden>
+                  </label>
+
+                  <Input
+                    aria-activedescendant={
+                      active
+                        ? _.get(
+                          selectableList,
+                            `focusedItem.${fieldNoDoctype}`,
+                        )
+                        : null // false gets stringify, so value needs to be `null` or `undefined`
+                    }
+                    handleClear={() => {
+                      setInputValue('');
+                      setActive(false);
+                    }}
+                    id={fieldNoDoctype}
+                    name={fieldNoDoctype}
+                    onChange={({ target: { value } }) => {
+                      setInputValue(value);
+                      setActive(!!value);
+                      if (value) {
+                        setIsLoading(true);
+                        setAutocomplete(
+                          value,
+                          readyState => _.some([
+                            readyState.ready,
+                            readyState.aborted,
+                            readyState.error,
+                          ]) && setIsLoading(false),
+                        );
+                      }
+                    }}
+                    onClick={({ target: { value } }) => {
+                      setInputValue(value);
+                      setActive(!!value);
+                      if (value) {
+                        setIsLoading(true);
+                        setAutocomplete(
+                          value,
+                          readyState => _.some([
+                            readyState.ready,
+                            readyState.aborted,
+                            readyState.error,
+                          ]) && setIsLoading(false),
+                        );
+                      }
+                    }}
+                    onKeyDown={selectableList.handleKeyEvent}
+                    placeholder={placeholder}
+                    style={{ borderRadius: '0 4px 4px 0' }}
+                    value={inputValue}
+                    {...active && {
+                      'aria-owns': `${fieldNoDoctype}-options`,
+                    }}
+                    />
+
+                  {active && (
+                    <Column
+                      id={`${fieldNoDoctype}-options`}
+                      onClick={e => e.stopPropagation()}
+                      style={{
+                        ...dropdown,
+                        marginTop: 0,
+                        top: '35px',
+                        width: '300px',
+                        wordBreak: 'break-word',
+                      }}
+                      >
+                      {results.length > 0
+                        ? results.map(x => (
+                          <Row
+                            key={x.id}
+                            onClick={() => {
+                              setInputValue('');
+                              setActive(false);
+                            }}
+                            onMouseOver={() => selectableList.setFocusedItem(x)}
+                            style={{ alignItems: 'center' }}
+                            >
+                            <StyledDropdownLink
+                              data-link-id={x.id}
+                              id={x[fieldNoDoctype]}
+                              linkIsActive={selectableList.focusedItem === x}
+                              merge="add"
+                              query={query(x[fieldNoDoctype])}
+                              >
+                              {dropdownItem(x, inputValue)}
+                            </StyledDropdownLink>
+                          </Row>
+                        ))
+                        : (
+                          <StyledDropdownRow>
+                            {isLoading ? 'Loading' : 'No matching items found'}
+                          </StyledDropdownRow>
+                        )}
+                    </Column>
+                  )}
+                </Row>
+              </Column>
+            )}
+          </Container>
+        );
+      }}
+    </LocationSubscriber>
+  );
+};
+
+export default compose(
+  setDisplayName('EnhancedSuggestionFacet_Classic'),
   withDropdown,
   withState('inputValue', 'setInputValue', ''),
   withState('isLoading', 'setIsLoading', false),
@@ -90,195 +289,4 @@ const SuggestionFacet = compose(
     ),
   ),
   pure,
-)(
-  ({
-    active,
-    collapsed,
-    doctype,
-    dropdownItem,
-    fieldNoDoctype,
-    inputValue,
-    isLoading,
-    mouseDownHandler,
-    mouseUpHandler,
-    placeholder,
-    results,
-    selectableList,
-    setActive,
-    setAutocomplete,
-    setInputValue,
-    setIsLoading,
-    style,
-    title,
-  }) => {
-    const query = v => ({
-      offset: 0,
-      filters: {
-        op: 'and',
-        content: [
-          {
-            op: 'in',
-            content: {
-              field: `${doctype}.${fieldNoDoctype}`,
-              value: [v],
-            },
-          },
-        ],
-      },
-    });
-
-    const getCheckedValue = v => {
-      if (v.includes('set_id:')) {
-        return <SetId set={v} />;
-      }
-      if (fieldNoDoctype === 'gene_id') {
-        return <GeneSymbol geneId={v} />;
-      }
-      return v;
-    };
-
-    return (
-      <LocationSubscriber>
-        {(ctx: { pathname: string, query: IRawQuery }) => {
-          const { filters } = ctx.query || {};
-          const currentFilters = parseFilterParam(filters, { content: [] })
-            .content;
-          const currentValues = getFilterValue({
-            currentFilters,
-            dotField: `${doctype}.${fieldNoDoctype}`,
-          }) || { content: { value: [] } };
-          return (
-            <Container className="test-suggestion-facet" style={style}>
-              {!collapsed && (
-                <Column>
-                  {[].concat(currentValues.content.value || []).map(v => (
-                    <CheckedRow key={v}>
-                      <CheckedLink
-                        merge="toggle"
-                        query={{
-                          offset: 0,
-                          filters: {
-                            op: 'and',
-                            content: [
-                              {
-                                op: 'in',
-                                content: {
-                                  field: `${doctype}.${fieldNoDoctype}`,
-                                  value: [v],
-                                },
-                              },
-                            ],
-                          },
-                        }}
-                        >
-                        <CheckCircleOIcon style={{ paddingRight: '0.5rem' }} />
-                        {getCheckedValue(v)}
-                      </CheckedLink>
-                    </CheckedRow>
-                  ))}
-                  <Row>
-                    <label htmlFor={fieldNoDoctype}>
-                      <MagnifyingGlass />
-                      <Hidden>{title}</Hidden>
-                    </label>
-                    <Input
-                      aria-activedescendant={
-                        active
-                          ? _.get(
-                            selectableList,
-                              `focusedItem.${fieldNoDoctype}`,
-                          )
-                          : null // false gets stringify, so value needs to be `null` or `undefined`
-                      }
-                      id={fieldNoDoctype}
-                      name={fieldNoDoctype}
-                      onChange={({ target: { value = '' }}) => {
-                        setInputValue(value);
-                        setActive(!!value);
-                        if (value) {
-                          setIsLoading(true);
-                          setAutocomplete(
-                            value,
-                            readyState => _.some([
-                              readyState.ready,
-                              readyState.aborted,
-                              readyState.error,
-                            ]) && setIsLoading(false),
-                          );
-                        }
-                      }}
-                      onClick={({ target: { value = '' }}) => {
-                        setInputValue(value);
-                        setActive(!!value);
-                        if (value) {
-                          setIsLoading(true);
-                          setAutocomplete(
-                            value,
-                            readyState => _.some([
-                              readyState.ready,
-                              readyState.aborted,
-                              readyState.error,
-                            ]) && setIsLoading(false),
-                          );
-                        }
-                      }}
-                      onKeyDown={selectableList.handleKeyEvent}
-                      placeholder={placeholder}
-                      style={{ borderRadius: '0 4px 4px 0' }}
-                      value={inputValue}
-                      {...active && {
-                        'aria-owns': `${fieldNoDoctype}-options`,
-                      }}
-                      />
-                    {active && (
-                      <Column
-                        id={`${fieldNoDoctype}-options`}
-                        onClick={e => e.stopPropagation()}
-                        style={{
-                          ...dropdown,
-                          marginTop: 0,
-                          top: '35px',
-                          width: '300px',
-                          wordBreak: 'break-word',
-                        }}
-                        >
-                        {(results || []).map(x => (
-                          <Row
-                            key={x.id}
-                            onClick={() => {
-                              setInputValue('');
-                              setActive(false);
-                            }}
-                            onMouseOver={() => selectableList.setFocusedItem(x)}
-                            style={{ alignItems: 'center' }}
-                            >
-                            <StyledDropdownLink
-                              data-link-id={x.id}
-                              id={x[fieldNoDoctype]}
-                              linkIsActive={selectableList.focusedItem === x}
-                              merge="add"
-                              query={query(x[fieldNoDoctype])}
-                              >
-                              {dropdownItem(x, inputValue)}
-                            </StyledDropdownLink>
-                          </Row>
-                        ))}
-                        {(results || []).length === 0 && (
-                          <StyledDropdownRow>
-                            {isLoading ? 'Loading' : 'No matching items found'}
-                          </StyledDropdownRow>
-                        )}
-                      </Column>
-                    )}
-                  </Row>
-                </Column>
-              )}
-            </Container>
-          );
-        }}
-      </LocationSubscriber>
-    );
-  },
-);
-
-export default SuggestionFacet;
+)(SuggestionFacet);

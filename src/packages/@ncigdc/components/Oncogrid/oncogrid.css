@@ -46,3 +46,13 @@
 .oncogrid-wrapper .og-vertical-cross {
   stroke: black;
 }
+
+.oncogrid-mutation-legend {
+  margin-bottom: 15px;
+}
+
+.oncogrid-mutation-legend h3,
+.oncogrid-cnv-legend h3 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}

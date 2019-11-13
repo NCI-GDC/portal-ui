@@ -122,8 +122,8 @@ export default compose(
           id,
           variable: {
             customSurvivalPlots: survivalDeselectedAndDuplicatesRemoved,
-            isSurvivalCustom: survivalDeselectedAndDuplicatesRemoved.length > 0,
-            // showOverallSurvival: false,
+            isSurvivalCustom: false,
+            showOverallSurvival: survivalDeselectedAndDuplicatesRemoved.length === 0,
           },
         }));
       },
@@ -138,9 +138,7 @@ export default compose(
         !nextProps.variable.isSurvivalCustom)),
     ({ populateSurvivalData, variable: { active_chart } }) => {
       if (active_chart === 'survival') {
-        // duplicate props check
-        // because this component re-mounts often
-        // and withPropsOnChange conditions are ignored on mount
+        // prevent extra survival API requests on mount
         populateSurvivalData();
       }
     }

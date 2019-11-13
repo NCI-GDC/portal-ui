@@ -146,9 +146,7 @@ export default compose(
         isSurvivalCustom,
       },
     }) => {
-      // duplicate props check
-      // because this component re-mounts often
-      // and withPropsOnChange conditions are ignored on mount
+      // prevent extra survival API requests on mount
       if (active_chart !== 'survival') {
         return {
           survivalPlotValues: [],

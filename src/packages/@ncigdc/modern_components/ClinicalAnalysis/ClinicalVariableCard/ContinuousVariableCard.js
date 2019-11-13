@@ -414,9 +414,7 @@ export default compose(
         isSurvivalCustom,
       },
     }) => {
-      // duplicate props check
-      // because this component re-mounts often
-      // and withPropsOnChange conditions are ignored on mount
+      // prevent extra survival API requests on mount
       if (active_chart !== 'survival') {
         return {
           survivalPlotValues: [],
@@ -435,13 +433,15 @@ export default compose(
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
       const customBinMatches = isSurvivalCustom
-        ? binsWithNames.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])).map((b, i) => {
-          const match = find(customSurvivalPlots, ['keyName', b.displayName]);
-          return {
-            ...b,
-            color: (match && match.color) || availableColors[i],
-          };
-        })
+        ? binsWithNames
+          .filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName]))
+          .map((b, i) => {
+            const match = find(customSurvivalPlots, ['keyName', b.displayName]);
+            return {
+              ...b,
+              color: (match && match.color) || availableColors[i],
+            };
+          })
         : [];
 
       const isUsingCustomSurvival = customBinMatches.length > 0;

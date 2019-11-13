@@ -463,9 +463,11 @@ export default compose(
         }))
         .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
         .slice(0, 2)
-        .map((bin, i) => ({
-          ...bin,
+        .map(({ displayName, filters, key }, i) => ({
           color: availableColors[i],
+          displayName,
+          filters,
+          key,
         }));
 
       const survivalPlotValues = survivalBins

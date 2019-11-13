@@ -127,7 +127,6 @@ const CopyAnalysisModal = compose(
 const ClinicalAnalysisResult = ({
   allSets,
   clinicalAnalysisFields,
-  continuousSetId,
   controlPanelExpanded,
   currentAnalysis,
   currentAnalysis: { displayVariables },
@@ -141,6 +140,7 @@ const ClinicalAnalysisResult = ({
   push,
   setControlPanelExpanded,
   setId,
+  setIdWithData,
   survivalDataLoading,
 }: IAnalysisResultProps) => {
   const downloadSvgInfo = getDownloadSvgInfo(displayVariables);
@@ -359,7 +359,6 @@ const ClinicalAnalysisResult = ({
                 return varProperties.plotTypes === 'continuous'
                   ? (
                     <ContinuousAggregationQuery
-                      continuousSetId={continuousSetId}
                       currentAnalysis={currentAnalysis}
                       fieldName={varFieldName}
                       filters={filters}
@@ -369,6 +368,7 @@ const ClinicalAnalysisResult = ({
                       overallSurvivalData={overallSurvivalData}
                       plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
                       setId={setId}
+                      setIdWithData={setIdWithData}
                       stats={parsedFacets[varFieldName].stats}
                       style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                       variable={varProperties}
@@ -424,7 +424,7 @@ export default compose(
     }) => ({
       hits,
       parsedFacets: facets ? tryParseJSON(facets) : {},
-      continuousSetId: setId,
+      setIdWithData: setId,
     })
   ),
   withPropsOnChange(

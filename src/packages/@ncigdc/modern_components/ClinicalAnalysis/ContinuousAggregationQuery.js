@@ -230,7 +230,7 @@ export default compose(
   withState('isLoading', 'setIsLoading', 'first time'),
   withPropsOnChange(
     (props, nextProps) => 
-      !(props.continuousSetId === nextProps.continuousSetId &&
+      !(props.setIdWithData === nextProps.setIdWithData &&
       isEqual(props.variable, nextProps.variable)),
     ({
       fieldName,
@@ -255,7 +255,7 @@ export default compose(
     }
   ),
 )(({
-  aggData, continuousSetId, hits, isLoading, setId, stats, ...props
+  aggData, setIdWithData, hits, isLoading, setId, stats, ...props
 }) => isLoading 
   ? (
    <Column
@@ -277,7 +277,7 @@ export default compose(
         ...aggData,
         hits,
       }}
-      setId={continuousSetId || setId}
+      setId={setIdWithData || setId}
       stats={stats}
       {...props}
       />

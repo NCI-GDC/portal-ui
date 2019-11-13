@@ -122,7 +122,7 @@ export default compose(
           id,
           variable: {
             customSurvivalPlots: survivalDeselectedAndDuplicatesRemoved,
-            isSurvivalCustom: false,
+            isSurvivalCustom: true,
             showOverallSurvival: survivalDeselectedAndDuplicatesRemoved.length === 0,
           },
         }));

@@ -407,12 +407,22 @@ export default compose(
       setId,
       totalDocs,
       variable: {
+        active_chart,
         bins = {},
         continuousBinType,
         customSurvivalPlots,
         isSurvivalCustom,
       },
     }) => {
+      // prevent survival API requests on mount
+      // when a different plot is selected
+      if (active_chart !== 'survival') {
+        return {
+          survivalPlotValues: [],
+          survivalTableValues: [],
+        }
+      };
+
       const binsWithNames = Object.keys(bins).map(bin => ({
         ...bins[bin],
         displayName: continuousBinType === 'default'

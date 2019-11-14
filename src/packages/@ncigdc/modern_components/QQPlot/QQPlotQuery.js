@@ -18,7 +18,7 @@ import { addInFilters } from '@ncigdc/utils/filters';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
 import { qnorm } from './qqUtils';
-import QQPlot from './QQPlot';
+import QQPlotWrapper from './QQPlotWrapper';
 
 const QQPlotQueryWrapper = ({
   chartHeight,
@@ -42,22 +42,11 @@ const QQPlotQueryWrapper = ({
     </div>
     )
   : (
-    <QQPlot
-      clinicalType={clinicalType}
+    <QQPlotWrapper
       data={data}
       exportCoordinates
       height={chartHeight}
-      queryField={queryField}
       {...props}
-      fieldName={fieldName}
-      styles={{
-        margin: {
-          bottom: 0,
-          left: 0,
-          right: 0,
-          top: 0,
-        },
-      }}
       />
   ));
 

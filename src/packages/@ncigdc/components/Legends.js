@@ -13,7 +13,7 @@ const styles = {
     display: 'inline-flex',
   },
   td: {
-    padding: 6,
+    padding: '0 6px',
   },
   cell: {
     paddingTop: 4,
@@ -76,10 +76,10 @@ const Checkbox = ({
   return (
     <div
       style={{
-        paddingBottom: 10,
+        paddingBottom: 5,
         display: 'flex',
         alignItems: 'center',
-        paddingTop: 10,
+        paddingTop: 5,
       }}
     >
       <div
@@ -154,10 +154,9 @@ export const ToggleSwatchLegend = ({
     <Column
       style={{
         width: type === 'mutations' ? 400 : 300,
-        height: 165,
         border: '1px solid lightgray',
         borderRadius: '8px',
-        padding: 10,
+        padding: '5px 10px',
       }}
     >
       <Row

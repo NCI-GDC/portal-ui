@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row } from '@ncigdc/uikit/Flex';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
+import ArrowIcon from '@ncigdc/theme/icons/ArrowIcon';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
@@ -24,7 +25,7 @@ interface IModelEntry {
   sortable: boolean;
   downloadable: boolean;
   hidden?: boolean;
-  th: (props: { style?: React.CSSProperties }) => JSX.Element | string;
+  th: (props: { sorted?: any, style?: React.CSSProperties }) => JSX.Element | string;
   td: TNode;
 }
 
@@ -89,10 +90,10 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
   },
   {
     name: 'Affected Cases',
-    id: 'num_affected_cases',
+    id: 'num_affected_cases_percent',
     sortable: false,
     downloadable: true,
-    th: props => (
+    th: ({ sorted, ...props }) => (
       <Row {...props}>
         <Tooltip
           Component={
@@ -104,8 +105,9 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
             </span>
           }
           style={tableToolTipHint()}
-        >
+          >
           # SSM Affected Cases
+          {sorted[0] && <ArrowIcon sorted={sorted[0].order} />}
         </Tooltip>
       </Row>
     ),
@@ -140,7 +142,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           id: 'num_cnv_gain',
           sortable: true,
           downloadable: true,
-          th: props => (
+        th: ({ sorted, ...props }) => (
             <Row {...props}>
               <Tooltip
                 Component={
@@ -153,11 +155,12 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
                 }
                 style={tableToolTipHint()}
               >
-                # CNV Gains
-              </Tooltip>
-            </Row>
-          ),
-          td: ({ node }) => (
+              # CNV Gains
+              {sorted[0] && <ArrowIcon sorted={sorted[0].order} />}
+            </Tooltip>
+          </Row>
+        ),
+        td: ({ node }) => (
             <span>
               {node.num_cnv_gain.toLocaleString()}
               <span> / </span>
@@ -173,7 +176,7 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           id: 'num_cnv_loss',
           sortable: true,
           downloadable: true,
-          th: props => (
+        th: ({ sorted, ...props }) => (
             <Row {...props}>
               <Tooltip
                 Component={
@@ -186,11 +189,12 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
                 }
                 style={tableToolTipHint()}
               >
-                # CNV Losses
-              </Tooltip>
-            </Row>
-          ),
-          td: ({ node }) => (
+              # CNV Losses
+              {sorted[0] && <ArrowIcon sorted={sorted[0].order} />}
+            </Tooltip>
+          </Row>
+        ),
+        td: ({ node }) => (
             <span>
               {node.num_cnv_loss.toLocaleString()}
               <span> / </span>
@@ -210,28 +214,28 @@ const CancerDistributionTableModel: TCancerDistributionTableModel = ({
           id: 'num_mutations',
           sortable: false,
           downloadable: true,
-          th: props => (
-            <Row {...props}>
-              <Tooltip
-                Component={
-                  <span>
-                    # Unique Simple Somatic Mutations observed in {entityName}
-                    in Project
-                  </span>
-                }
-                style={tableToolTipHint()}
-              >
-                # Mutations
-              </Tooltip>
-            </Row>
-          ),
-          td: ({ node }) => (
-            <MutationsCount
-              ssmCount={ssmCount(aggregations, node.project_id)}
-              filters={replaceFilters(
-                makeProjectFilters(node.project_id),
-                filters
+        th: ({ sorted, ...props }) => (
+          <Row {...props}>
+            <Tooltip
+              Component={(
+                <span>
+                  {`# Unique Simple Somatic Mutations observed in ${entityName} in Project`}
+                </span>
               )}
+              style={tableToolTipHint()}
+              >
+              # Mutations
+              {sorted[0] && <ArrowIcon sorted={sorted[0].order} />}
+            </Tooltip>
+          </Row>
+        ),
+        td: ({ node }) => (
+          <MutationsCount
+            filters={replaceFilters(
+              makeProjectFilters(node.project_id),
+              filters,
+            )}
+            ssmCount={ssmCount(aggregations, node.project_id)}
             />
           ),
         },

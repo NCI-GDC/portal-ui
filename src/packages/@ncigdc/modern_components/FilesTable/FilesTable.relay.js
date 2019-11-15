@@ -24,7 +24,7 @@ export default (Component: ReactClass<*>) =>
           variables: {
             files_offset: parseIntParam(q.files_offset, 0),
             files_size: parseIntParam(q.files_size, 20),
-            files_sort: parseJSONParam(q.files_sort, null),
+            files_sort: parseJSONParam(q.files_sort, []),
             filters: parseFilterParam(q.filters, filters),
           },
         };

@@ -1,20 +1,25 @@
 /* @flow */
 
 import React from 'react';
-import { compose, setDisplayName, branch, renderComponent } from 'recompose';
+import {
+  branch,
+  compose,
+  renderComponent,
+  setDisplayName,
+} from 'recompose';
 import { connect } from 'react-redux';
 import Pagination from '@ncigdc/components/Pagination';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import AddToCartButtonAll from '@ncigdc/components/AddToCartButtonAll';
 import { Row } from '@ncigdc/uikit/Flex';
 import TableActions from '@ncigdc/components/TableActions';
-import tableModels from '@ncigdc/tableModels';
 import Table, { Th, Tr, Td } from '@ncigdc/uikit/Table';
 import styled from '@ncigdc/theme/styled';
 import Button from '@ncigdc/uikit/Button';
 import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import { toggleFilesInCart } from '@ncigdc/dux/cart';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { isSortedColumn } from '@ncigdc/utils/tables';
 import timestamp from '@ncigdc/utils/timestamp';
 
 const RemoveButton = styled(Button, {
@@ -94,23 +99,7 @@ export default compose(
         </Row>
         <div style={{ overflowX: 'auto' }}>
           <Table
-            id="repository-files-table"
-            headings={[
-              canAddToCart ? (
-                <Th key="add_to_cart">
-                  <AddToCartButtonAll
-                    edges={hits.edges.map(e => e.node)}
-                    total={hits.total}
-                  />
-                </Th>
-              ) : (
-                <Th key="remove_from_cart" />
-              ),
-              ...tableInfo.map(x => (
-                <x.th key={x.id} hits={hits} canAddToCart={canAddToCart} />
-              )),
-            ]}
-            body={
+            body={(
               <tbody>
                 {hits.edges.map((e, i) => (
                   <Tr key={e.node.id} index={i}>
@@ -123,8 +112,8 @@ export default compose(
                           <RemoveButton
                             onClick={() => dispatch(toggleFilesInCart(e.node))}
                             aria-label="Remove"
-                          >
-                            <Tooltip Component={'Remove'}>
+                            >
+                            <Tooltip Component="Remove">
                               <i className="fa fa-trash-o" />
                             </Tooltip>
                           </RemoveButton>
@@ -144,8 +133,31 @@ export default compose(
                   </Tr>
                 ))}
               </tbody>
-            }
-          />
+            )}
+            headings={[
+              canAddToCart ? (
+                <Th
+                  key="add_to_cart"
+                  >
+                  <AddToCartButtonAll
+                    edges={hits.edges.map(e => e.node)}
+                    total={hits.total}
+                    />
+                </Th>
+              ) : (
+                <Th key="remove_from_cart" />
+              ),
+              ...tableInfo.map(x => (
+                <x.th
+                  canAddToCart={canAddToCart}
+                  hits={hits}
+                  key={x.id}
+                  sorted={isSortedColumn(parentVariables.files_sort, x.id)}
+                  />
+              )),
+            ]}
+            id="repository-files-table"
+            />
         </div>
         <Pagination
           prefix={prefix}

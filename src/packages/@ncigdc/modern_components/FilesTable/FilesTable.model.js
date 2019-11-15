@@ -7,6 +7,7 @@ import CaseLink from '@ncigdc/components/Links/CaseLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import { RepositoryCasesLink } from '@ncigdc/components/Links/RepositoryLink';
 import FileLink from '@ncigdc/components/Links/FileLink';
+import ArrowIcon from '@ncigdc/theme/icons/ArrowIcon';
 import { makeFilter } from '@ncigdc/utils/filters';
 import FileSize from '@ncigdc/components/FileSize';
 
@@ -14,7 +15,12 @@ const filesTableModel = [
   {
     name: 'File UUID',
     id: 'file_id',
-    th: () => <Th>File UUID</Th>,
+    th: ({ sorted }) => (
+      <Th>
+        File UUID
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => (
       <Td>
         <FileLink
@@ -34,7 +40,12 @@ const filesTableModel = [
     id: 'access',
     sortable: true,
     downloadable: true,
-    th: () => <Th>Access</Th>,
+    th: ({ sorted }) => (
+      <Th>
+        Access
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => (
       <Td>
         {node.access === 'open' && <i className="fa fa-unlock-alt" />}
@@ -54,7 +65,12 @@ const filesTableModel = [
     id: 'file_name',
     sortable: true,
     downloadable: true,
-    th: () => <Th>File Name</Th>,
+    th: ({ sorted }) => (
+      <Th>
+        File Name
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => (
       <Td>
         <FileLink
@@ -69,7 +85,12 @@ const filesTableModel = [
   {
     name: 'Cases',
     id: 'cases.case_id',
-    th: () => <ThNum>Cases</ThNum>,
+    th: ({ sorted }) => (
+      <ThNum>
+        Cases
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </ThNum>
+    ),
     td: ({
       node: { cases: { hits: { total = 0, edges: cases } }, file_id: fileId },
     }) => (
@@ -98,7 +119,12 @@ const filesTableModel = [
   {
     name: 'Project',
     id: 'cases.project.project_id',
-    th: () => <Th>Project</Th>,
+    th: ({ sorted }) => (
+      <Th>
+        Project
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => (
       <Td>
         {uniq(
@@ -116,7 +142,12 @@ const filesTableModel = [
   {
     name: 'Data Category',
     id: 'data_category',
-    th: () => <Th>Data Category</Th>,
+    th: ({ sorted }) => (
+      <Th>
+        Data Category
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => <Td>{node.data_category || '--'}</Td>,
     sortable: true,
     downloadable: true,
@@ -124,7 +155,12 @@ const filesTableModel = [
   {
     name: 'Data Format',
     id: 'data_format',
-    th: () => <Th>Data Format</Th>,
+    th: ({ sorted }) => (
+      <Th>
+        Data Format
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => <Td>{node.data_format || '--'}</Td>,
     sortable: true,
     downloadable: true,
@@ -132,7 +168,12 @@ const filesTableModel = [
   {
     name: 'Size',
     id: 'file_size',
-    th: () => <ThNum>File Size</ThNum>,
+    th: ({ sorted }) => (
+      <ThNum>
+        File Size
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </ThNum>
+    ),
     td: ({ node }) => (
       <TdNum>
         <FileSize bytes={node.file_size} />
@@ -144,7 +185,12 @@ const filesTableModel = [
   {
     name: 'Annotations',
     id: 'annotations.annotation_id',
-    th: () => <ThNum>Annotations</ThNum>,
+    th: ({ sorted }) => (
+      <ThNum>
+        Annotations
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </ThNum>
+    ),
     td: ({ node }) => (
       <TdNum>
         {
@@ -158,7 +204,12 @@ const filesTableModel = [
   {
     name: 'Data Type',
     id: 'data_type',
-    th: () => <Th>Data Type</Th>,
+    th: ({ sorted }) => (
+      <Th>
+        Data Type
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => <Td>{node.data_type || '--'}</Td>,
     sortable: false,
     downloadable: true,
@@ -167,7 +218,12 @@ const filesTableModel = [
   {
     name: 'Experimental Strategy',
     id: 'experimental_strategy',
-    th: () => <Th>Experimental Strategy</Th>,
+    th: ({ sorted }) => (
+      <Th>
+        Experimental Strategy
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => <Td>{node.experimental_strategy || '--'}</Td>,
     sortable: false,
     downloadable: true,
@@ -176,7 +232,12 @@ const filesTableModel = [
   {
     name: 'Platform',
     id: 'platform',
-    th: () => <Th>Platform</Th>,
+    th: ({ sorted }) => (
+      <Th>
+        Platform
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => <Td>{node.platform || '--'}</Td>,
     sortable: false,
     downloadable: true,

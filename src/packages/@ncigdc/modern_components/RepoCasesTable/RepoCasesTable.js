@@ -1,7 +1,12 @@
 /* @flow */
 
 import React from 'react';
-import { compose, setDisplayName, branch, renderComponent } from 'recompose';
+import {
+  branch,
+  compose,
+  renderComponent,
+  setDisplayName,
+} from 'recompose';
 import { connect } from 'react-redux';
 import Pagination from '@ncigdc/components/Pagination';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -13,6 +18,7 @@ import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSet
 import { AppendRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { RemoveFromRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { theme } from '@ncigdc/theme';
+import { isSortedColumn } from '@ncigdc/utils/tables';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 import timestamp from '@ncigdc/utils/timestamp';
 
@@ -80,26 +86,12 @@ export default compose(
         </Row>
         <div style={{ overflowX: 'auto' }}>
           <Table
-            id="repository-cases-table"
-            headings={tableInfo
-              .filter(x => !x.subHeading)
-              .map(x => (
-                <x.th
-                  key={x.id}
-                  nodes={hits.edges}
-                  selectedIds={selectedIds}
-                  setSelectedIds={setSelectedIds}
-                />
-              ))}
-            subheadings={tableInfo
-              .filter(x => x.subHeading)
-              .map(x => <x.th key={x.id} />)}
-            body={
+            body={(
               <tbody>
                 {hits.edges.map((e, i) => (
                   <Tr
-                    key={e.node.id}
                     index={i}
+                    key={e.node.id}
                     style={{
                       ...(selectedIds.includes(e.node.case_id) && {
                         backgroundColor: theme.tableHighlight,
@@ -122,8 +114,28 @@ export default compose(
                   </Tr>
                 ))}
               </tbody>
-            }
-          />
+            )}
+            headings={tableInfo
+              .filter(x => !x.subHeading)
+              .map(x => (
+                <x.th
+                  key={x.id}
+                  nodes={hits.edges}
+                  selectedIds={selectedIds}
+                  setSelectedIds={setSelectedIds}
+                  sorted={isSortedColumn(variables.cases_sort, x.id)}
+                  />
+              ))}
+            id="repository-cases-table"
+            subheadings={tableInfo
+              .filter(x => x.subHeading)
+              .map(x => (
+                <x.th
+                  key={x.id}
+                  sorted={isSortedColumn(variables.cases_sort, x.id)}
+                  />
+              ))}
+            />
         </div>
         <Pagination prefix={entityType} params={variables} total={hits.total} />
       </div>

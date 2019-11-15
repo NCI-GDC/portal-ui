@@ -4,6 +4,7 @@ import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import AnnotationLink from '@ncigdc/components/Links/AnnotationLink';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
+import ArrowIcon from '@ncigdc/theme/icons/ArrowIcon';
 import { Th, Td } from '@ncigdc/uikit/Table';
 
 /*
@@ -28,9 +29,10 @@ const annotationsTableModel = [
     id: 'annotation_id',
     downloadable: true,
     sortable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="annotation_id" rowSpan="2">
         UUID
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => (
@@ -52,9 +54,10 @@ const annotationsTableModel = [
     id: 'case_id',
     downloadable: true,
     hidden: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="case_id" rowSpan="2">
         Case UUID
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => <Td>{node.case_id}</Td>,
@@ -64,9 +67,10 @@ const annotationsTableModel = [
     id: 'case_submitter_id',
     downloadable: true,
     sortable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="case_submitter_id" rowSpan="2">
         Case ID
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => (
@@ -88,9 +92,10 @@ const annotationsTableModel = [
     id: 'project.program.name',
     downloadable: true,
     hidden: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="project.program.name" rowSpan="2">
         Program
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => (
@@ -107,9 +112,10 @@ const annotationsTableModel = [
     id: 'project.project_id',
     sortable: true,
     downloadable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="project.project_id" rowSpan="2">
         Project
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => (
@@ -126,9 +132,10 @@ const annotationsTableModel = [
     id: 'entity_type',
     sortable: true,
     downloadable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="entity_type" rowSpan="2">
         Entity Type
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => <Td>{node.entity_type}</Td>,
@@ -139,9 +146,10 @@ const annotationsTableModel = [
     sortable: true,
     downloadable: true,
     hidden: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="entity_id" rowSpan="2">
         Entity UUID
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => <Td>{node.entity_id}</Td>,
@@ -151,9 +159,10 @@ const annotationsTableModel = [
     id: 'entity_submitter_id',
     sortable: true,
     downloadable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="entity_submitter_id" rowSpan="2">
         Entity ID
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => (
@@ -174,9 +183,10 @@ const annotationsTableModel = [
     id: 'category',
     downloadable: true,
     sortable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="category" rowSpan="2">
         Category
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => <Td>{node.category}</Td>,
@@ -186,9 +196,10 @@ const annotationsTableModel = [
     id: 'classification',
     sortable: true,
     downloadable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="classification" rowSpan="2">
         Classification
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => <Td>{node.classification}</Td>,
@@ -197,9 +208,10 @@ const annotationsTableModel = [
     name: 'Created Date',
     id: 'created_datetime',
     downloadable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="created_datetime" rowSpan="2">
         Created Date
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => <Td>{node.created_datetime}</Td>,
@@ -209,9 +221,10 @@ const annotationsTableModel = [
     id: 'status',
     downloadable: true,
     hidden: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="status" rowSpan="2">
         Status
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => <Td>{node.status}</Td>,
@@ -221,9 +234,10 @@ const annotationsTableModel = [
     id: 'notes',
     downloadable: true,
     hidden: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="notes" rowSpan="2">
         Notes
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => <Td>{node.notes}</Td>,

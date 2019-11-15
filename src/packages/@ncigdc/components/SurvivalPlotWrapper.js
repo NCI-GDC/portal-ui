@@ -336,9 +336,14 @@ export default compose(
   withSize({ refreshRate: 16 }),
   lifecycle({
     componentDidMount() {
+      // mounts once on load,
+      // except in the continuous card,
+      // where it mounts when the card does
+      // console.log('componentDidMount');
       this.props.survivalDataLoading || renderSurvivalPlot(this.props);
     },
     componentDidUpdate() {
+      // console.log('componentDidUpdate');
       this.props.survivalDataLoading || renderSurvivalPlot(this.props);
     },
     shouldComponentUpdate(nextProps) {

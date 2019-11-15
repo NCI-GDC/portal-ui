@@ -58,6 +58,8 @@ import ContinuousAggregationQuery from './ContinuousAggregationQuery';
 import { CategoricalVariableCard } from './ClinicalVariableCard';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 
+import ContinuousTestComponent from './ContinuousTestComponent';
+
 interface IAnalysisResultProps {
   sets: any;
   config: any;
@@ -72,7 +74,7 @@ const CopyAnalysisModal = compose(
     'modalInputValue',
     'setModalInputValue',
     ({ analysis }) => `${analysis.name} copy`
-  )
+  ),
 )(({
   analysis,
   dispatch,
@@ -356,23 +358,29 @@ const ClinicalAnalysisResult = ({
                   op: 'and',
                 };
 
+                
                 return varProperties.plotTypes === 'continuous'
                   ? (
-                    <ContinuousAggregationQuery
-                      currentAnalysis={currentAnalysis}
-                      fieldName={varFieldName}
-                      filters={filters}
-                      hits={hits}
-                      id={id}
-                      key={varFieldName}
-                      overallSurvivalData={overallSurvivalData}
-                      plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
-                      setId={setId}
-                      setIdWithData={setIdWithData}
-                      stats={parsedFacets[varFieldName].stats}
-                      style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-                      variable={varProperties}
-                      />
+                    <div>
+                      <ContinuousTestComponent />
+                      <p>Sup</p>
+                    </div>
+                    // <ContinuousTestComponent />
+                    // <ContinuousAggregationQuery
+                    //   currentAnalysis={currentAnalysis}
+                    //   fieldName={varFieldName}
+                    //   filters={filters}
+                    //   hits={hits}
+                    //   id={id}
+                    //   key={varFieldName}
+                    //   overallSurvivalData={overallSurvivalData}
+                    //   plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
+                    //   setId={setId}
+                    //   setIdWithData={setIdWithData}
+                    //   stats={parsedFacets[varFieldName].stats}
+                    //   style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+                    //   variable={varProperties}
+                    //   />
                   )
                   : (
                     <CategoricalVariableCard
@@ -471,6 +479,9 @@ export default compose(
     }) => event => setSearchValue(event.target.value),
   }),
   lifecycle({
+    componentDidMount() {
+      console.log('ClinicalAnalysisResult componentDidMount');
+    },
     shouldComponentUpdate({
       controlPanelExpanded: nextControlPanelExpanded,
       loading: nextLoading,

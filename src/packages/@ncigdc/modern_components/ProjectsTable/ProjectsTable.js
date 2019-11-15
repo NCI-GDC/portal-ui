@@ -5,6 +5,9 @@ import { connect } from 'react-redux';
 import { compose, setDisplayName, mapProps } from 'recompose';
 import { Row } from '@ncigdc/uikit/Flex';
 import TableActions from '@ncigdc/components/TableActions';
+import {
+  isSortedColumn,
+} from '@ncigdc/utils/tables';
 import timestamp from '@ncigdc/utils/timestamp';
 
 import Table, { Tr, Td } from '@ncigdc/uikit/Table';
@@ -15,7 +18,7 @@ export default compose(
   mapProps(props => ({
     ...props,
     hits: props.viewer.projects.hits,
-  }))
+  })),
 )(
   ({
     downloadable,
@@ -23,6 +26,7 @@ export default compose(
     hits,
     tableColumns,
     tableHeader,
+    variables,
   }) => {
     const tableInfo = tableColumns.slice().filter(x => !x.hidden);
     return (
@@ -38,7 +42,7 @@ export default compose(
           {tableHeader && <h3 className="panel-title">{tableHeader}</h3>}
           <div>
             <b>{hits.total}</b>
-            {' Projects'}
+             Projects
           </div>
           <TableActions
             arrangeColumnKey={entityType}
@@ -83,7 +87,12 @@ export default compose(
             )}
             headings={tableInfo
               .filter(x => !x.subHeading)
-              .map(x => <x.th key={x.id} />)}
+              .map(x => (
+                <x.th
+                  key={x.id}
+                  sorted={isSortedColumn(variables.projects_sort, x.id)}
+                  />
+              ))}
             id="projects-table"
             subheadings={tableInfo
               .filter(x => x.subHeading)

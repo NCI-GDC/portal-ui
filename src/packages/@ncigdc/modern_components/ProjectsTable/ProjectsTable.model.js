@@ -11,6 +11,7 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
 import withRouter from '@ncigdc/utils/withRouter';
 import { createDataCategoryColumns } from '@ncigdc/tableModels/utils';
+import ArrowIcon from '@ncigdc/theme/icons/ArrowIcon';
 import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 
 type TLinkProps = { node: Object, fields?: Array<Object>, children?: mixed };
@@ -67,7 +68,12 @@ const projectsTableModel = [
     id: 'project_id',
     sortable: true,
     downloadable: true,
-    th: () => <Th rowSpan="2">Project</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Project
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => (
       <Td>
         <ProjectLink uuid={node.project_id}>{node.project_id}</ProjectLink>
@@ -79,7 +85,12 @@ const projectsTableModel = [
     id: 'disease_type',
     sortable: true,
     downloadable: true,
-    th: () => <Th rowSpan="2">Disease Type</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Disease Type
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => (
       <Td
         data-list={JSON.stringify(node.disease_type.slice(0).sort())}
@@ -112,7 +123,12 @@ const projectsTableModel = [
     id: 'primary_site',
     sortable: true,
     downloadable: true,
-    th: () => <Th rowSpan="2">Primary Site</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Primary Site
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => (
       <Td
         data-list={JSON.stringify(node.primary_site.slice(0).sort())}
@@ -145,7 +161,12 @@ const projectsTableModel = [
     id: 'program.name',
     sortable: true,
     downloadable: true,
-    th: () => <Th rowSpan="2">Program</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Program
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => <Td key="program">{node.program.name}</Td>,
   },
   {
@@ -153,7 +174,12 @@ const projectsTableModel = [
     id: 'summary.case_count',
     sortable: true,
     downloadable: true,
-    th: () => <ThNum rowSpan="2">Cases</ThNum>,
+    th: ({ sorted }) => (
+      <ThNum rowSpan="2">
+        Cases
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </ThNum>
+    ),
     td: ({ node }) => (
       <TdNum>
         <CasesLink node={node}>
@@ -181,7 +207,12 @@ const projectsTableModel = [
     id: 'summary.file_count',
     sortable: true,
     downloadable: true,
-    th: () => <ThNum rowSpan="2">Files</ThNum>,
+    th: ({ sorted }) => (
+      <ThNum rowSpan="2">
+        Files
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </ThNum>
+    ),
     td: ({ node }) => (
       <TdNum>
         <RepositoryFilesLink
@@ -218,7 +249,12 @@ const projectsTableModel = [
     sortable: true,
     hidden: true,
     downloadable: true,
-    th: () => <ThNum rowSpan="2">File Size</ThNum>,
+    th: ({ sorted }) => (
+      <ThNum rowSpan="2">
+        File Size
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </ThNum>
+    ),
     td: ({ node }) => <TdNum>{formatFileSize(node.summary.file_size)}</TdNum>,
     total: ({ hits }) => (
       <TdNum>

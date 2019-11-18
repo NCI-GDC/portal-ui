@@ -58,8 +58,6 @@ import ContinuousAggregationQuery from './ContinuousAggregationQuery';
 import { CategoricalVariableCard } from './ClinicalVariableCard';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 
-import ContinuousTestComponent from './ContinuousTestComponent';
-
 interface IAnalysisResultProps {
   sets: any;
   config: any;
@@ -74,7 +72,7 @@ const CopyAnalysisModal = compose(
     'modalInputValue',
     'setModalInputValue',
     ({ analysis }) => `${analysis.name} copy`
-  ),
+  )
 )(({
   analysis,
   dispatch,
@@ -358,29 +356,23 @@ const ClinicalAnalysisResult = ({
                   op: 'and',
                 };
 
-                
                 return varProperties.plotTypes === 'continuous'
                   ? (
-                    <div>
-                      <ContinuousTestComponent />
-                      <p>Sup</p>
-                    </div>
-                    // <ContinuousTestComponent />
-                    // <ContinuousAggregationQuery
-                    //   currentAnalysis={currentAnalysis}
-                    //   fieldName={varFieldName}
-                    //   filters={filters}
-                    //   hits={hits}
-                    //   id={id}
-                    //   key={varFieldName}
-                    //   overallSurvivalData={overallSurvivalData}
-                    //   plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
-                    //   setId={setId}
-                    //   setIdWithData={setIdWithData}
-                    //   stats={parsedFacets[varFieldName].stats}
-                    //   style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-                    //   variable={varProperties}
-                    //   />
+                    <ContinuousAggregationQuery
+                      currentAnalysis={currentAnalysis}
+                      fieldName={varFieldName}
+                      filters={filters}
+                      hits={hits}
+                      id={id}
+                      key={varFieldName}
+                      overallSurvivalData={overallSurvivalData}
+                      plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
+                      setId={setId}
+                      setIdWithData={setIdWithData}
+                      stats={parsedFacets[varFieldName].stats}
+                      style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+                      variable={varProperties}
+                      />
                   )
                   : (
                     <CategoricalVariableCard
@@ -441,7 +433,8 @@ export default compose(
       overallSurvivalData,
       survivalDataLoading,
     }) => (
-      !isEqual(currentAnalysis, nextCurrentAnalysis) ||
+      currentAnalysis.id !== nextCurrentAnalysis.id ||
+      !isEqual(currentAnalysis.sets.case, nextCurrentAnalysis.sets.case) ||
       (Object.keys(overallSurvivalData).length < 1 && !survivalDataLoading)
     ),
     async ({
@@ -450,10 +443,12 @@ export default compose(
       setSetId,
       setSurvivalDataLoading,
     }) => {
+      console.log('nextCurrentAnalysis', nextCurrentAnalysis);
+      
       const setId = Object.keys(nextCurrentAnalysis.sets.case)[0];
       setSetId(setId);
       setSurvivalDataLoading(true);
-      const nextSurvivalData = await getDefaultCurve({
+      const nextOverallSurvivalData = await getDefaultCurve({
         currentFilters: {
           content: [
             {
@@ -469,7 +464,7 @@ export default compose(
         slug: 'Clinical Analysis',
       });
 
-      setOverallSurvivalData(nextSurvivalData);
+      setOverallSurvivalData(nextOverallSurvivalData);
       setSurvivalDataLoading(false);
     }
   ),
@@ -479,17 +474,16 @@ export default compose(
     }) => event => setSearchValue(event.target.value),
   }),
   lifecycle({
-    componentDidMount() {
-      console.log('ClinicalAnalysisResult componentDidMount');
-    },
     shouldComponentUpdate({
       controlPanelExpanded: nextControlPanelExpanded,
+      currentAnalysis: nextCurrentAnalysis,
       loading: nextLoading,
       populateSurvivalData: nextPopulateSurvivalData,
       survivalDataLoading: nextSurvivalDataLoading,
     }) {
       const {
         controlPanelExpanded,
+        currentAnalysis,
         loading,
         populateSurvivalData,
         survivalDataLoading,
@@ -499,7 +493,8 @@ export default compose(
         nextControlPanelExpanded === controlPanelExpanded &&
         nextLoading === loading &&
         isEqual(populateSurvivalData, nextPopulateSurvivalData) &&
-        nextSurvivalDataLoading === survivalDataLoading
+        nextSurvivalDataLoading === survivalDataLoading &&
+        isEqual(currentAnalysis, nextCurrentAnalysis)
       );
     },
   }),

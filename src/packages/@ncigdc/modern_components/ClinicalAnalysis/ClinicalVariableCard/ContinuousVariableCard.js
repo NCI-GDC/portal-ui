@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   compose,
+  lifecycle,
   setDisplayName,
   withProps,
   withPropsOnChange,
@@ -551,4 +552,9 @@ export default compose(
       },
     })
   ),
+  lifecycle({
+    componentDidMount() {
+      console.log(`${this.props.fieldName} CARD componentDidMount`);
+    },
+  }),
 )(EnhancedClinicalVariableCard);

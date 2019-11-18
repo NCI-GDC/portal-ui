@@ -167,6 +167,7 @@ const ClinicalVariableCard = ({
   filters,
   id,
   isLoading,
+  key,
   openCustomBinModal,
   overallSurvivalData,
   plots,
@@ -242,6 +243,7 @@ const ClinicalVariableCard = ({
         padding: '0.5rem 1rem 1rem',
         ...style,
       }}
+      key={key}
       >
       <Row
         id={wrapperId}

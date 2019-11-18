@@ -420,8 +420,8 @@ export default compose(
         return {
           survivalPlotValues: [],
           survivalTableValues: [],
-        }
-      };
+        };
+      }
 
       const binsWithNames = Object.keys(bins).map(bin => ({
         ...bins[bin],

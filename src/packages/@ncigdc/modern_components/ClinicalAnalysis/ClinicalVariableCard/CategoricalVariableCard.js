@@ -152,8 +152,8 @@ export default compose(
         return {
           survivalPlotValues: [],
           survivalTableValues: [],
-        }
-      };
+        };
+      }
 
       const binDataSelected = isSurvivalCustom
         ? binData.filter(bin => {

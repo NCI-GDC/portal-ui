@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   compose,
-  lifecycle,
   setDisplayName,
   withProps,
   withPropsOnChange,
@@ -280,7 +279,6 @@ export default compose(
           axisTitle: dataDimensions[sanitisedId].axisTitle,
           boxPlotValues: map(
             {
-
               ...rawQueryData.stats,
               ...rawQueryData.percentiles,
             },
@@ -329,24 +327,20 @@ export default compose(
         variable: {
           bins: continuousBinType === 'default'
             ? dataBuckets.reduce((acc, curr, index) => ({
-
               ...acc,
               [dataBuckets[index].key]: {
-
                 ...dataBuckets[index],
                 groupName: dataBuckets[index].key,
               },
             }), {})
             : Object.keys(bins)
               .reduce((acc, curr, index) => ({
-
                 ...acc,
                 [curr]: {
-
                   ...bins[curr],
                   doc_count: dataBuckets[index]
-                      ? dataBuckets[index].doc_count
-                      : 0,
+                    ? dataBuckets[index].doc_count
+                    : 0,
                 },
               }), {}),
         },
@@ -552,9 +546,4 @@ export default compose(
       },
     })
   ),
-  lifecycle({
-    componentDidMount() {
-      console.log(`${this.props.fieldName} CARD componentDidMount`);
-    },
-  }),
 )(EnhancedClinicalVariableCard);

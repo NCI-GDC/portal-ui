@@ -432,19 +432,21 @@ export default compose(
       currentAnalysis: nextCurrentAnalysis,
       overallSurvivalData,
       survivalDataLoading,
-    }) => (
-      currentAnalysis.id !== nextCurrentAnalysis.id ||
-      !isEqual(currentAnalysis.sets.case, nextCurrentAnalysis.sets.case) ||
-      (Object.keys(overallSurvivalData).length < 1 && !survivalDataLoading)
-    ),
+    }) => {
+      const setId = Object.keys(currentAnalysis.sets.case)[0];
+      const nextSetId = Object.keys(nextCurrentAnalysis.sets.case)[0]
+      return (
+        currentAnalysis.id !== nextCurrentAnalysis.id ||
+        setId !== nextSetId ||
+        (Object.keys(overallSurvivalData).length < 1 && !survivalDataLoading)
+      );
+    },
     async ({
       currentAnalysis: nextCurrentAnalysis,
       setOverallSurvivalData,
       setSetId,
       setSurvivalDataLoading,
     }) => {
-      console.log('nextCurrentAnalysis', nextCurrentAnalysis);
-      
       const setId = Object.keys(nextCurrentAnalysis.sets.case)[0];
       setSetId(setId);
       setSurvivalDataLoading(true);

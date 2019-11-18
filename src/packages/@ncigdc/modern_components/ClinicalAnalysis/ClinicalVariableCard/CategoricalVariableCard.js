@@ -141,9 +141,20 @@ export default compose(
       fieldName,
       id,
       variable: {
-        customSurvivalPlots, isSurvivalCustom,
+        active_chart,
+        customSurvivalPlots,
+        isSurvivalCustom,
       },
     }) => {
+      // prevent survival API requests on mount
+      // when a different plot is selected
+      if (active_chart !== 'survival') {
+        return {
+          survivalPlotValues: [],
+          survivalTableValues: [],
+        };
+      }
+
       const binDataSelected = isSurvivalCustom
         ? binData.filter(bin => {
           return find(customSurvivalPlots, ['keyName', bin.key]);

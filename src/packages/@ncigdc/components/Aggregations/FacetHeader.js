@@ -30,7 +30,6 @@ const Header = styled(Row, {
   alignItems: 'center',
   justifyContent: 'space-between',
   padding: '1rem 1.2rem 0.5rem 1.2rem',
-  backgroundColor: 'white',
 });
 
 const IconsRow = styled(Row, {

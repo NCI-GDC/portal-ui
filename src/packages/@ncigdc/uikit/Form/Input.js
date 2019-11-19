@@ -15,7 +15,7 @@ const styles = {
     boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
     color: '#555555',
     fontSize: '14px',
-    height: '34px',
+    height: '3.4rem',
     lineHeight: '1.42857143',
     minWidth: 0,
     padding: '6px 12px',

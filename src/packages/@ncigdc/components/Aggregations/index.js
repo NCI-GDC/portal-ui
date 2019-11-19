@@ -7,7 +7,6 @@ import Link from '@ncigdc/components/Links/Link';
 
 export const Container = styled(Column, {
   padding: '0 1.2rem 1rem 1.2rem',
-  backgroundColor: 'white',
 });
 
 export const InputLabel = styled.label({

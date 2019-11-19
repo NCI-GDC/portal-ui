@@ -126,6 +126,7 @@ export default compose(
     data: { explore },
     fieldName,
   }) => {
+    // TODO: can this be done with withPropsOnChange?
     const dataStats = explore
       ? explore.cases.aggregations[
         `${createFacetFieldString(fieldName)}`].stats
@@ -134,21 +135,19 @@ export default compose(
         Min: null,
       };
 
-    const defaultMin = dataStats.Min;
-    const defaultMax = dataStats.Max + 1; // api excludes the max number
-
-    const defaultQuarter = (defaultMax - defaultMin) / 4;
+    const min = dataStats.Min;
+    const max = dataStats.Max + 1; // api excludes the max value
 
     const defaultNumberOfBins = 5;
-    const defaultBinSize = (defaultMax - defaultMin) /
+    const defaultBinSize = (max - min) /
       defaultNumberOfBins;
 
-    const defaultBins = Array(defaultNumberOfBins).fill(1)
+    const bins = Array(defaultNumberOfBins).fill(1)
       .map((val, key) => {
-        const from = key * defaultBinSize + defaultMin;
+        const from = key * defaultBinSize + min;
         const to = (key + 1) === defaultNumberOfBins
-          ? defaultMax
-          : (defaultMin + (key + 1) * defaultBinSize);
+          ? max
+          : (min + (key + 1) * defaultBinSize);
         const objKey = `${from}-${to}`;
 
         return ({
@@ -156,17 +155,18 @@ export default compose(
             key: objKey,
           },
         });
-      }).reduce((acc, curr) => ({
+      })
+      .reduce((acc, curr) => ({
         ...acc,
         ...curr,
       }), {});
 
     return ({
       defaultData: {
-        bins: defaultBins,
-        max: defaultMax,
-        min: defaultMin,
-        quarter: defaultQuarter,
+        bins,
+        max,
+        min,
+        quarter: (max - min) / 4,
       },
     });
   }),
@@ -198,13 +198,13 @@ export default compose(
           defaultData={defaultData}
           fieldName={humanify({ term: fieldName })}
           onClose={() => dispatch(setModal(null))}
-          onUpdate={(
-            newBins,
+          onUpdate={({
             continuousBinType,
+            continuousReset,
             customInterval,
             customRanges,
-            continuousReset,
-          ) => {
+            newBins,
+            }) => {
             dispatch(updateClinicalAnalysisVariable({
               fieldName,
               id,
@@ -426,26 +426,26 @@ export default compose(
       const binsWithNames = Object.keys(bins).map(bin => ({
         ...bins[bin],
         displayName: continuousBinType === 'default'
-            ? createContinuousGroupName(bins[bin].key)
-            : bins[bin].groupName,
+          ? createContinuousGroupName(bins[bin].key)
+          : bins[bin].groupName,
       }));
 
       const availableColors = SURVIVAL_PLOT_COLORS
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
       const customBinMatches = isSurvivalCustom
-          ? binsWithNames.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])).map((b, i) => {
-            const match = find(customSurvivalPlots, ['keyName', b.displayName]);
-            return {
-              ...b,
-              color: (match && match.color) || availableColors[i],
-            };
-          })
-          : [];
+        ? binsWithNames.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])).map((b, i) => {
+          const match = find(customSurvivalPlots, ['keyName', b.displayName]);
+          return {
+            ...b,
+            color: (match && match.color) || availableColors[i],
+          };
+        })
+        : [];
 
       const isUsingCustomSurvival = customBinMatches.length > 0;
 
-      const survivalBins = (isUsingCustomSurvival
+      const survivalBins = isUsingCustomSurvival
         ? filterSurvivalData(getContinuousBins({
           binData: customBinMatches,
           continuousBinType,
@@ -453,45 +453,38 @@ export default compose(
           setId,
           totalDocs,
         }))
-      : filterSurvivalData(getContinuousBins({
-        binData: binsWithNames.sort((a, b) => a.key - b.key),
-        continuousBinType,
-        fieldName,
-        setId,
-        totalDocs,
-      })).sort((a, b) => b.chart_doc_count - a.chart_doc_count)
-        .map((bin, i) => {
-          return {
-            ...bin,
-            color: availableColors[i],
-          };
-        })
-      ).slice(0, isUsingCustomSurvival ? Infinity : 2);
-
-      const survivalPlotValues = survivalBins.map(bin => {
-        return {
+        : filterSurvivalData(getContinuousBins({
+          binData: binsWithNames.sort((a, b) => a.key - b.key),
+          continuousBinType,
+          fieldName,
+          setId,
+          totalDocs,
+        }))
+        .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+        .map((bin, i) => ({
           ...bin,
-          filters: bin.filters,
-          key: bin.key,
-          keyName: bin.key,
-        };
-      });
+          color: availableColors[i],
+        }))
+        .slice(0, 2);
+
+      const survivalPlotValues = survivalBins.map(bin => ({
+        ...bin,
+        filters: bin.filters,
+        key: bin.key,
+        keyName: bin.key,
+      }));
 
       const survivalTableValues = survivalBins
-        .map(bin => {
-          return {
-            ...bin,
-            keyName: bin.displayName,
-          };
-        });
+        .map(bin => ({
+          ...bin,
+          keyName: bin.displayName,
+        }));
 
       const nextCustomSurvivalPlots = customBinMatches
-        .map(bin => {
-          return {
-            ...bin,
-            keyName: bin.displayName,
-          };
-        });
+        .map(bin => ({
+          ...bin,
+          keyName: bin.displayName,
+        }));
 
       dispatch(updateClinicalAnalysisVariable({
         fieldName,
@@ -519,18 +512,16 @@ export default compose(
       variable: {
         continuousBinType,
       },
-    }) => {
-      return {
-        displayData: isEmpty(binData)
-          ? []
-          : getContinuousBins({
-            binData: binData.sort((a, b) => a.keyArray[0] - b.keyArray[0]),
-            continuousBinType,
-            fieldName,
-            setId,
-            totalDocs,
-          }),
-      };
+    }) => ({
+      displayData: isEmpty(binData)
+        ? []
+        : getContinuousBins({
+          binData: binData.sort((a, b) => a.keyArray[0] - b.keyArray[0]),
+          continuousBinType,
+          fieldName,
+          setId,
+          totalDocs,
+        });
     }
   ),
   withPropsOnChange(

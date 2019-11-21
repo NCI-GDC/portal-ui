@@ -182,7 +182,6 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) => !(
-      isEqual(props.defaultData, nextProps.defaultData) &&
       isEqual(props.customInterval, nextProps.customInterval) &&
       isEqual(props.customRanges, nextProps.customRanges)
     ),
@@ -203,43 +202,45 @@ export default compose(
           defaultData={defaultData}
           fieldName={humanify({ term: fieldName })}
           onClose={() => dispatch(setModal(null))}
-          onUpdate={({
-            continuousReset,
-            newBins,
-            nextContinuousBinType,
-            nextCustomInterval,
-            nextCustomRanges,
+          onUpdate={
+            ({
+              continuousReset,
+              newBins,
+              nextContinuousBinType,
+              nextCustomInterval,
+              nextCustomRanges,
             }) => {
-            dispatch(updateClinicalAnalysisVariable({
-              fieldName,
-              id,
-              variable: {
-                ...continuousReset
-                  ? {
-                    bins: defaultData.bins,
-                    ...cardDefaults.continuous,
-                    ...cardDefaults.survival,
-                  }
-                  : {
-                    bins: newBins,
-                    continuousBinType: nextContinuousBinType,
-                    ...nextContinuousBinType === 'interval' &&
-                      !isEqual(customInterval, nextCustomInterval) &&
-                      {
-                        customInterval: nextCustomInterval,
-                        ...cardDefaults.survival,
-                      },
-                    ...nextContinuousBinType === 'range' &&
-                      !isEqual(customRanges, nextCustomRanges) &&
-                      {
-                        customRanges: nextCustomRanges,
-                        ...cardDefaults.survival,
-                      },
-                  },
-              },
-            }));
-            dispatch(setModal(null));
-          }}
+              dispatch(updateClinicalAnalysisVariable({
+                fieldName,
+                id,
+                variable: {
+                  ...continuousReset
+                    ? {
+                      bins: defaultData.bins,
+                      ...cardDefaults.continuous,
+                      ...cardDefaults.survival,
+                    }
+                    : {
+                      bins: newBins,
+                      continuousBinType: nextContinuousBinType,
+                      ...nextContinuousBinType === 'interval' &&
+                        !isEqual(customInterval, nextCustomInterval) &&
+                        {
+                          customInterval: nextCustomInterval,
+                          ...cardDefaults.survival,
+                        },
+                      ...nextContinuousBinType === 'range' &&
+                        !isEqual(customRanges, nextCustomRanges) &&
+                        {
+                          customRanges: nextCustomRanges,
+                          ...cardDefaults.survival,
+                        },
+                    },
+                },
+              }));
+              dispatch(setModal(null));
+            }
+          }
           />
       )),
     }),

@@ -293,7 +293,7 @@ export const parseContinuousKey = keyValue =>
     .filter(val => val !== '')
     .map(val => parseContinuousValue(val));
 
-export const makeContinuousGroupName = keyValue =>
+export const makeContinuousDefaultLabel = keyValue =>
   parseContinuousKey(keyValue).join(' to \u003c');
 
 export const filterSurvivalData = data => data
@@ -323,10 +323,6 @@ export const makeBinData = (bins, dataBuckets) => ({
     }
   ), {}),
 });
-
-export const makeDocCountInteger = bin =>
-  Object.assign({}, bin, { doc_count: 0 });
-// doc_count can be an integer or functional component
 
 export const getRawQueryData = (data, fieldName) => get(data,
   `explore.cases.aggregations.${createFacetFieldString(fieldName)}`, data);

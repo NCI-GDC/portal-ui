@@ -22,7 +22,6 @@ import {
 import { withTheme } from '@ncigdc/theme';
 import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 
-import { makeDocCountInteger } from './helpers';
 import ClinicalVariableCard from './ClinicalVariableCard';
 
 export default compose(
@@ -110,8 +109,7 @@ export default compose(
             data.find(datum => datum.displayName === nextBin.keyName)
           ))
           : nextSelectedBins
-            .map(nextBin => data.find(datum => datum.displayName === nextBin.keyName))
-            .map(nextBin => makeDocCountInteger(nextBin));
+            .map(nextBin => data.find(datum => datum.displayName === nextBin.keyName));
         updateSurvivalPlot(nextBinsForPlot);
 
         const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins

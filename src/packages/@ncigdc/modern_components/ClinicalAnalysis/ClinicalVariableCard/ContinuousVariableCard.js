@@ -36,7 +36,7 @@ import {
   filterSurvivalData,
   getRawQueryData,
   makeBinData,
-  makeContinuousGroupName,
+  makeContinuousDefaultLabel,
   makeCountLink,
   parseContinuousKey,
   parseContinuousValue,
@@ -64,7 +64,7 @@ const makeContinuousBins = ({
       : keyValues.length === 2 &&
           isFinite(keyValues[0]) &&
           isFinite(keyValues[1])
-            ? makeContinuousGroupName(key)
+            ? makeContinuousDefaultLabel(key)
             : key;
 
     const [keyMin, keyMax] = keyArrayValues;
@@ -487,7 +487,7 @@ export default compose(
       const binsWithNames = map(bins, (bin, binKey) => ({
         ...bin,
         displayName: continuousBinType === 'default'
-          ? makeContinuousGroupName(binKey)
+          ? makeContinuousDefaultLabel(binKey)
           : bin.groupName
       }));
 

@@ -123,8 +123,8 @@ export const makeHeadings = (chartType, dataDimension, fieldName) =>
       },
       title: '# Cases',
     },
-  ].concat(chartType === 'survival'
-    ? {
+    ...chartType === 'survival' && 
+    [{
       key: 'survival',
       style: {
         display: 'flex',
@@ -136,8 +136,8 @@ export const makeHeadings = (chartType, dataDimension, fieldName) =>
         top: 0,
       },
       title: 'Survival',
-    }
-    : []));
+    }]
+  ]);
 
 const makeCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
   const bucketFilters = []

@@ -40,9 +40,9 @@ import ClinicalHistogram from './components/ClinicalHistogram';
 import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 
 import {
-  getBoxTableData,
   getCardFilters,
-  getHeadings,
+  makeBoxTableData,
+  makeHeadings,
   styles,
 } from './helpers';
 
@@ -69,7 +69,7 @@ const vizButtons = {
   },
 };
 
-const getTableData = ({
+const makeTableData = ({
   active_chart,
   displayData = [],
   fieldName,
@@ -191,8 +191,8 @@ const ClinicalVariableCard = ({
   wrapperId,
 }) => {
   const tableData = variable.active_chart === 'box'
-    ? getBoxTableData(boxPlotValues)
-    : getTableData({
+    ? makeBoxTableData(boxPlotValues)
+    : makeTableData({
       active_chart: variable.active_chart,
       displayData,
       fieldName,
@@ -525,7 +525,7 @@ const ClinicalVariableCard = ({
                     ...tableRow,
                     key: tableRow.displayName,
                   }))}
-                  headings={getHeadings(
+                  headings={makeHeadings(
                     variable.active_chart,
                     dataDimension,
                     fieldName + (binsAreCustom

@@ -25,9 +25,9 @@ import {
   cardDefaults,
   dataDimensions,
   filterSurvivalData,
-  getBinData,
-  getCountLink,
   getRawQueryData,
+  makeBinData,
+  makeCountLink,
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 
@@ -124,7 +124,7 @@ export default compose(
     ({
       dataBuckets,
       variable: { bins },
-    }) => getBinData(bins, dataBuckets)
+    }) => makeBinData(bins, dataBuckets)
   ),
   withPropsOnChange(
     (props, nextProps) =>
@@ -282,7 +282,7 @@ export default compose(
                 ...bin,
                 chart_doc_count: bin.doc_count,
                 displayName: isMissing ? 'missing' : bin.key,
-                doc_count: getCountLink({
+                doc_count: makeCountLink({
                   doc_count: bin.doc_count,
                   filters: isMissing
                     ? {

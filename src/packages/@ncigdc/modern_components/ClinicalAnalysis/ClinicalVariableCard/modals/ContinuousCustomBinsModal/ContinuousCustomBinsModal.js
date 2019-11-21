@@ -10,7 +10,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 
 import { theme } from '@ncigdc/theme/index';
 import {
-  createContinuousGroupName,
+  makeContinuousGroupName,
   DEFAULT_BIN_TYPE,
   DEFAULT_DATA,
   DEFAULT_INTERVAL,
@@ -316,7 +316,7 @@ class ContinuousCustomBinsModal extends Component {
 
             return ({
               [objKey]: {
-                groupName: createContinuousGroupName(objKey),
+                groupName: makeContinuousGroupName(objKey),
                 key: objKey,
               },
             });

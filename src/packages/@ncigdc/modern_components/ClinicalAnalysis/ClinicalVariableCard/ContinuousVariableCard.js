@@ -30,16 +30,16 @@ import { SURVIVAL_PLOT_COLORS } from '@ncigdc/utils/survivalplot';
 
 import ContinuousCustomBinsModal from './modals/ContinuousCustomBinsModal';
 import {
-  createContinuousGroupName,
+  cardDefaults,
   dataDimensions,
+  DEFAULT_BIN_TYPE,
   filterSurvivalData,
-  getBinData,
-  getCountLink,
   getRawQueryData,
+  makeBinData,
+  makeContinuousGroupName,
+  makeCountLink,
   parseContinuousKey,
   parseContinuousValue,
-  DEFAULT_BIN_TYPE,
-  cardDefaults,
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 
@@ -64,7 +64,7 @@ const makeContinuousBins = ({
       : keyValues.length === 2 &&
           isFinite(keyValues[0]) &&
           isFinite(keyValues[1])
-            ? createContinuousGroupName(key)
+            ? makeContinuousGroupName(key)
             : key;
 
     const [keyMin, keyMax] = keyArrayValues;
@@ -100,7 +100,7 @@ const makeContinuousBins = ({
         chart_doc_count: doc_count,
         color,
         displayName: groupNameFormatted,
-        doc_count: getCountLink({
+        doc_count: makeCountLink({
           doc_count,
           filters,
           totalDocs,
@@ -393,7 +393,7 @@ export default compose(
           };
         }, {});
 
-      return getBinData(binsForBinData, dataBuckets);
+      return makeBinData(binsForBinData, dataBuckets);
     }
   ),
   withPropsOnChange(
@@ -431,7 +431,7 @@ export default compose(
       const binsWithNames = Object.keys(bins).map(bin => ({
         ...bins[bin],
         displayName: continuousBinType === 'default'
-          ? createContinuousGroupName(bins[bin].key)
+          ? makeContinuousGroupName(bins[bin].key)
           : bins[bin].groupName,
       }));
 

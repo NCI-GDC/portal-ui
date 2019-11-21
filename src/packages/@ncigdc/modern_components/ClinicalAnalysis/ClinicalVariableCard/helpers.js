@@ -83,7 +83,7 @@ export const boxTableRenamedStats = {
   SD: 'Standard Deviation',
 };
 
-export const getHeadings = (chartType, dataDimension, fieldName) =>
+export const makeHeadings = (chartType, dataDimension, fieldName) =>
   (chartType === 'box'
   ? [
     {
@@ -139,7 +139,7 @@ export const getHeadings = (chartType, dataDimension, fieldName) =>
     }
     : []));
 
-const getCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
+const makeContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
   const bucketFilters = []
     .concat(selectedBuckets
       .filter(bucket => bucket.key !== '_missing').length > 0 && [
@@ -182,7 +182,7 @@ const getCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
   );
 };
 
-const getContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
+const makeContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
   const bucketRanges = selectedBuckets.map(bucket => bucket.rangeValues);
 
   return addInFilters(filters, {
@@ -219,25 +219,23 @@ const getContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
 export const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) => (
   get(selectedBuckets, 'length', 0)
     ? variablePlotTypes === 'continuous'
-      ? getContinuousSetFilters(selectedBuckets, fieldName, filters)
-      : getCategoricalSetFilters(selectedBuckets, fieldName, filters)
+      ? makeContinuousSetFilters(selectedBuckets, fieldName, filters)
+      : makeContinuousSetFilters(selectedBuckets, fieldName, filters)
     : filters);
 
-export const getCountLink = ({ doc_count, filters, totalDocs }) => {
-  return (
-    <span>
-      <ExploreLink
-        query={{
-          filters,
-          searchTableTab: 'cases',
-        }}
-        >
-        {(doc_count || 0).toLocaleString()}
-      </ExploreLink>
-      <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`}</span>
-    </span>
-  );
-};
+export const makeCountLink = ({ doc_count, filters, totalDocs }) => (
+  <span>
+    <ExploreLink
+      query={{
+        filters,
+        searchTableTab: 'cases',
+      }}
+      >
+      {(doc_count || 0).toLocaleString()}
+    </ExploreLink>
+    <span>{` (${(((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`}</span>
+  </span>
+);
 
 export const styles = {
   actionMenuItem: {
@@ -293,14 +291,14 @@ export const parseContinuousKey = keyValue =>
     .filter(val => val !== '')
     .map(val => parseContinuousValue(val));
 
-export const createContinuousGroupName = keyValue =>
+export const makeContinuousGroupName = keyValue =>
   parseContinuousKey(keyValue).join(' to \u003c');
 
 export const filterSurvivalData = data => data
   .filter(x => x.chart_doc_count >= MINIMUM_CASES)
   .filter(x => x.key !== '_missing');
 
-export const getBinData = (bins, dataBuckets) => ({
+export const makeBinData = (bins, dataBuckets) => ({
   binData: map(groupBy(bins, bin => bin.groupName), (values, key) => ({
     doc_count: values.reduce((acc, value) => acc + value.doc_count, 0),
     key,
@@ -358,7 +356,7 @@ export const cardDefaults = {
   },
 };
 
-export const getBoxTableData = (data = {}) =>
+export const makeBoxTableData = (data = {}) =>
   sortBy(Object.keys(data), datum =>
     boxTableAllowedStats.indexOf(datum.toLowerCase()))
     .reduce(

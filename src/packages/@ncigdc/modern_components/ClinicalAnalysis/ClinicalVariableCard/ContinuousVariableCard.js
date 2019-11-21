@@ -226,6 +226,40 @@ const makeContinuousProps = ({ data, fieldName }) => {
   };
 };
 
+const makeVariableBins = ({ 
+  bins,
+  continuousBinType,
+  dataBuckets,
+  dispatch,
+  fieldName,
+  id,
+}) => {
+  dispatch(updateClinicalAnalysisVariable({
+    fieldName,
+    id,
+    variable: {
+      bins: continuousBinType === 'default'
+        ? dataBuckets.reduce((acc, curr, index) => ({
+          ...acc,
+          [dataBuckets[index].key]: {
+            ...dataBuckets[index],
+            groupName: dataBuckets[index].key,
+          },
+        }), {})
+        : Object.keys(bins)
+          .reduce((acc, curr, index) => ({
+            ...acc,
+            [curr]: {
+              ...bins[curr],
+              doc_count: dataBuckets[index]
+                ? dataBuckets[index].doc_count
+                : 0,
+            },
+          }), {}),
+    },
+  }));
+};
+
 export default compose(
   setDisplayName('EnhancedContinuousVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
@@ -337,32 +371,15 @@ export default compose(
       fieldName,
       id,
     }) => {
-      dispatch(updateClinicalAnalysisVariable({
+      makeVariableBins({
+        bins,
+        continuousBinType,
+        dataBuckets,
+        dispatch,
         fieldName,
         id,
-        variable: {
-          // TODO: can i use lodash map here??? 
-          bins: continuousBinType === 'default'
-            ? dataBuckets.reduce((acc, curr, index) => ({
-              ...acc,
-              [dataBuckets[index].key]: {
-                ...dataBuckets[index],
-                groupName: dataBuckets[index].key,
-              },
-            }), {})
-            : Object.keys(bins)
-              .reduce((acc, curr, index) => ({
-                ...acc,
-                [curr]: {
-                  ...bins[curr],
-                  doc_count: dataBuckets[index]
-                    ? dataBuckets[index].doc_count
-                    : 0,
-                },
-              }), {}),
-        },
-      }));
-    }
+      });
+    },
   ),
   withProps(
     ({

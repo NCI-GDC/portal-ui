@@ -167,6 +167,7 @@ const ClinicalVariableCard = ({
   filters,
   id,
   isLoading,
+  key,
   openCustomBinModal,
   overallSurvivalData,
   plots,
@@ -234,6 +235,7 @@ const ClinicalVariableCard = ({
   return (
     <Column
       className="clinical-analysis-card"
+      key={key}
       style={{
         ...zDepth1,
         height: 560,

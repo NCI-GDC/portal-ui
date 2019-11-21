@@ -255,31 +255,18 @@ export default compose(
     }
   ),
 )(({
-  aggData, hits, isLoading, setId, stats, ...props
-}) => isLoading 
-  ? (
-   <Column
-      className="clinical-analysis-card"
-      style={{
-        ...zDepth1,
-        height: 560,
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: '0 1rem 1rem',
-      }}
-      >
-        <Spinner />
-    </Column>
-  )
-  : (
-    <ContinuousVariableCard
-      data={{
-        ...aggData,
-        hits,
-      }}
-      setId={setId}
-      stats={stats}
-      {...props}
-      />
+  aggData, hits, isLoading, key, setId, stats, ...props
+}) => (
+  <ContinuousVariableCard
+    data={{
+      ...aggData,
+      hits,
+    }}
+    isLoading={isLoading}
+    key={key}
+    setId={setId}
+    stats={stats}
+    {...props}
+    />
   )
 );

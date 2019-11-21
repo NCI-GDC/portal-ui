@@ -139,7 +139,7 @@ export const makeHeadings = (chartType, dataDimension, fieldName) =>
     }
     : []));
 
-const makeContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
+const makeCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
   const bucketFilters = []
     .concat(selectedBuckets
       .filter(bucket => bucket.key !== '_missing').length > 0 && [
@@ -154,15 +154,17 @@ const makeContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
         op: 'in',
       },
     ])
-    .concat(selectedBuckets.some(bucket => bucket.key === '_missing') && [
-      {
-        content: {
-          field: fieldName,
-          value: 'MISSING',
+    .concat(selectedBuckets.some(bucket => bucket.key === '_missing') && 
+      [
+        {
+          content: {
+            field: fieldName,
+            value: 'MISSING',
+          },
+          op: 'is',
         },
-        op: 'is',
-      },
-    ])
+      ]
+    )
     .filter(item => item);
 
   return Object.assign(
@@ -220,7 +222,7 @@ export const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, fi
   get(selectedBuckets, 'length', 0)
     ? variablePlotTypes === 'continuous'
       ? makeContinuousSetFilters(selectedBuckets, fieldName, filters)
-      : makeContinuousSetFilters(selectedBuckets, fieldName, filters)
+      : makeCategoricalSetFilters(selectedBuckets, fieldName, filters)
     : filters);
 
 export const makeCountLink = ({ doc_count, filters, totalDocs }) => (

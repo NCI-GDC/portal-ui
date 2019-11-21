@@ -1,10 +1,12 @@
 import React from 'react';
 import {
   compose,
+  lifecycle,
   setDisplayName,
   withProps,
   withPropsOnChange,
   withState,
+  flattenProp,
 } from 'recompose';
 import { connect } from 'react-redux';
 import {
@@ -41,14 +43,13 @@ import {
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 
-const getContinuousBins = ({
+const makeContinuousBins = ({
   binData = [],
   continuousBinType,
   fieldName,
   setId,
   totalDocs,
-}) => (
-  binData.reduce((acc, {
+}) => binData.reduce((acc, {
     color, doc_count, groupName = '', key, keyArray = [],
   }) => {
     const keyValues = parseContinuousKey(key);
@@ -113,67 +114,69 @@ const getContinuousBins = ({
         },
       }
     );
-  }, [])
-);
+  }, []);
+
+const makeDefaultDataOnLoad = ({ explore, fieldName }) => {
+  const dataStats = typeof explore === 'undefined'
+    ? {
+      Max: null,
+      Min: null,
+    }
+    : explore.cases.aggregations[
+      `${createFacetFieldString(fieldName)}`].stats;
+
+  const min = dataStats.Min;
+  const max = dataStats.Max + 1; // api excludes the max value
+
+  const defaultNumberOfBins = 5;
+  const defaultBinSize = (max - min) / defaultNumberOfBins;
+
+  const bins = Array(defaultNumberOfBins)
+    .fill(1)
+    .map((val, key) => {
+      const from = key * defaultBinSize + min;
+      const to = (key + 1) === defaultNumberOfBins // last bin
+        ? max
+        : (min + (key + 1) * defaultBinSize);
+      const objKey = `${from}-${to}`;
+
+      return ({
+        [objKey]: {
+          key: objKey,
+        },
+      });
+    })
+    .reduce((acc, curr) => ({
+      ...acc,
+      ...curr,
+    }), {});
+
+  return ({
+    defaultData: {
+      bins,
+      max,
+      min,
+      quarter: (max - min) / 4,
+    },
+  });
+};
 
 export default compose(
   setDisplayName('EnhancedContinuousVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
+  flattenProp('variable'),
   withState('qqData', 'setQQData', []),
   withState('qqDataIsSet', 'setQQDataIsSet', false),
-  withProps(({
-    data: { explore },
-    fieldName,
-  }) => {
-    // TODO: can this be done with withPropsOnChange?
-    const dataStats = explore
-      ? explore.cases.aggregations[
-        `${createFacetFieldString(fieldName)}`].stats
-      : {
-        Max: null,
-        Min: null,
-      };
-
-    const min = dataStats.Min;
-    const max = dataStats.Max + 1; // api excludes the max value
-
-    const defaultNumberOfBins = 5;
-    const defaultBinSize = (max - min) /
-      defaultNumberOfBins;
-
-    const bins = Array(defaultNumberOfBins).fill(1)
-      .map((val, key) => {
-        const from = key * defaultBinSize + min;
-        const to = (key + 1) === defaultNumberOfBins
-          ? max
-          : (min + (key + 1) * defaultBinSize);
-        const objKey = `${from}-${to}`;
-
-        return ({
-          [objKey]: {
-            key: objKey,
-          },
-        });
-      })
-      .reduce((acc, curr) => ({
-        ...acc,
-        ...curr,
-      }), {});
-
-    return ({
-      defaultData: {
-        bins,
-        max,
-        min,
-        quarter: (max - min) / 4,
-      },
-    });
-  }),
+  withProps(
+    ({
+      data: { explore },
+      fieldName,
+    }) => makeDefaultDataOnLoad({ explore, fieldName })
+  ),
   withPropsOnChange(
-    (props, nextProps) =>
-      props.variable.continuousBinType !== nextProps.variable.continuousBinType,
-    ({ variable: { continuousBinType } }) => ({
+    ['continuousBinType'],
+    ({ continuousBinType }) => ({
       binsAreCustom: continuousBinType !== DEFAULT_BIN_TYPE,
     })
   ),
@@ -446,14 +449,14 @@ export default compose(
       const isUsingCustomSurvival = customBinMatches.length > 0;
 
       const survivalBins = isUsingCustomSurvival
-        ? filterSurvivalData(getContinuousBins({
+        ? filterSurvivalData(makeContinuousBins({
           binData: customBinMatches,
           continuousBinType,
           fieldName,
           setId,
           totalDocs,
         }))
-        : filterSurvivalData(getContinuousBins({
+        : filterSurvivalData(makeContinuousBins({
           binData: binsWithNames.sort((a, b) => a.key - b.key),
           continuousBinType,
           fieldName,
@@ -515,7 +518,7 @@ export default compose(
     }) => ({
       displayData: isEmpty(binData)
         ? []
-        : getContinuousBins({
+        : makeContinuousBins({
           binData: binData.sort((a, b) => a.keyArray[0] - b.keyArray[0]),
           continuousBinType,
           fieldName,
@@ -552,4 +555,9 @@ export default compose(
       },
     })
   ),
+  lifecycle({
+    componentDidMount() {
+      console.log('continuous card mounted');
+    }
+  })
 )(EnhancedClinicalVariableCard);

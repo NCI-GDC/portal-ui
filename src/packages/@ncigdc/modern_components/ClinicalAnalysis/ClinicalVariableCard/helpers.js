@@ -345,7 +345,7 @@ export const DEFAULT_INTERVAL = {
 };
 export const DEFAULT_RANGES = [];
 
-export const resetVariableDefaults = {
+export const cardDefaults = {
   continuous: {
     continuousBinType: DEFAULT_BIN_TYPE,
     customInterval: DEFAULT_INTERVAL,

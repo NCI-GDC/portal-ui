@@ -22,12 +22,12 @@ import { SURVIVAL_PLOT_COLORS } from '@ncigdc/utils/survivalplot';
 import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
 
 import {
+  cardDefaults,
   dataDimensions,
   filterSurvivalData,
   getBinData,
   getCountLink,
   getRawQueryData,
-  resetVariableDefaults,
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 
@@ -225,7 +225,7 @@ export default compose(
           fieldName,
           id,
           variable: {
-            ...resetVariableDefaults.survival,
+            ...cardDefaults.survival,
             bins: dataBuckets
               .reduce((acc, bucket) => ({
                 ...acc,
@@ -351,7 +351,7 @@ export default compose(
                 bins: newBins,
                 customBinsId: id,
                 customBinsSetId: setId,
-                ...resetVariableDefaults.survival,
+                ...cardDefaults.survival,
               },
             }));
             dispatch(setModal(null));

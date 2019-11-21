@@ -39,7 +39,7 @@ import {
   parseContinuousKey,
   parseContinuousValue,
   DEFAULT_BIN_TYPE,
-  resetVariableDefaults,
+  cardDefaults,
 } from './helpers';
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 
@@ -183,30 +183,32 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) => !(
       isEqual(props.defaultData, nextProps.defaultData) &&
-      isEqual(props.variable.customInterval, nextProps.variable.customInterval) &&
-      isEqual(props.variable.customRanges, nextProps.variable.customRanges)
+      isEqual(props.customInterval, nextProps.customInterval) &&
+      isEqual(props.customRanges, nextProps.customRanges)
     ),
     ({
+      continuousBinType,
+      customInterval,
+      customRanges,
       defaultData,
       dispatch,
       fieldName,
       id,
-      variable,
     }) => ({
       openCustomBinModal: () => dispatch(setModal(
         <ContinuousCustomBinsModal
-          continuousBinType={variable.continuousBinType}
-          customInterval={variable.customInterval}
-          customRanges={variable.customRanges}
+          continuousBinType={continuousBinType}
+          customInterval={customInterval}
+          customRanges={customRanges}
           defaultData={defaultData}
           fieldName={humanify({ term: fieldName })}
           onClose={() => dispatch(setModal(null))}
           onUpdate={({
-            continuousBinType,
             continuousReset,
-            customInterval,
-            customRanges,
             newBins,
+            nextContinuousBinType,
+            nextCustomInterval,
+            nextCustomRanges,
             }) => {
             dispatch(updateClinicalAnalysisVariable({
               fieldName,
@@ -215,26 +217,24 @@ export default compose(
                 ...continuousReset
                   ? {
                     bins: defaultData.bins,
-                    ...resetVariableDefaults.continuous,
-                    ...resetVariableDefaults.survival,
+                    ...cardDefaults.continuous,
+                    ...cardDefaults.survival,
                   }
                   : {
                     bins: newBins,
-                    continuousBinType,
-                    ...continuousBinType === 'interval' &&
-                      !isEqual(variable.customInterval, customInterval)
-                      ? {
-                        customInterval,
-                        ...resetVariableDefaults.survival,
-                      }
-                      : {},
-                    ...continuousBinType === 'range' &&
-                      !isEqual(variable.customRanges, customRanges)
-                      ? {
-                        customRanges,
-                        ...resetVariableDefaults.survival,
-                      }
-                      : {},
+                    continuousBinType: nextContinuousBinType,
+                    ...nextContinuousBinType === 'interval' &&
+                      !isEqual(customInterval, nextCustomInterval) &&
+                      {
+                        customInterval: nextCustomInterval,
+                        ...cardDefaults.survival,
+                      },
+                    ...nextContinuousBinType === 'range' &&
+                      !isEqual(customRanges, nextCustomRanges) &&
+                      {
+                        customRanges: nextCustomRanges,
+                        ...cardDefaults.survival,
+                      },
                   },
               },
             }));
@@ -242,7 +242,7 @@ export default compose(
           }}
           />
       )),
-    })
+    }),
   ),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
@@ -545,10 +545,10 @@ export default compose(
           fieldName,
           id,
           variable: {
-            ...resetVariableDefaults.survival,
+            ...cardDefaults.survival,
             ...binsAreCustom && {
               bins,
-              ...resetVariableDefaults.continuous,
+              ...cardDefaults.continuous,
             },
           },
         }));

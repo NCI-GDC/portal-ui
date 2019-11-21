@@ -347,11 +347,11 @@ class ContinuousCustomBinsModal extends Component {
         : makeCustomIntervalBins();
 
       onUpdate({
-        continuousBinType: binningMethod,
         continuousReset,
-        customInterval: intervalFields,
         newBins,
-        customRanges: rangeRows,
+        nextContinuousBinType: binningMethod,
+        nextCustomInterval: intervalFields,
+        nextCustomRanges: rangeRows,
       });
     }
   };

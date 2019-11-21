@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   compose,
-  lifecycle,
   setDisplayName,
   withHandlers,
   withProps,
@@ -168,6 +167,10 @@ const makeContinuousProps = ({ data, fieldName }) => {
   const dataDimension = dataDimensions[sanitisedId] &&
     dataDimensions[sanitisedId].unit;
 
+  // console.log('data', data);  
+
+  // console.log('rawQueryData', rawQueryData);
+  
   return {
     boxPlotValues: map(
       {
@@ -187,23 +190,24 @@ const makeContinuousProps = ({ data, fieldName }) => {
             });
         }
       }
-    ).reduce((acc, item) => ({
+    )
+    .reduce((acc, item) => ({
       ...acc,
       ...item,
     }), {}),
     dataBuckets: get(rawQueryData, 'range.buckets', []),
+    dataDimension,
     totalDocs: get(data, 'hits.total', 0),
     wrapperId: `${sanitisedId}-chart`,
     ...dataDimensions[sanitisedId] && {
       axisTitle: dataDimensions[sanitisedId].axisTitle,
       boxPlotValues: map(
         {
-
           ...rawQueryData.stats,
           ...rawQueryData.percentiles,
         },
         (value, stat) => {
-          switch (dataDimensions[sanitisedId].unit) {
+          switch (dataDimension) {
             case 'Years': {
               // TODO ugly hack until API provides units
               const converter = sanitisedId === 'year_of_diagnosis' ? 1 : DAYS_IN_YEAR;
@@ -217,11 +221,11 @@ const makeContinuousProps = ({ data, fieldName }) => {
               });
           }
         }
-      ).reduce((acc, item) => ({
+      )
+      .reduce((acc, item) => ({
         ...acc,
         ...item,
       }), {}),
-      dataDimension: dataDimensions[sanitisedId].unit,
     },
   };
 };
@@ -279,10 +283,13 @@ export default compose(
       binsAreCustom: continuousBinType !== DEFAULT_BIN_TYPE,
     })
   ),
+  // custom binning
   withHandlers({
     handleCloseModal: ({ dispatch }) => () => {
       dispatch(setModal(null));
     },
+  }),
+  withHandlers({
     handleUpdateCustomBins: ({
       continuousBinType,
       customInterval,
@@ -290,6 +297,7 @@ export default compose(
       defaultData,
       dispatch,
       fieldName,
+      handleCloseModal,
       id,
     }) => ({
       continuousReset,
@@ -326,8 +334,27 @@ export default compose(
             },
         },
       }));
-      dispatch(setModal(null));
-    }
+      handleCloseModal();
+    },
+    resetBins: ({
+      binsAreCustom,
+      defaultData: { bins },
+      dispatch,
+      fieldName,
+      id,
+    }) => () => {
+      dispatch(updateClinicalAnalysisVariable({
+        fieldName,
+        id,
+        variable: {
+          ...cardDefaults.survival,
+          ...binsAreCustom && {
+            bins,
+            ...cardDefaults.continuous,
+          },
+        },
+      }));
+    },
   }),
   withHandlers({
     openCustomBinModal: ({
@@ -388,6 +415,7 @@ export default compose(
       dataBuckets,
       fieldName,
     }) => {
+      // TODO: change this to withPropsOnChange?
       const fieldNameUnderscores = createFacetFieldString(fieldName);
 
       if (!(
@@ -399,6 +427,8 @@ export default compose(
         return {};
       }
 
+      // console.log('explore.cases.aggregations[fieldNameUnderscores].range.buckets', explore.cases.aggregations[fieldNameUnderscores].range.buckets);
+      
       const binsForBinData = explore.cases.aggregations[fieldNameUnderscores].range.buckets
         .reduce((acc, curr) => {
           const keyTrimIntegers = parseContinuousKey(curr.key).join('-');
@@ -415,6 +445,10 @@ export default compose(
           };
         }, {});
 
+        // console.log('binsForBinData', binsForBinData);
+        // console.log('dataBuckets', dataBuckets);
+        // console.log('bins', bins);
+      
       return makeBinData(binsForBinData, dataBuckets);
     }
   ),
@@ -448,13 +482,17 @@ export default compose(
         };
       }
 
-      const binsWithNames = Object.keys(bins).map(bin => ({
-        ...bins[bin],
+      // console.log('bins', bins);
+      
+      const binsWithNames = map(bins, (bin, binKey) => ({
+        ...bin,
         displayName: continuousBinType === 'default'
-          ? makeContinuousGroupName(bins[bin].key)
-          : bins[bin].groupName,
+          ? makeContinuousGroupName(binKey)
+          : bin.groupName
       }));
 
+      // console.log('binsWithNames', binsWithNames);
+      
       const availableColors = SURVIVAL_PLOT_COLORS
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
@@ -530,54 +568,33 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.binData, nextProps.binData),
     ({
-      binData,
+      binData = [],
       continuousBinType,
       fieldName,
       setId,
       totalDocs,
-    }) => ({
-      displayData: isEmpty(binData)
-        ? []
-        : makeContinuousBins({
-          binData: binData.sort((a, b) => a.keyArray[0] - b.keyArray[0]),
+    }) => {
+      // console.log('binData', binData);
+      // const displayData = isEmpty(binData)
+      // ? []
+      // : makeContinuousBins({
+      //   binData: binData.sort((a, b) => a.keyArray[0] - b.keyArray[0]),
+      //   continuousBinType,
+      //   fieldName,
+      //   setId,
+      //   totalDocs,
+      // });
+      // console.log('displayData', displayData);
+      
+      return ({
+        displayData: makeContinuousBins({
+          binData,
           continuousBinType,
           fieldName,
           setId,
           totalDocs,
         }),
+      })
     }
-  )),
-  withPropsOnChange(
-    (props, nextProps) => !(
-      props.binsAreCustom === nextProps.binsAreCustom &&
-      props.id === nextProps.id &&
-      props.isSurvivalCustom === nextProps.isSurvivalCustom
-    ),
-    ({
-      binsAreCustom,
-      defaultData: { bins: defaultBins },
-      dispatch,
-      fieldName,
-      id,
-    }) => ({
-      resetBins: () => {
-        dispatch(updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          variable: {
-            ...cardDefaults.survival,
-            ...binsAreCustom && {
-              defaultBins,
-              ...cardDefaults.continuous,
-            },
-          },
-        }));
-      },
-    })
   ),
-  lifecycle({
-    componentDidMount() {
-      console.log('continuous card mounted');
-    }
-  })
 )(EnhancedClinicalVariableCard);

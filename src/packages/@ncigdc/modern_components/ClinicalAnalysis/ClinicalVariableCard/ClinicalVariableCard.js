@@ -74,17 +74,17 @@ const makeTableData = ({
   displayData = [],
   fieldName,
   selectedBins,
-  selectedSurvivalBins,
+  selectedSurvivalPlots,
   selectedSurvivalLoadingIds,
   setSelectedBins,
   theme,
-  updateSelectedSurvivalBins,
+  updateSelectedSurvivalPlots,
 }) => displayData.map(bin => {
   const isSelected = find(selectedBins, { key: bin.displayName });
-  const selectedBin = selectedSurvivalBins.find(s => s.keyName === bin.displayName);
+  const selectedBin = selectedSurvivalPlots.find(s => s.keyName === bin.displayName);
   const isSurvivalLoading = selectedSurvivalLoadingIds.indexOf(bin.displayName) >= 0;
   const isSelectedForSurvival = selectedBin !== undefined;
-  const isSurvivalFull = selectedSurvivalBins.length === MAXIMUM_CURVES;
+  const isSurvivalFull = selectedSurvivalPlots.length === MAXIMUM_CURVES;
 
   // console.log('displayData', displayData);
   
@@ -133,7 +133,7 @@ const makeTableData = ({
               (isSurvivalFull && !isSelectedForSurvival)
             }
             onClick={() => {
-              updateSelectedSurvivalBins(displayData, bin);
+              updateSelectedSurvivalPlots(displayData, bin);
             }}
             style={{
               backgroundColor: isSelectedForSurvival ? selectedBin.color : theme.greyScale3,
@@ -177,7 +177,7 @@ const ClinicalVariableCard = ({
   resetBins,
   binsAreCustom,
   selectedBins,
-  selectedSurvivalBins = [],
+  selectedSurvivalPlots = [],
   selectedSurvivalData,
   selectedSurvivalLoadingIds,
   setId,
@@ -188,7 +188,7 @@ const ClinicalVariableCard = ({
   survivalDataLoading,
   theme,
   totalDocs,
-  updateSelectedSurvivalBins,
+  updateSelectedSurvivalPlots,
   variable,
   wrapperId,
 }) => {
@@ -199,11 +199,11 @@ const ClinicalVariableCard = ({
       displayData,
       fieldName,
       selectedBins,
-      selectedSurvivalBins,
+      selectedSurvivalPlots,
       selectedSurvivalLoadingIds,
       setSelectedBins,
       theme,
-      updateSelectedSurvivalBins,
+      updateSelectedSurvivalPlots,
     });
 
   const histogramData =
@@ -414,7 +414,7 @@ const ClinicalVariableCard = ({
 
                 {variable.active_chart === 'survival' && (
                 (variable.isSurvivalCustom &&
-                  selectedSurvivalBins.length === 0 &&
+                  selectedSurvivalPlots.length === 0 &&
                   !variable.showOverallSurvival)
                   ? (
                     <Row
@@ -431,14 +431,14 @@ const ClinicalVariableCard = ({
                   : (
                     <ClinicalSurvivalPlot
                       downloadChartName={downloadChartName}
-                      palette={selectedSurvivalBins.length > 0
-                        ? selectedSurvivalBins.map(ssBin => ssBin.color)
+                      palette={selectedSurvivalPlots.length > 0
+                        ? selectedSurvivalPlots.map(ssBin => ssBin.color)
                       : SURVIVAL_PLOT_COLORS}
-                      plotType={selectedSurvivalBins.length === 0 ||
+                      plotType={selectedSurvivalPlots.length === 0 ||
                         variable.showOverallSurvival
                         ? 'clinicalOverall'
                         : 'categorical'}
-                      survivalData={selectedSurvivalBins.length === 0 ||
+                      survivalData={selectedSurvivalPlots.length === 0 ||
                         variable.showOverallSurvival
                         ? overallSurvivalData
                         : selectedSurvivalData}

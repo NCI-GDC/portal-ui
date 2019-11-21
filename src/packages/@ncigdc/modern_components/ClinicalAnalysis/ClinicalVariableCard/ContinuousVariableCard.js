@@ -454,7 +454,7 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) => nextProps.active_chart === 'survival' && !(
-      isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
+      isEqual(props.selectedSurvivalPlots, nextProps.selectedSurvivalPlots) &&
       isEqual(props.bins, nextProps.bins) &&
       isEqual(props.customSurvivalPlots, nextProps.customSurvivalPlots) &&
       props.setId === nextProps.setId &&

@@ -29,7 +29,7 @@ export default compose(
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
   withState('selectedBins', 'setSelectedBins', []),
-  withState('selectedSurvivalBins', 'setSelectedSurvivalBins', []),
+  withState('selectedSurvivalPlots', 'setSelectedSurvivalPlots', []),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalDataLoading', 'setSurvivalDataLoading', true),
@@ -56,7 +56,7 @@ export default compose(
     (props, nextProps) => !(
       props.variable.setId === nextProps.variable.setId &&
       isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
-      isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
+      isEqual(props.selectedSurvivalPlots, nextProps.selectedSurvivalPlots) &&
       isEqual(props.survivalPlotValues, nextProps.survivalPlotValues) &&
       isEqual(props.filters, nextProps.filters)
     ),
@@ -64,8 +64,8 @@ export default compose(
       dispatch,
       fieldName,
       id,
-      selectedSurvivalBins,
-      setSelectedSurvivalBins,
+      selectedSurvivalPlots,
+      setSelectedSurvivalPlots,
       setSelectedSurvivalLoadingIds,
       setSurvivalDataLoading,
       survivalPlotValues,
@@ -75,33 +75,33 @@ export default compose(
     }) => ({
       populateSurvivalData: () => {
         setSurvivalDataLoading(true);
-        setSelectedSurvivalBins(survivalTableValues);
+        setSelectedSurvivalPlots(survivalTableValues);
         setSelectedSurvivalLoadingIds(survivalTableValues);
         updateSurvivalPlot(survivalPlotValues);
       },
-      updateSelectedSurvivalBins: (data, bin) => {
+      updateSelectedSurvivalPlots: (data, bin) => {
         if (
-          selectedSurvivalBins.map(sBin => sBin.keyName).indexOf(bin.displayName) === -1 &&
-          selectedSurvivalBins.length >= MAXIMUM_CURVES
+          selectedSurvivalPlots.map(sBin => sBin.keyName).indexOf(bin.displayName) === -1 &&
+          selectedSurvivalPlots.length >= MAXIMUM_CURVES
         ) {
           return;
         }
         setSurvivalDataLoading(true);
 
-        const isSelected = selectedSurvivalBins
+        const isSelected = selectedSurvivalPlots
           .map(sBin => sBin.keyName).indexOf(bin.displayName) >= 0;
 
-        const availableColors = SURVIVAL_PLOT_COLORS.filter(color => !find(selectedSurvivalBins, ['color', color]));
+        const availableColors = SURVIVAL_PLOT_COLORS.filter(color => !find(selectedSurvivalPlots, ['color', color]));
 
         const nextSelectedBins = isSelected
-          ? selectedSurvivalBins.filter(s => s.keyName !== bin.displayName)
-          : selectedSurvivalBins.concat({
+          ? selectedSurvivalPlots.filter(s => s.keyName !== bin.displayName)
+          : selectedSurvivalPlots.concat({
             color: bin.color || availableColors[0],
             keyArray: bin.keyArray,
             keyName: bin.displayName,
           });
 
-        setSelectedSurvivalBins(nextSelectedBins);
+        setSelectedSurvivalPlots(nextSelectedBins);
         setSelectedSurvivalLoadingIds(nextSelectedBins);
 
         const nextBinsForPlot = plotTypes === 'categorical'

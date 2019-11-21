@@ -3,6 +3,7 @@ import {
   compose,
   lifecycle,
   setDisplayName,
+  withHandlers,
   withProps,
   withPropsOnChange,
   withState,
@@ -244,13 +245,11 @@ export default compose(
       binsAreCustom: continuousBinType !== DEFAULT_BIN_TYPE,
     })
   ),
-  withPropsOnChange(
-    (props, nextProps) => !(
-      isEqual(props.defaultData, nextProps.defaultData) &&
-      isEqual(props.customInterval, nextProps.customInterval) &&
-      isEqual(props.customRanges, nextProps.customRanges)
-    ),
-    ({
+  withHandlers({
+    handleCloseModal: ({ dispatch }) => () => {
+      dispatch(setModal(null));
+    },
+    handleUpdateCustomBins: ({
       continuousBinType,
       customInterval,
       customRanges,
@@ -259,57 +258,68 @@ export default compose(
       fieldName,
       id,
     }) => ({
-      openCustomBinModal: () => dispatch(setModal(
+      continuousReset,
+      newBins,
+      nextContinuousBinType,
+      nextCustomInterval,
+      nextCustomRanges,
+    }) => {
+      dispatch(updateClinicalAnalysisVariable({
+        fieldName,
+        id,
+        variable: {
+          ...continuousReset
+            ? {
+              bins: defaultData.bins,
+              ...cardDefaults.continuous,
+              ...cardDefaults.survival,
+            }
+            : {
+              bins: newBins,
+              continuousBinType: nextContinuousBinType,
+              ...nextContinuousBinType === 'interval' &&
+                !isEqual(customInterval, nextCustomInterval) &&
+                {
+                  customInterval: nextCustomInterval,
+                  ...cardDefaults.survival,
+                },
+              ...nextContinuousBinType === 'range' &&
+                !isEqual(customRanges, nextCustomRanges) &&
+                {
+                  customRanges: nextCustomRanges,
+                  ...cardDefaults.survival,
+                },
+            },
+        },
+      }));
+      dispatch(setModal(null));
+    }
+  }),
+  withHandlers({
+    openCustomBinModal: ({
+      continuousBinType,
+      customInterval,
+      customRanges,
+      defaultData,
+      dispatch,
+      fieldName,
+      handleCloseModal,
+      handleUpdateCustomBins,
+      id,
+    }) => () => {
+      dispatch(setModal(
         <ContinuousCustomBinsModal
           continuousBinType={continuousBinType}
           customInterval={customInterval}
           customRanges={customRanges}
           defaultData={defaultData}
           fieldName={humanify({ term: fieldName })}
-          onClose={() => dispatch(setModal(null))}
-          onUpdate={
-            ({
-              continuousReset,
-              newBins,
-              nextContinuousBinType,
-              nextCustomInterval,
-              nextCustomRanges,
-            }) => {
-              dispatch(updateClinicalAnalysisVariable({
-                fieldName,
-                id,
-                variable: {
-                  ...continuousReset
-                    ? {
-                      bins: defaultData.bins,
-                      ...cardDefaults.continuous,
-                      ...cardDefaults.survival,
-                    }
-                    : {
-                      bins: newBins,
-                      continuousBinType: nextContinuousBinType,
-                      ...nextContinuousBinType === 'interval' &&
-                        !isEqual(customInterval, nextCustomInterval) &&
-                        {
-                          customInterval: nextCustomInterval,
-                          ...cardDefaults.survival,
-                        },
-                      ...nextContinuousBinType === 'range' &&
-                        !isEqual(customRanges, nextCustomRanges) &&
-                        {
-                          customRanges: nextCustomRanges,
-                          ...cardDefaults.survival,
-                        },
-                    },
-                },
-              }));
-              dispatch(setModal(null));
-            }
-          }
+          onClose={() => handleCloseModal()}
+          onUpdate={e => handleUpdateCustomBins(e)}
           />
-      )),
-    }),
-  ),
+      ));
+    },
+  }),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName }) => makeContinuousProps({ data, fieldName }),

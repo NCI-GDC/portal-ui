@@ -182,6 +182,7 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) => !(
+      isEqual(props.defaultData, nextProps.defaultData) &&
       isEqual(props.customInterval, nextProps.customInterval) &&
       isEqual(props.customRanges, nextProps.customRanges)
     ),

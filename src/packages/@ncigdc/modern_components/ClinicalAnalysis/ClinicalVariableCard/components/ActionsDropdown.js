@@ -32,7 +32,7 @@ const ActionsDropdown = ({
 }) => {
   // set action will default to cohort total when no bins are selected
   const totalFromSelectedBins = selectedBins && selectedBins.length
-    ? selectedBins.reduce((acc, bin) => acc + bin.chart_doc_count, 0)
+    ? selectedBins.reduce((acc, bin) => acc + bin.doc_count, 0)
     : totalDocs;
   const setActionsDisabled = get(selectedBins, 'length', 0) === 0;
   return (

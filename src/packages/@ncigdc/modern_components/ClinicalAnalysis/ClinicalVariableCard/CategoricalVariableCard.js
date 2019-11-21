@@ -171,7 +171,6 @@ export default compose(
               customSurvivalPlots.find(plot => plot.keyName === bin.key);
             return {
               ...bin,
-              chart_doc_count: bin.doc_count,
               color: currentMatch ? currentMatch.color : availableColors[i],
             };
           })
@@ -280,9 +279,8 @@ export default compose(
               const isMissing = bin.key === '_missing';
               return {
                 ...bin,
-                chart_doc_count: bin.doc_count,
                 displayName: isMissing ? 'missing' : bin.key,
-                doc_count: makeCountLink({
+                doc_count_link: makeCountLink({
                   doc_count: bin.doc_count,
                   filters: isMissing
                     ? {

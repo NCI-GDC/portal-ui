@@ -97,10 +97,10 @@ const makeContinuousBins = ({
 
     return acc.concat(
       {
-        chart_doc_count: doc_count,
+        doc_count,
         color,
         displayName: groupNameFormatted,
-        doc_count: makeCountLink({
+        doc_count_link: makeCountLink({
           doc_count,
           filters,
           totalDocs,
@@ -523,7 +523,7 @@ export default compose(
           setId,
           totalDocs,
         }))
-        .sort((a, b) => b.chart_doc_count - a.chart_doc_count)
+        .sort((a, b) => b.doc_count - a.doc_count)
         .map((bin, i) => ({
           ...bin,
           color: availableColors[i],

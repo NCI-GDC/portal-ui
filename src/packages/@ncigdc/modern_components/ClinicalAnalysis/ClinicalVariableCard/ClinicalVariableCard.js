@@ -86,6 +86,8 @@ const makeTableData = ({
   const isSelectedForSurvival = selectedBin !== undefined;
   const isSurvivalFull = selectedSurvivalBins.length === MAXIMUM_CURVES;
 
+  // console.log('displayData', displayData);
+  
   return {
     ...bin,
     select: (
@@ -115,7 +117,7 @@ const makeTableData = ({
       survival: (
         <Tooltip
           Component={
-            bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
+            bin.key === '_missing' || bin.doc_count < MINIMUM_CASES
               ? 'Not enough data'
               : isSelectedForSurvival
                 ? `Click icon to remove "${bin.displayName}"`
@@ -127,7 +129,7 @@ const makeTableData = ({
           <Button
             disabled={
               bin.key === '_missing' ||
-              bin.chart_doc_count < MINIMUM_CASES ||
+              bin.doc_count < MINIMUM_CASES ||
               (isSurvivalFull && !isSelectedForSurvival)
             }
             onClick={() => {
@@ -139,7 +141,7 @@ const makeTableData = ({
               margin: '0 auto',
               opacity:
                 bin.key === '_missing' ||
-                  bin.chart_doc_count < MINIMUM_CASES ||
+                  bin.doc_count < MINIMUM_CASES ||
                   (isSurvivalFull && !isSelectedForSurvival)
                     ? '0.33'
                     : '1',
@@ -210,11 +212,11 @@ const ClinicalVariableCard = ({
         fullLabel: tableRow.displayName,
         label: tableRow.displayName,
         tooltip: `${tableRow.displayName}: ${
-            tableRow.chart_doc_count.toLocaleString()} (${
-            (((tableRow.chart_doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
+            tableRow.doc_count.toLocaleString()} (${
+            (((tableRow.doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
         value: variable.active_calculation === 'number'
-            ? tableRow.chart_doc_count
-            : (tableRow.chart_doc_count / totalDocs) * 100,
+            ? tableRow.doc_count
+            : (tableRow.doc_count / totalDocs) * 100,
       }))
       : [];
 

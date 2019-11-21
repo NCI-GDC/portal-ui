@@ -114,7 +114,7 @@ export const makeHeadings = (chartType, dataDimension, fieldName) =>
       title: humanify({ term: fieldName }),
     },
     {
-      key: 'doc_count',
+      key: 'doc_count_link',
       style: { textAlign: 'right' },
       thStyle: {
         position: 'sticky',
@@ -297,7 +297,7 @@ export const makeContinuousGroupName = keyValue =>
   parseContinuousKey(keyValue).join(' to \u003c');
 
 export const filterSurvivalData = data => data
-  .filter(x => x.chart_doc_count >= MINIMUM_CASES)
+  .filter(x => x.doc_count >= MINIMUM_CASES)
   .filter(x => x.key !== '_missing');
 
 export const makeBinData = (bins, dataBuckets) => ({

@@ -521,9 +521,9 @@ export default compose(
           fieldName,
           setId,
           totalDocs,
-        });
+        }),
     }
-  ),
+  )),
   withPropsOnChange(
     (props, nextProps) => !(
       props.binsAreCustom === nextProps.binsAreCustom &&

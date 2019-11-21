@@ -161,6 +161,70 @@ const makeDefaultDataOnLoad = ({ explore, fieldName }) => {
   });
 };
 
+const makeContinuousProps = ({ data, fieldName }) => {
+  const sanitisedId = fieldName.split('.').pop();
+  const rawQueryData = getRawQueryData(data, fieldName);
+  const dataDimension = dataDimensions[sanitisedId] &&
+    dataDimensions[sanitisedId].unit;
+
+  return {
+    boxPlotValues: map(
+      {
+        ...rawQueryData.stats,
+        ...rawQueryData.percentiles,
+      },
+      (value, stat) => {
+        switch (dataDimension) {
+          case 'Year': {
+            return ({
+              [stat]: parseContinuousValue(value / DAYS_IN_YEAR),
+            });
+          }
+          default:
+            return ({
+              [stat]: value,
+            });
+        }
+      }
+    ).reduce((acc, item) => ({
+      ...acc,
+      ...item,
+    }), {}),
+    dataBuckets: get(rawQueryData, 'range.buckets', []),
+    totalDocs: get(data, 'hits.total', 0),
+    wrapperId: `${sanitisedId}-chart`,
+    ...dataDimensions[sanitisedId] && {
+      axisTitle: dataDimensions[sanitisedId].axisTitle,
+      boxPlotValues: map(
+        {
+
+          ...rawQueryData.stats,
+          ...rawQueryData.percentiles,
+        },
+        (value, stat) => {
+          switch (dataDimensions[sanitisedId].unit) {
+            case 'Years': {
+              // TODO ugly hack until API provides units
+              const converter = sanitisedId === 'year_of_diagnosis' ? 1 : DAYS_IN_YEAR;
+              return ({
+                [stat]: parseContinuousValue(value / converter),
+              });
+            }
+            default:
+              return ({
+                [stat]: value,
+              });
+          }
+        }
+      ).reduce((acc, item) => ({
+        ...acc,
+        ...item,
+      }), {}),
+      dataDimension: dataDimensions[sanitisedId].unit,
+    },
+  };
+};
+
 export default compose(
   setDisplayName('EnhancedContinuousVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
@@ -248,69 +312,7 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
-    ({ data, fieldName }) => {
-      const sanitisedId = fieldName.split('.').pop();
-      const rawQueryData = getRawQueryData(data, fieldName);
-      const dataDimension = dataDimensions[sanitisedId] &&
-        dataDimensions[sanitisedId].unit;
-
-      return {
-        boxPlotValues: map(
-          {
-            ...rawQueryData.stats,
-            ...rawQueryData.percentiles,
-          },
-          (value, stat) => {
-            switch (dataDimension) {
-              case 'Year': {
-                return ({
-                  [stat]: parseContinuousValue(value / DAYS_IN_YEAR),
-                });
-              }
-              default:
-                return ({
-                  [stat]: value,
-                });
-            }
-          }
-        ).reduce((acc, item) => ({
-          ...acc,
-          ...item,
-        }), {}),
-        dataBuckets: get(rawQueryData, 'range.buckets', []),
-        totalDocs: get(data, 'hits.total', 0),
-        wrapperId: `${sanitisedId}-chart`,
-        ...dataDimensions[sanitisedId] && {
-          axisTitle: dataDimensions[sanitisedId].axisTitle,
-          boxPlotValues: map(
-            {
-
-              ...rawQueryData.stats,
-              ...rawQueryData.percentiles,
-            },
-            (value, stat) => {
-              switch (dataDimensions[sanitisedId].unit) {
-                case 'Years': {
-                  // TODO ugly hack until API provides units
-                  const converter = sanitisedId === 'year_of_diagnosis' ? 1 : DAYS_IN_YEAR;
-                  return ({
-                    [stat]: parseContinuousValue(value / converter),
-                  });
-                }
-                default:
-                  return ({
-                    [stat]: value,
-                  });
-              }
-            }
-          ).reduce((acc, item) => ({
-            ...acc,
-            ...item,
-          }), {}),
-          dataDimension: dataDimensions[sanitisedId].unit,
-        },
-      };
-    }
+    ({ data, fieldName }) => makeContinuousProps({ data, fieldName }),
   ),
   withPropsOnChange(
     (props, nextProps) => !(
@@ -318,39 +320,34 @@ export default compose(
       props.setId === nextProps.setId
     ),
     ({
+      bins = {},
+      continuousBinType,
       dataBuckets,
       dispatch,
       fieldName,
       id,
-      variable: {
-        bins = {},
-        continuousBinType,
-      },
     }) => {
       dispatch(updateClinicalAnalysisVariable({
         fieldName,
         id,
         variable: {
+          // TODO: can i use lodash map here??? 
           bins: continuousBinType === 'default'
             ? dataBuckets.reduce((acc, curr, index) => ({
-
               ...acc,
               [dataBuckets[index].key]: {
-
                 ...dataBuckets[index],
                 groupName: dataBuckets[index].key,
               },
             }), {})
             : Object.keys(bins)
               .reduce((acc, curr, index) => ({
-
                 ...acc,
                 [curr]: {
-
                   ...bins[curr],
                   doc_count: dataBuckets[index]
-                      ? dataBuckets[index].doc_count
-                      : 0,
+                    ? dataBuckets[index].doc_count
+                    : 0,
                 },
               }), {}),
         },
@@ -359,12 +356,10 @@ export default compose(
   ),
   withProps(
     ({
+      bins = {},
       data: { explore },
       dataBuckets,
       fieldName,
-      variable: {
-        bins = {},
-      },
     }) => {
       const fieldNameUnderscores = createFacetFieldString(fieldName);
 
@@ -397,30 +392,28 @@ export default compose(
     }
   ),
   withPropsOnChange(
-    (props, nextProps) => nextProps.variable.active_chart === 'survival' && !(
+    (props, nextProps) => nextProps.active_chart === 'survival' && !(
       isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
-      isEqual(props.variable.bins, nextProps.variable.bins) &&
-      isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
+      isEqual(props.bins, nextProps.bins) &&
+      isEqual(props.customSurvivalPlots, nextProps.customSurvivalPlots) &&
       props.setId === nextProps.setId &&
-      props.variable.active_chart === nextProps.variable.active_chart &&
-      props.variable.isSurvivalCustom === nextProps.variable.isSurvivalCustom
+      props.active_chart === nextProps.active_chart &&
+      props.isSurvivalCustom === nextProps.isSurvivalCustom
     ),
     ({
+      active_chart,
+      bins = {},
+      continuousBinType,
+      customSurvivalPlots,
       dispatch,
       fieldName,
       id,
+      isSurvivalCustom,
       setId,
       totalDocs,
-      variable: {
-        active_chart,
-        bins = {},
-        continuousBinType,
-        customSurvivalPlots,
-        isSurvivalCustom,
-      },
     }) => {
       // prevent survival API requests on mount
-      // when a different plot is selected
+      // when a non-survival plot is active
       if (active_chart !== 'survival') {
         return {
           survivalPlotValues: [],
@@ -511,12 +504,10 @@ export default compose(
     (props, nextProps) => !isEqual(props.binData, nextProps.binData),
     ({
       binData,
+      continuousBinType,
       fieldName,
       setId,
       totalDocs,
-      variable: {
-        continuousBinType,
-      },
     }) => ({
       displayData: isEmpty(binData)
         ? []
@@ -532,12 +523,12 @@ export default compose(
   withPropsOnChange(
     (props, nextProps) => !(
       props.binsAreCustom === nextProps.binsAreCustom &&
-      props.variable.id === nextProps.variable.id &&
-      props.variable.isSurvivalCustom === nextProps.variable.isSurvivalCustom
+      props.id === nextProps.id &&
+      props.isSurvivalCustom === nextProps.isSurvivalCustom
     ),
     ({
       binsAreCustom,
-      defaultData: { bins },
+      defaultData: { bins: defaultBins },
       dispatch,
       fieldName,
       id,
@@ -549,7 +540,7 @@ export default compose(
           variable: {
             ...cardDefaults.survival,
             ...binsAreCustom && {
-              bins,
+              defaultBins,
               ...cardDefaults.continuous,
             },
           },

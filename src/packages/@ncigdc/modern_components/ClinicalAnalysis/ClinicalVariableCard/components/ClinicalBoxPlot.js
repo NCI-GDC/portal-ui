@@ -11,10 +11,9 @@ import { analysisColors } from '@ncigdc/utils/constants';
 import BoxPlotWrapper from '@oncojs/boxplot';
 import QQPlotQuery from '@ncigdc/modern_components/QQPlot/QQPlotQuery';
 
-import { CHART_HEIGHT } from '../helpers';
+import { CHART_HEIGHT } from '../utils/shared';
 
-const QQ_PLOT_RATIO = '70%';
-const BOX_PLOT_RATIO = '30%';
+import { BOX_PLOT_RATIO, QQ_PLOT_RATIO } from '../utils/continuous';
 
 const ClinicalBoxPlot = ({
   boxPlotValues,

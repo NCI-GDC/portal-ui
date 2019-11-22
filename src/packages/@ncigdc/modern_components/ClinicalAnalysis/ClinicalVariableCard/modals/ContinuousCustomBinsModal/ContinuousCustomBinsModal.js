@@ -10,12 +10,12 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 
 import { theme } from '@ncigdc/theme/index';
 import {
-  makeContinuousDefaultLabel,
   DEFAULT_BIN_TYPE,
   DEFAULT_DATA,
   DEFAULT_INTERVAL,
   DEFAULT_RANGES,
-} from '../../helpers';
+} from '../../utils/shared';
+import { makeContinuousDefaultLabel } from '../../utils/continuous';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';

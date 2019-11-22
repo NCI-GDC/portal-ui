@@ -2,7 +2,7 @@ import {
   DEFAULT_BIN_TYPE,
   DEFAULT_INTERVAL,
   DEFAULT_RANGES,
-} from '@ncigdc/modern_components/ClinicalAnalysis/ClinicalVariableCard/helpers';
+} from '@ncigdc/modern_components/ClinicalAnalysis/ClinicalVariableCard/utils/shared';
 
 export default {
   'demographic.ethnicity': {

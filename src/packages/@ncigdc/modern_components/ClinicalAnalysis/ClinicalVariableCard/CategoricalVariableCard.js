@@ -28,7 +28,8 @@ import {
   getRawQueryData,
   makeBinData,
   makeCountLink,
-} from './helpers';
+} from './utils/shared';
+
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
 
 export default compose(

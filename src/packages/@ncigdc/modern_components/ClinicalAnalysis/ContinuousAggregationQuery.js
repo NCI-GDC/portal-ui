@@ -23,7 +23,7 @@ import { zDepth1 } from '@ncigdc/theme/mixins';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { ContinuousVariableCard } from './ClinicalVariableCard';
-import { parseContinuousKey } from './ClinicalVariableCard/helpers';
+import { parseContinuousKey } from './ClinicalVariableCard/utils/continuous';
 
 const simpleAggCache = {};
 const pendingAggCache = {};

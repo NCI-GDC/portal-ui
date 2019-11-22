@@ -24,249 +24,34 @@ import {
   createFacetFieldString,
 } from '@ncigdc/utils/string';
 import { setModal } from '@ncigdc/dux/modal';
-import { DAYS_IN_YEAR } from '@ncigdc/utils/ageDisplay';
 import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 import { SURVIVAL_PLOT_COLORS } from '@ncigdc/utils/survivalplot';
 
 import ContinuousCustomBinsModal from './modals/ContinuousCustomBinsModal';
+
 import {
+  parseContinuousKey,
+  makeContinuousDefaultLabel,
+  makeContinuousBins,
+  makeDefaultDataOnLoad,
+  makeContinuousProps,
+  makeVariableBins,
+} from './utils/continuous';
+
+import {
+  DEFAULT_BIN_TYPE,
+  makeCountLink,
   cardDefaults,
   dataDimensions,
-  DEFAULT_BIN_TYPE,
   filterSurvivalData,
-  getRawQueryData,
   makeBinData,
-  makeContinuousDefaultLabel,
-  makeCountLink,
-  parseContinuousKey,
-  parseContinuousValue,
-} from './helpers';
+} from './utils/shared';
+
 import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
-
-const makeContinuousBins = ({
-  binData = [],
-  continuousBinType,
-  fieldName,
-  setId,
-  totalDocs,
-}) => binData.reduce((acc, {
-    color, doc_count, groupName = '', key, keyArray = [],
-  }) => {
-    const keyValues = parseContinuousKey(key);
-    // continuous survival doesn't have keyArray, it has filters
-    const keyArrayValues = keyArray.length > 0
-      ? parseContinuousKey(keyArray[0])
-      : keyValues;
-
-    const groupNameFormatted = groupName !== '' &&
-      continuousBinType === 'range'
-      ? groupName
-      : keyValues.length === 2 &&
-          isFinite(keyValues[0]) &&
-          isFinite(keyValues[1])
-            ? makeContinuousDefaultLabel(key)
-            : key;
-
-    const [keyMin, keyMax] = keyArrayValues;
-    const filters = {
-      content: [
-        {
-          content: {
-            field: 'cases.case_id',
-            value: `set_id:${setId}`,
-          },
-          op: 'in',
-        },
-        {
-          content: {
-            field: fieldName,
-            value: [keyMin],
-          },
-          op: '>=',
-        },
-        {
-          content: {
-            field: fieldName,
-            value: [keyMax],
-          },
-          op: '<',
-        },
-      ],
-      op: 'and',
-    };
-
-    return acc.concat(
-      {
-        doc_count,
-        color,
-        displayName: groupNameFormatted,
-        doc_count_link: makeCountLink({
-          doc_count,
-          filters,
-          totalDocs,
-        }),
-        filters,
-        groupName: groupNameFormatted,
-        key: `${keyMin}-${keyMax}`,
-        rangeValues: {
-          max: keyMax,
-          min: keyMin,
-        },
-      }
-    );
-  }, []);
-
-const makeDefaultDataOnLoad = ({ explore, fieldName }) => {
-  const dataStats = typeof explore === 'undefined'
-    ? {
-      Max: null,
-      Min: null,
-    }
-    : explore.cases.aggregations[
-      `${createFacetFieldString(fieldName)}`].stats;
-
-  const min = dataStats.Min;
-  const max = dataStats.Max + 1; // api excludes the max value
-
-  const defaultNumberOfBins = 5;
-  const defaultBinSize = (max - min) / defaultNumberOfBins;
-
-  const bins = Array(defaultNumberOfBins)
-    .fill(1)
-    .map((val, key) => {
-      const from = key * defaultBinSize + min;
-      const to = (key + 1) === defaultNumberOfBins // last bin
-        ? max
-        : (min + (key + 1) * defaultBinSize);
-      const objKey = `${from}-${to}`;
-
-      return ({
-        [objKey]: {
-          key: objKey,
-        },
-      });
-    })
-    .reduce((acc, curr) => ({
-      ...acc,
-      ...curr,
-    }), {});
-
-  return ({
-    defaultData: {
-      bins,
-      max,
-      min,
-      quarter: (max - min) / 4,
-    },
-  });
-};
-
-const makeContinuousProps = ({ data, fieldName }) => {
-  const sanitisedId = fieldName.split('.').pop();
-  const rawQueryData = getRawQueryData(data, fieldName);
-  const dataDimension = dataDimensions[sanitisedId] &&
-    dataDimensions[sanitisedId].unit;
-
-  // console.log('data', data);  
-
-  // console.log('rawQueryData', rawQueryData);
-  
-  return {
-    boxPlotValues: map(
-      {
-        ...rawQueryData.stats,
-        ...rawQueryData.percentiles,
-      },
-      (value, stat) => {
-        switch (dataDimension) {
-          case 'Year': {
-            return ({
-              [stat]: parseContinuousValue(value / DAYS_IN_YEAR),
-            });
-          }
-          default:
-            return ({
-              [stat]: value,
-            });
-        }
-      }
-    )
-    .reduce((acc, item) => ({
-      ...acc,
-      ...item,
-    }), {}),
-    dataBuckets: get(rawQueryData, 'range.buckets', []),
-    dataDimension,
-    totalDocs: get(data, 'hits.total', 0),
-    wrapperId: `${sanitisedId}-chart`,
-    ...dataDimensions[sanitisedId] && {
-      axisTitle: dataDimensions[sanitisedId].axisTitle,
-      boxPlotValues: map(
-        {
-          ...rawQueryData.stats,
-          ...rawQueryData.percentiles,
-        },
-        (value, stat) => {
-          switch (dataDimension) {
-            case 'Years': {
-              // TODO ugly hack until API provides units
-              const converter = sanitisedId === 'year_of_diagnosis' ? 1 : DAYS_IN_YEAR;
-              return ({
-                [stat]: parseContinuousValue(value / converter),
-              });
-            }
-            default:
-              return ({
-                [stat]: value,
-              });
-          }
-        }
-      )
-      .reduce((acc, item) => ({
-        ...acc,
-        ...item,
-      }), {}),
-    },
-  };
-};
-
-const makeVariableBins = ({ 
-  bins,
-  continuousBinType,
-  dataBuckets,
-  dispatch,
-  fieldName,
-  id,
-}) => {
-  dispatch(updateClinicalAnalysisVariable({
-    fieldName,
-    id,
-    variable: {
-      bins: continuousBinType === 'default'
-        ? dataBuckets.reduce((acc, curr, index) => ({
-          ...acc,
-          [dataBuckets[index].key]: {
-            ...dataBuckets[index],
-            groupName: dataBuckets[index].key,
-          },
-        }), {})
-        : Object.keys(bins)
-          .reduce((acc, curr, index) => ({
-            ...acc,
-            [curr]: {
-              ...bins[curr],
-              doc_count: dataBuckets[index]
-                ? dataBuckets[index].doc_count
-                : 0,
-            },
-          }), {}),
-    },
-  }));
-};
 
 export default compose(
   setDisplayName('EnhancedContinuousVariableCard'),
-  connect((state: any) => ({ analysis: state.analysis })),
+  connect(({ analysis }) => ({ analysis })),
   withTheme,
   flattenProp('variable'),
   withState('qqData', 'setQQData', []),
@@ -283,7 +68,6 @@ export default compose(
       binsAreCustom: continuousBinType !== DEFAULT_BIN_TYPE,
     })
   ),
-  // custom binning
   withHandlers({
     handleCloseModal: ({ dispatch }) => () => {
       dispatch(setModal(null));
@@ -338,7 +122,7 @@ export default compose(
     },
     resetBins: ({
       binsAreCustom,
-      defaultData: { bins },
+      defaultData: { bins: defaultBins },
       dispatch,
       fieldName,
       id,
@@ -349,7 +133,7 @@ export default compose(
         variable: {
           ...cardDefaults.survival,
           ...binsAreCustom && {
-            bins,
+            defaultBins,
             ...cardDefaults.continuous,
           },
         },
@@ -382,7 +166,7 @@ export default compose(
     },
   }),
   withPropsOnChange(
-    (props, nextProps) => !isEqual(props.data, nextProps.data),
+    ({ data }, { data: nextData }) => !isEqual(data, nextData),
     ({ data, fieldName }) => makeContinuousProps({ data, fieldName }),
   ),
   withPropsOnChange(
@@ -408,14 +192,16 @@ export default compose(
       });
     },
   ),
-  withProps(
+  withPropsOnChange(
+    (props, nextProps) => !(isEqual(props.bins, nextProps.bins) &&
+    isEqual(props.data.explore, nextProps.data.explore) &&
+    isEqual(props.dataBuckets, nextProps.dataBuckets)),
     ({
       bins = {},
       data: { explore },
       dataBuckets,
       fieldName,
     }) => {
-      // TODO: change this to withPropsOnChange?
       const fieldNameUnderscores = createFacetFieldString(fieldName);
 
       if (!(
@@ -424,6 +210,8 @@ export default compose(
         explore.cases.aggregations &&
         explore.cases.aggregations[fieldNameUnderscores]
       )) {
+        // making sure continuous data has loaded
+        // because it loads after the page loads
         return {};
       }
 

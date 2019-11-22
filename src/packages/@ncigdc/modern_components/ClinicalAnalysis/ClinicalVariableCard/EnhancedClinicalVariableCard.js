@@ -79,13 +79,15 @@ export default compose(
         setSelectedSurvivalLoadingIds(survivalTableValues);
         updateSurvivalPlot(survivalPlotValues);
       },
-      updateSelectedSurvivalPlots: (displayData, bin) => {
-        const isSelected = selectedSurvivalPlots
+      updateSelectedSurvivalPlots: (
+        displayData, { color, displayName, keyArray }
+        ) => {
+        const isSelectedPlot = selectedSurvivalPlots
           .map(sBin => sBin.keyName)
-          .includes(bin.displayName);
+          .includes(displayName);          
 
         if (
-          !isSelected &&
+          !isSelectedPlot &&
           selectedSurvivalPlots.length === MAX_SURVIVAL_CURVES
         ) {
           // survival chart is full, can't add more lines
@@ -95,16 +97,15 @@ export default compose(
         setSurvivalDataLoading(true);
 
         const availableColors = SURVIVAL_PLOT_COLORS
-          .filter(color => !find(selectedSurvivalPlots, ['color', color]));
+          .filter(spColor => !find(selectedSurvivalPlots, ['color', spColor]));
 
-        const nextSelectedBins = isSelected
-          ? selectedSurvivalPlots.filter(s => s.keyName !== bin.displayName)
+        const nextSelectedBins = isSelectedPlot
+          ? selectedSurvivalPlots.filter(s => s.keyName !== displayName)
           : selectedSurvivalPlots.concat({
-            color: bin.color || availableColors[0],
-            ...plotTypes === 'continuous'
-              ? { filters: bin.filters }
-              : { keyArray: bin.keyArray },
-            keyName: bin.displayName,
+            color: color || availableColors[0],
+            ...plotTypes === 'categorical' &&
+              { keyArray },
+            keyName: displayName,
           });
 
         setSelectedSurvivalPlots(nextSelectedBins);
@@ -121,7 +122,7 @@ export default compose(
 
         // remove deselected plots and duplicates
         const nextSurvivalPlots = uniq(nextSelectedBins
-          .filter(filterBin => !(isSelected && filterBin.keyName === bin.displayName)));
+          .filter(filterBin => !(isSelectedPlot && filterBin.keyName === displayName)));
 
         dispatch(updateClinicalAnalysisVariable({
           fieldName,

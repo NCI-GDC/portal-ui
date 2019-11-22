@@ -45,11 +45,14 @@ import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 
 import {
   FIELDS_WITHOUT_BOX_OR_QQ,
-  getCardFilters,
   makeBoxTableData,
+} from './utils/continuous';
+
+import {
+  getCardFilters,
   makeHeadings,
   styles,
-} from './helpers';
+} from './utils/shared';
 
 const vizButtons = {
   box: {

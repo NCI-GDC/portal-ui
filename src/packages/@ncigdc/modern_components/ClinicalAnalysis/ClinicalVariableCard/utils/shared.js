@@ -1,21 +1,16 @@
 import React from 'react';
-
-import {
-  get,
-  groupBy,
-  map,
-  max,
-  min,
-  sortBy,
-} from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
-import { addInFilters } from '@ncigdc/utils/filters';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import { get, groupBy, map } from 'lodash';
+
+import { MIN_SURVIVAL_CASES } from '@ncigdc/utils/survivalplot';
 import {
   createFacetFieldString,
   humanify,
 } from '@ncigdc/utils/string';
-import { MIN_SURVIVAL_CASES } from '@ncigdc/utils/survivalplot';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+
+import { makeContinuousSetFilters } from './continuous';
+import { makeCategoricalSetFilters } from './categorical';
 
 export const colors = scaleOrdinal(schemeCategory10);
 export const colorsArray = [
@@ -27,8 +22,6 @@ export const colorsArray = [
 ];
 
 export const CHART_HEIGHT = 250;
-export const QQ_PLOT_RATIO = '70%';
-export const BOX_PLOT_RATIO = '30%';
 
 export const dataDimensions = {
   age_at_diagnosis: {
@@ -64,31 +57,6 @@ export const dataDimensions = {
   },
   year_of_diagnosis: { unit: 'Years' },
   years_smoked: { unit: 'Years' },
-};
-
-export const FIELDS_WITHOUT_BOX_OR_QQ = [
-  'demographic.year_of_birth',
-  'demographic.year_of_death',
-  'diagnoses.year_of_diagnosis',
-  'exposures.tobacco_smoking_onset_year',
-  'exposures.tobacco_smoking_quit_year',
-];
-
-// TODO the following table config warrants isolating a custom component
-
-export const boxTableAllowedStats = [
-  'min',
-  'max',
-  'mean',
-  'median',
-  'sd',
-  'iqr',
-];
-
-export const boxTableRenamedStats = {
-  Max: 'Maximum',
-  Min: 'Minimum',
-  SD: 'Standard Deviation',
 };
 
 export const makeHeadings = (chartType, dataDimension, fieldName) =>
@@ -147,91 +115,12 @@ export const makeHeadings = (chartType, dataDimension, fieldName) =>
     }]
   ]);
 
-const makeCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
-  const bucketFilters = []
-    .concat(selectedBuckets
-      .filter(bucket => bucket.key !== '_missing').length > 0 && [
-      {
-        content: {
-          field: fieldName,
-          value: selectedBuckets
-            .filter(bucket => bucket.key !== '_missing')
-            .reduce((acc, selectedBucket) =>
-              [...acc, ...selectedBucket.keyArray], []),
-        },
-        op: 'in',
-      },
-    ])
-    .concat(selectedBuckets.some(bucket => bucket.key === '_missing') && 
-      [
-        {
-          content: {
-            field: fieldName,
-            value: 'MISSING',
-          },
-          op: 'is',
-        },
-      ]
-    )
-    .filter(item => item);
-
-  return Object.assign(
-    {},
-    filters,
-    bucketFilters.length && {
-      content: filters.content
-        .concat(
-          bucketFilters.length > 1
-            ? {
-              content: bucketFilters,
-              op: 'or',
-            }
-            : bucketFilters[0]
-        ),
-    }
-  );
-};
-
-const makeContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
-  const bucketRanges = selectedBuckets.map(bucket => bucket.rangeValues);
-
-  return addInFilters(filters, {
-    content: bucketRanges.length === 1 && bucketRanges[0].max === -1
-      ? [
-        {
-          content: {
-            field: fieldName,
-            value: [bucketRanges[0].min],
-          },
-          op: '>=',
-        },
-      ]
-      : [
-        {
-          content: {
-            field: fieldName,
-            value: [min(bucketRanges.map(range => range.min))],
-          },
-          op: '>=',
-        },
-        {
-          content: {
-            field: fieldName,
-            value: [max(bucketRanges.map(range => range.max))],
-          },
-          op: '<',
-        },
-      ],
-    op: 'and',
-  });
-};
-
-export const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) => (
-  get(selectedBuckets, 'length', 0)
-    ? variablePlotTypes === 'continuous'
-      ? makeContinuousSetFilters(selectedBuckets, fieldName, filters)
-      : makeCategoricalSetFilters(selectedBuckets, fieldName, filters)
-    : filters);
+  export const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) => (
+    get(selectedBuckets, 'length', 0)
+      ? variablePlotTypes === 'continuous'
+        ? makeContinuousSetFilters(selectedBuckets, fieldName, filters)
+        : makeCategoricalSetFilters(selectedBuckets, fieldName, filters)
+      : filters);
 
 export const makeCountLink = ({ doc_count, filters, totalDocs }) => (
   <span>
@@ -292,18 +181,6 @@ export const styles = {
   }),
 };
 
-export const parseContinuousValue = continuousValue =>
-  Number(Number(continuousValue).toFixed(2));
-
-export const parseContinuousKey = keyValue =>
-  keyValue.split('-')
-    .map((val, idx, src) => (src[idx - 1] === '' ? `-${val}` : val))
-    .filter(val => val !== '')
-    .map(val => parseContinuousValue(val));
-
-export const makeContinuousDefaultLabel = keyValue =>
-  parseContinuousKey(keyValue).join(' to \u003c');
-
 export const filterSurvivalData = data => data
   .filter(x => x.doc_count >= MIN_SURVIVAL_CASES)
   .filter(x => x.key !== '_missing');
@@ -361,17 +238,3 @@ export const cardDefaults = {
     showOverallSurvival: false,
   },
 };
-
-export const makeBoxTableData = (data = {}) =>
-  sortBy(Object.keys(data), datum =>
-    boxTableAllowedStats.indexOf(datum.toLowerCase()))
-    .reduce(
-      (acc, curr) => (
-      boxTableAllowedStats.includes(curr.toLowerCase())
-        ? acc.concat({
-          count: parseContinuousValue(data[curr]),
-          stat: boxTableRenamedStats[curr] || curr, // Shows the descriptive label
-        })
-        : acc
-      ), []
-    );

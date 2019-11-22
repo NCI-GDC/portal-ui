@@ -7,7 +7,7 @@ import {
   DEFAULT_BIN_TYPE,
   DEFAULT_INTERVAL,
   DEFAULT_RANGES,
-} from '@ncigdc/modern_components/ClinicalAnalysis/ClinicalVariableCard/helpers';
+} from '@ncigdc/modern_components/ClinicalAnalysis/ClinicalVariableCard/utils/shared';
 
 const sets: any = namespaceActions('sets', [
   'ADD_ANALYSIS',

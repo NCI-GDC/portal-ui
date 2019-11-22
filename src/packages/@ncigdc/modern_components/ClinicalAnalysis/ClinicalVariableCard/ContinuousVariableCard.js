@@ -53,7 +53,7 @@ const makeContinuousBins = ({
     color, doc_count, groupName = '', key, keyArray = [],
   }) => {
     const keyValues = parseContinuousKey(key);
-    // survival doesn't have keyArray
+    // continuous survival doesn't have keyArray, it has filters
     const keyArrayValues = keyArray.length > 0
       ? parseContinuousKey(keyArray[0])
       : keyValues;
@@ -490,8 +490,6 @@ export default compose(
           ? makeContinuousDefaultLabel(binKey)
           : bin.groupName
       }));
-
-      // console.log('binsWithNames', binsWithNames);
       
       const availableColors = SURVIVAL_PLOT_COLORS
         .filter(color => !find(customSurvivalPlots, ['color', color]));
@@ -529,24 +527,28 @@ export default compose(
           color: availableColors[i],
         }))
         .slice(0, 2);
+      
+      const survivalPlotValues = survivalBins
+        .map(({ color, filters, key }) => ({
+          color,
+          filters, // for survivalcurvesarray
+          keyName: key,
+        }));
 
-      const survivalPlotValues = survivalBins.map(bin => ({
-        ...bin,
-        filters: bin.filters,
-        key: bin.key,
-        keyName: bin.key,
-      }));
-
+      // becomes customSurvivalPlots when plots are selected
+      // or deselected by the user
       const survivalTableValues = survivalBins
-        .map(bin => ({
-          ...bin,
-          keyName: bin.displayName,
+        .map(({ color, displayName, filters }) => ({
+          color,
+          filters,
+          keyName: displayName,
         }));
 
       const nextCustomSurvivalPlots = customBinMatches
-        .map(bin => ({
-          ...bin,
-          keyName: bin.displayName,
+        .map(({ color, displayName, filters }) => ({
+          color,
+          filters,
+          keyName: displayName,
         }));
 
       dispatch(updateClinicalAnalysisVariable({
@@ -558,7 +560,7 @@ export default compose(
           showOverallSurvival: false,
         },
       }));
-
+      
       return {
         survivalPlotValues,
         survivalTableValues,

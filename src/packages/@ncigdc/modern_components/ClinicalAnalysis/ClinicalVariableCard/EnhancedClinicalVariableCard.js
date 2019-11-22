@@ -16,7 +16,7 @@ import {
 
 import {
   getSurvivalCurvesArray,
-  MAXIMUM_CURVES,
+  MAX_SURVIVAL_CURVES,
   SURVIVAL_PLOT_COLORS,
 } from '@ncigdc/utils/survivalplot';
 import { withTheme } from '@ncigdc/theme';
@@ -80,24 +80,30 @@ export default compose(
         updateSurvivalPlot(survivalPlotValues);
       },
       updateSelectedSurvivalPlots: (data, bin) => {
+        const isSelected = selectedSurvivalPlots
+          .map(sBin => sBin.keyName)
+          .includes(bin.displayName);
+
         if (
-          selectedSurvivalPlots.map(sBin => sBin.keyName).indexOf(bin.displayName) === -1 &&
-          selectedSurvivalPlots.length >= MAXIMUM_CURVES
+          !isSelected &&
+          selectedSurvivalPlots.length === MAX_SURVIVAL_CURVES
         ) {
+          // survival chart is full, can't add more lines
           return;
         }
+
         setSurvivalDataLoading(true);
 
-        const isSelected = selectedSurvivalPlots
-          .map(sBin => sBin.keyName).indexOf(bin.displayName) >= 0;
-
-        const availableColors = SURVIVAL_PLOT_COLORS.filter(color => !find(selectedSurvivalPlots, ['color', color]));
+        const availableColors = SURVIVAL_PLOT_COLORS
+          .filter(color => !find(selectedSurvivalPlots, ['color', color]));
 
         const nextSelectedBins = isSelected
           ? selectedSurvivalPlots.filter(s => s.keyName !== bin.displayName)
           : selectedSurvivalPlots.concat({
             color: bin.color || availableColors[0],
-            keyArray: bin.keyArray,
+            ...plotTypes === 'continuous'
+              ? { filters: bin.filters }
+              : { keyArray: bin.keyArray },
             keyName: bin.displayName,
           });
 
@@ -108,20 +114,24 @@ export default compose(
           ? nextSelectedBins.filter(nextBin => (
             data.find(datum => datum.displayName === nextBin.keyName)
           ))
-          : nextSelectedBins
-            .map(nextBin => data.find(datum => datum.displayName === nextBin.keyName));
+          : nextSelectedBins.map(nextBin => data
+            .find(datum => datum.displayName === nextBin.keyName));
+
         updateSurvivalPlot(nextBinsForPlot);
 
-        const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins
-          .filter(filterBin => !(isSelected && filterBin.name === bin.displayName)));
+        // remove deselected plots and duplicates
+        const nextSurvivalPlots = uniq(nextSelectedBins
+          .filter(filterBin => !(isSelected && filterBin.keyName === bin.displayName)));
 
         dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,
           variable: {
-            customSurvivalPlots: survivalDeselectedAndDuplicatesRemoved,
+            customSurvivalPlots: nextSurvivalPlots,
             isSurvivalCustom: true,
-            showOverallSurvival: survivalDeselectedAndDuplicatesRemoved.length === 0,
+            // survival is custom if the user selects/deselects anything,
+            // until they reset the card
+            showOverallSurvival: nextSurvivalPlots.length === 0,
           },
         }));
       },

@@ -15,7 +15,7 @@ import {
   createFacetFieldString,
   humanify,
 } from '@ncigdc/utils/string';
-import { MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
+import { MIN_SURVIVAL_CASES } from '@ncigdc/utils/survivalplot';
 
 export const colors = scaleOrdinal(schemeCategory10);
 export const colorsArray = [
@@ -297,7 +297,7 @@ export const makeContinuousDefaultLabel = keyValue =>
   parseContinuousKey(keyValue).join(' to \u003c');
 
 export const filterSurvivalData = data => data
-  .filter(x => x.doc_count >= MINIMUM_CASES)
+  .filter(x => x.doc_count >= MIN_SURVIVAL_CASES)
   .filter(x => x.key !== '_missing');
 
 export const makeBinData = (bins, dataBuckets) => ({

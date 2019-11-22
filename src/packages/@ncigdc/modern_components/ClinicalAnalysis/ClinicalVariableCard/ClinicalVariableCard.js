@@ -32,7 +32,11 @@ import {
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
-import { MAXIMUM_CURVES, MINIMUM_CASES, SURVIVAL_PLOT_COLORS } from '@ncigdc/utils/survivalplot';
+import {
+  MAX_SURVIVAL_CURVES,
+  MIN_SURVIVAL_CASES,
+  SURVIVAL_PLOT_COLORS,
+} from '@ncigdc/utils/survivalplot';
 
 import ActionsDropdown from './components/ActionsDropdown';
 import ClinicalBoxPlot from './components/ClinicalBoxPlot';
@@ -84,7 +88,7 @@ const makeTableData = ({
   const selectedBin = selectedSurvivalPlots.find(s => s.keyName === bin.displayName);
   const isSurvivalLoading = selectedSurvivalLoadingIds.indexOf(bin.displayName) >= 0;
   const isSelectedForSurvival = selectedBin !== undefined;
-  const isSurvivalFull = selectedSurvivalPlots.length === MAXIMUM_CURVES;
+  const isSurvivalFull = selectedSurvivalPlots.length === MAX_SURVIVAL_CURVES;
 
   // console.log('displayData', displayData);
   
@@ -117,19 +121,19 @@ const makeTableData = ({
       survival: (
         <Tooltip
           Component={
-            bin.key === '_missing' || bin.doc_count < MINIMUM_CASES
+            bin.key === '_missing' || bin.doc_count < MIN_SURVIVAL_CASES
               ? 'Not enough data'
               : isSelectedForSurvival
                 ? `Click icon to remove "${bin.displayName}"`
                 : isSurvivalFull
-                  ? `Maximum plots (${MAXIMUM_CURVES}) reached`
+                  ? `Maximum plots (${MAX_SURVIVAL_CURVES}) reached`
                   : `Click icon to plot "${bin.displayName}"`
           }
           >
           <Button
             disabled={
               bin.key === '_missing' ||
-              bin.doc_count < MINIMUM_CASES ||
+              bin.doc_count < MIN_SURVIVAL_CASES ||
               (isSurvivalFull && !isSelectedForSurvival)
             }
             onClick={() => {
@@ -141,7 +145,7 @@ const makeTableData = ({
               margin: '0 auto',
               opacity:
                 bin.key === '_missing' ||
-                  bin.doc_count < MINIMUM_CASES ||
+                  bin.doc_count < MIN_SURVIVAL_CASES ||
                   (isSurvivalFull && !isSelectedForSurvival)
                     ? '0.33'
                     : '1',

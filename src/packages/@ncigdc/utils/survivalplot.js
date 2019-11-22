@@ -24,8 +24,8 @@ type TPropsMulti = {
   size?: number,
 };
 
-export const MINIMUM_CASES = 10;
-export const MAXIMUM_CURVES = 5;
+export const MIN_SURVIVAL_CASES = 10;
+export const MAX_SURVIVAL_CURVES = 5;
 
 const colors = scaleOrdinal(schemeCategory10);
 export const SURVIVAL_PLOT_COLORS = [
@@ -43,12 +43,12 @@ const Symbol = styled.span({
 export const enoughData = (data: Object) => data &&
   data.results &&
   data.results.length &&
-  data.results.every(r => r.donors.length >= MINIMUM_CASES);
+  data.results.every(r => r.donors.length >= MIN_SURVIVAL_CASES);
 
 const enoughDataOnSomeCurves = (data: Object) => data &&
   data.results &&
   data.results.length &&
-  data.results.some(r => r.donors.length >= MINIMUM_CASES);
+  data.results.some(r => r.donors.length >= MIN_SURVIVAL_CASES);
 
 async function fetchCurves(
   filters: ?Array<Object>,
@@ -271,7 +271,7 @@ export const getSurvivalCurvesArray = memoize(
     size,
     plotType,
   }: TPropsMulti): Promise<Object> => {
-    const filters = values.slice(0, MAXIMUM_CURVES).map(
+    const filters = values.slice(0, MAX_SURVIVAL_CURVES).map(
       value => {
         return plotType === 'continuous'
         ? value.filters
@@ -302,9 +302,7 @@ export const getSurvivalCurvesArray = memoize(
       id: field,
       legend: hasEnoughDataOnSomeCurves
         ? rawData.results.map((r, i) => {
-          const valueName = plotType === 'categorical'
-            ? values[i].keyName
-            : values[i].key;
+          const valueName = values[i].keyName;
           return r.length === 0
             ? {
               key: `${valueName}-cannot-compare`,
@@ -318,7 +316,7 @@ export const getSurvivalCurvesArray = memoize(
                 </div>
               ),
             }
-            : r.donors.length < MINIMUM_CASES
+            : r.donors.length < MIN_SURVIVAL_CASES
               ? {
                 key: `${valueName}-not-enough-data`,
                 value: (

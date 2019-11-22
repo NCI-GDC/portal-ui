@@ -395,7 +395,7 @@ export default compose(
     (props, nextProps) => nextProps.variable.active_chart === 'survival' && !(
       isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
       isEqual(props.variable.bins, nextProps.variable.bins) &&
-      isEqual(props.variable.customSurvivalPlots, props.variable.customSurvivalPlots) &&
+      isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
       props.setId === nextProps.setId &&
       props.variable.active_chart === nextProps.variable.active_chart &&
       props.variable.isSurvivalCustom === nextProps.variable.isSurvivalCustom
@@ -407,12 +407,22 @@ export default compose(
       setId,
       totalDocs,
       variable: {
+        active_chart,
         bins = {},
         continuousBinType,
         customSurvivalPlots,
         isSurvivalCustom,
       },
     }) => {
+      // prevent survival API requests on mount
+      // when a different plot is selected
+      if (active_chart !== 'survival') {
+        return {
+          survivalPlotValues: [],
+          survivalTableValues: [],
+        };
+      }
+
       const binsWithNames = Object.keys(bins).map(bin => ({
         ...bins[bin],
         displayName: continuousBinType === 'default'

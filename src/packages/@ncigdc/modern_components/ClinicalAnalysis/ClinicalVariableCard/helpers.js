@@ -66,6 +66,14 @@ export const dataDimensions = {
   years_smoked: { unit: 'Years' },
 };
 
+export const FIELDS_WITHOUT_BOX_OR_QQ = [
+  'demographic.year_of_birth',
+  'demographic.year_of_death',
+  'diagnoses.year_of_diagnosis',
+  'exposures.tobacco_smoking_onset_year',
+  'exposures.tobacco_smoking_quit_year',
+];
+
 // TODO the following table config warrants isolating a custom component
 
 export const boxTableAllowedStats = [

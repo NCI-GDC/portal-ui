@@ -44,6 +44,7 @@ import ClinicalHistogram from './components/ClinicalHistogram';
 import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 
 import {
+  FIELDS_WITHOUT_BOX_OR_QQ,
   getCardFilters,
   makeBoxTableData,
   makeHeadings,
@@ -209,6 +210,8 @@ const ClinicalVariableCard = ({
       theme,
       updateSelectedSurvivalPlots,
     });
+  
+  // console.log('tableData', tableData);
 
   const histogramData =
     variable.active_chart === 'histogram'
@@ -216,11 +219,11 @@ const ClinicalVariableCard = ({
         fullLabel: tableRow.displayName,
         label: tableRow.displayName,
         tooltip: `${tableRow.displayName}: ${
-            tableRow.doc_count.toLocaleString()} (${
-            (((tableRow.doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
+          tableRow.doc_count.toLocaleString()} (${
+          (((tableRow.doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
         value: variable.active_calculation === 'number'
-            ? tableRow.doc_count
-            : (tableRow.doc_count / totalDocs) * 100,
+          ? tableRow.doc_count
+          : (tableRow.doc_count / totalDocs) * 100,
       }))
       : [];
 
@@ -272,13 +275,8 @@ const ClinicalVariableCard = ({
 
         <Row>
           {plots.concat('delete')
-            .reduce((buttons, plotType) => ([
-              'demographic.year_of_birth',
-              'demographic.year_of_death',
-              'diagnoses.year_of_diagnosis',
-              'exposures.tobacco_smoking_onset_year',
-              'exposures.tobacco_smoking_quit_year',
-            ].includes(fieldName) && plotType === 'box'
+            .reduce((buttons, plotType) => (
+              FIELDS_WITHOUT_BOX_OR_QQ.includes(fieldName) && plotType === 'box'
                 ? buttons // avoid boxplot+qq for those fields
                 : buttons.concat(
                   <Tooltip Component={vizButtons[plotType].title} key={plotType}>
@@ -527,7 +525,6 @@ const ClinicalVariableCard = ({
 
                 <EntityPageHorizontalTable
                   data={tableData.map(tableRow => ({
-
                     ...tableRow,
                     key: tableRow.displayName,
                   }))}

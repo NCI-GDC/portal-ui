@@ -495,26 +495,21 @@ export default compose(
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
       const customBinMatches = isSurvivalCustom
-        ? binsWithNames.filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName])).map((b, i) => {
-          const match = find(customSurvivalPlots, ['keyName', b.displayName]);
-          return {
-            ...b,
-            color: (match && match.color) || availableColors[i],
-          };
-        })
+        ? binsWithNames
+          .filter(bin => find(customSurvivalPlots, ['keyName', bin.displayName]))
+          .map((bin, i) => {
+            const match = find(customSurvivalPlots, ['keyName', bin.displayName]);
+            return {
+              ...bin,
+              color: (match && match.color) || availableColors[i],
+            };
+          })
         : [];
 
-      const isUsingCustomSurvival = customBinMatches.length > 0;
+      const isShowingDefaultSurvival = customBinMatches.length === 0;
 
-      const survivalBins = isUsingCustomSurvival
+      const survivalBins = isShowingDefaultSurvival
         ? filterSurvivalData(makeContinuousBins({
-          binData: customBinMatches,
-          continuousBinType,
-          fieldName,
-          setId,
-          totalDocs,
-        }))
-        : filterSurvivalData(makeContinuousBins({
           binData: binsWithNames.sort((a, b) => a.key - b.key),
           continuousBinType,
           fieldName,
@@ -526,7 +521,14 @@ export default compose(
           ...bin,
           color: availableColors[i],
         }))
-        .slice(0, 2);
+        .slice(0, 2)
+        : filterSurvivalData(makeContinuousBins({
+          binData: customBinMatches,
+          continuousBinType,
+          fieldName,
+          setId,
+          totalDocs,
+        }));
       
       const survivalPlotValues = survivalBins
         .map(({ color, filters, key }) => ({
@@ -556,7 +558,7 @@ export default compose(
         id,
         variable: {
           customSurvivalPlots: nextCustomSurvivalPlots,
-          isSurvivalCustom: isUsingCustomSurvival,
+          isSurvivalCustom: !isShowingDefaultSurvival,
           showOverallSurvival: false,
         },
       }));

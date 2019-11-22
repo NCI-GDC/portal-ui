@@ -13,5 +13,15 @@ export default compose(
   withProps(({ data }) => ({ data })),
   withSize({ refreshRate: 16 }),
   withProps(({ size: { width } }) => ({ width })),
+  withProps(() => ({
+    styles: { 
+      margin: {
+        top: 0,
+        bottom: 0,
+        right: 0,
+        left: 0,
+      }
+    }
+  })),
   pure
 )(QQPlot);

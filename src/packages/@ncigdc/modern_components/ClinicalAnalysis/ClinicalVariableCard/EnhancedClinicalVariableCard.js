@@ -79,7 +79,7 @@ export default compose(
         setSelectedSurvivalLoadingIds(survivalTableValues);
         updateSurvivalPlot(survivalPlotValues);
       },
-      updateSelectedSurvivalPlots: (data, bin) => {
+      updateSelectedSurvivalPlots: (displayData, bin) => {
         const isSelected = selectedSurvivalPlots
           .map(sBin => sBin.keyName)
           .includes(bin.displayName);
@@ -112,9 +112,9 @@ export default compose(
 
         const nextBinsForPlot = plotTypes === 'categorical'
           ? nextSelectedBins.filter(nextBin => (
-            data.find(datum => datum.displayName === nextBin.keyName)
+            displayData.find(datum => datum.displayName === nextBin.keyName)
           ))
-          : nextSelectedBins.map(nextBin => data
+          : nextSelectedBins.map(nextBin => displayData
             .find(datum => datum.displayName === nextBin.keyName));
 
         updateSurvivalPlot(nextBinsForPlot);

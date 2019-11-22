@@ -84,30 +84,31 @@ const makeTableData = ({
   setSelectedBins,
   theme,
   updateSelectedSurvivalPlots,
-}) => displayData.map(bin => {
-  const isSelected = find(selectedBins, { key: bin.displayName });
-  const selectedBin = selectedSurvivalPlots.find(s => s.keyName === bin.displayName);
-  const isSurvivalLoading = selectedSurvivalLoadingIds.indexOf(bin.displayName) >= 0;
+}) => displayData.map(dDBin => {
+  const { displayName, doc_count, key } = dDBin;
+  const isSelected = find(selectedBins, { key: displayName });
+  const selectedBin = selectedSurvivalPlots.find(s => s.keyName === displayName);
+  const isSurvivalLoading = selectedSurvivalLoadingIds.includes(displayName);
   const isSelectedForSurvival = selectedBin !== undefined;
   const isSurvivalFull = selectedSurvivalPlots.length === MAX_SURVIVAL_CURVES;
 
   // console.log('displayData', displayData);
-  
+
   return {
-    ...bin,
+    ...dDBin,
     select: (
       <input
-        aria-label={`${fieldName} ${bin.displayName}`}
+        aria-label={`${fieldName} ${displayName}`}
         checked={isSelected}
-        disabled={bin.doc_count === 0}
-        id={`${fieldName}-${bin.key}`}
+        disabled={doc_count === 0}
+        id={`${fieldName}-${key}`}
         onChange={() => {
           if (isSelected) {
             setSelectedBins(
-              reject(selectedBins, r => r.key === bin.key)
+              reject(selectedBins, r => r.key === key)
             );
           } else {
-            setSelectedBins(selectedBins.concat(bin));
+            setSelectedBins(selectedBins.concat(dDBin));
           }
         }}
         style={{
@@ -115,38 +116,38 @@ const makeTableData = ({
           pointerEvents: 'initial',
         }}
         type="checkbox"
-        value={bin.key}
+        value={key}
         />
     ),
     ...active_chart === 'survival' && {
       survival: (
         <Tooltip
           Component={
-            bin.key === '_missing' || bin.doc_count < MIN_SURVIVAL_CASES
+            key === '_missing' || doc_count < MIN_SURVIVAL_CASES
               ? 'Not enough data'
               : isSelectedForSurvival
-                ? `Click icon to remove "${bin.displayName}"`
+                ? `Click icon to remove "${displayName}"`
                 : isSurvivalFull
                   ? `Maximum plots (${MAX_SURVIVAL_CURVES}) reached`
-                  : `Click icon to plot "${bin.displayName}"`
+                  : `Click icon to plot "${displayName}"`
           }
           >
           <Button
             disabled={
-              bin.key === '_missing' ||
-              bin.doc_count < MIN_SURVIVAL_CASES ||
+              key === '_missing' ||
+              doc_count < MIN_SURVIVAL_CASES ||
               (isSurvivalFull && !isSelectedForSurvival)
             }
             onClick={() => {
-              updateSelectedSurvivalPlots(displayData, bin);
+              updateSelectedSurvivalPlots(displayData, dDBin);
             }}
             style={{
               backgroundColor: isSelectedForSurvival ? selectedBin.color : theme.greyScale3,
               color: 'white',
               margin: '0 auto',
               opacity:
-                bin.key === '_missing' ||
-                  bin.doc_count < MIN_SURVIVAL_CASES ||
+                key === '_missing' ||
+                  doc_count < MIN_SURVIVAL_CASES ||
                   (isSurvivalFull && !isSelectedForSurvival)
                     ? '0.33'
                     : '1',
@@ -215,15 +216,15 @@ const ClinicalVariableCard = ({
 
   const histogramData =
     variable.active_chart === 'histogram'
-      ? tableData.map(tableRow => ({
-        fullLabel: tableRow.displayName,
-        label: tableRow.displayName,
-        tooltip: `${tableRow.displayName}: ${
-          tableRow.doc_count.toLocaleString()} (${
-          (((tableRow.doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
+      ? tableData.map(({ displayName, doc_count }) => ({
+        fullLabel: displayName,
+        label: displayName,
+        tooltip: `${displayName}: ${
+          doc_count.toLocaleString()} (${
+          (((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
         value: variable.active_calculation === 'number'
-          ? tableRow.doc_count
-          : (tableRow.doc_count / totalDocs) * 100,
+          ? doc_count
+          : (doc_count / totalDocs) * 100,
       }))
       : [];
 
@@ -513,8 +514,8 @@ const ClinicalVariableCard = ({
                         style={{
                           ...styles.actionMenuItem,
                           ...binsAreCustom || variable.isSurvivalCustom
-                          ? {}
-                          : styles.actionMenuItemDisabled(theme),
+                            ? {}
+                            : styles.actionMenuItemDisabled(theme),
                         }}
                         >
                       Reset to Default
@@ -532,8 +533,8 @@ const ClinicalVariableCard = ({
                     variable.active_chart,
                     dataDimension,
                     fieldName + (binsAreCustom
-                    ? ' (User defined bins applied)'
-                    : ''),
+                      ? ' (User defined bins applied)'
+                      : ''),
                   )}
                   tableContainerStyle={{ height: 175 }}
                   tableId={`analysis-${tsvSubstring}-table`}

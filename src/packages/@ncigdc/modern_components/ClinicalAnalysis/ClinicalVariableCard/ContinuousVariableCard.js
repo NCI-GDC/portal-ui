@@ -474,15 +474,15 @@ export default compose(
       totalDocs,
     }) => {
       // prevent survival API requests on mount
-      // when a non-survival plot is active
-      if (active_chart !== 'survival') {
+      // when a different plot is selected
+      // or continuous bins haven't loaded yet.
+      // if bins are truly empty, the card will show "no data".
+      if (active_chart !== 'survival' || isEmpty(bins)) {
         return {
           survivalPlotValues: [],
           survivalTableValues: [],
         };
       }
-
-      // console.log('bins', bins);
       
       const binsWithNames = map(bins, (bin, binKey) => ({
         ...bin,

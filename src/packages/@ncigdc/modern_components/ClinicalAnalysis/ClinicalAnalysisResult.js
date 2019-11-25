@@ -124,6 +124,12 @@ const CopyAnalysisModal = compose(
   </BaseModal>
 ));
 
+const masonryBrickStyle = (num) => ({
+  flex: '1 0 354px',
+  height: 560,
+  minWidth: `${(80 - (num - 1) * 0.7) / num}%`,
+  padding: '0.5rem 1rem 1rem',
+});
 const ClinicalAnalysisResult = ({
   allSets,
   clinicalAnalysisFields,
@@ -284,80 +290,69 @@ const ClinicalAnalysisResult = ({
             setId={setId}
             />
 
-          <Column
+          <ul
+            className="masonry"
             style={{
-              flex: 4,
+              padding: '0 0 0 0.7%',
               minWidth: 0,
             }}
             >
-            <Column
-              className="print-grid"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: controlPanelExpanded
-                  ? '50% 50%'
-                  : '33% 33% 33%',
-                gridTemplateRows: 'repeat(auto)',
-                ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
-              }}
+            <li
+              className="masonry-brick"
+              style={masonryBrickStyle(controlPanelExpanded ? 2 : 3)}
               >
-              <Column
-                className="print-w500"
+              <div
                 style={{
-                  ...zDepth1,
-                  height: 560,
-                  margin: '0 1rem 1rem',
-                  padding: '0.5rem 1rem 1rem',
+                  margin: '5px 0 10px',
                 }}
                 >
-                <div
+                <h2
                   style={{
-                    margin: '5px 0 10px',
+                    fontSize: '1.8rem',
+                    marginBottom: 0,
+                    marginTop: 10,
                   }}
                   >
-                  <h2
-                    style={{
-                      fontSize: '1.8rem',
-                      marginBottom: 0,
-                      marginTop: 10,
-                    }}
-                    >
                     Overall Survival
-                  </h2>
-                </div>
-                <div
-                  style={{
-                    height: '250px',
-                    margin: '5px 2px 10px',
-                  }}
-                  >
-                  <SurvivalPlotWrapper
-                    {...overallSurvivalData}
-                    height={430}
-                    plotType="clinicalOverall"
-                    slug={OVERALL_SURVIVAL_SLUG}
-                    survivalDataLoading={survivalDataLoading}
-                    uniqueClass="clinical-survival-plot"
-                    />
-                </div>
-              </Column>
+                </h2>
+              </div>
+              <div
+                style={{
+                  height: '250px',
+                  margin: '5px 2px 10px',
+                }}
+                >
+                <SurvivalPlotWrapper
+                  {...overallSurvivalData}
+                  height={430}
+                  plotType="clinicalOverall"
+                  slug={OVERALL_SURVIVAL_SLUG}
+                  survivalDataLoading={survivalDataLoading}
+                  uniqueClass="clinical-survival-plot"
+                  />
+              </div>
+            </li>
 
-              {setId && map(displayVariables, (varProperties, varFieldName) => {
-                const filters = {
-                  content: [
-                    {
-                      content: {
-                        field: 'cases.case_id',
-                        value: [`set_id:${setId}`],
-                      },
-                      op: '=',
+            {setId && map(displayVariables, (varProperties, varFieldName) => {
+              const filters = {
+                content: [
+                  {
+                    content: {
+                      field: 'cases.case_id',
+                      value: [`set_id:${setId}`],
                     },
-                  ],
-                  op: 'and',
-                };
+                    op: '=',
+                  },
+                ],
+                op: 'and',
+              };
 
-                return varProperties.plotTypes === 'continuous'
-                  ? (
+              return (
+                <li
+                  className="masonry-brick"
+                  style={masonryBrickStyle(controlPanelExpanded ? 2 : 3)}
+                  >
+                  {varProperties.plotTypes === 'continuous' ? (
                     <ContinuousAggregationQuery
                       currentAnalysis={currentAnalysis}
                       fieldName={varFieldName}
@@ -373,29 +368,30 @@ const ClinicalAnalysisResult = ({
                       style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                       variable={varProperties}
                       />
-                  )
-                  : (
-                    <CategoricalVariableCard
-                      currentAnalysis={currentAnalysis}
-                      data={{
-                        ...parsedFacets[varFieldName],
-                        hits,
-                      }}
-                      facetField={varFieldName.replace('cases.', '')}
-                      fieldName={varFieldName}
-                      filters={filters}
-                      id={id}
-                      key={varFieldName}
-                      overallSurvivalData={overallSurvivalData}
-                      plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
-                      setId={setId}
-                      style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-                      variable={varProperties}
-                      />
-                  );
-              })}
-            </Column>
-          </Column>
+                      )
+                    : (
+                      <CategoricalVariableCard
+                        currentAnalysis={currentAnalysis}
+                        data={{
+                          ...parsedFacets[varFieldName],
+                          hits,
+                        }}
+                        facetField={varFieldName.replace('cases.', '')}
+                        fieldName={varFieldName}
+                        filters={filters}
+                        id={id}
+                        key={varFieldName}
+                        overallSurvivalData={overallSurvivalData}
+                        plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
+                        setId={setId}
+                        style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+                        variable={varProperties}
+                        />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </Row>
       </div>
     );

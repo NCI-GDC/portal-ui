@@ -243,7 +243,6 @@ const ClinicalVariableCard = ({
         padding: '0.5rem 1rem 1rem',
         ...style,
       }}
-      key={key}
       >
       <Row
         id={wrapperId}

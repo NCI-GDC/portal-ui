@@ -255,7 +255,7 @@ export default compose(
     }
   ),
 )(({
-  aggData, hits, isLoading, key, setId, stats, ...props
+  aggData, hits, isLoading, setId, stats, ...props
 }) => (
   <ContinuousVariableCard
     data={{
@@ -263,7 +263,6 @@ export default compose(
       hits,
     }}
     isLoading={isLoading}
-    key={key}
     setId={setId}
     stats={stats}
     {...props}

@@ -215,8 +215,6 @@ export default compose(
         return {};
       }
 
-      // console.log('explore.cases.aggregations[fieldNameUnderscores].range.buckets', explore.cases.aggregations[fieldNameUnderscores].range.buckets);
-      
       const binsForBinData = explore.cases.aggregations[fieldNameUnderscores].range.buckets
         .reduce((acc, curr) => {
           const keyTrimIntegers = parseContinuousKey(curr.key).join('-');
@@ -232,10 +230,6 @@ export default compose(
             },
           };
         }, {});
-
-        // console.log('binsForBinData', binsForBinData);
-        // console.log('dataBuckets', dataBuckets);
-        // console.log('bins', bins);
       
       return makeBinData(binsForBinData, dataBuckets);
     }
@@ -346,7 +340,7 @@ export default compose(
         id,
         variable: {
           customSurvivalPlots: nextCustomSurvivalPlots,
-          isSurvivalCustom: isUsingCustomSurvival,
+          isSurvivalCustom: !isShowingDefaultSurvival,
           showOverallSurvival: false,
         },
       }));

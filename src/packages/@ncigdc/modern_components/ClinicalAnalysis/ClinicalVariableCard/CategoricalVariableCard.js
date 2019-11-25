@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   compose,
+  flattenProp,
   setDisplayName,
   withHandlers,
   withProps,
@@ -156,6 +157,7 @@ export default compose(
     (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
       props.setId !== nextProps.setId,
     ({
+      bins,
       dataBuckets,
       dispatch,
       fieldName,
@@ -184,9 +186,9 @@ export default compose(
               [bucket.key]: {
                 ...bucket,
                 groupName:
-                  typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
+                  typeof bins[bucket.key].groupName === 'string'
                     // hidden value have groupName '', so check if it is string
-                    ? get(variable, `bins.${bucket.key}.groupName`, undefined)
+                    ? bins[bucket.key].groupName
                     : bucket.key,
               },
             }), {}),
@@ -238,17 +240,16 @@ export default compose(
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
       const survivalBins = filterSurvivalData(
-        binDataSelected
-          .map((bin, i) => {
-            const currentMatch = customSurvivalPlots &&
-              customSurvivalPlots.find(plot => plot.keyName === bin.key);
-            return {
-              ...bin,
-              color: currentMatch ? currentMatch.color : availableColors[i],
-            };
-          })
+        binDataSelected.map((bin, i) => {
+          const currentMatch = customSurvivalPlots &&
+            customSurvivalPlots.find(plot => plot.keyName === bin.key);
+          return {
+            ...bin,
+            color: currentMatch ? currentMatch.color : availableColors[i],
+          };
+        })
       )
-        .slice(0, isSurvivalCustom ? Infinity : 2);
+      .slice(0, isSurvivalCustom ? Infinity : 2);
 
       const survivalPlotValues = survivalBins.map(bin => ({
         color: bin.color,

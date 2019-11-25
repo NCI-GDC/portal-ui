@@ -136,8 +136,12 @@ export default compose(
       !isEqual(props.variable.bins, nextProps.variable.bins) ||
       (props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom &&
         !nextProps.variable.isSurvivalCustom)),
-    ({ populateSurvivalData }) => {
-      populateSurvivalData();
+    ({ populateSurvivalData, variable: { active_chart } }) => {
+      if (active_chart === 'survival') {
+        // prevent survival loading on mount
+        // when a different plot is selected
+        populateSurvivalData();
+      }
     }
   ),
   withPropsOnChange(

@@ -287,7 +287,7 @@ export const makeContinuousProps = ({ data, fieldName }) => {
   };
 };
     
-export const makeVariableBins = ({ 
+export const dispatchVariableBins = ({ 
   bins,
   continuousBinType,
   dataBuckets,

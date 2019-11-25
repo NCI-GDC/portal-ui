@@ -35,7 +35,7 @@ import {
   makeContinuousBins,
   makeDefaultDataOnLoad,
   makeContinuousProps,
-  makeVariableBins,
+  dispatchVariableBins,
 } from './utils/continuous';
 
 import {
@@ -182,7 +182,7 @@ export default compose(
       fieldName,
       id,
     }) => {
-      makeVariableBins({
+      dispatchVariableBins({
         bins,
         continuousBinType,
         dataBuckets,

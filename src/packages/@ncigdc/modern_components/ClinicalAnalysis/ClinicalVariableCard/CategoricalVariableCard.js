@@ -31,11 +31,11 @@ import {
   makeCountLink,
 } from './utils/shared';
 
-import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
+import SharedVariableCard from './SharedVariableCard';
 
 export default compose(
   setDisplayName('EnhancedCategoricalVariableCard'),
-  connect((state: any) => ({ analysis: state.analysis })),
+  connect(({ analysis }) => ({ analysis })),
   withTheme,
   flattenProp('variable'),
   withHandlers({
@@ -184,10 +184,10 @@ export default compose(
               [bucket.key]: {
                 ...bucket,
                 groupName:
-                    typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
-                      // hidden value have groupName '', so check if it is string
-                      ? get(variable, `bins.${bucket.key}.groupName`, undefined)
-                      : bucket.key,
+                  typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
+                    // hidden value have groupName '', so check if it is string
+                    ? get(variable, `bins.${bucket.key}.groupName`, undefined)
+                    : bucket.key,
               },
             }), {}),
           },
@@ -357,4 +357,4 @@ export default compose(
             }),
     })
   ),
-)(EnhancedClinicalVariableCard);
+)(SharedVariableCard);

@@ -47,7 +47,7 @@ import {
   makeBinData,
 } from './utils/shared';
 
-import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
+import SharedVariableCard from './SharedVariableCard';
 
 export default compose(
   setDisplayName('EnhancedContinuousVariableCard'),
@@ -369,4 +369,4 @@ export default compose(
       }),
     })
   ),
-)(EnhancedClinicalVariableCard);
+)(SharedVariableCard);

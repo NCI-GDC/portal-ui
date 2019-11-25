@@ -39,6 +39,48 @@ export default compose(
   connect(({ analysis }) => ({ analysis })),
   withTheme,
   flattenProp('variable'),
+  withPropsOnChange(
+    (props, nextProps) => !isEqual(props.data, nextProps.data),
+    ({ data, fieldName }) => {
+      const sanitisedId = fieldName.split('.').pop();
+      const rawQueryData = getRawQueryData(data, fieldName);
+      const dataBuckets = get(rawQueryData, 'buckets', []);
+      const totalDocs = get(data, 'hits.total', 0);
+
+      const missingNestedDocCount = totalDocs -
+        dataBuckets.reduce((acc, b) => acc + b.doc_count, 0);
+
+      const addMissingDocs = docData => (
+        docData.find(bucket => bucket.key === '_missing')
+          ? docData.map(dB => {
+            if (dB.key === '_missing') {
+              return {
+                ...dB,
+                doc_count: dB.doc_count + missingNestedDocCount,
+              };
+            }
+            return dB;
+          })
+        : docData.concat({
+          doc_count: missingNestedDocCount,
+          key: '_missing',
+        })
+      );
+      const newDataBuckets = missingNestedDocCount
+        ? addMissingDocs(dataBuckets)
+        : dataBuckets;
+
+      return {
+        dataBuckets: newDataBuckets.sort((a, b) => b.doc_count - a.doc_count),
+        totalDocs,
+        wrapperId: `${sanitisedId}-chart`,
+        ...dataDimensions[sanitisedId] && {
+          axisTitle: dataDimensions[sanitisedId].axisTitle,
+          dataDimension: dataDimensions[sanitisedId].unit,
+        },
+      };
+    }
+  ),
   withHandlers({
     handleCloseModal: ({ dispatch }) => () => {
       dispatch(setModal(null));
@@ -111,48 +153,6 @@ export default compose(
         />
     )),
   }),
-  withPropsOnChange(
-    (props, nextProps) => !isEqual(props.data, nextProps.data),
-    ({ data, fieldName }) => {
-      const sanitisedId = fieldName.split('.').pop();
-      const rawQueryData = getRawQueryData(data, fieldName);
-      const dataBuckets = get(rawQueryData, 'buckets', []);
-      const totalDocs = get(data, 'hits.total', 0);
-
-      const missingNestedDocCount = totalDocs -
-        dataBuckets.reduce((acc, b) => acc + b.doc_count, 0);
-
-      const addMissingDocs = docData => (
-        docData.find(bucket => bucket.key === '_missing')
-          ? docData.map(dB => {
-            if (dB.key === '_missing') {
-              return {
-                ...dB,
-                doc_count: dB.doc_count + missingNestedDocCount,
-              };
-            }
-            return dB;
-          })
-        : docData.concat({
-          doc_count: missingNestedDocCount,
-          key: '_missing',
-        })
-      );
-      const newDataBuckets = missingNestedDocCount
-        ? addMissingDocs(dataBuckets)
-        : dataBuckets;
-
-      return {
-        dataBuckets: newDataBuckets.sort((a, b) => b.doc_count - a.doc_count),
-        totalDocs,
-        wrapperId: `${sanitisedId}-chart`,
-        ...dataDimensions[sanitisedId] && {
-          axisTitle: dataDimensions[sanitisedId].axisTitle,
-          dataDimension: dataDimensions[sanitisedId].unit,
-        },
-      };
-    }
-  ),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
       props.setId !== nextProps.setId,

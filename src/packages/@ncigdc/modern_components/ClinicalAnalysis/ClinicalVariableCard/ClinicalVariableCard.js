@@ -167,7 +167,6 @@ const ClinicalVariableCard = ({
   filters,
   id,
   isLoading,
-  key,
   openCustomBinModal,
   overallSurvivalData,
   plots,

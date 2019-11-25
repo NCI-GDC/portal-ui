@@ -1,7 +1,9 @@
 import {
   compose,
+  flattenProp,
   lifecycle,
   setDisplayName,
+  withHandlers,
   withProps,
   withPropsOnChange,
   withState,
@@ -26,22 +28,23 @@ import ClinicalVariableCard from './ClinicalVariableCard';
 
 export default compose(
   setDisplayName('EnhancedSharedVariableCard'),
-  connect((state: any) => ({ analysis: state.analysis })),
+  connect(({ analysis }) => ({ analysis })),
   withTheme,
+  flattenProp('variable'),
   withState('selectedBins', 'setSelectedBins', []),
   withState('selectedSurvivalPlots', 'setSelectedSurvivalPlots', []),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('selectedSurvivalLoadingIds', 'setSelectedSurvivalLoadingIds', []),
   withState('survivalDataLoading', 'setSurvivalDataLoading', true),
-  withProps(({
-    fieldName,
-    filters,
-    setSelectedSurvivalData,
-    setSelectedSurvivalLoadingIds,
-    setSurvivalDataLoading,
-    variable: { plotTypes },
-  }) => ({
-    updateSurvivalPlot: values => getSurvivalCurvesArray({
+  withHandlers({
+    updateSurvivalPlot: ({
+      fieldName,
+      filters,
+      plotTypes,
+      setSelectedSurvivalData,
+      setSelectedSurvivalLoadingIds,
+      setSurvivalDataLoading,
+    }) => values => getSurvivalCurvesArray({
       currentFilters: filters,
       field: fieldName,
       plotType: plotTypes,
@@ -51,101 +54,97 @@ export default compose(
       setSurvivalDataLoading(false);
       setSelectedSurvivalLoadingIds([]);
     }),
-  })),
-  withPropsOnChange(
-    (props, nextProps) => !(
-      props.variable.setId === nextProps.variable.setId &&
-      isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
-      isEqual(props.selectedSurvivalPlots, nextProps.selectedSurvivalPlots) &&
-      isEqual(props.survivalPlotValues, nextProps.survivalPlotValues) &&
-      isEqual(props.filters, nextProps.filters)
-    ),
-    ({
+  }),
+  withHandlers({
+    populateSurvivalData: ({
+      survivalTableValues,
+      survivalPlotValues,
+      setSurvivalDataLoading,
+      setSelectedSurvivalPlots,
+      setSelectedSurvivalLoadingIds,
+      updateSurvivalPlot,
+    }) => () => {
+      setSurvivalDataLoading(true);
+      setSelectedSurvivalPlots(survivalTableValues);
+      setSelectedSurvivalLoadingIds(survivalTableValues);
+      updateSurvivalPlot(survivalPlotValues);
+    },
+    updateSelectedSurvivalPlots: ({
       dispatch,
       fieldName,
       id,
+      plotTypes,
       selectedSurvivalPlots,
-      setSelectedSurvivalPlots,
       setSelectedSurvivalLoadingIds,
+      setSelectedSurvivalPlots,
       setSurvivalDataLoading,
       survivalPlotValues,
       survivalTableValues,
       updateSurvivalPlot,
-      variable: { plotTypes },
-    }) => ({
-      populateSurvivalData: () => {
-        setSurvivalDataLoading(true);
-        setSelectedSurvivalPlots(survivalTableValues);
-        setSelectedSurvivalLoadingIds(survivalTableValues);
-        updateSurvivalPlot(survivalPlotValues);
-      },
-      updateSelectedSurvivalPlots: (
-        displayData, { color, displayName, keyArray }
-        ) => {
-        const isSelectedPlot = selectedSurvivalPlots
-          .map(sBin => sBin.keyName)
-          .includes(displayName);          
+    }) => (displayData, { color, displayName, keyArray }) => {
+      const isSelectedPlot = selectedSurvivalPlots
+        .map(sBin => sBin.keyName)
+        .includes(displayName);          
 
-        if (
-          !isSelectedPlot &&
-          selectedSurvivalPlots.length === MAX_SURVIVAL_CURVES
-        ) {
-          // survival chart is full, can't add more lines
-          return;
-        }
+      if (
+        !isSelectedPlot &&
+        selectedSurvivalPlots.length === MAX_SURVIVAL_CURVES
+      ) {
+        // survival chart is full, can't add more lines
+        return;
+      }
 
-        setSurvivalDataLoading(true);
+      setSurvivalDataLoading(true);
 
-        const availableColors = SURVIVAL_PLOT_COLORS
-          .filter(spColor => !find(selectedSurvivalPlots, ['color', spColor]));
+      const availableColors = SURVIVAL_PLOT_COLORS
+        .filter(spColor => !find(selectedSurvivalPlots, ['color', spColor]));
 
-        const nextSelectedBins = isSelectedPlot
-          ? selectedSurvivalPlots.filter(s => s.keyName !== displayName)
-          : selectedSurvivalPlots.concat({
-            color: color || availableColors[0],
-            ...plotTypes === 'categorical' &&
-              { keyArray },
-            keyName: displayName,
-          });
+      const nextSelectedBins = isSelectedPlot
+        ? selectedSurvivalPlots.filter(s => s.keyName !== displayName)
+        : selectedSurvivalPlots.concat({
+          color: color || availableColors[0],
+          ...plotTypes === 'categorical' &&
+            { keyArray },
+          keyName: displayName,
+        });
 
-        setSelectedSurvivalPlots(nextSelectedBins);
-        setSelectedSurvivalLoadingIds(nextSelectedBins);
+      setSelectedSurvivalPlots(nextSelectedBins);
+      setSelectedSurvivalLoadingIds(nextSelectedBins);
 
-        const nextBinsForPlot = plotTypes === 'categorical'
-          ? nextSelectedBins.filter(nextBin => (
-            displayData.find(datum => datum.displayName === nextBin.keyName)
-          ))
-          : nextSelectedBins.map(nextBin => displayData
-            .find(datum => datum.displayName === nextBin.keyName));
+      const nextBinsForPlot = plotTypes === 'categorical'
+        ? nextSelectedBins.filter(nextBin => (
+          displayData.find(datum => datum.displayName === nextBin.keyName)
+        ))
+        : nextSelectedBins.map(nextBin => displayData
+          .find(datum => datum.displayName === nextBin.keyName));
 
-        updateSurvivalPlot(nextBinsForPlot);
+      updateSurvivalPlot(nextBinsForPlot);
 
-        // remove deselected plots and duplicates
-        const nextSurvivalPlots = uniq(nextSelectedBins
-          .filter(filterBin => !(isSelectedPlot && filterBin.keyName === displayName)));
+      // remove deselected plots and duplicates
+      const nextSurvivalPlots = uniq(nextSelectedBins
+        .filter(filterBin => !(isSelectedPlot && filterBin.keyName === displayName)));
 
-        dispatch(updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          variable: {
-            customSurvivalPlots: nextSurvivalPlots,
-            isSurvivalCustom: true,
-            // survival is custom if the user selects/deselects anything,
-            // until they reset the card
-            showOverallSurvival: nextSurvivalPlots.length === 0,
-          },
-        }));
-      },
-    })
-  ),
+      dispatch(updateClinicalAnalysisVariable({
+        fieldName,
+        id,
+        variable: {
+          customSurvivalPlots: nextSurvivalPlots,
+          isSurvivalCustom: true,
+          // survival is custom if the user selects/deselects anything,
+          // until they reset the card
+          showOverallSurvival: nextSurvivalPlots.length === 0,
+        },
+      }));
+    },
+  }),
   withPropsOnChange(
-    (props, nextProps) => nextProps.variable.active_chart === 'survival' &&
-      (props.variable.active_chart !== nextProps.variable.active_chart ||
+    (props, nextProps) => nextProps.active_chart === 'survival' &&
+      (props.active_chart !== nextProps.active_chart ||
       props.id !== nextProps.id ||
-      !isEqual(props.variable.bins, nextProps.variable.bins) ||
-      (props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom &&
-        !nextProps.variable.isSurvivalCustom)),
-    ({ populateSurvivalData, variable: { active_chart } }) => {
+      !isEqual(props.bins, nextProps.bins) ||
+      (props.isSurvivalCustom !== nextProps.isSurvivalCustom &&
+        !nextProps.isSurvivalCustom)),
+    ({ active_chart, populateSurvivalData }) => {
       if (active_chart === 'survival') {
         // prevent survival loading on mount
         // when a different plot is selected
@@ -154,20 +153,21 @@ export default compose(
     }
   ),
   withPropsOnChange(
-    (props, nextProps) => props.id !== nextProps.id,
+    ({ id }, { id: nextId }) => id !== nextId,
     ({ setSelectedBins }) => setSelectedBins([])
   ),
   lifecycle({
     componentDidMount(): void {
       const {
+        bins,
         binsOrganizedByKey,
         dispatch,
         fieldName,
         id,
-        variable,
+        scrollToCard,
         wrapperId,
       } = this.props;
-      if (variable.bins === undefined || isEmpty(variable.bins)) {
+      if (bins === undefined || isEmpty(bins)) {
         dispatch(updateClinicalAnalysisVariable({
           fieldName,
           id,
@@ -177,7 +177,7 @@ export default compose(
         }));
       }
 
-      if (variable.scrollToCard) {
+      if (scrollToCard) {
         const offset = document.getElementById('header')
           .getBoundingClientRect().bottom + 10;
         const $anchor = document.getElementById(`${wrapperId}-container`);

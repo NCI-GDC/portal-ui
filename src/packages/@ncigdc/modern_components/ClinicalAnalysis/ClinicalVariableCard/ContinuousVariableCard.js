@@ -346,8 +346,6 @@ export default compose(
         id,
         variable: {
           customSurvivalPlots: nextCustomSurvivalPlots,
-          isSurvivalCustom: !isShowingDefaultSurvival,
-          showOverallSurvival: false,
         },
       }));
       

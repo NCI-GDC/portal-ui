@@ -2,6 +2,7 @@ import React from 'react';
 import {
   compose,
   setDisplayName,
+  withHandlers,
   withProps,
   withPropsOnChange,
 } from 'recompose';
@@ -36,6 +37,79 @@ export default compose(
   setDisplayName('EnhancedCategoricalVariableCard'),
   connect((state: any) => ({ analysis: state.analysis })),
   withTheme,
+  flattenProp('variable'),
+  withHandlers({
+    handleCloseModal: ({ dispatch }) => () => {
+      dispatch(setModal(null));
+    },
+    resetBins: ({
+      dataBuckets,
+      dispatch,
+      fieldName,
+      id,
+    }) => () => {
+      dispatch(updateClinicalAnalysisVariable({
+        fieldName,
+        id,
+        variable: {
+          ...cardDefaults.survival,
+          bins: dataBuckets
+            .reduce((acc, bucket) => ({
+              ...acc,
+              [bucket.key]: {
+                ...bucket,
+                groupName: bucket.key,
+              },
+            }), {}),
+          customBinsId: '',
+          customBinsSetId: '',
+        },
+      }));
+    },
+  }),
+  withHandlers({
+    handleUpdateCustomBins: ({
+      dispatch,
+      fieldName,
+      handleCloseModal,
+      id,
+      setId,
+    }) => newBins => {
+      dispatch(updateClinicalAnalysisVariable({
+        fieldName,
+        id,
+        variable: {
+          bins: newBins,
+          customBinsId: id,
+          customBinsSetId: setId,
+          ...cardDefaults.survival,
+        },
+      }));
+      handleCloseModal();
+    }
+  }),
+  withHandlers({
+    openCustomBinModal: ({
+      bins,
+      dataBuckets,
+      dispatch,
+      fieldName,
+      handleCloseModal,
+      handleUpdateCustomBins,
+    }) => () => dispatch(setModal(
+      <CategoricalCustomBinsModal
+        bins={bins}
+        dataBuckets={dataBuckets}
+        fieldName={humanify({ term: fieldName })}
+        modalStyle={{
+          maxWidth: '720px',
+          width: '90%',
+        }}
+        onClose={() => handleCloseModal()}
+        onUpdate={e => handleUpdateCustomBins(e)}
+        />
+    )),
+  }),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName }) => {
@@ -93,7 +167,7 @@ export default compose(
         id,
         variable: {
           bins: {
-            ...reduce(variable.bins, (acc, bin, key) => ({
+            ...reduce(bins, (acc, bin, key) => ({
               ...acc,
               ...(bin.groupName && bin.groupName !== key
                 ? {
@@ -123,29 +197,27 @@ export default compose(
   ),
   withProps(
     ({
+      bins,
       dataBuckets,
-      variable: { bins },
     }) => makeBinData(bins, dataBuckets)
   ),
   withPropsOnChange(
     (props, nextProps) =>
-      nextProps.variable.active_chart === 'survival' &&
-    !(isEqual(props.variable.bins, nextProps.variable.bins) &&
-    props.variable.active_chart === nextProps.variable.active_chart &&
+      nextProps.active_chart === 'survival' &&
+    !(isEqual(props.bins, nextProps.bins) &&
+    props.active_chart === nextProps.active_chart &&
     isEqual(props.selectedSurvivalPlots, nextProps.selectedSurvivalPlots) &&
-    props.variable.setId === nextProps.variable.setId &&
-    isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
-    props.variable.isSurvivalCustom === nextProps.variable.isSurvivalCustom),
+    props.setId === nextProps.setId &&
+    isEqual(props.customSurvivalPlots, nextProps.customSurvivalPlots) &&
+    props.isSurvivalCustom === nextProps.isSurvivalCustom),
     ({
+      active_chart,
       binData,
+      customSurvivalPlots,
       dispatch,
       fieldName,
       id,
-      variable: {
-        active_chart,
-        customSurvivalPlots,
-        isSurvivalCustom,
-      },
+      isSurvivalCustom,
     }) => {
       // prevent survival API requests on mount
       // when a different plot is selected
@@ -202,8 +274,8 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) =>
-      !isEqual(props.variable.bins, nextProps.variable.bins),
-    ({ variable: { bins } }) => ({
+      !isEqual(props.bins, nextProps.bins),
+    ({ bins }) => ({
       binsAreCustom: Object.keys(bins)
         .some(bin => bins[bin].key !== bins[bin].groupName ||
           typeof bins[bin].index === 'number'),
@@ -211,48 +283,13 @@ export default compose(
   ),
   withPropsOnChange(
     (props, nextProps) =>
-      props.binsAreCustom !== nextProps.binsAreCustom ||
-      !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
-      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
-    ({
-      dataBuckets,
-      dispatch,
-      fieldName,
-      id,
-    }) => ({
-      resetBins: () => {
-        dispatch(updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          variable: {
-            ...cardDefaults.survival,
-            bins: dataBuckets
-              .reduce((acc, bucket) => ({
-                ...acc,
-                [bucket.key]: {
-
-                  ...bucket,
-                  groupName: bucket.key,
-                },
-              }), {}),
-            customBinsId: '',
-            customBinsSetId: '',
-          },
-        }));
-      },
-    })
-  ),
-  withPropsOnChange(
-    (props, nextProps) =>
       props.setId !== nextProps.setId,
     ({
+      customBinsId,
+      customBinsSetId,
       id,
       resetBins,
       setId,
-      variable: {
-        customBinsId,
-        customBinsSetId,
-      },
     }) => {
       // call the reset function if you're in the same analysis tab
       // and you change the case set AND bins are custom
@@ -318,45 +355,6 @@ export default compose(
                 key: bin.key,
               };
             }),
-    })
-  ),
-  withPropsOnChange(
-    (props, nextProps) =>
-      !isEqual(props.variable.bins, nextProps.variable.bins) ||
-      !isEqual(props.dataBuckets, nextProps.dataBuckets),
-    ({
-      dataBuckets,
-      dispatch,
-      fieldName,
-      id,
-      setId,
-      variable: { bins },
-    }) => ({
-      openCustomBinModal: () => dispatch(setModal(
-        <CategoricalCustomBinsModal
-          bins={bins}
-          dataBuckets={dataBuckets}
-          fieldName={humanify({ term: fieldName })}
-          modalStyle={{
-            maxWidth: '720px',
-            width: '90%',
-          }}
-          onClose={() => dispatch(setModal(null))}
-          onUpdate={(newBins) => {
-            dispatch(updateClinicalAnalysisVariable({
-              fieldName,
-              id,
-              variable: {
-                bins: newBins,
-                customBinsId: id,
-                customBinsSetId: setId,
-                ...cardDefaults.survival,
-              },
-            }));
-            dispatch(setModal(null));
-          }}
-          />
-      )),
     })
   ),
 )(EnhancedClinicalVariableCard);

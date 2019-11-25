@@ -133,7 +133,7 @@ export default compose(
         variable: {
           ...cardDefaults.survival,
           ...binsAreCustom && {
-            defaultBins,
+            bins: defaultBins,
             ...cardDefaults.continuous,
           },
         },
@@ -346,6 +346,8 @@ export default compose(
         id,
         variable: {
           customSurvivalPlots: nextCustomSurvivalPlots,
+          isSurvivalCustom: isUsingCustomSurvival,
+          showOverallSurvival: false,
         },
       }));
       
@@ -363,28 +365,14 @@ export default compose(
       fieldName,
       setId,
       totalDocs,
-    }) => {
-      // console.log('binData', binData);
-      // const displayData = isEmpty(binData)
-      // ? []
-      // : makeContinuousBins({
-      //   binData: binData.sort((a, b) => a.keyArray[0] - b.keyArray[0]),
-      //   continuousBinType,
-      //   fieldName,
-      //   setId,
-      //   totalDocs,
-      // });
-      // console.log('displayData', displayData);
-      
-      return ({
-        displayData: makeContinuousBins({
-          binData,
-          continuousBinType,
-          fieldName,
-          setId,
-          totalDocs,
-        }),
-      })
-    }
+    }) => ({
+      displayData: makeContinuousBins({
+        binData,
+        continuousBinType,
+        fieldName,
+        setId,
+        totalDocs,
+      }),
+    })
   ),
 )(EnhancedClinicalVariableCard);

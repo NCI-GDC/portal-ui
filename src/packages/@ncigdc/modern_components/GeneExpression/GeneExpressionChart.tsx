@@ -1,9 +1,20 @@
 import React, { Component } from 'react';
 
+import { Row, Column } from '@ncigdc/uikit/Flex';
+
 class GeneExpressionChart extends Component {
   render() {
     return (
-      <div><h2>Gene Expression</h2></div>
+      <Column style={{ marginBottom: '1rem' }}>
+        <Row
+          style={{
+            margin: '20px 0',
+            padding: '2rem 3rem',
+          }}
+          >
+          <h1 style={{ margin: 0 }}>Gene Expression</h1>
+        </Row>
+      </Column>
     );
   };
 };

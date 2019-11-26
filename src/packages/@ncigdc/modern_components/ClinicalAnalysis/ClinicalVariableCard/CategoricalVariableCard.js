@@ -164,6 +164,7 @@ export default compose(
       dispatch,
       fieldName,
       id,
+      variable,
     }) => {
       dispatch(updateClinicalAnalysisVariable({
         fieldName,
@@ -187,9 +188,9 @@ export default compose(
               [bucket.key]: {
                 ...bucket,
                 groupName:
-                  typeof bins[bucket.key].groupName === 'string'
+                  typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
                     // hidden value have groupName '', so check if it is string
-                    ? bins[bucket.key].groupName
+                    ? get(variable, `bins.${bucket.key}.groupName`, undefined)
                     : bucket.key,
               },
             }), {}),

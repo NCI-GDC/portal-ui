@@ -46,7 +46,7 @@ export const API_OVERRIDE_KEYS = [
 ];
 
 export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
-  k => localStorage[k]
+  k => localStorage[k],
 );
 
 const DATA_CATEGORIES_COMMON = { // this object is "sorted" on purpose, do not rearrange the keys
@@ -459,3 +459,7 @@ export const capitalisedTerms = {
 export const DISPLAY_SUMMARY_PAGE = localStorage.REACT_APP_DISPLAY_SUMMARY_PAGE ||
   process.env.REACT_APP_DISPLAY_SUMMARY_PAGE ||
   false;
+
+export const DISPLAY_GENE_EXPRESSION = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION ||
+process.env.REACT_APP_DISPLAY_GENE_EXPRESSION ||
+false;

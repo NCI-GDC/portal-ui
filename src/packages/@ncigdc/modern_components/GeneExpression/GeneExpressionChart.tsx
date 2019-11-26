@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 
-interface Props {
+interface IProps {
+  [x:string] :any,
 }
-interface State {
-
+interface IState {
+  [x:string] :any,
 }
 
-class GeneExpressionChart extends Component<Props, State> {
+class GeneExpressionChart extends Component<IProps, IState> {
+  $el: any;
+  el: any;
+  // [x:string] :any,
   componentDidMount() {
     this.$el = $(this.el);
     this.$el.somePlugin();

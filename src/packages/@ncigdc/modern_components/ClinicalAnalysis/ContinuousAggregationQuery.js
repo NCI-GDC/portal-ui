@@ -1,8 +1,9 @@
 import React from 'react';
 import {
   compose,
-  withPropsOnChange,
+  setDisplayName,
   withProps,
+  withPropsOnChange,
   withState,
 } from 'recompose';
 import md5 from 'blueimp-md5';
@@ -226,6 +227,7 @@ const updateData = async ({
 };
 
 export default compose(
+  setDisplayName('ContinuousAggregationQuery'),
   withState('aggData', 'setAggData', null),
   withState('isLoading', 'setIsLoading', 'first time'),
   withPropsOnChange(

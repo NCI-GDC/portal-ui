@@ -16,6 +16,9 @@ class GeneExpressionChart extends Component<IProps, IState> {
     this.$el.somePlugin();
   }
   componentWillUnmount() {
+    // if inchlib doesn't have cleanup methods, 
+    // we have to add our own.
+    // TODO remove event listeners
     this.$el.somePlugin('destroy');
   }
   render() {

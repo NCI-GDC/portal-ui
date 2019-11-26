@@ -299,6 +299,7 @@ const ClinicalAnalysisResult = ({
             >
             <li
               className="masonry-brick"
+              key="overallSurvival"
               style={masonryBrickStyle(controlPanelExpanded ? 2 : 3)}
               >
               <div
@@ -350,6 +351,7 @@ const ClinicalAnalysisResult = ({
               return (
                 <li
                   className="masonry-brick"
+                  key={varFieldName}
                   style={masonryBrickStyle(controlPanelExpanded ? 2 : 3)}
                   >
                   {varProperties.plotTypes === 'continuous' ? (
@@ -359,7 +361,6 @@ const ClinicalAnalysisResult = ({
                       filters={filters}
                       hits={hits}
                       id={id}
-                      key={varFieldName}
                       overallSurvivalData={overallSurvivalData}
                       plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
                       setId={setId}

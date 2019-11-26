@@ -313,6 +313,8 @@ export default compose(
       displayData: binData.length === 1 &&
         binData[0].key === '_missing' &&
         !binsAreCustom
+        // if there's only one bin, and it's labelled _missing, and it's not custom
+        // then don't show anything in the table/graph
           ? []
           : binData
             .sort((a, b) => b.doc_count - a.doc_count)

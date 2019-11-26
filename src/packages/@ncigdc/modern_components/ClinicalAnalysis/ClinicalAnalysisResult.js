@@ -381,7 +381,6 @@ const ClinicalAnalysisResult = ({
                         fieldName={varFieldName}
                         filters={filters}
                         id={id}
-                        key={varFieldName}
                         overallSurvivalData={overallSurvivalData}
                         plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
                         setId={setId}

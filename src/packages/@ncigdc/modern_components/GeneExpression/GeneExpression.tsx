@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
-class GeneExpressionChart extends Component {
+class GeneExpression extends Component {
   render() {
     return (
       <Column style={{ marginBottom: '1rem' }}>
@@ -19,4 +19,4 @@ class GeneExpressionChart extends Component {
   };
 };
 
-export default GeneExpressionChart;
+export default GeneExpression;

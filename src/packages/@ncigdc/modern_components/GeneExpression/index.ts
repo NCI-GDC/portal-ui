@@ -1,4 +1,4 @@
-import GeneExpression from './GeneExpression';
+import EnhancedGeneExpression from './EnhancedGeneExpression';
 // import createRenderer from './GeneExpression.relay';
 
-export default GeneExpression;
+export default EnhancedGeneExpression;

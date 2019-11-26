@@ -432,10 +432,15 @@ export default compose(
       currentAnalysis: nextCurrentAnalysis,
       overallSurvivalData,
       survivalDataLoading,
-    }) => (
-      !isEqual(currentAnalysis, nextCurrentAnalysis) ||
-      (Object.keys(overallSurvivalData).length < 1 && !survivalDataLoading)
-    ),
+    }) => {
+      const setId = Object.keys(currentAnalysis.sets.case)[0];
+      const nextSetId = Object.keys(nextCurrentAnalysis.sets.case)[0]
+      return (
+        currentAnalysis.id !== nextCurrentAnalysis.id ||
+        setId !== nextSetId ||
+        (Object.keys(overallSurvivalData).length < 1 && !survivalDataLoading)
+      );
+    },
     async ({
       currentAnalysis: nextCurrentAnalysis,
       setOverallSurvivalData,
@@ -445,7 +450,7 @@ export default compose(
       const setId = Object.keys(nextCurrentAnalysis.sets.case)[0];
       setSetId(setId);
       setSurvivalDataLoading(true);
-      const nextSurvivalData = await getDefaultCurve({
+      const nextOverallSurvivalData = await getDefaultCurve({
         currentFilters: {
           content: [
             {
@@ -461,7 +466,7 @@ export default compose(
         slug: 'Clinical Analysis',
       });
 
-      setOverallSurvivalData(nextSurvivalData);
+      setOverallSurvivalData(nextOverallSurvivalData);
       setSurvivalDataLoading(false);
     }
   ),
@@ -473,12 +478,14 @@ export default compose(
   lifecycle({
     shouldComponentUpdate({
       controlPanelExpanded: nextControlPanelExpanded,
+      currentAnalysis: nextCurrentAnalysis,
       loading: nextLoading,
       populateSurvivalData: nextPopulateSurvivalData,
       survivalDataLoading: nextSurvivalDataLoading,
     }) {
       const {
         controlPanelExpanded,
+        currentAnalysis,
         loading,
         populateSurvivalData,
         survivalDataLoading,
@@ -488,7 +495,8 @@ export default compose(
         nextControlPanelExpanded === controlPanelExpanded &&
         nextLoading === loading &&
         isEqual(populateSurvivalData, nextPopulateSurvivalData) &&
-        nextSurvivalDataLoading === survivalDataLoading
+        nextSurvivalDataLoading === survivalDataLoading &&
+        isEqual(currentAnalysis, nextCurrentAnalysis)
       );
     },
   }),

@@ -60,13 +60,14 @@ export default compose(
     ({
       data: { explore },
       fieldName,
-    }) => makeDefaultDataOnLoad({ explore, fieldName })
+    }) => makeDefaultDataOnLoad({ explore,
+fieldName }),
   ),
   withPropsOnChange(
     ['continuousBinType'],
     ({ continuousBinType }) => ({
       binsAreCustom: continuousBinType !== DEFAULT_BIN_TYPE,
-    })
+    }),
   ),
   withHandlers({
     handleCloseModal: ({ dispatch }) => () => {
@@ -161,13 +162,14 @@ export default compose(
           fieldName={humanify({ term: fieldName })}
           onClose={() => handleCloseModal()}
           onUpdate={e => handleUpdateCustomBins(e)}
-          />
+          />,
       ));
     },
   }),
   withPropsOnChange(
     ({ data }, { data: nextData }) => !isEqual(data, nextData),
-    ({ data, fieldName }) => makeContinuousProps({ data, fieldName }),
+    ({ data, fieldName }) => makeContinuousProps({ data,
+fieldName }),
   ),
   withPropsOnChange(
     (props, nextProps) => !(
@@ -230,9 +232,9 @@ export default compose(
             },
           };
         }, {});
-      
+
       return makeBinData(binsForBinData, dataBuckets);
-    }
+    },
   ),
   withPropsOnChange(
     (props, nextProps) => nextProps.active_chart === 'survival' && !(
@@ -265,14 +267,14 @@ export default compose(
           survivalTableValues: [],
         };
       }
-      
+
       const binsWithNames = map(bins, (bin, binKey) => ({
         ...bin,
         displayName: continuousBinType === 'default'
           ? makeContinuousDefaultLabel(binKey)
-          : bin.groupName
+          : bin.groupName,
       }));
-      
+
       const availableColors = SURVIVAL_PLOT_COLORS
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
@@ -298,12 +300,12 @@ export default compose(
           setId,
           totalDocs,
         }))
-        .sort((a, b) => b.doc_count - a.doc_count)
-        .map((bin, i) => ({
-          ...bin,
-          color: availableColors[i],
-        }))
-        .slice(0, 2)
+          .sort((a, b) => b.doc_count - a.doc_count)
+          .map((bin, i) => ({
+            ...bin,
+            color: availableColors[i],
+          }))
+          .slice(0, 2)
         : filterSurvivalData(makeContinuousBins({
           binData: customBinMatches,
           continuousBinType,
@@ -311,7 +313,7 @@ export default compose(
           setId,
           totalDocs,
         }));
-      
+
       const survivalPlotValues = survivalBins
         .map(({ color, filters, key }) => ({
           color,
@@ -344,12 +346,12 @@ export default compose(
           showOverallSurvival: false,
         },
       }));
-      
+
       return {
         survivalPlotValues,
         survivalTableValues,
       };
-    }
+    },
   ),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.binData, nextProps.binData),
@@ -367,6 +369,6 @@ export default compose(
         setId,
         totalDocs,
       }),
-    })
+    }),
   ),
 )(SharedVariableCard);

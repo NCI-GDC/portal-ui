@@ -1,8 +1,9 @@
 import React from 'react';
 import {
   compose,
-  withPropsOnChange,
+  setDisplayName,
   withProps,
+  withPropsOnChange,
   withState,
 } from 'recompose';
 import md5 from 'blueimp-md5';
@@ -51,7 +52,7 @@ const getContinuousAggs = ({
           ? stats.max + 1
           // api excludes max value
           : stats.min + (key + 1) * interval,
-      })
+      }),
     );
 
   let rangeArr = continuousBinType === 'default'
@@ -163,7 +164,7 @@ const getContinuousAggs = ({
         'Content-Type': 'application/json',
       },
       method: 'POST',
-    }
+    },
   ).then(response => response
     .json()
     .then(json => {
@@ -198,7 +199,7 @@ const getContinuousAggs = ({
         }
       } else {
         consoleDebug(
-          `Something went wrong in the environment, but no error status: ${err}`
+          `Something went wrong in the environment, but no error status: ${err}`,
         );
       }
     }));
@@ -226,10 +227,11 @@ const updateData = async ({
 };
 
 export default compose(
+  setDisplayName('ContinuousAggregationQuery'),
   withState('aggData', 'setAggData', null),
   withState('isLoading', 'setIsLoading', 'first time'),
   withPropsOnChange(
-    (props, nextProps) => 
+    (props, nextProps) =>
       !(props.setIdWithData === nextProps.setIdWithData &&
       isEqual(props.variable, nextProps.variable)),
     ({
@@ -252,10 +254,10 @@ export default compose(
         stats,
         variable,
       });
-    }
+    },
   ),
 )(({
-  aggData, hits, isLoading, key, setId, stats, ...props
+  aggData, hits, isLoading, setId, stats, ...props
 }) => (
   <ContinuousVariableCard
     data={{
@@ -263,10 +265,8 @@ export default compose(
       hits,
     }}
     isLoading={isLoading}
-    key={key}
     setId={setId}
     stats={stats}
     {...props}
     />
-  )
-);
+),);

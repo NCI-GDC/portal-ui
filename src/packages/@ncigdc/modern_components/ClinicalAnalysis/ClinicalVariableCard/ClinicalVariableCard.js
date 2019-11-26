@@ -108,7 +108,7 @@ const makeTableData = ({
         onChange={() => {
           if (isSelected) {
             setSelectedBins(
-              reject(selectedBins, r => r.key === key)
+              reject(selectedBins, r => r.key === key),
             );
           } else {
             setSelectedBins(selectedBins.concat(dDBin));
@@ -208,14 +208,12 @@ const ClinicalVariableCard = ({
       displayData,
       fieldName,
       selectedBins,
-      selectedSurvivalPlots,
       selectedSurvivalLoadingIds,
+      selectedSurvivalPlots,
       setSelectedBins,
       theme,
       updateSelectedSurvivalPlots,
     });
-  
-  // console.log('tableData', tableData);
 
   const histogramData =
     variable.active_chart === 'histogram'
@@ -238,7 +236,7 @@ const ClinicalVariableCard = ({
 
   const tsvSubstring = fieldName.replace(/\./g, '-');
   const cardFilters = getCardFilters(
-    variable.plotTypes, selectedBins, fieldName, filters
+    variable.plotTypes, selectedBins, fieldName, filters,
   );
   const disabledCharts = plotType => isEmpty(tableData) &&
     plotType !== 'delete';
@@ -295,7 +293,7 @@ const ClinicalVariableCard = ({
                             variable: {
                               active_chart: plotType,
                             },
-                          })
+                          }),
                         );
                       }}
                       style={{
@@ -310,7 +308,7 @@ const ClinicalVariableCard = ({
                       <Hidden>{vizButtons[plotType].title}</Hidden>
                       {vizButtons[plotType].icon}
                     </Button>
-                  </Tooltip>
+                  </Tooltip>,
                 )), [])}
         </Row>
       </Row>

@@ -79,7 +79,7 @@ export default compose(
           dataDimension: dataDimensions[sanitisedId].unit,
         },
       };
-    }
+    },
   ),
   withHandlers({
     handleCloseModal: ({ dispatch }) => () => {
@@ -129,7 +129,7 @@ export default compose(
         },
       }));
       handleCloseModal();
-    }
+    },
   }),
   withHandlers({
     openCustomBinModal: ({
@@ -139,19 +139,21 @@ export default compose(
       fieldName,
       handleCloseModal,
       handleUpdateCustomBins,
-    }) => () => dispatch(setModal(
-      <CategoricalCustomBinsModal
-        bins={bins}
-        dataBuckets={dataBuckets}
-        fieldName={humanify({ term: fieldName })}
-        modalStyle={{
-          maxWidth: '720px',
-          width: '90%',
-        }}
-        onClose={() => handleCloseModal()}
-        onUpdate={e => handleUpdateCustomBins(e)}
-        />
-    )),
+    }) => () => {
+      dispatch(setModal(
+        <CategoricalCustomBinsModal
+          bins={bins}
+          dataBuckets={dataBuckets}
+          fieldName={humanify({ term: fieldName })}
+          modalStyle={{
+            maxWidth: '720px',
+            width: '90%',
+          }}
+          onClose={() => handleCloseModal()}
+          onUpdate={e => handleUpdateCustomBins(e)}
+          />,
+      ));
+    },
   }),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
@@ -162,7 +164,6 @@ export default compose(
       dispatch,
       fieldName,
       id,
-      variable,
     }) => {
       dispatch(updateClinicalAnalysisVariable({
         fieldName,
@@ -195,13 +196,13 @@ export default compose(
           },
         },
       }));
-    }
+    },
   ),
   withProps(
     ({
       bins,
       dataBuckets,
-    }) => makeBinData(bins, dataBuckets)
+    }) => makeBinData(bins, dataBuckets),
   ),
   withPropsOnChange(
     (props, nextProps) =>
@@ -247,9 +248,9 @@ export default compose(
             ...bin,
             color: currentMatch ? currentMatch.color : availableColors[i],
           };
-        })
+        }),
       )
-      .slice(0, isSurvivalCustom ? Infinity : 2);
+        .slice(0, isSurvivalCustom ? Infinity : 2);
 
       const survivalPlotValues = survivalBins.map(bin => ({
         color: bin.color,
@@ -271,7 +272,7 @@ export default compose(
         survivalPlotValues,
         survivalTableValues: survivalPlotValues,
       };
-    }
+    },
   ),
   withPropsOnChange(
     (props, nextProps) =>
@@ -280,7 +281,7 @@ export default compose(
       binsAreCustom: Object.keys(bins)
         .some(bin => bins[bin].key !== bins[bin].groupName ||
           typeof bins[bin].index === 'number'),
-    })
+    }),
   ),
   withPropsOnChange(
     (props, nextProps) =>
@@ -300,7 +301,7 @@ export default compose(
         customBinsSetId !== setId) {
         resetBins();
       }
-    }
+    },
   ),
   withPropsOnChange(
     (props, nextProps) =>
@@ -356,6 +357,6 @@ export default compose(
                 key: bin.key,
               };
             }),
-    })
+    }),
   ),
 )(SharedVariableCard);

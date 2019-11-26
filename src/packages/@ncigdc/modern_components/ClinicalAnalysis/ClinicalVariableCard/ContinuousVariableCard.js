@@ -11,10 +11,8 @@ import {
 import { connect } from 'react-redux';
 import {
   find,
-  get,
   isEmpty,
   isEqual,
-  isFinite,
   map,
 } from 'lodash';
 
@@ -40,9 +38,7 @@ import {
 
 import {
   DEFAULT_BIN_TYPE,
-  makeCountLink,
   cardDefaults,
-  dataDimensions,
   filterSurvivalData,
   makeBinData,
 } from './utils/shared';
@@ -60,8 +56,10 @@ export default compose(
     ({
       data: { explore },
       fieldName,
-    }) => makeDefaultDataOnLoad({ explore,
-fieldName }),
+    }) => makeDefaultDataOnLoad({
+      explore,
+      fieldName,
+    }),
   ),
   withPropsOnChange(
     ['continuousBinType'],
@@ -76,7 +74,6 @@ fieldName }),
   }),
   withHandlers({
     handleUpdateCustomBins: ({
-      continuousBinType,
       customInterval,
       customRanges,
       defaultData,
@@ -151,7 +148,6 @@ fieldName }),
       fieldName,
       handleCloseModal,
       handleUpdateCustomBins,
-      id,
     }) => () => {
       dispatch(setModal(
         <ContinuousCustomBinsModal
@@ -168,8 +164,10 @@ fieldName }),
   }),
   withPropsOnChange(
     ({ data }, { data: nextData }) => !isEqual(data, nextData),
-    ({ data, fieldName }) => makeContinuousProps({ data,
-fieldName }),
+    ({ data, fieldName }) => makeContinuousProps({
+      data,
+      fieldName,
+    }),
   ),
   withPropsOnChange(
     (props, nextProps) => !(

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+// import Konva from 'konva';
+// import inchlib from '@inchlib/inchlib';
 
 interface IProps {
   [x:string] :any,
@@ -6,6 +8,10 @@ interface IProps {
 interface IState {
   [x:string] :any,
 }
+
+// const inchlibOptions = {
+
+// };
 
 class GeneExpressionChart extends Component<IProps, IState> {
   $el: any;

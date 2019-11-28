@@ -14,10 +14,11 @@ export class GeneExpression extends Component {
             padding: '2rem 3rem',
           }}
           >
-          <div>
+          <Column>
             <h1 style={{ margin: 0 }}>Gene Expression</h1>
-          </div>
+
           <GeneExpressionChart />
+          </Column>
         </Row>
       </Column>
     );

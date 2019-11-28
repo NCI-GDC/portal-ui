@@ -17,11 +17,11 @@ interface IState {
 const inchlibOptions = {
   column_metadata: true,
   heatmap_colors: 'RdBkGr',
-  max_height: 1200,
+  max_height: 800,
   metadata_colors: 'BuWhRd',
   metadata: true,
   target: 'inchlib',
-  width: 1000,
+  width: 800,
 };
 
 class GeneExpressionChart extends Component<IProps, IState> {
@@ -35,6 +35,8 @@ class GeneExpressionChart extends Component<IProps, IState> {
     const inchlib = new InCHlib(inchlibOptions);
     inchlib.read_data(inchlibData);
     inchlib.draw();
+    console.log(inchlib);
+
     // this.inchlib = inchlib;
   }
   // componentWillUnmount() {

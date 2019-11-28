@@ -1,0 +1,719 @@
+/* @font-face
+{
+	font-family: Ubuntu;
+	src: url('../fonts/Ubuntu-R.ttf');
+} */
+
+body{
+	width: 90%;
+	max-width: 1400px;
+	margin-left: auto;
+	margin-right: auto;
+	font-family: 'Ubuntu', sans-serif;
+}
+
+#dev{
+	width: 100%;
+	max-width: none;
+	padding: 20px;
+}
+
+#dendrograms{
+	display: flex;
+	justify-content: space-around;
+}
+
+#head{
+	width: 300px;
+}
+
+#head a{
+	text-decoration: none;
+}
+
+#head:hover{
+	opacity: 0.8;
+}
+
+.center{
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	text-align: center;
+}
+
+.description a{
+	font-style: italic;
+}
+
+.chart{
+	max-width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	margin-top: 40px;
+}
+
+#content{
+	min-height: 600px;
+}
+
+#footer{
+	height: 25px;
+}
+
+#main_title{
+	margin-top: 20px;
+	margin-left: 20px;
+	font-size: 48px;
+	font-weight: bold;
+	color: black;
+}
+#sub_title{
+	margin-top: 5px;
+	margin-left: 20px;
+	font-size: 16px;
+	padding-bottom: 10px;
+	color: gray;
+}
+
+#workflow{
+	width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#contact{
+	display: flex;
+	margin-top: 50px;
+	margin-left: 60px;
+	justify-content: space-between;
+}
+
+.card{
+	margin-top: 30px;
+	margin-left: 20px;
+}
+
+.email{
+	color: gray;
+	font-style: italic;
+	font-size: 16px;
+}
+
+#example #dendrogram, #content > #dendrogram{
+	margin-top: 50px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 80%;
+}
+
+.desc, .description{
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 90%;
+	text-align: justify;
+	line-height: 1.5;
+}
+
+#examples_menu, #docs_menu{
+	/*margin-top: 20px;*/
+	width: 25%;
+	float: left;
+}
+
+#example, #docs{
+	display: block;
+	width: 72%;
+	margin-top: 20px;
+	margin-left: 28%;
+}
+
+.input_example{
+	width: 90%;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.input_example .title{
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.doc{
+	margin-top: 30px;
+}
+
+.doc #colors_table{
+	width: 90%;
+	margin-left: 20px;
+	margin-top: 15px;
+	margin-bottom: 20px;
+}
+
+.title{
+	font-size: 24px;
+	font-weight: bold;
+	margin-top: 20px;
+}
+
+.description .title{
+	margin-bottom: 15px;
+}
+
+.small_title{
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.medium_title{
+	font-size: 22px;
+	font-weight: bold;
+}
+
+.subtitle{
+	font-style: italic;
+	color: gray;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.doc .default{
+	margin-top: 15px;
+	margin-left: 10px;
+}
+
+.description, .input_example{
+	margin-top: 20px;
+	text-align: justify;
+	line-height: 1.5;
+	width: 95%;
+	margin-right: auto;
+	margin-left: auto;
+	display: block;
+}
+
+#example .description a{
+	font-style: italic;
+}
+
+#example_data_link{
+	color: gray;
+}
+
+#example .example_settings, #example{
+	margin-top: 20px;
+}
+
+#example .settings, #example .data, .doc .default_value, #row_ids_callback, .input_example .data, .code{
+	margin-top: 10px;
+	background-color: #E6E6E6;
+	padding: 10px;
+	border-radius: 5px;
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+	font-family: Consolas, monospace;
+	font-size: 14px;
+	white-space:pre;
+	/*font-weight: bold;*/
+}
+
+.code{
+	margin-bottom: 20px;
+}
+
+.example_data{
+	margin-top: 10px;
+	background-color: #E6E6E6;
+	padding: 10px;
+	border-radius: 5px;
+	width: 95%;
+	margin-left: auto;
+	margin-right: auto;
+	font-family: Consolas, monospace;
+	font-size: 14px;
+	/*font-weight: bold;*/
+}
+
+#issue_tracking{
+	background-color: #8cd6a4;
+	border: solid #399757 3px;
+	padding: 10px;
+	border-radius: 5px;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#issue_tracking a{
+	text-decoration: none;
+	font-weight: bold;
+}
+
+#inchlib_citation{
+	margin-top: 20px;
+	background-color: #E6E6E6;
+	padding: 10px;
+	border-radius: 5px;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#inchlib_citation.bordered{
+	border: solid #666d68 3px;
+}
+
+#inchlib_citation > a{
+	font-style: normal;	
+	color: black;
+}
+
+.js_comment{
+	white-space: normal;
+}
+
+.citation{
+	font-size: small;
+	color: gray;
+	font-style: italic;
+	margin-top: 5px;
+}
+
+#row_ids_callback{
+	white-space: pre-line;
+	word-break: break-all;
+}
+
+#example .buttons{
+	margin-top: 10px;
+	font-family: "Inconsolata";
+	font-size: 14px;
+}
+
+#example .data{
+	white-space:pre;
+	height: 200px;
+	overflow: auto;
+}
+
+#next_example_button, #previous_example_button{
+	float: right;
+	font-size: 14px;
+}
+
+#previous_example_button{
+	margin-right: 15px;
+}
+
+.format_desc{
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.input_example .data a, .format_desc a{
+	color: black;
+	font-weight: bold;
+}
+
+.input_example #dendrogram{
+	width: 80%;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top : 30px;
+}
+
+.input_example .example_data{
+	font-weight: bold;
+}
+
+#inchlib_described{
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	height: 500px;
+}
+
+.input_example #data{
+	background-color: rgba(35,139,69,0.7);
+}
+
+.input_example #metadata{
+	background-color: rgba(203,24,29,0.7);
+}
+
+.input_example #column_dendrogram{
+	background-color: rgba(45,74,243,0.6);
+}
+
+.input_example #column_metadata{
+	background-color: rgb(236,127,53);
+}
+
+.js_comment{
+	color: rgb(56,56,56);
+}
+
+.interface{
+	margin-top: 20px;
+	line-height: 120%;
+}
+
+.interface .small_title{
+	margin-left: 20px;
+}
+
+.download_button{
+	padding: 20px;
+	/*margin-top: 20px;*/
+	margin-bottom: 20px;
+}
+
+.download_button a{
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+	font-size: 24px;
+}
+
+.pc_conf{
+	color: gray;
+	font-size: 14px;
+}
+
+#protein_dendrogram{
+	width: 70%;
+	margin-top: 50px;
+	margin-left: 30px;
+}
+
+#protein_div{
+	position: absolute;
+	width: 300px;
+}
+
+#protein{
+	width: 95%;
+	height: 300px;
+	/*border-radius: 5px;
+	border: solid #D2D2D2 1px;*/
+}
+
+#protein_card{
+	width: 95%;
+	margin-top: 40px;
+	font-size: small;
+	margin-bottom: 50px;
+}
+
+#protein_citation{
+	padding-top: 10px;
+	font-size: 14px;
+	color: gray;
+}
+
+
+#protein, #protein_card{
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#protein_src{
+	display: none;
+}
+
+/* #protein_img{
+	background-image: url(../img/protein.png);
+	background-repeat: no-repeat;
+    height: 300px;
+    text-align: center;
+    padding-top: 40px;
+    font-weight: bold;  
+    line-height: 1.5  
+} */
+
+#protein_img > div{
+	margin-top: 20px;
+}
+
+#overflow_div{
+	height: 50px;
+}
+
+#loading, #loading_2{
+	display: none;
+}
+
+#loading > img, #loading_2 > img{
+	height: 200px;
+	margin-top: 50px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+
+#map_dendrogram{
+	width: 55%;
+	margin-top: 50px;
+	margin-left: 30px;
+}
+
+.float_right{
+	float: right;
+	width: 40%;
+}
+
+#map{
+	margin-top: 150px;
+	height: 650px;
+	border-radius: 10px;
+	border: solid #D2D2D2 1px;
+}
+
+#video{
+	margin-top: 30px;
+	width: ;
+}
+
+.overflow{
+	overflow: auto;
+}
+
+#molecule{
+	position: absolute;
+	 height: 235px;
+	 width: 220px;
+	 z-index: 100;
+	 border: solid #D2D2D2 1px;
+	 border-radius: 10px;
+	 display: none;
+	 background-color: white;
+}
+
+#molecule_img{
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	width: 95%;
+	background-color: white;
+	border-radius: 10px;
+}
+
+#mol_id{
+	font-size: small;
+	position: absolute;
+	right: 10px;
+}
+
+#microarrays_dendrogram{
+	width: 65%;
+	margin-top: 50px;
+	margin-left: 30px;
+}
+
+#microarrays{
+	position: absolute;
+	width: 400px;
+	height: 300px;
+}
+
+#boxplot{
+	width: 90%;
+	border: solid #D2D2D2 1px;
+	padding: 10px;
+	background-color: white;
+}
+
+.distillery_label{
+	font-weight: bold;
+	font-size: 12px;
+	border-radius: 5px;
+	padding: 5px;
+	background-color: salmon;
+	opacity: 1;
+}
+
+#affiliations{
+	margin-top: 50px;
+	margin-left: 30px;
+	margin-bottom: 50px;
+}
+
+#affiliations > li{
+	margin-top: 10px;
+	color: gray;
+	font-style: italic;
+	font-weight: bold;
+}
+
+sup{
+	font-size: small;
+	position: relative;
+	top: -1em;
+	color: gray;
+}
+
+#logos{
+	display: flex;
+	align-items: center;
+	margin-right: 30px;
+}
+
+#logos > *{
+	padding: 10px;
+}
+
+#logos > .left{
+	padding: 10px;
+	margin-right: 50px;
+	height: 100%;
+}
+
+#logos img:hover{
+	cursor: pointer;
+	opacity: 0.7;
+}
+
+#tacr, #tacr_logo{
+	width: 200px;
+}
+
+#openscreen_logo{
+	height: 100px;
+}
+
+#lich_logo{
+	height: 70px;
+	margin-top: 50px;
+}
+
+#tacr.description{
+	font-size: 10px;
+	margin-top: 0px;
+}
+
+#method_buttons{
+	margin-top: 20px;
+	width: 95%;
+}
+
+#method_buttons > .pure-button{
+	margin-left: 15px;
+	margin-top: 15px;
+	font-style: italic;
+}
+
+#min_button{
+	margin-left: 20px;
+}
+
+.size{
+	font-size: 14px;
+}
+
+#scaffolds{
+	display: none;
+	width: 200px;
+	overflow: auto;
+	position: absolute;
+	z-index: 100;
+	background-color: white;
+	/*border: solid #D2D2D2 2px;*/
+}
+
+.scaffold_img{
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	width: 95%;
+}
+
+.scaffold_count{
+	margin-left: 10px;
+	font-weight: bold;
+}
+
+.scaffold{
+	border: solid #D2D2D2 2px;
+	padding-bottom: 10px;
+}
+
+.scaffold:hover{
+	cursor: pointer;
+}
+
+.active_scaffold{
+	border-color: #399757;
+	border-width: 4px;
+}
+
+#floating_mol{
+	display: none;
+	z-index: 101;
+	position: absolute;
+	background-color: white;
+	border-radius: 5px;
+	border: solid #D2D2D2 2px;
+	width: 150px;
+	height: 150px;
+}
+
+#floating_img{
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	width: 98%;
+}
+
+#message{
+	width: 400px;
+	height: 300px;
+}
+
+#contact_form{
+	margin-left: 20px;
+}
+
+#contact_form div{
+	margin-top: 10px;
+}
+
+#interactive_form{
+	width: 20%;
+	float: left;
+	font-size: 12px;
+	color: gray;
+	margin-left: 20px;
+}
+
+#interactive_form label{
+	margin-top: 10px;
+}
+
+#interactive_example > #dendrogram{
+	width: 80%;
+}
+
+#around_dendrogram{
+	min-height: 800px;
+}
+
+.warning{
+	font-size: 20px;
+	font-weight: bold;
+	color: red;
+}
+
+#steran_img{
+	width: 400px;
+	
+}

@@ -3499,7 +3499,7 @@ let InCHlib;
           return false;
         });
 
-        $(`#${self.settings.target } .filter_features ul li,` + `#${self.settings.target } .filter_features div span`).hover(
+        $(`#${self.settings.target} .filter_features ul li,` + `#${self.settings.target} .filter_features div span`).hover(
           function () {
             $(this).css({
               cursor: 'pointer',
@@ -4324,4 +4324,14 @@ let InCHlib;
     self.heatmap_layer.moveToBottom();
     self.heatmap_layer.moveUp();
   };
+
+  /**
+    * Destroy InCHlib
+    */
+  InCHlib.prototype.destroy = function () {
+    const self = this;
+    self._delete_all_layers();
+    // TODO: more destruction
+  };
+
 }(jQuery));

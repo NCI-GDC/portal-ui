@@ -4,13 +4,13 @@
 	src: url('../fonts/Ubuntu-R.ttf');
 } */
 
-body{
+/* body{
 	width: 90%;
 	max-width: 1400px;
 	margin-left: auto;
 	margin-right: auto;
 	font-family: 'Ubuntu', sans-serif;
-}
+} */
 
 #dev{
 	width: 100%;
@@ -459,7 +459,6 @@ body{
 	margin-right: auto;
 	display: block;
 }
-
 
 #map_dendrogram{
 	width: 55%;

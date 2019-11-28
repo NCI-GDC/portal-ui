@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 
 // import './inchlib/konva.min';
 import './inchlib/inchlib.css';
-import InCHlib from './inchlib/inchlib_dev';
+// import InCHlib from './inchlib/inchlib_dev';
 import inchlibData from './inchlib/zhenyu-2000x50';
 
 interface IProps {
@@ -37,10 +37,9 @@ class GeneExpressionChart extends Component<IProps, IState> {
 
   componentDidMount() {
     console.log('InCHlib', InCHlib);
-    
-    // const inchlib = new InCHlib(inchlibOptions);
-    // inchlib.read_data(inchlibData);
-    // inchlib.draw();
+    const inchlib = new InCHlib(inchlibOptions);
+    inchlib.read_data(inchlibData);
+    inchlib.draw();
     // this.inchlib = inchlib;
   }
   // componentWillUnmount() {

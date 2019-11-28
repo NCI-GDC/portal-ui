@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 // import './inchlib/konva.min';
 import './inchlib/inchlib.css';
 // import InCHlib from './inchlib/inchlib_dev';
-import inchlibData from './inchlib/zhenyu-2000x50';
+import inchlibData from './inchlib/zhenyu-10x5';
 
 interface IProps {
   [x:string] :any,
@@ -16,17 +16,13 @@ interface IState {
 
 const inchlibOptions = {
   column_metadata: true,
-  heatmap_colors: "RdBkGr",
+  heatmap_colors: 'RdBkGr',
   max_height: 1200,
-  metadata_colors: "BuWhRd",
+  metadata_colors: 'BuWhRd',
   metadata: true,
-  target: "inchlib",
+  target: 'inchlib',
   width: 1000,
 };
-
-// const inchlibOptions = {
-
-// };
 
 class GeneExpressionChart extends Component<IProps, IState> {
   // $inchlib: any;
@@ -36,7 +32,6 @@ class GeneExpressionChart extends Component<IProps, IState> {
   // inchlib = new InCHlib(inchlibOptions);
 
   componentDidMount() {
-    console.log('InCHlib', InCHlib);
     const inchlib = new InCHlib(inchlibOptions);
     inchlib.read_data(inchlibData);
     inchlib.draw();

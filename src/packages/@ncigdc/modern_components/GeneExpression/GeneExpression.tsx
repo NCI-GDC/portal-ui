@@ -16,8 +16,7 @@ export class GeneExpression extends Component {
           >
           <Column>
             <h1 style={{ margin: 0 }}>Gene Expression</h1>
-
-          <GeneExpressionChart />
+            <GeneExpressionChart />
           </Column>
         </Row>
       </Column>

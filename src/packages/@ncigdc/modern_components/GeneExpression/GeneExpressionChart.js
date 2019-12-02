@@ -4,8 +4,12 @@ import './inchlib/inchlib';
 
 class GeneExpressionChart extends Component {
   componentDidMount() {
+    const options = {
+      data,
+      max_width: 500,
+    }
     this.$el = $(this.el);
-    this.$el.InCHlib();
+    this.$el.InCHlib(options);
   }
 
   componentWillUnmount() {
@@ -19,6 +23,7 @@ class GeneExpressionChart extends Component {
       <div
         id="inchlib"
         ref={el => this.el = el}
+        style={{ width: '100%' }}
         />
     );
   }

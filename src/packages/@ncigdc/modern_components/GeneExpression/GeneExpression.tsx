@@ -14,7 +14,10 @@ export class GeneExpression extends Component {
             padding: '2rem 3rem',
           }}
           >
-          <Column>
+          <Column
+            style={{
+              flex: '1 0 auto',
+            }}>
             <h1 style={{ margin: 0 }}>Gene Expression</h1>
             <GeneExpressionChart />
           </Column>

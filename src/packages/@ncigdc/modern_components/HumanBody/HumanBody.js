@@ -72,7 +72,6 @@ export default compose(
   lifecycle({
     async componentDidMount(): Promise<*> {
       const { groupedData, push, setTooltip } = this.props;
-      // groupedData[0].docCount = 120000;
       let factor;
       // factor = floor(maxBy(groupedData, 'docCount').docCount * 21 / 24, -2) / 5;
 

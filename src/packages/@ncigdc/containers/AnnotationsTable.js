@@ -2,24 +2,34 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
-import { compose } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+} from 'recompose';
 import { connect } from 'react-redux';
+
 import Pagination from '@ncigdc/components/Pagination';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import { Row } from '@ncigdc/uikit/Flex';
 import TableActions from '@ncigdc/components/TableActions';
-import tableModels from '@ncigdc/tableModels';
 import Table, { Tr } from '@ncigdc/uikit/Table';
+import {
+  isSortedColumn,
+  withSort,
+} from '@ncigdc/utils/tables';
 import timestamp from '@ncigdc/utils/timestamp';
 
-export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.annotations }))
+export const AnnotationsTable = compose(
+  setDisplayName('EnhancedAnnotationsTable'),
+  connect(state => ({ tableColumns: state.tableColumns.annotations })),
+  withSort('annotations_sort'),
 )(
   ({
     downloadable,
     relay,
     hits,
     entityType = 'annotations',
+    sort,
     tableColumns,
     canAddToCart = true,
     tableHeader,
@@ -68,11 +78,7 @@ export const SearchTable = compose(
         </Row>
         <div style={{ overflowX: 'auto' }}>
           <Table
-            id="repository-annotations-table"
-            headings={tableInfo.map(x => (
-              <x.th key={x.id} hits={hits} canAddToCart={canAddToCart} />
-            ))}
-            body={
+            body={(
               <tbody>
                 {hits.edges.map((e, i) => (
                   <Tr key={e.node.id} index={i}>
@@ -90,8 +96,17 @@ export const SearchTable = compose(
                   </Tr>
                 ))}
               </tbody>
-            }
-          />
+            )}
+            headings={tableInfo.map(x => (
+              <x.th
+                canAddToCart={canAddToCart}
+                hits={hits}
+                key={x.id}
+                sorted={isSortedColumn(sort, x.id)}
+                />
+            ))}
+            id="repository-annotations-table"
+            />
         </div>
         <Pagination
           prefix={entityType}
@@ -135,9 +150,7 @@ export const AnnotationsTableQuery = {
   },
 };
 
-const AnnotationsTable = Relay.createContainer(
-  SearchTable,
-  AnnotationsTableQuery
+export default Relay.createContainer(
+  AnnotationsTable,
+  AnnotationsTableQuery,
 );
-
-export default AnnotationsTable;

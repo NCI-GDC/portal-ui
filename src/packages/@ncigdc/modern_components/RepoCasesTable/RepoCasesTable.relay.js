@@ -24,7 +24,7 @@ export default (Component: React.Class<*>) =>
           variables: {
             cases_offset: parseIntParam(q.cases_offset, 0),
             cases_size: parseIntParam(q.cases_size, 20),
-            cases_sort: parseJSONParam(q.cases_sort, null),
+            cases_sort: parseJSONParam(q.cases_sort, []),
             filters: parseFilterParam(q.filters, defaultFilters),
             score: 'annotations.annotation_id',
           },

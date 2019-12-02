@@ -73,7 +73,6 @@ export default compose(
     async componentDidMount(): Promise<*> {
       const { groupedData, push, setTooltip } = this.props;
       let factor;
-      // factor = floor(maxBy(groupedData, 'docCount').docCount * 21 / 24, -2) / 5;
 
       const data = groupedData.map(d => ({
         ...d,

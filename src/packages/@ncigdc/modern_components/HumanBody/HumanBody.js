@@ -166,7 +166,7 @@ export default compose(
       style={{
         position: 'absolute',
         bottom: 0,
-        left: 650,
+        left: 625,
         top: 465,
         color: 'black',
         fontSize: 12,

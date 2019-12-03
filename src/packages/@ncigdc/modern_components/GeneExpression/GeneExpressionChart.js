@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import data from './inchlib/data';
-import './inchlib/inchlib';
+import './inchlib';
 
 class GeneExpressionChart extends Component {
   componentDidMount() {
     const options = {
       data,
       max_width: 500,
-    }
+    };
     this.$el = $(this.el);
     this.$el.InCHlib(options);
   }
@@ -20,11 +20,7 @@ class GeneExpressionChart extends Component {
 
   render() {
     return (
-      <div
-        id="inchlib"
-        ref={el => this.el = el}
-        style={{ width: '100%' }}
-        />
+      <div ref={el => this.el = el} />
     );
   }
 }

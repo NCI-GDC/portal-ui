@@ -2127,17 +2127,7 @@ import Konva from 'konva';
           strokeWidth: self.pixels_for_leaf,
         });
         row.add(line);
-
-        if (self.current_draw_values) {
-          text = self.objects_ref.heatmap_value.clone({
-            x: self._hack_round((x1 + x2) / 2 - (`${text_value}`).length * (self.value_font_size / 4)),
-            y: self._hack_round(y1 - self.value_font_size / 2),
-            fontSize: self.value_font_size,
-            text: text_value,
-          });
-          row.add(text);
         }
-      }
 
       x1 = x2;
     }

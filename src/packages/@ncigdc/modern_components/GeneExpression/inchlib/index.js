@@ -224,7 +224,6 @@ import { mapKeys } from 'lodash';
 		self.user_options = options || {};
 		self.element.style.position = 'relative';
     const element_width = self.element.offsetWidth;
-    console.log('element_width', element_width);
     
 		self.options.width = self.options.max_width &&
       self.options.max_width < element_width

@@ -3,7 +3,6 @@
 
 import $ from 'jquery';
 import Konva from 'konva';
-import { mapKeys } from 'lodash';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -152,9 +151,8 @@ import { mapKeys } from 'lodash';
   * @example
   *   const options = {
   *     metadata: true,
-  *     max_height: 800,
-  *     width: 700,
-  *     metadata_colors: "RdLrBu"
+  *     max_width: 800,
+  *     metadata_colors: "RdLrBu",
   *   }
   *  $(target).InCHlib(options);
   */
@@ -207,7 +205,6 @@ import { mapKeys } from 'lodash';
       filter_button: true,
       hint_button: true,
     },
-    width: 500,
   };
 
 	function InCHlib(element, options) {
@@ -217,7 +214,6 @@ import { mapKeys } from 'lodash';
     self.element = element;
     self.$element = $(element);
     self.options = $.extend({}, defaults, options);
-    self._defaults = defaults;
     self._name = plugin_name;
     
     // inchlib setup
@@ -3763,8 +3759,10 @@ import { mapKeys } from 'lodash';
       settings_form.fadeIn('fast');
     } else {
       settings_form = $(`<form class='settings_form' id='${form_id}'></form>`);
-      let options = ''; let color_1; let color_2; let
-        color_3;
+      let options = '';
+      let color_1;
+      let color_2;
+      let color_3;
 
       for (var i = 0, keys = Object.keys(color_options), len = keys.length; i < len; i++) {
         key = keys[i];
@@ -4400,10 +4398,8 @@ import { mapKeys } from 'lodash';
     */
 	InCHlib.prototype.init = function () {
     const self = this;
-    // TODO draw the thing!
     self.read_data(self.options.data);
     self.draw();
-		// self.element.innerHTML = 'boop';
   };
 
   $.fn[plugin_name] = function (options) {

@@ -2271,6 +2271,7 @@ import Konva from 'konva';
         y,
       });
       row.add(text);
+      // TODO: add an X button here with a click event to destroy this row
     }
     return row;
   };

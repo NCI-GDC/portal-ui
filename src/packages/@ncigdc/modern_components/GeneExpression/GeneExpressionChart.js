@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 
 import React, { Component } from 'react';
-import $ from 'jquery';
 
 import data from './inchlib/data';
 import './inchlib';
@@ -13,6 +12,8 @@ class GeneExpressionChart extends Component {
       max_width: 500,
       metadata_colors: 'White',
     };
+    // this doesn't work if jquery is imported
+    // in this file
     this.$el = $(this.el);
     this.$el.InCHlib(options);
   }

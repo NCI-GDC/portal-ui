@@ -2793,7 +2793,7 @@ import { mapKeys } from 'lodash';
     const self = this;
     const node = self.data.nodes[path_id];
     if (node.count != 1) {
-      self.dendrogram_layer.get(`#${path_id}`)[0].stroke(color);
+      self.dendrogram_layer.find(`#${path_id}`)[0].stroke(color);
       self._highlight_path(node.left_child, color);
       self._highlight_path(node.right_child, color);
     } else {
@@ -2806,7 +2806,7 @@ import { mapKeys } from 'lodash';
     const self = this;
     const node = self.column_dendrogram.nodes[path_id];
     if (node.count != 1) {
-      self.column_dendrogram_layer.get(`#col${path_id}`)[0].stroke(color);
+      self.column_dendrogram_layer.find(`#col${path_id}`)[0].stroke(color);
       self._highlight_column_path(node.left_child, color);
       self._highlight_column_path(node.right_child, color);
     } else {
@@ -2980,7 +2980,7 @@ import { mapKeys } from 'lodash';
     const node = self.data.nodes[path_id];
 
     if (node.count != 1) {
-      const path = self.dendrogram_layer.get(`#${path_id}`)[0];
+      const path = self.dendrogram_layer.find(`#${path_id}`)[0];
       if (path) {
         path.setStroke('grey');
         self._neutralize_path(node.right_child);

@@ -7,6 +7,7 @@ class GeneExpressionChart extends Component {
     const options = {
       data,
       max_width: 500,
+      metadata_colors: 'White',
     };
     this.$el = $(this.el);
     this.$el.InCHlib(options);

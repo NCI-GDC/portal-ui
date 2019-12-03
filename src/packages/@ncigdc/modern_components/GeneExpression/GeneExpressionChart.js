@@ -1,4 +1,7 @@
+/* eslint-disable camelcase */
+
 import React, { Component } from 'react';
+import $ from 'jquery';
 import data from './inchlib/data';
 import './inchlib';
 

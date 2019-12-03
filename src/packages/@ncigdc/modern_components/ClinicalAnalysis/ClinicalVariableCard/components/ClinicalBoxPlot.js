@@ -40,7 +40,7 @@ const ClinicalBoxPlot = ({
       minWidth: 300,
     }}
     >
-    <Row 
+    <Row
       className="print-w500"
       style={{ width: '100%' }}
       >
@@ -141,7 +141,7 @@ const ClinicalBoxPlot = ({
         style={{
           height: CHART_HEIGHT + 10,
           maxHeight: CHART_HEIGHT + 10,
-          width: QQ_PLOT_RATIO,
+          width: 'calc(100% - 150px)',
         }}
         >
         <QQPlotQuery

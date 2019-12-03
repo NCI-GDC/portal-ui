@@ -158,7 +158,7 @@ import Konva from 'konva';
     alternative_data: false,
     column_dendrogram: false,
     column_metadata_colors: 'RdLrBu',
-    column_metadata_row_height: 25,
+    column_metadata_row_height: 20,
     column_metadata: false,
     columns_order: [],
     count_column_colors: 'Reds',
@@ -167,10 +167,11 @@ import Konva from 'konva';
     dendrogram: true,
     draw_row_ids: false,
     fixed_row_id_size: false,
-    font: 'Helvetica',
-    font_size: 12,
+    font: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+    font_color: '#767676',
+    font_size: 10,
     heatmap_colors: 'Greens',
-    heatmap_font_color: 'black',
+    heatmap_font_color: '#767676',
     heatmap_header: true,
     heatmap_part_width: 0.7,
     heatmap: true,
@@ -991,7 +992,7 @@ import Konva from 'konva';
         fontSize: self.options.font_size,
         padding: 8,
         fill: 'white',
-        fontStyle: 'bold',
+        // fontStyle: 'bold',
         listening: false,
         align: 'center',
         lineHeight: 1.2,
@@ -1019,7 +1020,7 @@ import Konva from 'konva';
       heatmap_value: new Konva.Text({
         fontFamily: self.options.font,
         fill: self.options.heatmap_font_color,
-        fontStyle: 'bold',
+        // fontStyle: 'bold',
         listening: false,
       }),
 
@@ -1029,15 +1030,15 @@ import Konva from 'konva';
 
       column_header: new Konva.Text({
         fontFamily: self.options.font,
-        fontStyle: 'bold',
-        fill: 'black',
+        // fontStyle: 'bold',
+        fill: self.options.font_color,
       }),
 
       count: new Konva.Text({
         fontSize: 10,
         fill: '#6d6b6a',
         fontFamily: self.options.font,
-        fontStyle: 'bold',
+        // fontStyle: 'bold',
         listening: false,
       }),
 
@@ -2386,8 +2387,8 @@ import Konva from 'konva';
       text: distance,
       fontSize: self.options.font_size,
       fontFamily: self.options.font,
-      fontStyle: 'bold',
-      fill: 'black',
+      // fontStyle: 'bold',
+      fill: self.options.font_color,
       align: 'right',
       listening: false,
     });
@@ -3625,9 +3626,11 @@ import Konva from 'konva';
       min_percentile: 'Min percentile value',
     };
 
-    if (self.options.metadata) {
-      color_options.metadata_colors = 'Metadata colors';
-    }
+    // TODO remove this so the BG stays white?
+    // do we need metadata colours?
+    // if (self.options.metadata) {
+    //   color_options.metadata_colors = 'Metadata colors';
+    // }
 
     if (self.options.column_metadata) {
       color_options.column_metadata_colors = 'Column metadata colors';
@@ -3797,6 +3800,9 @@ import Konva from 'konva';
         position: 'absolute',
         top: 110,
         left: 170,
+        width: 110,
+        'max-height': 400,
+        'overflow-y': 'auto',
         'background-color': 'white',
       });
 

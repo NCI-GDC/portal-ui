@@ -1022,7 +1022,6 @@ import { mapKeys } from 'lodash';
 
       heatmap_line: new Konva.Line({
         lineCap: 'butt',
-        value: 0,
       }),
 
       column_header: new Konva.Text({
@@ -2156,10 +2155,8 @@ import { mapKeys } from 'lodash';
                 x2,
                 y2,
               ],
-              // THIS ONE - controls gene IDs
-              // change to NAME
-              value: Number(text_value) || 99,
-              // value: text_value,
+              // name = gene ID
+              name: text_value,
               column: ['m', col_index].join('_'),
               strokeWidth: self.pixels_for_leaf,
             });
@@ -2246,9 +2243,8 @@ import { mapKeys } from 'lodash';
       line = self.objects_ref.heatmap_line.clone({
         strokeWidth: self.options.column_metadata_row_height,
         stroke: color,
-        // THIS ONE
-        value: Number(text_value) || 99,
-        // value: text_value,
+        // category value
+        name: text_value,
         points: [
           x1,
           y1,
@@ -4267,7 +4263,6 @@ import { mapKeys } from 'lodash';
       header_type2value.cm = self.column_metadata_header[column[1]];
     }
 
-    let { value } = attrs;
     const header = header_type2value[column[0]];
 
     if (header !== self.last_column) {
@@ -4290,16 +4285,22 @@ import { mapKeys } from 'lodash';
       self.heatmap_overlay.add(self.column_overlay);
     }
 
-    if (header !== undefined) {
-      value = [header, value].join('\n');
-    }
+    const { name, value } = attrs;
+
+    const tooltip_value = typeof value === 'undefined'
+      ? name
+      : value;
+    
+    const tooltip_text = typeof header === 'undefined'
+      ? tooltip_value
+      : [header, tooltip_value].join('\n');
 
     const tooltip = self.objects_ref.tooltip_label.clone({
       x,
       y,
       id: 'col_label',
     });
-    tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: value }));
+    tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
 
     self.heatmap_overlay.add(tooltip);
     self.heatmap_overlay.moveToTop();

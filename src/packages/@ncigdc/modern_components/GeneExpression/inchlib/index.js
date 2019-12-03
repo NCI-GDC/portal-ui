@@ -2172,10 +2172,9 @@ import Konva from 'konva';
               });
 
               const width = text.getWidth();
-              const x = self._hack_round((x1 + x2) / 2 - width / 2);
               const y = self._hack_round(y1 - self.value_font_size / 2);
               text.position({
-                x,
+                x: x1 + 5,
                 y,
               });
               row.add(text);

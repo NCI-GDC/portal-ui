@@ -164,7 +164,7 @@ import Konva from 'konva';
     alternative_data: false,
     column_dendrogram: false,
     column_metadata_colors: 'RdLrBu',
-    column_metadata_row_height: 8,
+    column_metadata_row_height: 25,
     column_metadata: false,
     columns_order: [],
     count_column_colors: 'Reds',

@@ -174,6 +174,7 @@ import Konva from 'konva';
     draw_row_ids: false,
     fixed_row_id_size: false,
     font: 'Helvetica',
+    font_size: 12,
     heatmap_colors: 'Greens',
     heatmap_font_color: 'black',
     heatmap_header: true,
@@ -998,7 +999,7 @@ import Konva from 'konva';
 
       tooltip_text: new Konva.Text({
         fontFamily: self.options.font,
-        fontSize: 12,
+        fontSize: self.options.font_size,
         padding: 8,
         fill: 'white',
         fontStyle: 'bold',
@@ -2127,7 +2128,7 @@ import Konva from 'konva';
           strokeWidth: self.pixels_for_leaf,
         });
         row.add(line);
-        }
+      }
 
       x1 = x2;
     }
@@ -2168,7 +2169,7 @@ import Konva from 'konva';
             if (self.current_draw_values) {
               text = self.objects_ref.heatmap_value.clone({
                 text: text_value,
-                fontSize: self.value_font_size,
+                fontSize: self.options.font_size,
               });
 
               const width = text.getWidth();
@@ -2323,7 +2324,7 @@ import Konva from 'konva';
       text = self.objects_ref.heatmap_value.clone({
         x,
         y: self._hack_round(object_y[i][1] - self.row_id_size / 2),
-        fontSize: self.row_id_size,
+        fontSize: self.options.font_size,
         text: object_y[i][0],
         fontStyle: 'italic',
         fill: 'gray',
@@ -2357,7 +2358,7 @@ import Konva from 'konva';
     if (self.options.fixed_row_id_size) {
       const test = new Konva.Text({
         fontFamily: self.options.font,
-        fontSize: self.options.fixed_row_id_size,
+        fontSize: self.options.font_size,
         fontStyle: 'italic',
         listening: false,
         text: test_string,
@@ -2409,7 +2410,7 @@ import Konva from 'konva';
           y,
           text: current_headers[i],
           position_index: i,
-          fontSize: font_size,
+          fontSize: self.options.font_size,
           rotationDeg: rotation,
         });
         self.header_layer.add(column_header);
@@ -2506,7 +2507,7 @@ import Konva from 'konva';
       x: 0,
       y: y1 - 20,
       text: distance,
-      fontSize: 12,
+      fontSize: self.options.font_size,
       fontFamily: self.options.font,
       fontStyle: 'bold',
       fill: 'black',

@@ -2028,7 +2028,7 @@ import Konva from 'konva';
       let y1 = self.header_height + 0.5 * self.options.column_metadata_row_height;
 
       for (var i = 0, len = self.column_metadata.features.length; i < len; i++) {
-        heatmap_row = self._draw_column_metadata_row(self.column_metadata.features[i], i, x1, y1);
+        heatmap_row = self._draw_column_metadata_row(self.column_metadata.features[i], self.column_metadata.feature_names[i], i, x1, y1);
         self.heatmap_layer.add(heatmap_row);
         self._bind_row_events(heatmap_row);
         y1 += self.options.column_metadata_row_height;
@@ -2222,14 +2222,14 @@ import Konva from 'konva';
     return row;
   };
 
-  InCHlib.prototype._draw_column_metadata_row = function (data, row_index, x1, y1) {
+  InCHlib.prototype._draw_column_metadata_row = function (data, title, row_index, x1, y1) {
     const self = this;
     const row = new Konva.Group({ class: 'column_metadata' });
     let x2; let y2; let color; let line; let value; let text; let text_value; let width; let
       col_index;
     const str2num = self.column_metadata_descs[row_index].str2num !== undefined;
 
-    for (let i = 0, len = self.on_features.data.length; i < len; i++) {
+    for (let i = 0; i < self.on_features.data.length; i++) {
       col_index = self.on_features.data[i];
       value = data[col_index];
       text_value = value;
@@ -2258,8 +2258,27 @@ import Konva from 'konva';
       row.add(line);
       x1 = x2;
     }
+    // add the category name
+    if (self.current_draw_values) {
+      text = self.objects_ref.heatmap_value.clone({
+        text: title,
+        fontSize: self.options.font_size,
+      });
+
+      const y = self._hack_round(y1 - self.value_font_size / 2);
+      text.position({
+        x: x1 + 5,
+        y,
+      });
+      row.add(text);
+    }
     return row;
   };
+
+  // TODO
+  // InCHlib.prototype._destroy_column_metadata_row = function(row) {
+
+  // };
 
   InCHlib.prototype._bind_row_events = function (row) {
     const self = this;

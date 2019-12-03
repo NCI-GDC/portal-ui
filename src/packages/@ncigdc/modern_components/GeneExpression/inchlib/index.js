@@ -138,12 +138,6 @@ import Konva from 'konva';
   * @option {boolean} [alternative_data=false]
   *   use original data to compute heatmap but show the alternative values (alternative_data section must be present in input data)
 
-  * @option {boolean} [images_as_alternative_data=false]
-  *   alternative data values can be used to identify image files (.png, .jpg) and draw them insted of the heatmap values
-
-  * @option {object} [images_path=false]
-  *   when using images_as_alternative_data option - set dir path of the image files and the image files extension to generate the whole file path ({"dir": "", "ext": ""})
-
   * @option {object} [navigation_toggle={"distance_scale": false, "filter_button": false, "export_button": false, "color_scale": false, "hint_button": false}]
   *   toggle "navigation" features - true/false
 
@@ -182,11 +176,6 @@ import Konva from 'konva';
     heatmap: true,
     highlight_colors: 'Oranges',
     highlighted_rows: [],
-    images_path: {
-      ext: '',
-      dir: '',
-    },
-    images_as_alternative_data: false,
     independent_columns: true,
     label_color: '#9E9E9E',
     max_column_width: 150,
@@ -1228,16 +1217,12 @@ import Konva from 'konva';
     };
     let key;
     const keys = Object.keys(self.data.nodes);
-
-    if (self.options.images_as_alternative_data) {
-      dimensions.data = self.alternative_data[Object.keys(self.alternative_data)[0]].length;
-    } else {
-      for (var i = 0; i < keys.length; i++) {
-        key = keys[i];
-        if (self.data.nodes[key].count == 1) {
-          dimensions.data = self.data.nodes[key].features.length;
-          break;
-        }
+ 
+    for (var i = 0; i < keys.length; i++) {
+      key = keys[i];
+      if (self.data.nodes[key].count == 1) {
+        dimensions.data = self.data.nodes[key].features.length;
+        break;
       }
     }
 
@@ -1374,17 +1359,13 @@ import Konva from 'konva';
     let key;
 
     if (self.options.alternative_data) {
-      if (self.options.images_as_alternative_data) {
-        max_length = 0;
-      } else {
-        const keys = Object.keys(self.alternative_data);
-        for (var i = 0; i < keys.length; i++) {
-          key = keys[i];
-          node_data = self.alternative_data[key];
-          for (var j = 0, len_2 = node_data.length; j < len_2; j++) {
-            if ((`${node_data[j]}`).length > max_length) {
-              max_length = (`${node_data[j]}`).length;
-            }
+      const keys = Object.keys(self.alternative_data);
+      for (var i = 0; i < keys.length; i++) {
+        key = keys[i];
+        node_data = self.alternative_data[key];
+        for (var j = 0, len_2 = node_data.length; j < len_2; j++) {
+          if ((`${node_data[j]}`).length > max_length) {
+            max_length = (`${node_data[j]}`).length;
           }
         }
       }
@@ -1565,12 +1546,6 @@ import Konva from 'konva';
       self.options.column_dendrogram = false;
       self._reorder_heatmap(0);
       self.ordered_by_index = 0;
-    }
-
-    if (self.options.images_as_alternative_data) {
-      self.path2image = {};
-      self.path2image_obj = {};
-      self.image_counter = 0;
     }
 
     self._draw_heatmap();
@@ -2070,48 +2045,9 @@ import Konva from 'konva';
 
       if (self.options.alternative_data) {
         text_value = self.alternative_data[node_id][col_index];
-
-        if (self.options.images_as_alternative_data && text_value !== undefined && text_value !== null && text_value != '') {
-          value = null;
-          let filepath = self.options.images_path.dir + text_value + self.options.images_path.ext;
-          filepath = escape(filepath);
-
-
-          if (self.path2image[text_value] === undefined) {
-            const image_obj = new Image();
-            image_obj.src = filepath;
-
-            image_obj.onload = function () {
-              self.image_counter++;
-
-              if (self.image_counter === Object.keys(self.path2image).length) {
-                self.heatmap_layer.draw();
-              }
-            };
-
-            self.path2image_obj[text_value] = image_obj;
-            self.path2image[text_value] = self.objects_ref.image.clone({ image: self.path2image_obj[text_value] });
-          }
-
-          const image = self.path2image[text_value].clone({
-            width: self.pixels_for_dimension,
-            height: self.pixels_for_leaf,
-            x: x1,
-            y: y1 - self._hack_round(0.5 * self.pixels_for_leaf),
-            points: [
-              x1,
-              y1,
-              x1 + self.pixels_for_dimension,
-              null,
-            ],
-            column: ['d', col_index].join('_'),
-            value: text_value,
-          });
-          row.add(image);
-        }
       }
 
-      if (value !== null && !self.options.images_as_alternative_data) {
+      if (value !== null) {
         color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
 
         line = self.objects_ref.heatmap_line.clone({

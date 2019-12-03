@@ -193,7 +193,7 @@ import Konva from 'konva';
     max_percentile: 100,
     max_row_height: 25,
     max_width: 0,
-    metadata_colors: 'Reds',
+    metadata_colors: 'White',
     metadata: false,
     middle_percentile: 50,
     min_percentile: 0,

@@ -10,7 +10,6 @@ class GeneExpressionChart extends Component {
     const options = {
       data,
       max_width: 500,
-      metadata_colors: 'White',
     };
     // this doesn't work if jquery is imported
     // in this file

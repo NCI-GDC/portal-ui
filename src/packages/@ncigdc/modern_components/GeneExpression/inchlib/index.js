@@ -1045,7 +1045,7 @@ import Color from 'color';
       node: new Konva.Line({
         stroke: 'grey',
         strokeWidth: 2,
-        lineCap: 'sqare',
+        lineCap: 'square',
         lineJoin: 'round',
         listening: false,
       }),
@@ -3630,6 +3630,7 @@ import Color from 'color';
               x: 1,
               y: 1,
             });
+            // TODO: can I copy this to add a loader?
             self.stage.draw();
             loading_div.remove();
             self.$element.show();

@@ -3638,7 +3638,6 @@ import Color from 'color';
               y: 1,
             });
             // TODO: can I copy this to add a loader?
-            // TODO: can I copy this to add a loader?
             self.stage.draw();
             loading_div.remove();
             self.$element.show();
@@ -4334,19 +4333,8 @@ import Color from 'color';
     if (self.user_options === 'destroy') {
       self.destroy();
     } else {
-      const loading_div = $(`<h3 style='margin-top: 100px; margin-left: 100px; width: 500px; height: 800px;'>Loading...</h3>`);
-      self.$element.after(loading_div);
-      self.$element.hide();
-
       self.read_data(self.options.data);
-      console.log('drawing')
       self.draw();
-
-      $(self).ready(() => {
-        loading_div.hide();
-        console.log('hide loading')
-        self.$element.show();
-      });
     }
   };
  

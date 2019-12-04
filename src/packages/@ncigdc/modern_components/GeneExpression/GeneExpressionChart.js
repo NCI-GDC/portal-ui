@@ -49,7 +49,25 @@ class GeneExpressionChart extends Component {
 
   render() {
     return (
-      <div ref={el => this.el = el} />
+      <div style={{ position: 'relative' }}>
+        <div
+          style={{
+            left: 0,
+            position: 'absolute',
+            top: 0,
+          }}
+          >
+          Loading
+        </div>
+        <div
+          ref={el => this.el = el}
+          style={{
+            left: 0,
+            position: 'absolute',
+            top: 0,
+          }}
+          />
+      </div>
     );
   }
 }

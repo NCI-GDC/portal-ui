@@ -1707,16 +1707,16 @@ import Color from 'color';
     const self = this;
     self.stage_layer = new Konva.Layer();
     const stage_rect = new Konva.Rect({
+      fill: '#fff',
+      height: self.options.height,
+      opacity: 1,
+      width: self.options.width,
       x: 0,
       y: 0,
-      width: self.options.width,
-      height: self.options.height,
-      opacity: 0,
     });
     self.stage_layer.add(stage_rect);
     stage_rect.moveToBottom();
     self.stage.add(self.stage_layer);
-
 
     self.stage_layer.on('click', (evt) => {
       self.unhighlight_cluster();

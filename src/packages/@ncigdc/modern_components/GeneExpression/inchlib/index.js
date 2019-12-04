@@ -2246,20 +2246,19 @@ import Color from 'color';
       x1 = x2;
     }
     // add the category name
-    if (self.current_draw_values) {
-      text = self.objects_ref.heatmap_value.clone({
-        text: title,
-        fontSize: self.options.font.size,
-      });
+    text = self.objects_ref.heatmap_value.clone({
+      text: title,
+      fontSize: self.options.font.size,
+    });
 
-      const y = self._hack_round(y1 - self.value_font_size / 2);
-      text.position({
-        x: x1 + 5,
-        y,
-      });
-      row.add(text);
-      // TODO: add an X button here with a click event to destroy this row
-    }
+    const y = self._hack_round(y1 - self.value_font_size / 2);
+    text.position({
+      x: x1 + 5,
+      y,
+    });
+    row.add(text);
+    // TODO: add an X button here with a click event to destroy this row
+
     return row;
   };
 

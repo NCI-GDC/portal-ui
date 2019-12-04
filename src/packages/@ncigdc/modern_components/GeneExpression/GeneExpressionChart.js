@@ -11,8 +11,11 @@ class GeneExpressionChart extends Component {
     const options = {
       button_color: theme.primary,
       data,
-      font_color: '#767676',
-      font_size: 12,
+      font: {
+        color: '#767676',
+        family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+        size: 12,
+      },
       max_width: 500,
     };
     // this doesn't work if jquery is imported

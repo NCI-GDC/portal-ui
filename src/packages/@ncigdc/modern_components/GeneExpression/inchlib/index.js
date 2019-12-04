@@ -67,7 +67,7 @@ import Color from 'color';
   * @option {boolean} [dendrogram=true]
   *   turn on/off the row dendrogram
 
-  * @option {string} [font="Trebuchet&nbsp;MS"]
+  * @option {string} [font.family="Trebuchet&nbsp;MS"]
   *   font family
 
   * @option {string} [heatmap_colors="Greens"]
@@ -112,7 +112,7 @@ import Color from 'color';
   * @option {boolean} [heatmap=true]
   *   turn on/off the heatmap
 
-  * @option {string} [font_color="black"]
+  * @option {string} [font.color="black"]
   *   the color of the text values in the heatmap
 
   * @option {string} [count_column_colors="Reds"]
@@ -168,9 +168,11 @@ import Color from 'color';
     dendrogram: true,
     draw_row_ids: false,
     fixed_row_id_size: false,
-    font: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-    font_color: '#767676',
-    font_size: 10,
+    font: {
+      color: 'black',
+      family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+      size: 10,
+    },
     heatmap_colors: 'Greens',
     heatmap_header: true,
     heatmap_part_width: 0.7,
@@ -1009,8 +1011,8 @@ import Color from 'color';
       }),
 
       tooltip_text: new Konva.Text({
-        fontFamily: self.options.font,
-        fontSize: self.options.font_size,
+        fontFamily: self.options.font.family,
+        fontSize: self.options.font.size,
         padding: 8,
         fill: 'white',
         // fontStyle: 'bold',
@@ -1039,8 +1041,8 @@ import Color from 'color';
       }),
 
       heatmap_value: new Konva.Text({
-        fontFamily: self.options.font,
-        fill: self.options.font_color,
+        fontFamily: self.options.font.family,
+        fill: self.options.font.color,
         // fontStyle: 'bold',
         listening: false,
       }),
@@ -1050,15 +1052,14 @@ import Color from 'color';
       }),
 
       column_header: new Konva.Text({
-        fontFamily: self.options.font,
-        // fontStyle: 'bold',
-        fill: self.options.font_color,
+        fontFamily: self.options.font.family,
+        fill: self.options.font.color,
       }),
 
       count: new Konva.Text({
         fontSize: 10,
         fill: '#6d6b6a',
-        fontFamily: self.options.font,
+        fontFamily: self.options.font.family,
         // fontStyle: 'bold',
         listening: false,
       }),
@@ -2126,7 +2127,7 @@ import Color from 'color';
             if (self.current_draw_values) {
               text = self.objects_ref.heatmap_value.clone({
                 text: text_value,
-                fontSize: self.options.font_size,
+                fontSize: self.options.font.size,
               });
 
               const width = text.getWidth();
@@ -2220,7 +2221,7 @@ import Color from 'color';
     if (self.current_draw_values) {
       text = self.objects_ref.heatmap_value.clone({
         text: title,
-        fontSize: self.options.font_size,
+        fontSize: self.options.font.size,
       });
 
       const y = self._hack_round(y1 - self.value_font_size / 2);
@@ -2300,7 +2301,7 @@ import Color from 'color';
       text = self.objects_ref.heatmap_value.clone({
         x,
         y: self._hack_round(object_y[i][1] - self.row_id_size / 2),
-        fontSize: self.options.font_size,
+        fontSize: self.options.font.size,
         text: object_y[i][0],
         fontStyle: 'italic',
         fill: 'gray',
@@ -2333,8 +2334,8 @@ import Color from 'color';
 
     if (self.options.fixed_row_id_size) {
       const test = new Konva.Text({
-        fontFamily: self.options.font,
-        fontSize: self.options.font_size,
+        fontFamily: self.options.font.family,
+        fontSize: self.options.font.size,
         fontStyle: 'italic',
         listening: false,
         text: test_string,
@@ -2406,10 +2407,10 @@ import Color from 'color';
       x: 0,
       y: y1 - 20,
       text: distance,
-      fontSize: self.options.font_size,
-      fontFamily: self.options.font,
+      fontSize: self.options.font.size,
+      fontFamily: self.options.font.family,
       // fontStyle: 'bold',
-      fill: self.options.font_color,
+      fill: self.options.font.color,
       align: 'right',
       listening: false,
     });
@@ -3402,7 +3403,7 @@ import Color from 'color';
         'font-weight': 'bold',
         'font-size': '14px',
         'z-index': 1000,
-        'font-family': self.options.font,
+        'font-family': self.options.font.family,
       });
 
       filter_features_element.find('ul').css({

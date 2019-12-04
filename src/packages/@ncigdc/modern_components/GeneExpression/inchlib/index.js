@@ -112,7 +112,7 @@ import Color from 'color';
   * @option {boolean} [heatmap=true]
   *   turn on/off the heatmap
 
-  * @option {string} [heatmap_font_color="black"]
+  * @option {string} [font_color="black"]
   *   the color of the text values in the heatmap
 
   * @option {string} [count_column_colors="Reds"]
@@ -172,7 +172,6 @@ import Color from 'color';
     font_color: '#767676',
     font_size: 10,
     heatmap_colors: 'Greens',
-    heatmap_font_color: '#767676',
     heatmap_header: true,
     heatmap_part_width: 0.7,
     heatmap: true,
@@ -1041,7 +1040,7 @@ import Color from 'color';
 
       heatmap_value: new Konva.Text({
         fontFamily: self.options.font,
-        fill: self.options.heatmap_font_color,
+        fill: self.options.font_color,
         // fontStyle: 'bold',
         listening: false,
       }),

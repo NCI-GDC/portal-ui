@@ -198,6 +198,11 @@ import Color from 'color';
       filter_button: true,
       hint_button: true,
     },
+    tooltip: {
+      fill: '#fff',
+      stroke: 'lightgrey',
+      text_fill: 'grey',
+    },
   };
 
 	function InCHlib(element, options) {
@@ -1024,19 +1029,21 @@ import Color from 'color';
       }),
 
       tooltip_tag: new Konva.Tag({
-        fill: self.options.label_color,
-        pointerWidth: 10,
-        pointerHeight: 10,
+        cornerRadius: 4,
+        fill: self.options.tooltip.fill,
         lineJoin: 'round',
         listening: false,
+        pointerHeight: 10,
+        pointerWidth: 18,
+        stroke: self.options.tooltip.stroke,
+        strokeWidth: 2,
       }),
 
       tooltip_text: new Konva.Text({
         fontFamily: self.options.font.family,
-        fontSize: self.options.font.size,
+        fontSize: 10,
         padding: 8,
-        fill: 'white',
-        // fontStyle: 'bold',
+        fill: self.options.tooltip.text_fill,
         listening: false,
         align: 'center',
         lineHeight: 1.2,
@@ -1064,8 +1071,8 @@ import Color from 'color';
       heatmap_value: new Konva.Text({
         fontFamily: self.options.font.family,
         fill: self.options.font.color,
-        // fontStyle: 'bold',
         listening: false,
+        fontStyle: '500',
       }),
 
       heatmap_line: new Konva.Line({
@@ -1081,7 +1088,6 @@ import Color from 'color';
         fontSize: 10,
         fill: '#6d6b6a',
         fontFamily: self.options.font.family,
-        // fontStyle: 'bold',
         listening: false,
       }),
 
@@ -2149,6 +2155,7 @@ import Color from 'color';
               text = self.objects_ref.heatmap_value.clone({
                 text: text_value,
                 fontSize: self.options.font.size,
+                fontWeight: 'bold',
               });
 
               const width = text.getWidth();
@@ -2430,7 +2437,6 @@ import Color from 'color';
       text: distance,
       fontSize: self.options.font.size,
       fontFamily: self.options.font.family,
-      // fontStyle: 'bold',
       fill: self.options.font.color,
       align: 'right',
       listening: false,
@@ -3631,6 +3637,7 @@ import Color from 'color';
               y: 1,
             });
             // TODO: can I copy this to add a loader?
+            // TODO: can I copy this to add a loader?
             self.stage.draw();
             loading_div.remove();
             self.$element.show();
@@ -3929,7 +3936,7 @@ import Color from 'color';
 
       self.icon_tooltip = self.objects_ref.tooltip_label.clone({
         x,
-        y: y + 1.2 * height,
+        y: y + 1.3 * height,
       });
 
       self.icon_tooltip.add(self.objects_ref.tooltip_tag.clone());

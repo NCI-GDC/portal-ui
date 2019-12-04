@@ -17,6 +17,11 @@ class GeneExpressionChart extends Component {
         size: 12,
       },
       max_width: 800,
+      tooltip: {
+        fill: '#fff',
+        stroke: theme.greyScale5,
+        text_fill: theme.greyScale2,
+      },
     };
     // this doesn't work if jquery is imported
     // in this file

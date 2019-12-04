@@ -230,7 +230,7 @@ import Color from 'color';
     // proprietary styles for GDC portal
     self.styles = {
       // @ncigdc/uikit/Button
-      css_button_off : {
+      css_primary_button_off : {
         'background-color': self.options.button_color,
         'border-radius': '4px',
         'border': '1px solid transparent',
@@ -240,11 +240,12 @@ import Color from 'color';
         'padding': '6px 12px',
         'transition': '0.25s ease',
         'width': '100%',
-      }, 
+      },
       css_button_on: {
         'background-color': Color(self.options.button_color)
           .lighten(0.7)
           .rgbString(),
+        'color': 'white',
       }
     }
     
@@ -3559,7 +3560,7 @@ import Color from 'color';
       const buttons = export_menu.find('button');
       buttons.css($.extend(
         {},
-        self.styles.css_button_off,
+        self.styles.css_primary_button_off,
         {
           'margin-bottom': '5px',
         },
@@ -3570,7 +3571,7 @@ import Color from 'color';
           $(this).css(self.styles.css_button_on);
         },
         function () { 
-          $(this).css(self.styles.css_button_off); 
+          $(this).css(self.styles.css_primary_button_off); 
         },
       );
 
@@ -3725,14 +3726,14 @@ import Color from 'color';
       // based on @ncigdc/uikit/Button
       const $submit_button = $(`#${form_id} button`);
 
-      $submit_button.css(self.styles.css_button_off);
+      $submit_button.css(self.styles.css_primary_button_off);
 
       $submit_button.hover(
         function() {
           $submit_button.css(self.styles.css_button_on);
         },
         function() {
-          $submit_button.css(self.styles.css_button_off);
+          $submit_button.css(self.styles.css_primary_button_off);
         }
       );
 

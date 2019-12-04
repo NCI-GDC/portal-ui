@@ -16,7 +16,7 @@ class GeneExpressionChart extends Component {
         family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
         size: 12,
       },
-      max_width: 500,
+      max_width: 800,
     };
     // this doesn't work if jquery is imported
     // in this file

@@ -18,7 +18,7 @@ export class GeneExpression extends Component {
             style={{
               flex: '1 0 auto',
             }}>
-            <h1 style={{ margin: 0 }}>Gene Expression</h1>
+            <h1 style={{ margin: '0 0 20px' }}>Gene Expression</h1>
             <GeneExpressionChart />
           </Column>
         </Row>

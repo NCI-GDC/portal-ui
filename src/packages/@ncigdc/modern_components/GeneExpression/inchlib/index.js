@@ -229,8 +229,23 @@ import Color from 'color';
 
     // proprietary styles for GDC portal
     self.styles = {
+      // @ncigdc/uikit/Input
+      input: {
+        'background-color': '#fff',
+        'border': '1px solid #ccc',
+        'border-radius': '4px',
+        'box-shadow': 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
+        'color': '#555555',
+        'font-size': '14px',
+        'height': '3.4rem',
+        'line-height': '1.42857143',
+        'min-width': 0,
+        'padding': '6px 12px',
+        'transition': 'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
+        // 'width': '100%',
+      },
       // @ncigdc/uikit/Button
-      css_primary_button_off : {
+      css_primary_button_off: {
         'background-color': self.options.button_color,
         'border-radius': '4px',
         'border': '1px solid transparent',
@@ -3638,11 +3653,14 @@ import Color from 'color';
 
     const color_options = { heatmap_colors: 'Heatmap data colors' };
 
-    const value_options = {
-      max_percentile: 'Max percentile value',
-      middle_percentile: 'Middle percentile value',
-      min_percentile: 'Min percentile value',
-    };
+    // TODO: hide these?
+    // const value_options = {
+    //   max_percentile: 'Max percentile value',
+    //   middle_percentile: 'Middle percentile value',
+    //   min_percentile: 'Min percentile value',
+    // };
+
+    const value_options = {};
 
     // TODO remove this so the BG stays white?
     // do we need metadata colours?
@@ -3673,27 +3691,27 @@ import Color from 'color';
         color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, self.options[key]);
         color_3 = self._get_color_for_value(1, 0, 1, 0.5, self.options[key]);
 
-        option = `<div><div class='form_label'>${color_options[key]}</div><input type='text' name='${key}' value='${self.options[key]}'/> <div class='color_button' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div></div>`;
+        option = `<div><div><label for='${self._name}_${key}' class='form_label'>${color_options[key]}</label></div><input type='text' id='${self._name}_${key}' name='${key}' value='${self.options[key]}'/> <div class='color_button' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div></div>`;
         options += option;
       }
 
-      for (var i = 0, keys = Object.keys(value_options), len = keys.length; i < len; i++) {
-        key = keys[i];
-        option = `<div><div class='form_label'>${value_options[key]}</div><input type='text' name='${key}' value='${self.options[key]}'/></div>`;
-        options += option;
-      }
-      option = '<div><div class=\'form_label\'>Heatmap coloring</div>\
-                <select name=\'independent_columns\'>';
+      // for (var i = 0, keys = Object.keys(value_options), len = keys.length; i < len; i++) {
+      //   key = keys[i];
+      //   option = `<div><div class='form_label'>${value_options[key]}</div><input type='text' name='${key}' value='${self.options[key]}'/></div>`;
+      //   options += option;
+      // }
+      // option = '<div><div class=\'form_label\'>Heatmap coloring</div>\
+      //           <select name=\'independent_columns\'>';
 
-      if (self.options.independent_columns) {
-        option += '<option value=\'true\' selected>By columns</option>\
-                  <option value=\'false\'>Entire heatmap</option>';
-      } else {
-        option += '<option value=\'true\'>By columns</option>\
-                  <option value=\'false\' selected>Entire heatmap</option>';
-      }
-      option += '</select></div>';
-      options += option;
+      // if (self.options.independent_columns) {
+      //   option += '<option value=\'true\' selected>By columns</option>\
+      //             <option value=\'false\'>Entire heatmap</option>';
+      // } else {
+      //   option += '<option value=\'true\'>By columns</option>\
+      //             <option value=\'false\' selected>Entire heatmap</option>';
+      // }
+      // option += '</select></div>';
+      // options += option;
 
       options += '<button type="submit">Redraw</button>';
       settings_form.html(options);
@@ -3713,17 +3731,13 @@ import Color from 'color';
         'font-size': '12px',
         'margin-bottom': '10px',
       });
-      $(`#${form_id} input`).css({
-        'border-radius': '5px',
-        width: '100px',
-      });
+      $(`#${form_id} input`).css(self.styles.input);
       $(`#${form_id} .form_label`).css({
         color: 'gray',
         'margin-bottom': '5px',
-        'font-style': 'italic',
+        // 'font-style': 'italic',
       });
 
-      // based on @ncigdc/uikit/Button
       const $submit_button = $(`#${form_id} button`);
 
       $submit_button.css(self.styles.css_primary_button_off);
@@ -3746,9 +3760,10 @@ import Color from 'color';
 
       color_buttons.css({
         border: 'solid #D2D2D2 1px',
-        height: '15px',
-        width: '30px',
-        display: 'inline-block',
+        float: 'right',
+        height: '34px',
+        'margin-left': '5px',
+        width: '34px',
       });
 
       color_buttons.hover(
@@ -3820,7 +3835,7 @@ import Color from 'color';
         padding: '5px',
         position: 'absolute',
         top: 110,
-        left: 170,
+        left: 250,
         width: 110,
         'max-height': 400,
         'overflow-y': 'auto',

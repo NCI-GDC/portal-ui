@@ -242,7 +242,12 @@ import Color from 'color';
         'min-width': 0,
         'padding': '6px 12px',
         'transition': 'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
-        // 'width': '100%',
+      },
+      label: {
+        'color': '#3a3a3a',
+        'display': 'block',
+        'font-size': '14px',
+        'margin-bottom': '5px',
       },
       // @ncigdc/uikit/Button
       css_primary_button_off: {
@@ -3651,7 +3656,7 @@ import Color from 'color';
     let key;
     let value;
 
-    const color_options = { heatmap_colors: 'Heatmap data colors' };
+    const color_options = { heatmap_colors: 'Heatmap data colors:' };
 
     // TODO: hide these?
     // const value_options = {
@@ -3669,7 +3674,7 @@ import Color from 'color';
     // }
 
     if (self.options.column_metadata) {
-      color_options.column_metadata_colors = 'Column metadata colors';
+      color_options.column_metadata_colors = 'Column metadata colors:';
     }
 
     const form_id = `settings_form_${self._name}`;
@@ -3691,7 +3696,7 @@ import Color from 'color';
         color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, self.options[key]);
         color_3 = self._get_color_for_value(1, 0, 1, 0.5, self.options[key]);
 
-        option = `<div><div><label for='${self._name}_${key}' class='form_label'>${color_options[key]}</label></div><input type='text' id='${self._name}_${key}' name='${key}' value='${self.options[key]}'/> <div class='color_button' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div></div>`;
+        option = `<div><label for='${self._name}_${key}' class='form_label'>${color_options[key]}</label><input type='text' id='${self._name}_${key}' name='${key}' value='${self.options[key]}'/> <div class='color_button' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div></div>`;
         options += option;
       }
 
@@ -3732,11 +3737,7 @@ import Color from 'color';
         'margin-bottom': '10px',
       });
       $(`#${form_id} input`).css(self.styles.input);
-      $(`#${form_id} .form_label`).css({
-        color: 'gray',
-        'margin-bottom': '5px',
-        // 'font-style': 'italic',
-      });
+      $(`#${form_id} .form_label`).css(self.styles.label);
 
       const $submit_button = $(`#${form_id} button`);
 

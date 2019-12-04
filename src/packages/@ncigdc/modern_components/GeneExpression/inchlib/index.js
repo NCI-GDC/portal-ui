@@ -3656,7 +3656,7 @@ import Color from 'color';
     let key;
     let value;
 
-    const color_options = { heatmap_colors: 'Heatmap data colors:' };
+    const color_options = { heatmap_colors: 'Heatmap colors:' };
 
     // TODO: hide these?
     // const value_options = {
@@ -3674,7 +3674,7 @@ import Color from 'color';
     // }
 
     if (self.options.column_metadata) {
-      color_options.column_metadata_colors = 'Column metadata colors:';
+      color_options.column_metadata_colors = 'Metadata colors:';
     }
 
     const form_id = `settings_form_${self._name}`;

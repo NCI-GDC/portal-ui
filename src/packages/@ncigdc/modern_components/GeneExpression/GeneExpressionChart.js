@@ -2,12 +2,14 @@
 
 import React, { Component } from 'react';
 
+import { theme } from '@ncigdc/theme';
 import data from './inchlib/data';
 import './inchlib';
 
 class GeneExpressionChart extends Component {
   componentDidMount() {
     const options = {
+      button_color: theme.primary,
       data,
       max_width: 500,
     };

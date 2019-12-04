@@ -3,6 +3,7 @@
 
 import $ from 'jquery';
 import Konva from 'konva';
+import Color from 'color';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -144,7 +145,6 @@ import Konva from 'konva';
   *
   * @example
   *   const options = {
-  *     metadata: true,
   *     max_width: 800,
   *     metadata_colors: "RdLrBu",
   *   }
@@ -156,6 +156,7 @@ import Konva from 'konva';
 
   const defaults = {
     alternative_data: false,
+    button_color: 'blue',
     column_dendrogram: false,
     column_metadata_colors: 'RdLrBu',
     column_metadata_row_height: 20,
@@ -224,6 +225,27 @@ import Konva from 'konva';
 		self.header_height = 150;
 		self.footer_height = 70;
     self.dendrogram_heatmap_distance = 5;
+
+    // proprietary styles for GDC portal
+    self.styles = {
+      // @ncigdc/uikit/Button
+      css_button_off : {
+        'background-color': self.options.button_color,
+        'border-radius': '4px',
+        'border': '1px solid transparent',
+        'color': 'white',
+        'font-size': '14px',
+        'font-weight': 'normal',
+        'padding': '6px 12px',
+        'transition': '0.25s ease',
+        'width': '100%',
+      }, 
+      css_button_on: {
+        'background-color': Color(self.options.button_color)
+          .lighten(0.7)
+          .rgbString(),
+      }
+    }
     
     /**
     * Default function definitions for the InCHlib events
@@ -3530,31 +3552,26 @@ import Konva from 'konva';
         'font-size': '12px',
         border: 'solid #D2D2D2 1px',
         'border-radius': '5px',
-        padding: '2px',
+        padding: '10px 10px 5px',
         'background-color': 'white',
       });
 
       const buttons = export_menu.find('button');
-      buttons.css({
-        'padding-top': '7px',
-        'padding-bottom': '5px',
-        'padding-right': '8px',
-        'padding-left': '8px',
-        color: 'white',
-        border: 'solid #D2D2D2 1px',
-        width: '100%',
-        'background-color': '#2171b5',
-        'font-weight': 'bold',
-      });
+      buttons.css($.extend(
+        {},
+        self.styles.css_button_off,
+        {
+          'margin-bottom': '5px',
+        },
+      ));
 
       buttons.hover(
         function () {
-          $(this).css({
-            cursor: 'pointer',
-            opacity: 0.7,
-          });
+          $(this).css(self.styles.css_button_on);
         },
-        function () { $(this).css({ opacity: 1 }); },
+        function () { 
+          $(this).css(self.styles.css_button_off); 
+        },
       );
 
       overlay.click(() => {
@@ -3640,7 +3657,7 @@ import Konva from 'konva';
     let settings_form = $(`#${form_id}`);
     const overlay = self._draw_target_overlay();
 
-    if (settings_form.length) {
+    if (settings_form.length > 0) {
       settings_form.fadeIn('fast');
     } else {
       settings_form = $(`<form class='settings_form' id='${form_id}'></form>`);
@@ -3691,12 +3708,6 @@ import Konva from 'konva';
         'border-radius': '5px',
         'background-color': 'white',
       });
-      $(`#${form_id} .color_button`).css({
-        border: 'solid #D2D2D2 1px',
-        height: '15px',
-        width: '30px',
-        display: 'inline-block',
-      });
       $(`#${form_id} > div`).css({
         'font-size': '12px',
         'margin-bottom': '10px',
@@ -3710,18 +3721,20 @@ import Konva from 'konva';
         'margin-bottom': '5px',
         'font-style': 'italic',
       });
-      $(`#${form_id} button`).css({
-        'padding-top': '7px',
-        'padding-bottom': '5px',
-        'padding-right': '5px',
-        'padding-left': '5px',
-        color: 'white',
-        border: 'solid #D2D2D2 1px',
-        'border-radius': '5px',
-        width: '100%',
-        'background-color': '#2171b5',
-        'font-weight': 'bold',
-      });
+
+      // based on @ncigdc/uikit/Button
+      const $submit_button = $(`#${form_id} button`);
+
+      $submit_button.css(self.styles.css_button_off);
+
+      $submit_button.hover(
+        function() {
+          $submit_button.css(self.styles.css_button_on);
+        },
+        function() {
+          $submit_button.css(self.styles.css_button_off);
+        }
+      );
 
       overlay.click(() => {
         settings_form.fadeOut('fast');
@@ -3729,6 +3742,13 @@ import Konva from 'konva';
       });
 
       const color_buttons = $(`#${form_id} .color_button`);
+
+      color_buttons.css({
+        border: 'solid #D2D2D2 1px',
+        height: '15px',
+        width: '30px',
+        display: 'inline-block',
+      });
 
       color_buttons.hover(
         function () {

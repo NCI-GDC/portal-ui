@@ -112,7 +112,7 @@ import Color from 'color';
   * @option {boolean} [heatmap=true]
   *   turn on/off the heatmap
 
-  * @option {string} [font.color="black"]
+  * @option {string} [font.color="#3a3a3a"]
   *   the color of the text values in the heatmap
 
   * @option {string} [count_column_colors="Reds"]
@@ -169,7 +169,7 @@ import Color from 'color';
     draw_row_ids: false,
     fixed_row_id_size: false,
     font: {
-      color: 'black',
+      color: '#3a3a3a',
       family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
       size: 10,
     },
@@ -1097,7 +1097,7 @@ import Color from 'color';
       }),
 
       cluster_border: new Konva.Line({
-        stroke: 'black',
+        stroke: '#3a3a3a',
         strokeWidth: 1,
         dash: [6, 2],
       }),
@@ -1119,7 +1119,7 @@ import Color from 'color';
           x: 100,
           y: 80,
         },
-        stroke: '#D2D2D2',
+        stroke: self.options.tooltip.stroke,
         strokeWidth: 1,
       }),
 
@@ -2331,7 +2331,7 @@ import Color from 'color';
         fontSize: self.options.font.size,
         text: object_y[i][0],
         fontStyle: 'italic',
-        fill: 'gray',
+        fill: self.options.font.color,
       });
       self.heatmap_layer.add(text);
     }
@@ -2410,7 +2410,7 @@ import Color from 'color';
         x2,
         y2,
       ],
-      stroke: 'black',
+      stroke: 'grey',
       listening: false,
     });
 
@@ -2418,7 +2418,7 @@ import Color from 'color';
       x: x2,
       y: y2,
       radius: 3,
-      fill: 'black',
+      fill: 'grey',
       listening: false,
     });
 
@@ -2456,7 +2456,7 @@ import Color from 'color';
             marker_distance,
             (y2 + marker_tail),
           ],
-          stroke: 'black',
+          stroke: 'grey',
           listening: false,
         });
         self.dendrogram_layer.add(path);
@@ -3942,7 +3942,7 @@ import Color from 'color';
       self.icon_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
       layer.add(self.icon_tooltip);
     }
-    icon.setFill('black');
+    icon.setFill('#3a3a3a');
     layer.draw();
   };
 

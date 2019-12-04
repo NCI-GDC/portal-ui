@@ -1163,6 +1163,7 @@ import Color from 'color';
     * @param {object} [variable] Clustering in proper JSON format.
     */
    InCHlib.prototype.read_data = function (json) {
+    console.log('im reading!');
     const self = this;
     self.json = json;
     self.data = self.json.data;
@@ -1520,6 +1521,7 @@ import Color from 'color';
   * Draw already read data (from file/JSON variable).
   */
   InCHlib.prototype.draw = function () {
+    console.log('im drawing!')
     const self = this;
     self.zoomed_clusters = {
       row: [],
@@ -4218,7 +4220,7 @@ import Color from 'color';
     const { name, value } = attrs;
 
     const tooltip_value = typeof value === 'undefined'
-      ? name
+      ? name.split('_').join(' ')
       : value;
     
     const tooltip_text = typeof header === 'undefined'
@@ -4329,27 +4331,32 @@ import Color from 'color';
     */
 	InCHlib.prototype.init = function () {
     const self = this;
-    self.read_data(self.options.data);
-    self.draw();
-  };
+    if (self.user_options === 'destroy') {
+      self.destroy();
+    } else {
+      const loading_div = $(`<h3 style='margin-top: 100px; margin-left: 100px; width: 500px; height: 800px;'>Loading...</h3>`);
+      self.$element.after(loading_div);
+      self.$element.hide();
 
+      self.read_data(self.options.data);
+      console.log('drawing')
+      self.draw();
+
+      $(self).ready(() => {
+        loading_div.hide();
+        console.log('hide loading')
+        self.$element.show();
+      });
+    }
+  };
+ 
   $.fn[plugin_name] = function (options) {
+    // note: this plugin only supports ONE instance
     return this.each(function () {
-      if (!$.data(this, 'plugin_' + plugin_name)) {
-        // stop multiple instantiations
-        // TODO destroy $.data(this, 'plugin_InCHlib')
-        // on componentWillUnmount
-        $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options));
+      if ($.data(this, 'plugin_' + plugin_name)) {
+        $.removeData(this, 'plugin_' + plugin_name);
       }
-    });
+      $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options));
+    })
   };
-
-  // TODO: do we need this
-  // $.fn['destroy_' + plugin_name] = function() {
-  //   return this.each(function() {
-  //     if ($.data(this, 'plugin_' + plugin_name)) {
-  //       $.removeData(this, 'plugin_' + plugin_name);
-  //     }
-  //   });
-  // };
 })(jQuery);

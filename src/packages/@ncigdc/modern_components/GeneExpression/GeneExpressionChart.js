@@ -1,14 +1,15 @@
 /* eslint-disable camelcase */
 
 import React, { Component } from 'react';
+import { isEqual } from 'lodash';
 
 import { theme } from '@ncigdc/theme';
-import data from './inchlib/data';
 import './inchlib';
 
 class GeneExpressionChart extends Component {
   componentDidMount() {
-    const options = {
+    const { data } = this.props;
+    this.options = {
       button_color: theme.primary,
       data,
       font: {
@@ -26,14 +27,24 @@ class GeneExpressionChart extends Component {
     // this doesn't work if jquery is imported
     // in this file
     this.$el = $(this.el);
-    this.$el.InCHlib(options);
+    this.$el.InCHlib(this.options);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    if (!isEqual(data, prevProps.data)) {
+      const nextOptions = {
+        ...this.options,
+        ...{ data },
+      };
+      this.$el.InCHlib(nextOptions);
+    }
   }
 
   componentWillUnmount() {
-    // if inchlib doesn't have cleanup methods,
-    // we have to add our own.
-    // TODO remove event listeners added in componentDidMount
-    // and destroy the inchlib chart
+    console.log('componentWillUnmount');
+    // this.$el.InCHlib.destroy();
+    // this.$el.InCHlib('destroy');
   }
 
   render() {

@@ -1163,7 +1163,6 @@ import Color from 'color';
     * @param {object} [variable] Clustering in proper JSON format.
     */
    InCHlib.prototype.read_data = function (json) {
-    // console.log('im reading!');
     const self = this;
     self.json = json;
     self.data = self.json.data;
@@ -1521,7 +1520,6 @@ import Color from 'color';
   * Draw already read data (from file/JSON variable).
   */
   InCHlib.prototype.draw = function () {
-    // console.log('im drawing!')
     const self = this;
     self.zoomed_clusters = {
       row: [],
@@ -2112,6 +2110,7 @@ import Color from 'color';
           ],
           value: text_value,
           column: ['d', col_index].join('_'),
+          gene_id: self.metadata.nodes[node_id],
           strokeWidth: self.pixels_for_leaf,
         });
         row.add(line);
@@ -4227,7 +4226,7 @@ import Color from 'color';
       : isCaseId
         ? 'Case ID'
         : isHeatmapValue
-          ? `Gene Symbol: TBA, Case ID: ${header_value}`
+          ? `Gene Symbol: ${attrs.gene_id}, Case ID: ${header_value}`
           : header_value;
 
     const tooltip_value = typeof value === 'undefined'

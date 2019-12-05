@@ -3819,65 +3819,62 @@ import Color from 'color';
 
   InCHlib.prototype._draw_color_scales_select = function (element, evt) {
     const self = this;
-    let scales_div = self.$element.find('.color_scales');
+
+    self.$element.find('.color_scales').remove();
+
     let scale_divs;
+    let scales_div = $('<div class=\'color_scales\'></div>');
+    let scale; let color_1; let color_2; let color_3; let
+      key;
 
-    if (scales_div.length) {
-      scales_div.fadeIn('fast');
-      scale_divs = scales_div.find('.color_scale');
-    } else {
-      scales_div = $('<div class=\'color_scales\'></div>');
-      let scale; let color_1; let color_2; let color_3; let
-        key;
-
-      for (let i = 0, keys = Object.keys(self.colors), len = keys.length; i < len; i++) {
-        key = keys[i];
-        color_1 = self._get_color_for_value(0, 0, 1, 0.5, key);
-        color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, key);
-        color_3 = self._get_color_for_value(1, 0, 1, 0.5, key);
-        scale = `<div class='color_scale' data-scale_acronym='${key}' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div>`;
-        scales_div.append(scale);
-      }
-      self.$element.append(scales_div);
-      scales_div.css({
-        border: 'solid #D2D2D2 2px',
-        'border-radius': '5px',
-        padding: '5px',
-        position: 'absolute',
-        top: 110,
-        left: 250,
-        width: 110,
-        'max-height': 400,
-        'overflow-y': 'auto',
-        'background-color': 'white',
-      });
-
-      scale_divs = self.$element.find('.color_scale');
-      scale_divs.css({
-        'margin-top': '3px',
-        width: '80px',
-        height: '20px',
-        border: 'solid #D2D2D2 1px',
-      });
-
-      scale_divs.hover(
-        function () {
-          $(this).css({
-            cursor: 'pointer',
-            opacity: 0.7,
-          });
-        },
-        function () { $(this).css({ opacity: 1 }); },
-      );
-
-      self.$element.find('.target_overlay').click(() => {
-        scales_div.fadeOut('fast');
-      });
+    for (let i = 0, keys = Object.keys(self.colors), len = keys.length; i < len; i++) {
+      key = keys[i];
+      color_1 = self._get_color_for_value(0, 0, 1, 0.5, key);
+      color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, key);
+      color_3 = self._get_color_for_value(1, 0, 1, 0.5, key);
+      scale = `<div class='color_scale' data-scale_acronym='${key}' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div>`;
+      scales_div.append(scale);
     }
+    self.$element.append(scales_div);
+    scales_div.css({
+      border: 'solid #D2D2D2 2px',
+      'border-radius': '5px',
+      padding: '5px',
+      position: 'absolute',
+      top: 110,
+      left: 250,
+      width: 110,
+      'max-height': 400,
+      'overflow-y': 'auto',
+      'background-color': 'white',
+    });
+
+    scale_divs = self.$element.find('.color_scale');
+    scale_divs.css({
+      'margin-top': '3px',
+      width: '80px',
+      height: '20px',
+      border: 'solid #D2D2D2 1px',
+    });
+
+    scale_divs.hover(
+      function () {
+        $(this).css({
+          cursor: 'pointer',
+          opacity: 0.7,
+        });
+      },
+      function () { $(this).css({ opacity: 1 }); },
+    );
+
+    self.$element.find('.target_overlay').click(() => {
+      scales_div.fadeOut('fast');
+    });
 
     scale_divs.on('click', function () {
       const color = $(this).attr('data-scale_acronym');
       const input = $(element).prev('input:first').val(color);
+      
       $(element).css({ background: `linear-gradient(to right, ${self._get_color_for_value(0, 0, 1, 0.5, color)},${self._get_color_for_value(0.5, 0, 1, 0.5, color)},${self._get_color_for_value(1, 0, 1, 0.5, color)})` });
       scales_div.fadeOut('fast');
       scale_divs.off('click');

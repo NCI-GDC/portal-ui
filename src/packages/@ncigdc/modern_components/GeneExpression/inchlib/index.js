@@ -3612,7 +3612,7 @@ import Color from 'color';
         const zoom = 3;
         const width = self.stage.width();
         const height = self.stage.height();
-        // setTimeout is used to force synchronicity;
+
         const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
         self.$element.after(loading_div);
         self.$element.hide();

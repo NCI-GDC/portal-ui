@@ -4215,17 +4215,11 @@ import Color from 'color';
 
     const { name, value } = attrs;
 
-    // the four types of values in our gene expression chart
-    const isCategoryValue = self.column_metadata_header.includes(header_value);
-    const isGeneSymbol = header_value === 'gene_id';
-    const isCaseId = header_value === 'case_id';
-    const isHeatmapValue = self.heatmap_header.includes(header_value);
-
-    const header_text = isGeneSymbol
+    const header_text = header_value === 'gene_id'
       ? 'Gene'
-      : isCaseId
+      : header_value === 'case_id'
         ? 'Case'
-        : isHeatmapValue
+        : self.heatmap_header.includes(header_value)
           ? `Case: ${header_value}, Gene: ${attrs.gene_id}`
           : header_value;
 
@@ -4240,6 +4234,7 @@ import Color from 'color';
       y,
       id: 'col_label',
     });
+
     tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
 
     self.heatmap_overlay.add(tooltip);

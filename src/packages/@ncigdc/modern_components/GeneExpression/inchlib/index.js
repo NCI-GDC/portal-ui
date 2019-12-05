@@ -2145,7 +2145,7 @@ import Color from 'color';
                 x2,
                 y2,
               ],
-              // name = gene ID
+              // name = gene_id
               name: text_value,
               column: ['m', col_index].join('_'),
               strokeWidth: self.pixels_for_leaf,
@@ -4222,11 +4222,11 @@ import Color from 'color';
     const isHeatmapValue = self.heatmap_header.includes(header_value);
 
     const header_text = isGeneSymbol
-      ? 'Gene Symbol'
+      ? 'Gene'
       : isCaseId
-        ? 'Case ID'
+        ? 'Case'
         : isHeatmapValue
-          ? `Gene Symbol: ${attrs.gene_id}, Case ID: ${header_value}`
+          ? `Case: ${header_value}, Gene: ${attrs.gene_id}`
           : header_value;
 
     const tooltip_value = typeof value === 'undefined'

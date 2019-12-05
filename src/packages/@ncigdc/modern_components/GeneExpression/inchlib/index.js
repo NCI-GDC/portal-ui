@@ -4192,9 +4192,9 @@ import Color from 'color';
       header_type2value.cm = self.column_metadata_header[column[1]];
     }
 
-    const header = header_type2value[column[0]];
+    const header_value = header_type2value[column[0]];
 
-    if (header !== self.last_column) {
+    if (header_value !== self.last_column) {
       self.column_overlay.destroy();
       self.last_column = attrs.column;
       self.column_overlay = self.objects_ref.heatmap_line.clone({
@@ -4216,13 +4216,25 @@ import Color from 'color';
 
     const { name, value } = attrs;
 
+    // the four types of values in our gene expression chart
+    const isCategoryValue = self.column_metadata_header.includes(header_value);
+    const isGeneSymbol = header_value === 'gene_id';
+    const isCaseId = header_value === 'case_id';
+    const isHeatmapValue = self.heatmap_header.includes(header_value);
+
+    const header_text = isGeneSymbol
+      ? 'Gene Symbol'
+      : isCaseId
+        ? 'Case ID'
+        : isHeatmapValue
+          ? `Gene Symbol: TBA, Case ID: ${header_value}`
+          : header_value;
+
     const tooltip_value = typeof value === 'undefined'
       ? name.split('_').join(' ')
       : value;
     
-    const tooltip_text = typeof header === 'undefined'
-      ? tooltip_value
-      : [header, tooltip_value].join('\n');
+    const tooltip_text = [header_text, tooltip_value].join('\n');
 
     const tooltip = self.objects_ref.tooltip_label.clone({
       x,

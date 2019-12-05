@@ -3612,9 +3612,11 @@ import Color from 'color';
         const zoom = 3;
         const width = self.stage.width();
         const height = self.stage.height();
-        const loading_div = $(`<h3 style='margin-top: 100px; margin-left: 100px; width: ${width}px; height: ${height}px;'>Loading...</h3>`);
+        // setTimeout is used to force synchronicity;
+        const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
         self.$element.after(loading_div);
         self.$element.hide();
+
         self.stage.width(width * zoom);
         self.stage.height(height * zoom);
         self.stage.scale({
@@ -3637,7 +3639,6 @@ import Color from 'color';
               x: 1,
               y: 1,
             });
-            // TODO: can I copy this to add a loader?
             self.stage.draw();
             loading_div.remove();
             self.$element.show();

@@ -1163,7 +1163,7 @@ import Color from 'color';
     * @param {object} [variable] Clustering in proper JSON format.
     */
    InCHlib.prototype.read_data = function (json) {
-    console.log('im reading!');
+    // console.log('im reading!');
     const self = this;
     self.json = json;
     self.data = self.json.data;
@@ -1521,7 +1521,7 @@ import Color from 'color';
   * Draw already read data (from file/JSON variable).
   */
   InCHlib.prototype.draw = function () {
-    console.log('im drawing!')
+    // console.log('im drawing!')
     const self = this;
     self.zoomed_clusters = {
       row: [],

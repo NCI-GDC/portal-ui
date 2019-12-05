@@ -4333,8 +4333,20 @@ import Color from 'color';
     if (self.user_options === 'destroy') {
       self.destroy();
     } else {
+      // setTimeout is used to force synchronicity;
+      const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
+      self.$element.after(loading_div);
+      self.$element.hide();
+
+      setTimeout(function() {
       self.read_data(self.options.data);
       self.draw();
+      }, 50);
+
+      setTimeout(function() {
+        loading_div.remove();
+        self.$element.show();
+      }, 50);
     }
   };
  

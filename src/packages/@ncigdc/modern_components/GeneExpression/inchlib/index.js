@@ -153,6 +153,7 @@ import Color from 'color';
   const defaults = {
     alternative_data: false,
     button_color: 'blue',
+    category_colors: {},
     column_dendrogram: false,
     column_metadata_colors: 'RdLrBu',
     column_metadata_row_height: 20,
@@ -737,14 +738,14 @@ import Color from 'color';
       },
       Greys: {
         start: {
-          r: 247,
-          g: 247,
-          b: 247,
+          r: 200,
+          g: 200,
+          b: 200,
         },
         end: {
-          r: 82,
-          g: 82,
-          b: 82,
+          r: 20,
+          g: 20,
+          b: 20,
         },
       },
       PuOr: {
@@ -2220,7 +2221,9 @@ import Color from 'color';
         value = self.column_metadata_descs[row_index].str2num[value];
       }
 
-      color = self._get_color_for_value(value, self.column_metadata_descs[row_index].min, self.column_metadata_descs[row_index].max, self.column_metadata_descs[row_index].middle, self.options.column_metadata_colors);
+      const color_value = self.options.category_colors[title] || 'Greys';
+
+      color = self._get_color_for_value(value, self.column_metadata_descs[row_index].min, self.column_metadata_descs[row_index].max, self.column_metadata_descs[row_index].middle, color_value);
       x2 = x1 + self.pixels_for_dimension;
       y2 = y1;
 
@@ -3671,10 +3674,6 @@ import Color from 'color';
     // if (self.options.metadata) {
     //   color_options.metadata_colors = 'Metadata colors';
     // }
-
-    if (self.options.column_metadata) {
-      color_options.column_metadata_colors = 'Metadata colors:';
-    }
 
     const form_id = `settings_form_${self._name}`;
     let settings_form = $(`#${form_id}`);

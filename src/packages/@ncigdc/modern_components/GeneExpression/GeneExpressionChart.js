@@ -11,6 +11,11 @@ class GeneExpressionChart extends Component {
     const { data } = this.props;
     this.options = {
       button_color: theme.primary,
+      category_colors: {
+        Age: 'RdBu',
+        Smoking: 'PuOr',
+        // Gender: 'Purples2',
+      },
       data,
       font: {
         color: '#767676',

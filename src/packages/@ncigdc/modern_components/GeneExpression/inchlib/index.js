@@ -100,9 +100,6 @@ import Color from 'color';
   * @option {boolean} [metadata=false]
   *   turn on/off the metadata
 
-  * @option {string} [metadata_colors="Oranges"]
-  *   the metadata color scale
-
   * @option {number} [min_row_height=false]
   *   minimum row height in pixels
 
@@ -146,7 +143,6 @@ import Color from 'color';
   * @example
   *   const options = {
   *     max_width: 800,
-  *     metadata_colors: "RdLrBu",
   *   }
   *  $(target).InCHlib(options);
   */
@@ -186,7 +182,6 @@ import Color from 'color';
     max_percentile: 100,
     max_row_height: 25,
     max_width: 0,
-    metadata_colors: 'White',
     metadata: false,
     middle_percentile: 50,
     min_percentile: 0,
@@ -2135,10 +2130,9 @@ import Color from 'color';
             if (self.metadata_descs[col_index].str2num !== undefined) {
               value = self.metadata_descs[col_index].str2num[value];
             }
-            color = self._get_color_for_value(value, self.metadata_descs[col_index].min, self.metadata_descs[col_index].max, self.metadata_descs[col_index].middle, self.options.metadata_colors);
 
             line = self.objects_ref.heatmap_line.clone({
-              stroke: color,
+              stroke: '#fff',
               points: [
                 x1,
                 y1,
@@ -2773,9 +2767,7 @@ import Color from 'color';
     self.highlighted_rows_layer.destroyChildren();
 
     const original_colors = self.options.heatmap_colors;
-    const original_metadata_colors = self.options.metadata_colors;
     self.options.heatmap_colors = self.options.highlight_colors;
-    self.options.metadata_colors = self.options.highlight_colors;
 
     const done_rows = {};
     const unique_row_ids = [];
@@ -2800,7 +2792,6 @@ import Color from 'color';
     self.heatmap_overlay.moveToTop();
 
     self.options.heatmap_colors = original_colors;
-    self.options.metadata_colors = original_metadata_colors;
 
     self.highlighted_rows_layer.on('click', (evt) => {
       self.heatmap_layer.fire('click');

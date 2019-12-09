@@ -1595,6 +1595,7 @@ import Color from 'color';
     }
 
     self._draw_heatmap();
+    self._draw_heatmap_header();
     self._draw_navigation();
     self.highlight_rows(self.options.highlighted_rows);
   };
@@ -2377,6 +2378,88 @@ import Color from 'color';
     }
   };
 
+  InCHlib.prototype._draw_heatmap_header = function () {
+    const self = this;
+    if (self.options.heatmap_header && self.header.length > 0) {
+      self.header_layer = new Konva.Layer();
+      const count = self._hack_size(self.leaves_y_coordinates);
+      const y = (self.options.column_dendrogram && self.heatmap_header) ? self.header_height + (self.pixels_for_leaf * count) + 15 + self.column_metadata_height : self.header_height - 20;
+      const rotation = (self.options.column_dendrogram && self.heatmap_header) ? 45 : -45;
+      let distance_step = 0;
+      let x; let column_header; let
+        key;
+      const current_headers = [];
+
+      for (var i = 0, len = self.on_features.data.length; i < len; i++) {
+        current_headers.push(self.header[self.on_features.data[i]]);
+      }
+
+      for (var i = 0, len = self.on_features.metadata.length; i < len; i++) {
+        current_headers.push(self.header[self.on_features.metadata[i] + self.dimensions.data]);
+      }
+      if (self.options.count_column && self.features[self.dimensions.overall - 1]) {
+        current_headers.push(self.header[self.dimensions.overall - 1]);
+      }
+      const max_text_length = self._get_max_length(current_headers);
+      // const font_size = self._get_font_size(max_text_length, self.header_height, self.pixels_for_dimension, 16);
+      // if (font_size < 8) {
+      //   return;
+      // }
+
+      for (var i = 0, len = current_headers.length; i < len; i++) {
+        x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
+        column_header = self.objects_ref.column_header.clone({
+          x,
+          y,
+          text: current_headers[i] === 'gene_id'
+            ? ''
+            : current_headers[i],
+          position_index: i,
+          fontSize: self.options.font.size,
+          fontFamily: self.options.font.family,
+          fill: self.options.font.color,
+          fontStyle: 'bold',
+          rotation: rotation,
+        });
+        self.header_layer.add(column_header);
+        distance_step++;
+      }
+
+      self.stage.add(self.header_layer);
+
+      if (!(self.options.dendrogram)) {
+        self.header_layer.on('click', (evt) => {
+          const column = evt.target;
+          const { position_index } = column.attrs;
+          for (var i = 0; i < self.header_layer.getChildren().length; i++) {
+            self.header_layer.getChildren()[i].setFill('black');
+          }
+          evt.target.setAttrs({ fill: 'red' });
+          self._delete_layers([
+            self.heatmap_layer,
+            self.heatmap_overlay,
+            self.highlighted_rows_layer,
+          ]);
+          self._reorder_heatmap(self._translate_column_to_feature_index(position_index));
+          self._draw_heatmap();
+          self.header_layer.draw();
+        });
+
+        self.header_layer.on('mouseover', function (evt) {
+          const label = evt.target;
+          label.setOpacity(0.7);
+          this.draw();
+        });
+
+        self.header_layer.on('mouseout', function (evt) {
+          const label = evt.target;
+          label.setOpacity(1);
+          this.draw();
+        });
+      }
+    }
+  };
+
   InCHlib.prototype._translate_column_to_feature_index = function (column_index) {
     const self = this;
     let key;
@@ -3098,6 +3181,7 @@ import Color from 'color';
     }
     self._draw_column_dendrogram(node_id);
     self._draw_heatmap();
+    self._draw_heatmap_header();
     self._draw_navigation();
 
     if (distance !== self.distance) {
@@ -3152,6 +3236,7 @@ import Color from 'color';
     ], [self.dendrogram_hover_layer]);
     self._draw_row_dendrogram(node_id);
     self._draw_heatmap();
+    self._draw_heatmap_header();
     self._draw_navigation();
     if (self.options.column_dendrogram && self.last_highlighted_column_cluster !== null) {
       self._draw_column_cluster_layer(self.last_highlighted_column_cluster);
@@ -3521,6 +3606,7 @@ import Color from 'color';
 
         self._draw_navigation();
         self._draw_heatmap();
+        self._draw_heatmap_header();
 
         if (highlighted_cluster != null) {
           self._highlight_cluster(highlighted_cluster);
@@ -4304,6 +4390,7 @@ import Color from 'color';
     ]);
     self._set_color_settings();
     self._draw_heatmap();
+    self._draw_heatmap_header();
     self.heatmap_layer.moveToBottom();
     self.heatmap_layer.moveUp();
   };

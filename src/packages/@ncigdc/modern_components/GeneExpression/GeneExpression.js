@@ -37,7 +37,7 @@ export class GeneExpression extends Component {
   };
 
   render() {
-    const { data = null } = this.state;
+    const { data } = this.state;
 
     return (
       <Column style={{ marginBottom: '1rem' }}>

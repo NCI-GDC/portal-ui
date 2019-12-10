@@ -6,16 +6,18 @@ import { isEqual } from 'lodash';
 import { theme } from '@ncigdc/theme';
 import './inchlib';
 
+const category_colors = {
+  Age: 'RdBu',
+  Smoking: 'PuOr',
+  // Gender: 'Purples2',
+};
+
 class GeneExpressionChart extends Component {
   componentDidMount() {
     const { data } = this.props;
     this.options = {
       button_color: theme.primary,
-      category_colors: {
-        Age: 'RdBu',
-        Smoking: 'PuOr',
-        // Gender: 'Purples2',
-      },
+      category_colors,
       data,
       font: {
         color: '#767676',

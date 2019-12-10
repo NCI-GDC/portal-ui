@@ -995,23 +995,6 @@ import Color from 'color';
           b: 69,
         },
       },
-      White: {
-        start: {
-          r: 255,
-          g: 255,
-          b: 255,
-        },
-        middle: {
-          r: 255,
-          g: 255,
-          b: 255,
-        },
-        end: {
-          r: 255,
-          g: 255,
-          b: 255,
-        },
-      },
     };
 
     /**

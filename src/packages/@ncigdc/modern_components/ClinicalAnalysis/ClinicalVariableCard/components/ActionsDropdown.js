@@ -21,9 +21,9 @@ import timestamp from '@ncigdc/utils/timestamp';
 
 const ActionsDropdown = ({
   active_chart,
-  cardFilters,
   currentAnalysis,
   dispatch,
+  filters,
   selectedBins,
   styles,
   theme,
@@ -66,14 +66,14 @@ const ActionsDropdown = ({
               <SaveSetModal
                 CreateSetButton={CreateExploreCaseSetButton}
                 displayType="case"
-                filters={cardFilters}
+                filters={filters}
                 score="gene.gene_id"
                 setName="Custom Case Selection"
                 sort={null}
                 title={`Save ${totalFromSelectedBins} Cases as New Set`}
                 total={totalFromSelectedBins}
                 type="case"
-                />
+                />,
             ))}
             >
             Save as new case set
@@ -94,14 +94,14 @@ const ActionsDropdown = ({
                 AppendSetButton={AppendExploreCaseSetButton}
                 displayType="case"
                 field="cases.case_id"
-                filters={cardFilters}
+                filters={filters}
                 scope="explore"
                 score="gene.gene_id"
                 sort={null}
                 title={`Add ${totalFromSelectedBins} Cases to Existing Set`}
                 total={totalFromSelectedBins}
                 type="case"
-                />
+                />,
             ))}
             >
             Add to existing case set
@@ -109,25 +109,24 @@ const ActionsDropdown = ({
         </DropdownItem>,
         <DropdownItem
           key="remove-set"
-          style={Object.assign(
-            {},
-            styles.actionMenuItem,
-            setActionsDisabled
+          style={({
+            ...styles.actionMenuItem,
+            ...(setActionsDisabled
               ? styles.actionMenuItemDisabled(theme)
-              : {},
-          )}
+              : {}),
+          })}
           >
           <Row
             onClick={() => setActionsDisabled || dispatch(setModal(
               <RemoveSetModal
                 enableDragging
                 field="cases.case_id"
-                filters={cardFilters}
+                filters={filters}
                 RemoveFromSetButton={RemoveFromExploreCaseSetButton}
                 selected={Object.keys(get(currentAnalysis, 'sets.case', {}))[0] || ''}
                 title={`Remove ${totalFromSelectedBins} Cases from Existing Set`}
                 type="case"
-                />
+                />,
             ))}
             >
             Remove from existing case set

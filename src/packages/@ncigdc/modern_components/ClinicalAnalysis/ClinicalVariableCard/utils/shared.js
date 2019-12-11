@@ -9,9 +9,6 @@ import {
 } from '@ncigdc/utils/string';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
-import { makeContinuousSetFilters } from './continuous';
-import makeCategoricalSetFilters from './categorical';
-
 export const colors = scaleOrdinal(schemeCategory10);
 export const colorsArray = [
   'rgb(31, 119, 180)',
@@ -116,13 +113,6 @@ export const makeHeadings = (chartType, dataDimension, fieldName) =>
       },
     ],
   ]);
-
-export const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) => (
-  get(selectedBuckets, 'length', 0)
-    ? variablePlotTypes === 'continuous'
-      ? makeContinuousSetFilters(selectedBuckets, fieldName, filters)
-      : makeCategoricalSetFilters(selectedBuckets, fieldName, filters)
-    : filters);
 
 export const makeCountLink = ({ doc_count, filters, totalDocs }) => (
   <span>

@@ -46,10 +46,12 @@ import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 import {
   FIELDS_WITHOUT_BOX_OR_QQ,
   makeBoxTableData,
+  makeContinuousActionsFilters,
 } from './utils/continuous';
 
+import makeCategoricalActionsFilters from './utils/categorical';
+
 import {
-  getCardFilters,
   makeHeadings,
   styles,
 } from './utils/shared';
@@ -235,9 +237,18 @@ const ClinicalVariableCard = ({
   ).length;
 
   const tsvSubstring = fieldName.replace(/\./g, '-');
-  const cardFilters = getCardFilters(
-    variable.plotTypes, selectedBins, fieldName, filters,
-  );
+
+  const actionsFiltersArgs = {
+    fieldName,
+    filters,
+    selectedBins,
+  };
+  const actionsFilters = selectedBins.length === 0
+    ? {}
+    : variable.plotTypes === 'continuous'
+      ? makeContinuousActionsFilters(actionsFiltersArgs)
+      : makeCategoricalActionsFilters(actionsFiltersArgs);
+
   const disabledCharts = plotType => isEmpty(tableData) &&
     plotType !== 'delete';
 
@@ -454,10 +465,10 @@ const ClinicalVariableCard = ({
                 {variable.active_chart === 'box' && (
                   <ClinicalBoxPlot
                     boxPlotValues={boxPlotValues}
-                    cardFilters={cardFilters}
                     dataBuckets={dataBuckets}
                     downloadChartName={downloadChartName}
                     fieldName={fieldName}
+                    filters={filters}
                     qqData={qqData}
                     setId={setId}
                     setQQData={setQQData}
@@ -479,9 +490,9 @@ const ClinicalVariableCard = ({
                   >
                   <ActionsDropdown
                     active_chart={variable.active_chart}
-                    cardFilters={cardFilters}
                     currentAnalysis={currentAnalysis}
                     dispatch={dispatch}
+                    filters={actionsFilters}
                     selectedBins={selectedBins}
                     styles={styles}
                     theme={theme}

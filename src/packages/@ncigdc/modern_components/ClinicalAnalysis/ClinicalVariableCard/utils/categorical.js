@@ -1,4 +1,4 @@
-const makeCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
+const makeCategoricalActionsFilters = (selectedBuckets, fieldName, filters) => {
   const filteredSelectedBuckets = selectedBuckets
     .filter(bucket => bucket.key !== '_missing');
   const includesMissing = filteredSelectedBuckets.length - selectedBuckets.length > 0;
@@ -43,4 +43,4 @@ const makeCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
   };
 };
 
-export default makeCategoricalSetFilters;
+export default makeCategoricalActionsFilters;

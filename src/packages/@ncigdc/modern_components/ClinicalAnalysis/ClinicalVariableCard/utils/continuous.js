@@ -39,7 +39,7 @@ const boxTableRenamedStats = {
   SD: 'Standard Deviation',
 };
 
-export const makeContinuousSetFilters = (selectedBuckets, fieldName, filters) => {
+export const makeContinuousActionsFilters = (selectedBuckets, fieldName, filters) => {
   const bucketRanges = selectedBuckets.map(bucket => bucket.rangeValues);
 
   return addInFilters(filters, {

@@ -201,31 +201,31 @@ import Color from 'color';
     },
   };
 
-	function InCHlib(element, options) {
+  function InCHlib(element, options) {
     const self = this;
-    
+
     // basic plugin setup
     self.element = element;
     self.$element = $(element);
     self.options = $.extend({}, defaults, options);
     self._name = plugin_name;
-    
+
     // inchlib setup
-		self.user_options = options || {};
-		self.element.style.position = 'relative';
+    self.user_options = options || {};
+    self.element.style.position = 'relative';
     const element_width = self.element.offsetWidth;
-    
-		self.options.width = self.options.max_width &&
+
+    self.options.width = self.options.max_width &&
       self.options.max_width < element_width
       ? self.options.max_width
-			: element_width;
-			
-		self.options.heatmap_part_width = self.options.heatmap_part_width > 0.9
+      : element_width;
+
+    self.options.heatmap_part_width = self.options.heatmap_part_width > 0.9
       ? 0.9
       : self.options.heatmap_part_width;
 
-		self.header_height = 150;
-		self.footer_height = 70;
+    self.header_height = 150;
+    self.footer_height = 70;
     self.dendrogram_heatmap_distance = 5;
 
     // proprietary styles for GDC portal
@@ -269,7 +269,7 @@ import Color from 'color';
         'color': 'white',
       }
     }
-    
+
     /**
     * Default function definitions for the InCHlib events
     * @name InCHlib#events
@@ -290,288 +290,288 @@ import Color from 'color';
         * );
         *
         */
-        row_onclick(object_ids, evt) {
+      row_onclick(object_ids, evt) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#row_onmouseover
-          * @event
-          * @param {function} function() callback function for mouse cursor over the heatmap row event
-          * @eventData {array} array array of object IDs represented by row
-          * @eventData {object} event event object
+      /**
+        * @name InCHlib#row_onmouseover
+        * @event
+        * @param {function} function() callback function for mouse cursor over the heatmap row event
+        * @eventData {array} array array of object IDs represented by row
+        * @eventData {object} event event object
 
-          * @example
-          * instance.events.row_onmouseover = (
-          *    function(object_ids, evt) {
-          *       alert(object_ids);
-          *    }
-          * );
-          *
-          */
-        row_onmouseover(object_ids, evt) {
+        * @example
+        * instance.events.row_onmouseover = (
+        *    function(object_ids, evt) {
+        *       alert(object_ids);
+        *    }
+        * );
+        *
+        */
+      row_onmouseover(object_ids, evt) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#row_onmouseout
-          * @event
-          * @param {function} function() callback function for mouse cursor out of the heatmap row event
-          * @eventData {object} event event object
+      /**
+        * @name InCHlib#row_onmouseout
+        * @event
+        * @param {function} function() callback function for mouse cursor out of the heatmap row event
+        * @eventData {object} event event object
 
-          * @example
-          * instance.events.row_onmouseout = (
-          *    function(evt) {
-          *       alert("now");
-          *    }
-          * );
-          *
-          */
-        row_onmouseout(evt) {
+        * @example
+        * instance.events.row_onmouseout = (
+        *    function(evt) {
+        *       alert("now");
+        *    }
+        * );
+        *
+        */
+      row_onmouseout(evt) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#dendrogram_node_onclick
-          * @event
-          * @param {function} function() callback function for dendrogram node click event
-          * @eventData {array} array array of object IDs represented by the node
-          * @eventData {string} node_id Id of the dendrogram node
-          * @eventData {object} event event object
+      /**
+        * @name InCHlib#dendrogram_node_onclick
+        * @event
+        * @param {function} function() callback function for dendrogram node click event
+        * @eventData {array} array array of object IDs represented by the node
+        * @eventData {string} node_id Id of the dendrogram node
+        * @eventData {object} event event object
 
-          * @example
-          * instance.events.dendrogram_node_onclick = (
-          *    function(object_ids, node_id, evt) {
-          *    alert(node_id + ": " + object_ids.length+" rows");
-          *    }
-          * );
-          *
-          */
-        dendrogram_node_onclick(object_ids, node_id, evt) {
+        * @example
+        * instance.events.dendrogram_node_onclick = (
+        *    function(object_ids, node_id, evt) {
+        *    alert(node_id + ": " + object_ids.length+" rows");
+        *    }
+        * );
+        *
+        */
+      dendrogram_node_onclick(object_ids, node_id, evt) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#column_dendrogram_node_onclick
-          * @event
-          * @param {function} function() callback function for column dendrogram click event
-          * @eventData {array} array array of column indexes
-          * @eventData {string} node_id Id of the dendrogram node
-          * @eventData {object} event event object
+      /**
+        * @name InCHlib#column_dendrogram_node_onclick
+        * @event
+        * @param {function} function() callback function for column dendrogram click event
+        * @eventData {array} array array of column indexes
+        * @eventData {string} node_id Id of the dendrogram node
+        * @eventData {object} event event object
 
-          * @example
-          * instance.events.column_dendrogram_node_onclick = (
-          *    function(column_ids, node_id, evt) {
-          *    alert(node_id + ": " + column_ids.length+" columns");
-          *    }
-          * );
-          *
-          */
-        column_dendrogram_node_onclick(column_indexes, node_id, evt) {
+        * @example
+        * instance.events.column_dendrogram_node_onclick = (
+        *    function(column_ids, node_id, evt) {
+        *    alert(node_id + ": " + column_ids.length+" columns");
+        *    }
+        * );
+        *
+        */
+      column_dendrogram_node_onclick(column_indexes, node_id, evt) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#dendrogram_node_highlight
-          * @event
-          * @param {function} function() callback function for the dendrogram node highlight event
-          * @eventData {array} array array of object IDs represented by row
-          * @eventData {string} node_id Id of the dendrogram node
-          * @eventData {object} event event object
+      /**
+        * @name InCHlib#dendrogram_node_highlight
+        * @event
+        * @param {function} function() callback function for the dendrogram node highlight event
+        * @eventData {array} array array of object IDs represented by row
+        * @eventData {string} node_id Id of the dendrogram node
+        * @eventData {object} event event object
 
-          * @example
-          * instance.events.dendrogram_node_highlight = (
-          *    function(object_ids, node_id, evt) {
-          *       alert(node_id + ": " + object_ids.length+" rows");
-          *    }
-          * );
-          *
-          */
-        dendrogram_node_highlight(object_ids, node_id) {
+        * @example
+        * instance.events.dendrogram_node_highlight = (
+        *    function(object_ids, node_id, evt) {
+        *       alert(node_id + ": " + object_ids.length+" rows");
+        *    }
+        * );
+        *
+        */
+      dendrogram_node_highlight(object_ids, node_id) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#column_dendrogram_node_highlight
-          * @event
-          * @param {function} function() callback function for the column dendrogram node highlight event
-          * @eventData {array} array array of column indexes
-          * @eventData {string} node_id Id of the dendrogram node
-          * @eventData {object} event event object
+      /**
+        * @name InCHlib#column_dendrogram_node_highlight
+        * @event
+        * @param {function} function() callback function for the column dendrogram node highlight event
+        * @eventData {array} array array of column indexes
+        * @eventData {string} node_id Id of the dendrogram node
+        * @eventData {object} event event object
 
-          * @example
-          * instance.events.column_dendrogram_node_highlight = (
-          *    function(object_ids, node_id, evt) {
-          *       alert(node_id + ": " + object_ids.length+" columns");
-          *    }
-          * );
-          *
-          */
-        column_dendrogram_node_highlight(column_indexes, node_id) {
+        * @example
+        * instance.events.column_dendrogram_node_highlight = (
+        *    function(object_ids, node_id, evt) {
+        *       alert(node_id + ": " + object_ids.length+" columns");
+        *    }
+        * );
+        *
+        */
+      column_dendrogram_node_highlight(column_indexes, node_id) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#dendrogram_node_unhighlight
-          * @event
-          * @param {function} function() callback function for the dendrogram node unhighlight event
-          * @eventData {string} node_id Id of the dendrogram node
+      /**
+        * @name InCHlib#dendrogram_node_unhighlight
+        * @event
+        * @param {function} function() callback function for the dendrogram node unhighlight event
+        * @eventData {string} node_id Id of the dendrogram node
 
-          * @example
-          * instance.events.dendrogram_node_unhighlight = (
-          *    function(node_id) {
-          *       alert(node_id);
-          *    }
-          * );
-          *
-          */
-        dendrogram_node_unhighlight(node_id) {
+        * @example
+        * instance.events.dendrogram_node_unhighlight = (
+        *    function(node_id) {
+        *       alert(node_id);
+        *    }
+        * );
+        *
+        */
+      dendrogram_node_unhighlight(node_id) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#column_dendrogram_node_unhighlight
-          * @event
-          * @param {function} function() callback function for the column dendrogram node unhighlight event
-          * @eventData {string} node_id Id of the column dendrogram node
+      /**
+        * @name InCHlib#column_dendrogram_node_unhighlight
+        * @event
+        * @param {function} function() callback function for the column dendrogram node unhighlight event
+        * @eventData {string} node_id Id of the column dendrogram node
 
-          * @example
-          * instance.events.column_dendrogram_node_unhighlight = (
-          *    function(node_id) {
-          *       alert(node_id);
-          *    }
-          * );
-          *
-          */
-        column_dendrogram_node_unhighlight(node_id) {
+        * @example
+        * instance.events.column_dendrogram_node_unhighlight = (
+        *    function(node_id) {
+        *       alert(node_id);
+        *    }
+        * );
+        *
+        */
+      column_dendrogram_node_unhighlight(node_id) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#heatmap_onmouseout
-          * @event
-          * @param {function} function() callback function for mouse cursor out of hte heatmap area
-          * @eventData {object} event event object
+      /**
+        * @name InCHlib#heatmap_onmouseout
+        * @event
+        * @param {function} function() callback function for mouse cursor out of hte heatmap area
+        * @eventData {object} event event object
 
-          * @example
-          * instance.events.heatmap_onmouseout = (
-          *    function(evt) {
-          *       alert("now");
-          *    }
-          * );
-          *
-          */
-        heatmap_onmouseout(evt) {
+        * @example
+        * instance.events.heatmap_onmouseout = (
+        *    function(evt) {
+        *       alert("now");
+        *    }
+        * );
+        *
+        */
+      heatmap_onmouseout(evt) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#on_zoom
-          * @event
-          * @param {function} function() callback function for zoom event
-          * @eventData {string} node_id Id of the dendrogram node
+      /**
+        * @name InCHlib#on_zoom
+        * @event
+        * @param {function} function() callback function for zoom event
+        * @eventData {string} node_id Id of the dendrogram node
 
-          * @example
-          * instance.events.on_zoom = (
-          *    function(node_id) {
-          *       alert(node_id);
-          *    }
-          * );
-          *
-          */
-        on_zoom(object_ids, node_id) {
+        * @example
+        * instance.events.on_zoom = (
+        *    function(node_id) {
+        *       alert(node_id);
+        *    }
+        * );
+        *
+        */
+      on_zoom(object_ids, node_id) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#on_unzoom
-          * @event
-          * @param {function} function() callback function for unzoom event
-          * @eventData {string} node_id Id of the dendrogram node
+      /**
+        * @name InCHlib#on_unzoom
+        * @event
+        * @param {function} function() callback function for unzoom event
+        * @eventData {string} node_id Id of the dendrogram node
 
-          * @example
-          * instance.events.on_unzoom = (
-          *    function(node_id) {
-          *       alert(node_id);
-          *    }
-          * );
-          *
-          */
-        on_unzoom(node_id) {
+        * @example
+        * instance.events.on_unzoom = (
+        *    function(node_id) {
+        *       alert(node_id);
+        *    }
+        * );
+        *
+        */
+      on_unzoom(node_id) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#on_columns_zoom
-          * @event
-          * @param {function} function() callback function for columns zoom event
-          * @eventData {array} array array of column indexes
-          * @eventData {string} node_id Id of the column dendrogram node
+      /**
+        * @name InCHlib#on_columns_zoom
+        * @event
+        * @param {function} function() callback function for columns zoom event
+        * @eventData {array} array array of column indexes
+        * @eventData {string} node_id Id of the column dendrogram node
 
-          * @example
-          * instance.events.on_columns_zoom = (
-          *    function(column_indexes, node_id) {
-          *       alert(column_indexes, node_id);
-          *    }
-          * );
-          *
-          */
-        on_columns_zoom(column_indexes, node_id) {
+        * @example
+        * instance.events.on_columns_zoom = (
+        *    function(column_indexes, node_id) {
+        *       alert(column_indexes, node_id);
+        *    }
+        * );
+        *
+        */
+      on_columns_zoom(column_indexes, node_id) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#on_columns_unzoom
-          * @event
-          * @param {function} function() callback function for columns unzoom event
-          * @eventData {string} node_id Id of the column dendrogram node
+      /**
+        * @name InCHlib#on_columns_unzoom
+        * @event
+        * @param {function} function() callback function for columns unzoom event
+        * @eventData {string} node_id Id of the column dendrogram node
 
-          * @example
-          * instance.events.on_columns_unzoom = (
-          *    function(node_id) {
-          *       alert(node_id);
-          *    }
-          * );
-          *
-          */
-        on_columns_unzoom(node_id) {
+        * @example
+        * instance.events.on_columns_unzoom = (
+        *    function(node_id) {
+        *       alert(node_id);
+        *    }
+        * );
+        *
+        */
+      on_columns_unzoom(node_id) {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#on_refresh
-          * @event
-          * @param {function} function() callback function for refresh icon click event
-          * @eventData {object} event event object
-          * @example
-          * instance.events.on_refresh = (
-          *    function() {
-          *       alert("now");
-          *    }
-          * );
-          *
-          */
-        on_refresh() {
+      /**
+        * @name InCHlib#on_refresh
+        * @event
+        * @param {function} function() callback function for refresh icon click event
+        * @eventData {object} event event object
+        * @example
+        * instance.events.on_refresh = (
+        *    function() {
+        *       alert("now");
+        *    }
+        * );
+        *
+        */
+      on_refresh() {
 
-        },
+      },
 
-        /**
-          * @name InCHlib#empty_space_onclick
-          * @event
-          * @param {function} function() callback function for click on empty(inactive) space in the visualization (e.g., around the heatmap)
-          * @eventData {object} event event object
+      /**
+        * @name InCHlib#empty_space_onclick
+        * @event
+        * @param {function} function() callback function for click on empty(inactive) space in the visualization (e.g., around the heatmap)
+        * @eventData {object} event event object
 
-          * @example
-          * instance.events.empty_space_onclick = (
-          *    function(evt) {
-          *       alert("now");
-          *    }
-          * );
-          *
-          */
-        empty_space_onclick(evt) {
+        * @example
+        * instance.events.empty_space_onclick = (
+        *    function(evt) {
+        *       alert("now");
+        *    }
+        * );
+        *
+        */
+      empty_space_onclick(evt) {
 
-        },
+      },
 
     };
 
@@ -1114,10 +1114,10 @@ import Color from 'color';
       lightbulb: 'M15.5,2.833c-3.866,0-7,3.134-7,7c0,3.859,3.945,4.937,4.223,9.499h5.553c0.278-4.562,4.224-5.639,4.224-9.499C22.5,5.968,19.366,2.833,15.5,2.833zM15.5,28.166c1.894,0,2.483-1.027,2.667-1.666h-5.334C13.017,27.139,13.606,28.166,15.5,28.166zM12.75,25.498h5.5v-5.164h-5.5V25.498z',
     };
 
-		// start plugin
-		self.init();
+    // start plugin
+    self.init();
   }
-  
+
   InCHlib.prototype._update_user_options = function (options) {
     const self = this;
     const updated_options = {};
@@ -1141,7 +1141,7 @@ import Color from 'color';
     *
     * @param {object} [variable] Clustering in proper JSON format.
     */
-   InCHlib.prototype.read_data = function (json) {
+  InCHlib.prototype.read_data = function (json) {
     const self = this;
     self.json = json;
     self.data = self.json.data;
@@ -1246,7 +1246,7 @@ import Color from 'color';
     };
     let key;
     const keys = Object.keys(self.data.nodes);
- 
+
     for (var i = 0; i < keys.length; i++) {
       key = keys[i];
       if (self.data.nodes[key].count == 1) {
@@ -1276,13 +1276,13 @@ import Color from 'color';
     const len = all.length;
     all.sort((a, b) => { return a - b; });
     min_max_middle.push((self.options.min_percentile > 0)
-      ? all[self._hack_round(len * self.options.min_percentile / 100)] 
+      ? all[self._hack_round(len * self.options.min_percentile / 100)]
       : Math.min.apply(null, all));
     min_max_middle.push((self.options.max_percentile < 100)
-      ? all[self._hack_round(len * self.options.max_percentile / 100)] 
+      ? all[self._hack_round(len * self.options.max_percentile / 100)]
       : Math.max.apply(null, all));
     min_max_middle.push((self.options.middle_percentile != 50)
-      ? all[self._hack_round(len * self.options.middle_percentile / 100)] 
+      ? all[self._hack_round(len * self.options.middle_percentile / 100)]
       : all[self._hack_round((len - 1) / 2)]);
     return min_max_middle;
   };
@@ -1307,11 +1307,11 @@ import Color from 'color';
       }
 
       for (var i = 0; i < data_rows; i++) {
-        for (var j = 0; j < data_cols; j++) {          
+        for (var j = 0; j < data_cols; j++) {
           value = data[i] && data[i][j];
           if (value !== false &&
-              value !== null &&
-              value !== undefined) {
+            value !== null &&
+            value !== undefined) {
             columns[j].push(value);
           }
         }
@@ -1472,7 +1472,7 @@ import Color from 'color';
             : a[column_index] - b[column_index];
       });
     } else {
-      self.heatmap_array.sort((a, b) => { 
+      self.heatmap_array.sort((a, b) => {
         return (a[column_index] == null)
           ? -1
           : (b[column_index] == null)
@@ -1481,7 +1481,7 @@ import Color from 'color';
               ? 1
               : (a[column_index] < b[column_index])
                 ? -1
-                : 0; 
+                : 0;
       });
     }
 
@@ -1888,8 +1888,10 @@ import Color from 'color';
   };
 
   InCHlib.prototype._set_heatmap_settings = function () {
-    const self = this; let keys; let key; let len; let
-      node;
+    const self = this;
+    let keys;
+    let key;
+    let node;
 
     self.header = [];
     for (var i = 0; i < self.dimensions.overall; i++) {
@@ -2091,6 +2093,7 @@ import Color from 'color';
           value: text_value,
           column: ['d', col_index].join('_'),
           gene_id: self.metadata.nodes[node_id],
+          // gene_id for tooltip
           strokeWidth: self.pixels_for_leaf,
         });
         row.add(line);
@@ -2239,15 +2242,10 @@ import Color from 'color';
       y,
     });
     row.add(text);
-    // TODO: add an X button here with a click event to destroy this row
+    // TODO: add an X button here with a click event, to remove this row
 
     return row;
   };
-
-  // TODO
-  // InCHlib.prototype._destroy_column_metadata_row = function(row) {
-
-  // };
 
   InCHlib.prototype._bind_row_events = function (row) {
     const self = this;
@@ -2384,6 +2382,13 @@ import Color from 'color';
         current_headers.push(self.header[self.dimensions.overall - 1]);
       }
       const max_text_length = self._get_max_length(current_headers);
+
+      // TODO: control whether gene IDs are displayed, based on 
+      // how many rows are visible, or how tall the rows are
+      // BUT - keep the font size static & legible.
+      // original implementation is below - font size is dynamic,
+      // gene IDs are hidden if font size is too small
+
       // const font_size = self._get_font_size(max_text_length, self.header_height, self.pixels_for_dimension, 16);
       // if (font_size < 8) {
       //   return;
@@ -3659,8 +3664,8 @@ import Color from 'color';
         function () {
           $(this).css(self.styles.css_button_on);
         },
-        function () { 
-          $(this).css(self.styles.css_primary_button_off); 
+        function () {
+          $(this).css(self.styles.css_primary_button_off);
         },
       );
 
@@ -3811,10 +3816,10 @@ import Color from 'color';
       $submit_button.css(self.styles.css_primary_button_off);
 
       $submit_button.hover(
-        function() {
+        function () {
           $submit_button.css(self.styles.css_button_on);
         },
-        function() {
+        function () {
           $submit_button.css(self.styles.css_primary_button_off);
         }
       );
@@ -3932,7 +3937,7 @@ import Color from 'color';
     scale_divs.on('click', function () {
       const color = $(this).attr('data-scale_acronym');
       const input = $(element).prev('input:first').val(color);
-      
+
       $(element).css({ background: `linear-gradient(to right, ${self._get_color_for_value(0, 0, 1, 0.5, color)},${self._get_color_for_value(0.5, 0, 1, 0.5, color)},${self._get_color_for_value(1, 0, 1, 0.5, color)})` });
       scales_div.fadeOut('fast');
       scale_divs.off('click');
@@ -4285,7 +4290,7 @@ import Color from 'color';
     const tooltip_value = typeof value === 'undefined'
       ? name.split('_').join(' ')
       : value;
-    
+
     const tooltip_text = [header_text, tooltip_value].join('\n');
 
     const tooltip = self.objects_ref.tooltip_label.clone({
@@ -4392,7 +4397,7 @@ import Color from 'color';
   /**
     * Initiate InCHlib
     */
-	InCHlib.prototype.init = function () {
+  InCHlib.prototype.init = function () {
     const self = this;
     if (self.user_options === 'destroy') {
       self.destroy();
@@ -4402,18 +4407,18 @@ import Color from 'color';
       self.$element.after(loading_div);
       self.$element.hide();
 
-      setTimeout(function() {
-      self.read_data(self.options.data);
-      self.draw();
+      setTimeout(function () {
+        self.read_data(self.options.data);
+        self.draw();
       }, 50);
 
-      setTimeout(function() {
+      setTimeout(function () {
         loading_div.remove();
         self.$element.show();
       }, 50);
     }
   };
- 
+
   $.fn[plugin_name] = function (options) {
     // note: this plugin only supports ONE instance
     return this.each(function () {

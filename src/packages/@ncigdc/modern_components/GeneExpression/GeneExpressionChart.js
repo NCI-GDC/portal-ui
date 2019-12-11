@@ -35,6 +35,8 @@ class GeneExpressionChart extends Component {
     // in this file
     this.$el = $(this.el);
     this.$el.InCHlib(this.options);
+
+    // TODO: add event handlers
   }
 
   componentDidUpdate(prevProps) {
@@ -52,6 +54,9 @@ class GeneExpressionChart extends Component {
     console.log('componentWillUnmount');
     // this.$el.InCHlib.destroy();
     // this.$el.InCHlib('destroy');
+
+    // TODO: destroy event handlers to prevent memory leaks
+    // MAYBE: destroy inchlib instance?
   }
 
   render() {

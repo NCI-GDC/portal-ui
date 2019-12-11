@@ -39,16 +39,16 @@ const boxTableRenamedStats = {
   SD: 'Standard Deviation',
 };
 
-export const makeContinuousActionsFilters = (selectedBuckets, fieldName, filters) => {
-  const bucketRanges = selectedBuckets.map(bucket => bucket.rangeValues);
+export const makeContinuousActionsFilters = ({ fieldName, filters, selectedBins }) => {
+  const binRanges = selectedBins.map(bin => bin.rangeValues);
 
   return addInFilters(filters, {
-    content: bucketRanges.length === 1 && bucketRanges[0].max === -1
+    content: binRanges.length === 1 && binRanges[0].max === -1
       ? [
         {
           content: {
             field: fieldName,
-            value: [bucketRanges[0].min],
+            value: [binRanges[0].min],
           },
           op: '>=',
         },
@@ -57,14 +57,14 @@ export const makeContinuousActionsFilters = (selectedBuckets, fieldName, filters
         {
           content: {
             field: fieldName,
-            value: [min(bucketRanges.map(range => range.min))],
+            value: [min(binRanges.map(range => range.min))],
           },
           op: '>=',
         },
         {
           content: {
             field: fieldName,
-            value: [max(bucketRanges.map(range => range.max))],
+            value: [max(binRanges.map(range => range.max))],
           },
           op: '<',
         },

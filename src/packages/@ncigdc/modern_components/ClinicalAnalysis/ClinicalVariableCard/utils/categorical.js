@@ -1,16 +1,16 @@
-const makeCategoricalActionsFilters = (selectedBuckets, fieldName, filters) => {
-  const filteredSelectedBuckets = selectedBuckets
-    .filter(bucket => bucket.key !== '_missing');
-  const includesMissing = filteredSelectedBuckets.length - selectedBuckets.length > 0;
+const makeCategoricalActionsFilters = ({ fieldName, filters, selectedBins }) => {
+  const filteredSelectedBins = selectedBins
+    .filter(bin => bin.key !== '_missing');
+  const includesMissing = filteredSelectedBins.length - selectedBins.length > 0;
 
-  const bucketFilters = []
-    .concat(filteredSelectedBuckets.length > 0 && [
+  const binFilters = []
+    .concat(filteredSelectedBins.length > 0 && [
       {
         content: {
           field: fieldName,
-          value: filteredSelectedBuckets
-            .reduce((acc, selectedBucket) =>
-              [...acc, ...selectedBucket.keyArray], []),
+          value: filteredSelectedBins
+            .reduce((acc, selectedBin) =>
+              [...acc, ...selectedBin.keyArray], []),
         },
         op: 'in',
       },
@@ -29,15 +29,15 @@ const makeCategoricalActionsFilters = (selectedBuckets, fieldName, filters) => {
 
   return {
     ...filters,
-    ...bucketFilters.length > 0 && {
+    ...binFilters.length > 0 && {
       content: filters.content
         .concat(
-          bucketFilters.length > 1
+          binFilters.length > 1
             ? {
-              content: bucketFilters,
+              content: binFilters,
               op: 'or',
             }
-            : bucketFilters[0],
+            : binFilters[0],
         ),
     },
   };

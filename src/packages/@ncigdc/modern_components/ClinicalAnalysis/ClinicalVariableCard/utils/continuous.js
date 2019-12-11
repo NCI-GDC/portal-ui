@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   get,
   map,
@@ -79,26 +78,26 @@ const parseContinuousValue = continuousValue =>
 
 export const parseContinuousKey = keyValue =>
   keyValue.split('-')
-    .map((val, idx, src) => (src[idx - 1] === '' ? `-${val}` : val))
-    .filter(val => val !== '')
-    .map(val => parseContinuousValue(val));
+    .map((val, idx, src) => (parseContinuousValue(src[idx - 1] === ''
+      ? `-${val}`
+      : val)));
 
 export const makeContinuousDefaultLabel = keyValue =>
   parseContinuousKey(keyValue).join(' to \u003c');
 
 export const makeBoxTableData = (data = {}) =>
-sortBy(Object.keys(data), datum =>
-  boxTableAllowedStats.indexOf(datum.toLowerCase()))
-  .reduce(
-    (acc, curr) => (
+  sortBy(Object.keys(data), datum =>
+    boxTableAllowedStats.indexOf(datum.toLowerCase()))
+    .reduce(
+      (acc, curr) => (
     boxTableAllowedStats.includes(curr.toLowerCase())
       ? acc.concat({
         count: parseContinuousValue(data[curr]),
         stat: boxTableRenamedStats[curr] || curr, // Shows the descriptive label
       })
       : acc
-    ), []
-  );
+      ), [],
+    );
 
 export const makeContinuousBins = ({
   binData = [],
@@ -107,15 +106,15 @@ export const makeContinuousBins = ({
   setId,
   totalDocs,
 }) => binData.reduce((acc, {
-    color, doc_count, groupName = '', key, keyArray = [],
-  }) => {
-    const keyValues = parseContinuousKey(key);
+  color, doc_count, groupName = '', key, keyArray = [],
+}) => {
+  const keyValues = parseContinuousKey(key);
     // continuous survival doesn't have keyArray, it has filters
-    const keyArrayValues = keyArray.length > 0
+  const keyArrayValues = keyArray.length > 0
       ? parseContinuousKey(keyArray[0])
       : keyValues;
 
-    const groupNameFormatted = groupName !== '' &&
+  const groupNameFormatted = groupName !== '' &&
       continuousBinType === 'range'
       ? groupName
       : keyValues.length === 2 &&
@@ -124,55 +123,55 @@ export const makeContinuousBins = ({
             ? makeContinuousDefaultLabel(key)
             : key;
 
-    const [keyMin, keyMax] = keyArrayValues;
-    const filters = {
-      content: [
-        {
-          content: {
-            field: 'cases.case_id',
-            value: `set_id:${setId}`,
-          },
-          op: 'in',
-        },
-        {
-          content: {
-            field: fieldName,
-            value: [keyMin],
-          },
-          op: '>=',
-        },
-        {
-          content: {
-            field: fieldName,
-            value: [keyMax],
-          },
-          op: '<',
-        },
-      ],
-      op: 'and',
-    };
-
-    return acc.concat(
+  const [keyMin, keyMax] = keyArrayValues;
+  const filters = {
+    content: [
       {
-        doc_count,
-        color,
-        displayName: groupNameFormatted,
-        doc_count_link: makeCountLink({
-          doc_count,
-          filters,
-          totalDocs,
-        }),
-        filters,
-        groupName: groupNameFormatted,
-        key: `${keyMin}-${keyMax}`,
-        rangeValues: {
-          max: keyMax,
-          min: keyMin,
+        content: {
+          field: 'cases.case_id',
+          value: `set_id:${setId}`,
         },
-      }
-    );
-  }, []);
-    
+        op: 'in',
+      },
+      {
+        content: {
+          field: fieldName,
+          value: [keyMin],
+        },
+        op: '>=',
+      },
+      {
+        content: {
+          field: fieldName,
+          value: [keyMax],
+        },
+        op: '<',
+      },
+    ],
+    op: 'and',
+  };
+
+  return acc.concat(
+    {
+      doc_count,
+      color,
+      displayName: groupNameFormatted,
+      doc_count_link: makeCountLink({
+        doc_count,
+        filters,
+        totalDocs,
+      }),
+      filters,
+      groupName: groupNameFormatted,
+      key: `${keyMin}-${keyMax}`,
+      rangeValues: {
+        max: keyMax,
+        min: keyMin,
+      },
+    },
+  );
+}, []);
+
 export const makeDefaultDataOnLoad = ({ explore, fieldName }) => {
   const dataStats = typeof explore === 'undefined'
     ? {
@@ -217,17 +216,13 @@ export const makeDefaultDataOnLoad = ({ explore, fieldName }) => {
     },
   });
 };
-    
+
 export const makeContinuousProps = ({ data, fieldName }) => {
   const sanitisedId = fieldName.split('.').pop();
   const rawQueryData = getRawQueryData(data, fieldName);
   const dataDimension = dataDimensions[sanitisedId] &&
     dataDimensions[sanitisedId].unit;
 
-  // console.log('data', data);  
-
-  // console.log('rawQueryData', rawQueryData);
-  
   return {
     boxPlotValues: map(
       {
@@ -246,12 +241,12 @@ export const makeContinuousProps = ({ data, fieldName }) => {
               [stat]: value,
             });
         }
-      }
+      },
     )
-    .reduce((acc, item) => ({
-      ...acc,
-      ...item,
-    }), {}),
+      .reduce((acc, item) => ({
+        ...acc,
+        ...item,
+      }), {}),
     dataBuckets: get(rawQueryData, 'range.buckets', []),
     dataDimension,
     totalDocs: get(data, 'hits.total', 0),
@@ -277,17 +272,17 @@ export const makeContinuousProps = ({ data, fieldName }) => {
                 [stat]: value,
               });
           }
-        }
+        },
       )
-      .reduce((acc, item) => ({
-        ...acc,
-        ...item,
-      }), {}),
+        .reduce((acc, item) => ({
+          ...acc,
+          ...item,
+        }), {}),
     },
   };
 };
-    
-export const dispatchVariableBins = ({ 
+
+export const dispatchVariableBins = ({
   bins,
   continuousBinType,
   dataBuckets,

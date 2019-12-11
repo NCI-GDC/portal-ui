@@ -10,7 +10,7 @@ import {
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
 import { makeContinuousSetFilters } from './continuous';
-import { makeCategoricalSetFilters } from './categorical';
+import makeCategoricalSetFilters from './categorical';
 
 export const colors = scaleOrdinal(schemeCategory10);
 export const colorsArray = [
@@ -99,28 +99,30 @@ export const makeHeadings = (chartType, dataDimension, fieldName) =>
       },
       title: '# Cases',
     },
-    ...chartType === 'survival' && 
-    [{
-      key: 'survival',
-      style: {
-        display: 'flex',
-        justifyContent: 'flex-end',
+    ...chartType === 'survival' &&
+    [
+      {
+        key: 'survival',
+        style: {
+          display: 'flex',
+          justifyContent: 'flex-end',
+        },
+        thStyle: {
+          position: 'sticky',
+          textAlign: 'right',
+          top: 0,
+        },
+        title: 'Survival',
       },
-      thStyle: {
-        position: 'sticky',
-        textAlign: 'right',
-        top: 0,
-      },
-      title: 'Survival',
-    }]
+    ],
   ]);
 
-  export const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) => (
-    get(selectedBuckets, 'length', 0)
-      ? variablePlotTypes === 'continuous'
-        ? makeContinuousSetFilters(selectedBuckets, fieldName, filters)
-        : makeCategoricalSetFilters(selectedBuckets, fieldName, filters)
-      : filters);
+export const getCardFilters = (variablePlotTypes, selectedBuckets, fieldName, filters) => (
+  get(selectedBuckets, 'length', 0)
+    ? variablePlotTypes === 'continuous'
+      ? makeContinuousSetFilters(selectedBuckets, fieldName, filters)
+      : makeCategoricalSetFilters(selectedBuckets, fieldName, filters)
+    : filters);
 
 export const makeCountLink = ({ doc_count, filters, totalDocs }) => (
   <span>
@@ -191,22 +193,18 @@ export const makeBinData = (bins, dataBuckets) => ({
     key,
     keyArray: values.reduce((acc, value) => acc.concat(value.key), []),
   })).filter(bin => bin.key),
-  binsOrganizedByKey: dataBuckets.reduce((acc, bucket) => Object.assign(
-    {},
-    acc,
-    {
-      [bucket.key]: Object.assign(
-        {},
-        bucket,
-        {
-          groupName: typeof bucket.groupName === 'string' &&
+  binsOrganizedByKey: dataBuckets.reduce((acc, bucket) => ({
+
+    ...acc,
+    [bucket.key]: {
+
+      ...bucket,
+      groupName: typeof bucket.groupName === 'string' &&
             bucket.groupName !== ''
             ? bucket.groupName
             : bucket.key,
-        }
-      ),
-    }
-  ), {}),
+    },
+  }), {}),
 });
 
 export const getRawQueryData = (data, fieldName) => get(data,

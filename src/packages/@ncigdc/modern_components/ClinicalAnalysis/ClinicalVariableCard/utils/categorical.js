@@ -1,19 +1,21 @@
-export const makeCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
+const makeCategoricalSetFilters = (selectedBuckets, fieldName, filters) => {
+  const filteredSelectedBuckets = selectedBuckets
+    .filter(bucket => bucket.key !== '_missing');
+  const includesMissing = filteredSelectedBuckets.length - selectedBuckets.length > 0;
+
   const bucketFilters = []
-    .concat(selectedBuckets
-      .filter(bucket => bucket.key !== '_missing').length > 0 && [
+    .concat(filteredSelectedBuckets.length > 0 && [
       {
         content: {
           field: fieldName,
-          value: selectedBuckets
-            .filter(bucket => bucket.key !== '_missing')
+          value: filteredSelectedBuckets
             .reduce((acc, selectedBucket) =>
               [...acc, ...selectedBucket.keyArray], []),
         },
         op: 'in',
       },
     ])
-    .concat(selectedBuckets.some(bucket => bucket.key === '_missing') && 
+    .concat(includesMissing &&
       [
         {
           content: {
@@ -22,14 +24,12 @@ export const makeCategoricalSetFilters = (selectedBuckets, fieldName, filters) =
           },
           op: 'is',
         },
-      ]
-    )
+      ])
     .filter(item => item);
 
-  return Object.assign(
-    {},
-    filters,
-    bucketFilters.length && {
+  return {
+    ...filters,
+    ...bucketFilters.length > 0 && {
       content: filters.content
         .concat(
           bucketFilters.length > 1
@@ -37,8 +37,10 @@ export const makeCategoricalSetFilters = (selectedBuckets, fieldName, filters) =
               content: bucketFilters,
               op: 'or',
             }
-            : bucketFilters[0]
+            : bucketFilters[0],
         ),
-    }
-  );
+    },
+  };
 };
+
+export default makeCategoricalSetFilters;

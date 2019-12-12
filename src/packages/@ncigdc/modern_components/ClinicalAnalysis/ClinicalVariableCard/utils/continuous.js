@@ -80,7 +80,8 @@ export const parseContinuousKey = keyValue =>
   keyValue.split('-')
     .map((val, idx, src) => (parseContinuousValue(src[idx - 1] === ''
       ? `-${val}`
-      : val)));
+      : val)))
+    .filter(val => val !== '');
 
 export const makeContinuousDefaultLabel = keyValue =>
   parseContinuousKey(keyValue).join(' to \u003c');

@@ -2016,9 +2016,12 @@ import Color from 'color';
     self.max_value_length = self._get_max_value_length();
     self.value_font_size = self._get_font_size(self.max_value_length, self.pixels_for_dimension, self.pixels_for_leaf, 12);
 
-    if (self.value_font_size < 4) {
+    if (self.pixels_for_leaf < 20) {
       self.current_draw_values = false;
     }
+
+    // TODO figure out how to show heatmap labels depending on row height
+    // then set self.current_draw_values to false
 
     const x1 = self.heatmap_distance;
 

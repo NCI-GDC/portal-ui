@@ -227,8 +227,8 @@ import Color from 'color';
     self.footer_height = 70;
     self.dendrogram_heatmap_distance = 5;
 
-    self.row_height_draw_values = 20;
-    self.column_metadata_row_height = self.row_height_draw_values;
+    self.min_size_draw_values = 20;
+    self.column_metadata_row_height = self.min_size_draw_values;
 
     // proprietary styles for GDC portal
     self.styles = {
@@ -2018,7 +2018,7 @@ import Color from 'color';
     self.max_value_length = self._get_max_value_length();
     self.value_font_size = self._get_font_size(self.max_value_length, self.pixels_for_dimension, self.pixels_for_leaf, 12);
 
-    if (self.pixels_for_leaf < self.row_height_draw_values) {
+    if (self.pixels_for_leaf < self.min_size_draw_values) {
       self.current_draw_values = false;
     }
 
@@ -2363,14 +2363,21 @@ import Color from 'color';
 
   InCHlib.prototype._draw_heatmap_header = function () {
     const self = this;
-    if (self.options.heatmap_header && self.header.length > 0) {
+    if (self.options.heatmap_header &&
+      self.header.length > 0 &&
+      self.pixels_for_dimension >= self.min_size_draw_values) {
       self.header_layer = new Konva.Layer();
       const count = self._hack_size(self.leaves_y_coordinates);
-      const y = (self.options.column_dendrogram && self.heatmap_header) ? self.header_height + (self.pixels_for_leaf * count) + 15 + self.column_metadata_height : self.header_height - 20;
-      const rotation = (self.options.column_dendrogram && self.heatmap_header) ? 45 : -45;
+      const y = (self.options.column_dendrogram && self.heatmap_header)
+        ? self.header_height + (self.pixels_for_leaf * count) + 15 + self.column_metadata_height
+        : self.header_height - 20;
+      const rotation = (self.options.column_dendrogram && self.heatmap_header)
+        ? 45 
+        : -45;
       let distance_step = 0;
-      let x; let column_header; let
-        key;
+      let x;
+      let column_header;
+      let key;
       const current_headers = [];
 
       for (var i = 0, len = self.on_features.data.length; i < len; i++) {
@@ -2384,17 +2391,6 @@ import Color from 'color';
         current_headers.push(self.header[self.dimensions.overall - 1]);
       }
       const max_text_length = self._get_max_length(current_headers);
-
-      // TODO: control whether gene IDs are displayed, based on 
-      // how many rows are visible, or how tall the rows are
-      // BUT - keep the font size static & legible.
-      // original implementation is below - font size is dynamic,
-      // gene IDs are hidden if font size is too small
-
-      // const font_size = self._get_font_size(max_text_length, self.header_height, self.pixels_for_dimension, 16);
-      // if (font_size < 8) {
-      //   return;
-      // }
 
       for (var i = 0, len = current_headers.length; i < len; i++) {
         x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;

@@ -2067,8 +2067,9 @@ import Color from 'color';
     const self = this;
     const node = self.data.nodes[node_id];
     const row = new Konva.Group({ id: node_id });
-    let x2; let y2; let color; let line; let value; let text; let text_value; let
-      col_index;
+    let x2; let y2; let color; let line; let value; let text; let text_value; let col_index;
+
+    const [ gene_ensembl, gene_symbol ] = self.metadata.nodes[node_id];
 
     for (var i = 0, len = self.on_features.data.length; i < len; i++) {
       col_index = self.on_features.data[i];
@@ -2094,8 +2095,8 @@ import Color from 'color';
           ],
           value: text_value,
           column: ['d', col_index].join('_'),
-          gene_id: self.metadata.nodes[node_id],
-          // gene_id for tooltip
+          gene_symbol,
+          // gene_symbol for tooltip
           strokeWidth: self.pixels_for_leaf,
         });
         row.add(line);
@@ -2108,7 +2109,8 @@ import Color from 'color';
       const metadata = self.metadata.nodes[node_id];
 
       if (metadata !== undefined) {
-        for (var i = 0, len = self.on_features.metadata.length; i < len; i++) {
+        // skip gene_ensembl
+        for (var i = 1; i < self.on_features.metadata.length; i++) {
           col_index = self.on_features.metadata[i];
           value = metadata[col_index];
           x2 = x1 + self.pixels_for_dimension;
@@ -2129,8 +2131,7 @@ import Color from 'color';
                 x2,
                 y2,
               ],
-              // name = gene_id
-              name: text_value,
+              name: gene_symbol,
               column: ['m', col_index].join('_'),
               strokeWidth: self.pixels_for_leaf,
             });
@@ -2138,7 +2139,7 @@ import Color from 'color';
 
             if (self.current_draw_values) {
               text = self.objects_ref.heatmap_value.clone({
-                text: text_value,
+                text: gene_symbol,
                 fontSize: self.options.font.size,
                 fontWeight: 'bold',
               });
@@ -2397,7 +2398,8 @@ import Color from 'color';
         column_header = self.objects_ref.column_header.clone({
           x,
           y,
-          text: current_headers[i] === 'gene_id'
+          text: current_headers[i] === 'gene_symbol' ||
+            current_headers[i] === 'gene_ensembl'
             ? ''
             : current_headers[i],
           position_index: i,
@@ -4277,12 +4279,12 @@ import Color from 'color';
 
     const { name, value } = attrs;
 
-    const header_text = header_value === 'gene_id'
+    const header_text = header_value === 'gene_symbol'
       ? 'Gene'
       : header_value === 'case_id'
         ? 'Case'
         : self.heatmap_header.includes(header_value)
-          ? `Case: ${header_value}, Gene: ${attrs.gene_id}`
+          ? `Case: ${header_value.split('_')[0]}, Gene: ${attrs.gene_symbol}`
           : header_value;
 
     const tooltip_value = typeof value === 'undefined'

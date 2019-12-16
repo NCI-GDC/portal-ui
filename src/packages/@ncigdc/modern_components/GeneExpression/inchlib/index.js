@@ -2067,24 +2067,32 @@ import Color from 'color';
     const self = this;
     const node = self.data.nodes[node_id];
     const row = new Konva.Group({ id: node_id });
-    let x2; let y2; let color; let line; let value; let text; let text_value; let col_index;
-
+    let x2;
+    let y2;
+    let color;
+    let line;
+    let value;
+    let text;
+    let text_value;
+    let col_index;
+  
     const [ gene_ensembl, gene_symbol ] = self.metadata.nodes[node_id];
-
+  
+    // draw heatmap cells
     for (var i = 0, len = self.on_features.data.length; i < len; i++) {
       col_index = self.on_features.data[i];
       x2 = x1 + self.pixels_for_dimension;
       y2 = y1;
       value = node.features[col_index];
       text_value = value;
-
+  
       if (self.options.alternative_data) {
         text_value = self.alternative_data[node_id][col_index];
       }
-
+  
       if (value !== null) {
         color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
-
+  
         line = self.objects_ref.heatmap_line.clone({
           stroke: color,
           points: [
@@ -2101,97 +2109,44 @@ import Color from 'color';
         });
         row.add(line);
       }
-
+  
       x1 = x2;
     }
-
-    if (self.options.metadata) {
-      const metadata = self.metadata.nodes[node_id];
-
-      if (metadata !== undefined) {
-        // skip gene_ensembl
-        for (var i = 1; i < self.on_features.metadata.length; i++) {
-          col_index = self.on_features.metadata[i];
-          value = metadata[col_index];
-          x2 = x1 + self.pixels_for_dimension;
-          y2 = y1;
-
-          if (value !== null && value !== undefined) {
-            text_value = value;
-
-            if (self.metadata_descs[col_index].str2num !== undefined) {
-              value = self.metadata_descs[col_index].str2num[value];
-            }
-
-            line = self.objects_ref.heatmap_line.clone({
-              stroke: '#fff',
-              points: [
-                x1,
-                y1,
-                x2,
-                y2,
-              ],
-              name: gene_symbol,
-              column: ['m', col_index].join('_'),
-              strokeWidth: self.pixels_for_leaf,
-            });
-            row.add(line);
-
-            if (self.current_draw_values) {
-              text = self.objects_ref.heatmap_value.clone({
-                text: gene_symbol,
-                fontSize: self.options.font.size,
-                fontWeight: 'bold',
-              });
-
-              const width = text.getWidth();
-              const y = self._hack_round(y1 - self.value_font_size / 2);
-              text.position({
-                x: x1 + 5,
-                y,
-              });
-              row.add(text);
-            }
-          }
-          x1 = x2;
-        }
-      }
-    }
-
-    if (self.options.count_column && self.features[self.dimensions.overall - 1]) {
-      x2 = x1 + self.pixels_for_dimension;
-      const count = node.objects.length;
-      color = self._get_color_for_value(count, self.min_item_count, self.max_item_count, self.middle_item_count, self.options.count_column_colors);
-
-      line = self.objects_ref.heatmap_line.clone({
-        stroke: color,
-        points: [
-          x1,
-          y1,
-          x2,
-          y2,
-        ],
-        value: Number(count),
-        column: 'Count',
-        strokeWidth: self.pixels_for_leaf,
+  
+    // draw gene_symbol column
+    x2 = x1 + self.pixels_for_dimension;
+    y2 = y1;
+  
+    line = self.objects_ref.heatmap_line.clone({
+      points: [
+        x1,
+        y1,
+        x2,
+        y2,
+      ],
+      name: gene_symbol,
+      column: ['m', 1].join('_'),
+      strokeWidth: self.pixels_for_leaf,
+    });
+    row.add(line);
+  
+    if (self.current_draw_values) {
+      text = self.objects_ref.heatmap_value.clone({
+        text: gene_symbol,
+        fontSize: self.options.font.size,
+        fontWeight: 'bold',
       });
-      row.add(line);
-
-      if (self.current_draw_values) {
-        text = self.objects_ref.heatmap_value.clone({
-          text: count,
-        });
-
-        width = text.getWidth();
-        x = self._hack_round((x1 + x2) / 2 - width / 2);
-        y = self._hack_round(y1 - self.value_font_size / 2);
-        text.position({
-          x,
-          y,
-        });
-        row.add(text);
-      }
+  
+      const width = text.getWidth();
+      const y = self._hack_round(y1 - self.value_font_size / 2);
+      text.position({
+        x: x1 + 5,
+        y,
+      });
+      row.add(text);
     }
+    x1 = x2;
+  
     return row;
   };
 

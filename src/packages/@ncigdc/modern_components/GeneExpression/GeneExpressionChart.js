@@ -7,9 +7,12 @@ import { theme } from '@ncigdc/theme';
 import './inchlib';
 
 const category_colors = {
-  Age: 'RdBu',
-  Smoking: 'PuOr',
-  // Gender: 'Purples2',
+  'Age at Diagnosis': 'BuGn',
+  'Days to Death': 'Blues',
+  'Ethnicity': 'PuOr',
+  'Gender': 'PiYG2',
+  'Race': 'YlOrB',
+  'Vital Status': 'RdBu',
 };
 
 class GeneExpressionChart extends Component {

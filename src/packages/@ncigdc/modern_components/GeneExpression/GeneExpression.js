@@ -15,9 +15,10 @@ const showDataButtons = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION_BUTTONS;
 
 export class GeneExpression extends Component {
   state = {
-    data: showDataButtons
-      ? null
-      : dataObj.data100x100,
+    data: dataObj.data3x2,
+    // data: showDataButtons
+    //   ? null
+    //   : dataObj.data100x100,
   };
 
   handleDataButton = size => {

@@ -16,13 +16,12 @@ import {
 
 import {
   getSurvivalCurvesArray,
-  MAXIMUM_CURVES,
+  MAX_SURVIVAL_CURVES,
   SURVIVAL_PLOT_COLORS,
 } from '@ncigdc/utils/survivalplot';
 import { withTheme } from '@ncigdc/theme';
 import { updateClinicalAnalysisVariable } from '@ncigdc/dux/analysis';
 
-import { makeDocCountInteger } from './helpers';
 import ClinicalVariableCard from './ClinicalVariableCard';
 
 export default compose(
@@ -83,7 +82,7 @@ export default compose(
       updateSelectedSurvivalBins: (data, bin) => {
         if (
           selectedSurvivalBins.map(sBin => sBin.keyName).indexOf(bin.displayName) === -1 &&
-          selectedSurvivalBins.length >= MAXIMUM_CURVES
+          selectedSurvivalBins.length >= MAX_SURVIVAL_CURVES
         ) {
           return;
         }
@@ -110,8 +109,7 @@ export default compose(
             data.find(datum => datum.displayName === nextBin.keyName)
           ))
           : nextSelectedBins
-            .map(nextBin => data.find(datum => datum.displayName === nextBin.keyName))
-            .map(nextBin => makeDocCountInteger(nextBin));
+            .map(nextBin => data.find(datum => datum.displayName === nextBin.keyName));
         updateSurvivalPlot(nextBinsForPlot);
 
         const survivalDeselectedAndDuplicatesRemoved = uniq(nextSelectedBins
@@ -127,7 +125,7 @@ export default compose(
           },
         }));
       },
-    })
+    }),
   ),
   withPropsOnChange(
     (props, nextProps) => nextProps.variable.active_chart === 'survival' &&
@@ -142,11 +140,11 @@ export default compose(
         // when a different plot is selected
         populateSurvivalData();
       }
-    }
+    },
   ),
   withPropsOnChange(
     (props, nextProps) => props.id !== nextProps.id,
-    ({ setSelectedBins }) => setSelectedBins([])
+    ({ setSelectedBins }) => setSelectedBins([]),
   ),
   lifecycle({
     componentDidMount(): void {
@@ -188,5 +186,5 @@ export default compose(
         }));
       }
     },
-  })
+  }),
 )(ClinicalVariableCard);

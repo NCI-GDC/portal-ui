@@ -10,12 +10,12 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 
 import { theme } from '@ncigdc/theme/index';
 import {
-  createContinuousGroupName,
   DEFAULT_BIN_TYPE,
   DEFAULT_DATA,
   DEFAULT_INTERVAL,
   DEFAULT_RANGES,
-} from '../../helpers';
+} from '../../utils/shared';
+import { makeContinuousDefaultLabel } from '../../utils/continuous';
 import RangeTableRow from './RangeTableRow';
 import BinningMethodInput from './BinningMethodInput';
 import CustomIntervalFields from './CustomIntervalFields';
@@ -316,7 +316,7 @@ class ContinuousCustomBinsModal extends Component {
 
             return ({
               [objKey]: {
-                groupName: createContinuousGroupName(objKey),
+                groupName: makeContinuousDefaultLabel(objKey),
                 key: objKey,
               },
             });
@@ -346,7 +346,13 @@ class ContinuousCustomBinsModal extends Component {
         }, {})
         : makeCustomIntervalBins();
 
-      onUpdate(newBins, binningMethod, intervalFields, rangeRows, continuousReset);
+      onUpdate({
+        continuousReset,
+        newBins,
+        nextContinuousBinType: binningMethod,
+        nextCustomInterval: intervalFields,
+        nextCustomRanges: rangeRows,
+      });
     }
   };
 

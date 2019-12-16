@@ -2,7 +2,6 @@ import React from 'react';
 import {
   compose,
   setDisplayName,
-  withProps,
   withPropsOnChange,
   withState,
 } from 'recompose';
@@ -17,14 +16,10 @@ import {
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { redirectToLogin } from '@ncigdc/utils/auth';
 import { createFacetFieldString } from '@ncigdc/utils/string';
-import Loader from '@ncigdc/uikit/Loaders/Loader';
-import { Column } from '@ncigdc/uikit/Flex';
-import Spinner from '@ncigdc/uikit/Loaders/Material';
-import { zDepth1 } from '@ncigdc/theme/mixins';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { ContinuousVariableCard } from './ClinicalVariableCard';
-import { parseContinuousKey } from './ClinicalVariableCard/helpers';
+import { parseContinuousKey } from './ClinicalVariableCard/utils/continuous';
 
 const simpleAggCache = {};
 const pendingAggCache = {};
@@ -52,7 +47,7 @@ const getContinuousAggs = ({
           ? stats.max + 1
           // api excludes max value
           : stats.min + (key + 1) * interval,
-      })
+      }),
     );
 
   let rangeArr = continuousBinType === 'default'
@@ -164,7 +159,7 @@ const getContinuousAggs = ({
         'Content-Type': 'application/json',
       },
       method: 'POST',
-    }
+    },
   ).then(response => response
     .json()
     .then(json => {
@@ -199,7 +194,7 @@ const getContinuousAggs = ({
         }
       } else {
         consoleDebug(
-          `Something went wrong in the environment, but no error status: ${err}`
+          `Something went wrong in the environment, but no error status: ${err}`,
         );
       }
     }));
@@ -231,7 +226,7 @@ export default compose(
   withState('aggData', 'setAggData', null),
   withState('isLoading', 'setIsLoading', 'first time'),
   withPropsOnChange(
-    (props, nextProps) => 
+    (props, nextProps) =>
       !(props.setIdWithData === nextProps.setIdWithData &&
       isEqual(props.variable, nextProps.variable)),
     ({
@@ -254,7 +249,7 @@ export default compose(
         stats,
         variable,
       });
-    }
+    },
   ),
 )(({
   aggData, hits, isLoading, setId, stats, ...props
@@ -269,5 +264,4 @@ export default compose(
     stats={stats}
     {...props}
     />
-  )
-);
+));

@@ -29,7 +29,7 @@ import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizatio
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 import { performanceTracker } from '@ncigdc/utils/analytics';
-import { MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
+import { MIN_SURVIVAL_CASES } from '@ncigdc/utils/survivalplot';
 
 import './survivalPlot.css';
 
@@ -287,7 +287,7 @@ function renderSurvivalPlot({
       ),
       height,
       margins: SVG_MARGINS,
-      minimumDonors: MINIMUM_CASES,
+      minimumDonors: MIN_SURVIVAL_CASES,
       onClickDonor: (e, donor) => push({ pathname: `/cases/${donor.id}` }),
       onDomainChange: setXDomain,
       onMouseEnterDonor: (e, {

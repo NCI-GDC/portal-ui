@@ -1,7 +1,9 @@
 import React from 'react';
 import {
   compose,
+  flattenProp,
   setDisplayName,
+  withHandlers,
   withProps,
   withPropsOnChange,
 } from 'recompose';
@@ -22,19 +24,21 @@ import { SURVIVAL_PLOT_COLORS } from '@ncigdc/utils/survivalplot';
 import CategoricalCustomBinsModal from './modals/CategoricalCustomBinsModal';
 
 import {
+  cardDefaults,
   dataDimensions,
   filterSurvivalData,
-  getBinData,
-  getCountLink,
   getRawQueryData,
-  resetVariableDefaults,
-} from './helpers';
-import EnhancedClinicalVariableCard from './EnhancedClinicalVariableCard';
+  makeBinData,
+  makeCountLink,
+} from './utils/shared';
+
+import SharedVariableCard from './SharedVariableCard';
 
 export default compose(
   setDisplayName('EnhancedCategoricalVariableCard'),
-  connect((state: any) => ({ analysis: state.analysis })),
+  connect(({ analysis }) => ({ analysis })),
   withTheme,
+  flattenProp('variable'),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.data, nextProps.data),
     ({ data, fieldName }) => {
@@ -75,12 +79,87 @@ export default compose(
           dataDimension: dataDimensions[sanitisedId].unit,
         },
       };
-    }
+    },
   ),
+  withHandlers({
+    handleCloseModal: ({ dispatch }) => () => {
+      dispatch(setModal(null));
+    },
+    resetBins: ({
+      dataBuckets,
+      dispatch,
+      fieldName,
+      id,
+    }) => () => {
+      dispatch(updateClinicalAnalysisVariable({
+        fieldName,
+        id,
+        variable: {
+          ...cardDefaults.survival,
+          bins: dataBuckets
+            .reduce((acc, bucket) => ({
+              ...acc,
+              [bucket.key]: {
+                ...bucket,
+                groupName: bucket.key,
+              },
+            }), {}),
+          customBinsId: '',
+          customBinsSetId: '',
+        },
+      }));
+    },
+  }),
+  withHandlers({
+    handleUpdateCustomBins: ({
+      dispatch,
+      fieldName,
+      handleCloseModal,
+      id,
+      setId,
+    }) => newBins => {
+      dispatch(updateClinicalAnalysisVariable({
+        fieldName,
+        id,
+        variable: {
+          bins: newBins,
+          customBinsId: id,
+          customBinsSetId: setId,
+          ...cardDefaults.survival,
+        },
+      }));
+      handleCloseModal();
+    },
+  }),
+  withHandlers({
+    openCustomBinModal: ({
+      bins,
+      dataBuckets,
+      dispatch,
+      fieldName,
+      handleCloseModal,
+      handleUpdateCustomBins,
+    }) => () => {
+      dispatch(setModal(
+        <CategoricalCustomBinsModal
+          bins={bins}
+          dataBuckets={dataBuckets}
+          fieldName={humanify({ term: fieldName })}
+          modalStyle={{
+            maxWidth: '720px',
+            width: '90%',
+          }}
+          onClose={() => handleCloseModal()}
+          onUpdate={e => handleUpdateCustomBins(e)}
+          />,
+      ));
+    },
+  }),
   withPropsOnChange(
     (props, nextProps) => !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
       props.setId !== nextProps.setId,
     ({
+      bins,
       dataBuckets,
       dispatch,
       fieldName,
@@ -92,7 +171,7 @@ export default compose(
         id,
         variable: {
           bins: {
-            ...reduce(variable.bins, (acc, bin, key) => ({
+            ...reduce(bins, (acc, bin, key) => ({
               ...acc,
               ...(bin.groupName && bin.groupName !== key
                 ? {
@@ -109,42 +188,40 @@ export default compose(
               [bucket.key]: {
                 ...bucket,
                 groupName:
-                    typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
-                      // hidden value have groupName '', so check if it is string
-                      ? get(variable, `bins.${bucket.key}.groupName`, undefined)
-                      : bucket.key,
+                  typeof get(variable, `bins.${bucket.key}.groupName`, undefined) === 'string'
+                    // hidden value have groupName '', so check if it is string
+                    ? get(variable, `bins.${bucket.key}.groupName`, undefined)
+                    : bucket.key,
               },
             }), {}),
           },
         },
       }));
-    }
+    },
   ),
   withProps(
     ({
+      bins,
       dataBuckets,
-      variable: { bins },
-    }) => getBinData(bins, dataBuckets)
+    }) => makeBinData(bins, dataBuckets),
   ),
   withPropsOnChange(
     (props, nextProps) =>
-      nextProps.variable.active_chart === 'survival' &&
-    !(isEqual(props.variable.bins, nextProps.variable.bins) &&
-    props.variable.active_chart === nextProps.variable.active_chart &&
-    isEqual(props.selectedSurvivalBins, nextProps.selectedSurvivalBins) &&
-    props.variable.setId === nextProps.variable.setId &&
-    isEqual(props.variable.customSurvivalPlots, nextProps.variable.customSurvivalPlots) &&
-    props.variable.isSurvivalCustom === nextProps.variable.isSurvivalCustom),
+      nextProps.active_chart === 'survival' &&
+    !(isEqual(props.bins, nextProps.bins) &&
+    props.active_chart === nextProps.active_chart &&
+    isEqual(props.selectedSurvivalPlots, nextProps.selectedSurvivalPlots) &&
+    props.setId === nextProps.setId &&
+    isEqual(props.customSurvivalPlots, nextProps.customSurvivalPlots) &&
+    props.isSurvivalCustom === nextProps.isSurvivalCustom),
     ({
+      active_chart,
       binData,
+      customSurvivalPlots,
       dispatch,
       fieldName,
       id,
-      variable: {
-        active_chart,
-        customSurvivalPlots,
-        isSurvivalCustom,
-      },
+      isSurvivalCustom,
     }) => {
       // prevent survival API requests on mount
       // when a different plot is selected
@@ -165,16 +242,14 @@ export default compose(
         .filter(color => !find(customSurvivalPlots, ['color', color]));
 
       const survivalBins = filterSurvivalData(
-        binDataSelected
-          .map((bin, i) => {
-            const currentMatch = customSurvivalPlots &&
-              customSurvivalPlots.find(plot => plot.keyName === bin.key);
-            return {
-              ...bin,
-              chart_doc_count: bin.doc_count,
-              color: currentMatch ? currentMatch.color : availableColors[i],
-            };
-          })
+        binDataSelected.map((bin, i) => {
+          const currentMatch = customSurvivalPlots &&
+            customSurvivalPlots.find(plot => plot.keyName === bin.key);
+          return {
+            ...bin,
+            color: currentMatch ? currentMatch.color : availableColors[i],
+          };
+        }),
       )
         .slice(0, isSurvivalCustom ? Infinity : 2);
 
@@ -198,61 +273,26 @@ export default compose(
         survivalPlotValues,
         survivalTableValues: survivalPlotValues,
       };
-    }
+    },
   ),
   withPropsOnChange(
     (props, nextProps) =>
-      !isEqual(props.variable.bins, nextProps.variable.bins),
-    ({ variable: { bins } }) => ({
+      !isEqual(props.bins, nextProps.bins),
+    ({ bins }) => ({
       binsAreCustom: Object.keys(bins)
         .some(bin => bins[bin].key !== bins[bin].groupName ||
           typeof bins[bin].index === 'number'),
-    })
-  ),
-  withPropsOnChange(
-    (props, nextProps) =>
-      props.binsAreCustom !== nextProps.binsAreCustom ||
-      !isEqual(props.dataBuckets, nextProps.dataBuckets) ||
-      props.variable.isSurvivalCustom !== nextProps.variable.isSurvivalCustom,
-    ({
-      dataBuckets,
-      dispatch,
-      fieldName,
-      id,
-    }) => ({
-      resetBins: () => {
-        dispatch(updateClinicalAnalysisVariable({
-          fieldName,
-          id,
-          variable: {
-            ...resetVariableDefaults.survival,
-            bins: dataBuckets
-              .reduce((acc, bucket) => ({
-                ...acc,
-                [bucket.key]: {
-
-                  ...bucket,
-                  groupName: bucket.key,
-                },
-              }), {}),
-            customBinsId: '',
-            customBinsSetId: '',
-          },
-        }));
-      },
-    })
+    }),
   ),
   withPropsOnChange(
     (props, nextProps) =>
       props.setId !== nextProps.setId,
     ({
+      customBinsId,
+      customBinsSetId,
       id,
       resetBins,
       setId,
-      variable: {
-        customBinsId,
-        customBinsSetId,
-      },
     }) => {
       // call the reset function if you're in the same analysis tab
       // and you change the case set AND bins are custom
@@ -262,7 +302,7 @@ export default compose(
         customBinsSetId !== setId) {
         resetBins();
       }
-    }
+    },
   ),
   withPropsOnChange(
     (props, nextProps) =>
@@ -273,6 +313,8 @@ export default compose(
       displayData: binData.length === 1 &&
         binData[0].key === '_missing' &&
         !binsAreCustom
+        // if there's only one bin, and it's labelled _missing, and it's not custom
+        // then don't show anything in the table/graph
           ? []
           : binData
             .sort((a, b) => b.doc_count - a.doc_count)
@@ -280,9 +322,8 @@ export default compose(
               const isMissing = bin.key === '_missing';
               return {
                 ...bin,
-                chart_doc_count: bin.doc_count,
                 displayName: isMissing ? 'missing' : bin.key,
-                doc_count: getCountLink({
+                doc_count_link: makeCountLink({
                   doc_count: bin.doc_count,
                   filters: isMissing
                     ? {
@@ -319,45 +360,6 @@ export default compose(
                 key: bin.key,
               };
             }),
-    })
+    }),
   ),
-  withPropsOnChange(
-    (props, nextProps) =>
-      !isEqual(props.variable.bins, nextProps.variable.bins) ||
-      !isEqual(props.dataBuckets, nextProps.dataBuckets),
-    ({
-      dataBuckets,
-      dispatch,
-      fieldName,
-      id,
-      setId,
-      variable: { bins },
-    }) => ({
-      openCustomBinModal: () => dispatch(setModal(
-        <CategoricalCustomBinsModal
-          bins={bins}
-          dataBuckets={dataBuckets}
-          fieldName={humanify({ term: fieldName })}
-          modalStyle={{
-            maxWidth: '720px',
-            width: '90%',
-          }}
-          onClose={() => dispatch(setModal(null))}
-          onUpdate={(newBins) => {
-            dispatch(updateClinicalAnalysisVariable({
-              fieldName,
-              id,
-              variable: {
-                bins: newBins,
-                customBinsId: id,
-                customBinsSetId: setId,
-                ...resetVariableDefaults.survival,
-              },
-            }));
-            dispatch(setModal(null));
-          }}
-          />
-      )),
-    })
-  ),
-)(EnhancedClinicalVariableCard);
+)(SharedVariableCard);

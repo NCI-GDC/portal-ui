@@ -11,17 +11,16 @@ import { analysisColors } from '@ncigdc/utils/constants';
 import BoxPlotWrapper from '@oncojs/boxplot';
 import QQPlotQuery from '@ncigdc/modern_components/QQPlot/QQPlotQuery';
 
-import { CHART_HEIGHT } from '../helpers';
+import { CHART_HEIGHT } from '../utils/shared';
 
-const QQ_PLOT_RATIO = '70%';
-const BOX_PLOT_RATIO = '30%';
+import { BOX_PLOT_RATIO, QQ_PLOT_RATIO } from '../utils/continuous';
 
 const ClinicalBoxPlot = ({
   boxPlotValues,
-  cardFilters,
   dataBuckets,
   downloadChartName,
   fieldName,
+  filters,
   qqData,
   setId,
   setQQData,
@@ -40,7 +39,7 @@ const ClinicalBoxPlot = ({
       minWidth: 300,
     }}
     >
-    <Row 
+    <Row
       className="print-w500"
       style={{ width: '100%' }}
       >
@@ -86,10 +85,7 @@ const ClinicalBoxPlot = ({
         <DownloadVisualizationButton
           data={qqData}
           noText
-          slug={[
-            `${downloadChartName}-qq-plot`,
-            `${downloadChartName}-box-plot`,
-          ]}
+          slug={[`${downloadChartName}-qq-plot`, `${downloadChartName}-box-plot`,]}
           style={{
             float: 'right',
             marginRight: 2,
@@ -149,7 +145,7 @@ const ClinicalBoxPlot = ({
           dataBuckets={dataBuckets}
           dataHandler={data => setQQData(data)}
           fieldName={fieldName}
-          filters={cardFilters}
+          filters={filters}
           first={totalDocs}
           qqLineStyles={{ color: theme.greyScale2 }}
           qqPointStyles={{ color: analysisColors[type] }}

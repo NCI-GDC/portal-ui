@@ -12,18 +12,16 @@ import { connect } from 'react-redux';
 import {
   isEqual,
   map,
-  mapKeys,
-  maxBy,
   trim,
 } from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
 
 import Input from '@ncigdc/uikit/Form/Input';
 import {
@@ -40,7 +38,6 @@ import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import DeprecatedSetResult from './DeprecatedSetResult';
 import {
   getBoxQQDownload,
-  getDownloadSlug,
   getDownloadSlugArray,
   getDownloadSvgInfo,
   getHistogramDownload,
@@ -56,7 +53,6 @@ import './qq.css';
 import ControlPanel from './ControlPanel';
 import ContinuousAggregationQuery from './ContinuousAggregationQuery';
 import { CategoricalVariableCard } from './ClinicalVariableCard';
-import wrapSvg from '@ncigdc/utils/wrapSvg';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -71,8 +67,8 @@ const CopyAnalysisModal = compose(
   withState(
     'modalInputValue',
     'setModalInputValue',
-    ({ analysis }) => `${analysis.name} copy`
-  )
+    ({ analysis }) => `${analysis.name} copy`,
+  ),
 )(({
   analysis,
   dispatch,
@@ -93,7 +89,7 @@ const CopyAnalysisModal = compose(
           created,
           id,
           name: modalInputValue,
-        })
+        }),
       ).then(() => {
         push({
           query: {
@@ -187,7 +183,7 @@ const ClinicalAnalysisResult = ({
                         id,
                         property: 'name',
                         value: trim(value),
-                      })
+                      }),
                     )}
                     iconStyle={{
                       cursor: 'pointer',
@@ -226,8 +222,8 @@ const ClinicalAnalysisResult = ({
                       analysis={currentAnalysis}
                       dispatch={dispatch}
                       push={push}
-                      />
-                  )
+                      />,
+                  ),
                 );
               }}
               >
@@ -256,13 +252,13 @@ const ClinicalAnalysisResult = ({
                         ? getBoxQQDownload(fieldName, 'Box', type)
                         : chart === 'histogram'
                           ? getHistogramDownload(fieldName)
-                          : getSurvivalDownload(slug)
+                          : getSurvivalDownload(slug),
                       ),
                     ],
                   ...chart === 'box' &&
                     [
                       () => wrapSvg(
-                        getBoxQQDownload(fieldName, 'QQ', type)
+                        getBoxQQDownload(fieldName, 'QQ', type),
                       ),
                     ],
                 ]),
@@ -425,7 +421,7 @@ export default compose(
       hits,
       parsedFacets: facets ? tryParseJSON(facets) : {},
       setIdWithData: setId,
-    })
+    }),
   ),
   withPropsOnChange(
     ({ currentAnalysis }, {
@@ -434,7 +430,7 @@ export default compose(
       survivalDataLoading,
     }) => {
       const setId = Object.keys(currentAnalysis.sets.case)[0];
-      const nextSetId = Object.keys(nextCurrentAnalysis.sets.case)[0]
+      const nextSetId = Object.keys(nextCurrentAnalysis.sets.case)[0];
       return (
         currentAnalysis.id !== nextCurrentAnalysis.id ||
         setId !== nextSetId ||
@@ -468,7 +464,7 @@ export default compose(
 
       setOverallSurvivalData(nextOverallSurvivalData);
       setSurvivalDataLoading(false);
-    }
+    },
   ),
   withHandlers({
     handleQueryInputChange: ({

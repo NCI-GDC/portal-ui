@@ -32,7 +32,11 @@ import {
   updateClinicalAnalysisVariable,
 } from '@ncigdc/dux/analysis';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
-import { MAXIMUM_CURVES, MINIMUM_CASES, SURVIVAL_PLOT_COLORS } from '@ncigdc/utils/survivalplot';
+import {
+  MAX_SURVIVAL_CURVES,
+  MIN_SURVIVAL_CASES,
+  SURVIVAL_PLOT_COLORS,
+} from '@ncigdc/utils/survivalplot';
 
 import ActionsDropdown from './components/ActionsDropdown';
 import ClinicalBoxPlot from './components/ClinicalBoxPlot';
@@ -40,11 +44,17 @@ import ClinicalHistogram from './components/ClinicalHistogram';
 import ClinicalSurvivalPlot from './components/ClinicalSurvivalPlot';
 
 import {
-  getBoxTableData,
-  getCardFilters,
-  getHeadings,
+  FIELDS_WITHOUT_BOX_OR_QQ,
+  makeBoxTableData,
+  makeContinuousActionsFilters,
+} from './utils/continuous';
+
+import makeCategoricalActionsFilters from './utils/categorical';
+
+import {
+  makeHeadings,
   styles,
-} from './helpers';
+} from './utils/shared';
 
 const vizButtons = {
   box: {
@@ -69,38 +79,41 @@ const vizButtons = {
   },
 };
 
-const getTableData = ({
+const makeTableData = ({
   active_chart,
   displayData = [],
   fieldName,
   selectedBins,
-  selectedSurvivalBins,
+  selectedSurvivalPlots,
   selectedSurvivalLoadingIds,
   setSelectedBins,
   theme,
-  updateSelectedSurvivalBins,
-}) => displayData.map(bin => {
-  const isSelected = find(selectedBins, { key: bin.displayName });
-  const selectedBin = selectedSurvivalBins.find(s => s.keyName === bin.displayName);
-  const isSurvivalLoading = selectedSurvivalLoadingIds.indexOf(bin.displayName) >= 0;
+  updateSelectedSurvivalPlots,
+}) => displayData.map(dDBin => {
+  const { displayName, doc_count, key } = dDBin;
+  const isSelected = find(selectedBins, { key: displayName });
+  const selectedBin = selectedSurvivalPlots.find(s => s.keyName === displayName);
+  const isSurvivalLoading = selectedSurvivalLoadingIds.includes(displayName);
   const isSelectedForSurvival = selectedBin !== undefined;
-  const isSurvivalFull = selectedSurvivalBins.length === MAXIMUM_CURVES;
+  const isSurvivalFull = selectedSurvivalPlots.length === MAX_SURVIVAL_CURVES;
+
+  // console.log('displayData', displayData);
 
   return {
-    ...bin,
+    ...dDBin,
     select: (
       <input
-        aria-label={`${fieldName} ${bin.displayName}`}
+        aria-label={`${fieldName} ${displayName}`}
         checked={isSelected}
-        disabled={bin.doc_count === 0}
-        id={`${fieldName}-${bin.key}`}
+        disabled={doc_count === 0}
+        id={`${fieldName}-${key}`}
         onChange={() => {
           if (isSelected) {
             setSelectedBins(
-              reject(selectedBins, r => r.key === bin.key)
+              reject(selectedBins, r => r.key === key),
             );
           } else {
-            setSelectedBins(selectedBins.concat(bin));
+            setSelectedBins(selectedBins.concat(dDBin));
           }
         }}
         style={{
@@ -108,38 +121,38 @@ const getTableData = ({
           pointerEvents: 'initial',
         }}
         type="checkbox"
-        value={bin.key}
+        value={key}
         />
     ),
     ...active_chart === 'survival' && {
       survival: (
         <Tooltip
           Component={
-            bin.key === '_missing' || bin.chart_doc_count < MINIMUM_CASES
+            key === '_missing' || doc_count < MIN_SURVIVAL_CASES
               ? 'Not enough data'
               : isSelectedForSurvival
-                ? `Click icon to remove "${bin.displayName}"`
+                ? `Click icon to remove "${displayName}"`
                 : isSurvivalFull
-                  ? `Maximum plots (${MAXIMUM_CURVES}) reached`
-                  : `Click icon to plot "${bin.displayName}"`
+                  ? `Maximum plots (${MAX_SURVIVAL_CURVES}) reached`
+                  : `Click icon to plot "${displayName}"`
           }
           >
           <Button
             disabled={
-              bin.key === '_missing' ||
-              bin.chart_doc_count < MINIMUM_CASES ||
+              key === '_missing' ||
+              doc_count < MIN_SURVIVAL_CASES ||
               (isSurvivalFull && !isSelectedForSurvival)
             }
             onClick={() => {
-              updateSelectedSurvivalBins(displayData, bin);
+              updateSelectedSurvivalPlots(displayData, dDBin);
             }}
             style={{
               backgroundColor: isSelectedForSurvival ? selectedBin.color : theme.greyScale3,
               color: 'white',
               margin: '0 auto',
               opacity:
-                bin.key === '_missing' ||
-                  bin.chart_doc_count < MINIMUM_CASES ||
+                key === '_missing' ||
+                  doc_count < MIN_SURVIVAL_CASES ||
                   (isSurvivalFull && !isSelectedForSurvival)
                     ? '0.33'
                     : '1',
@@ -167,6 +180,7 @@ const ClinicalVariableCard = ({
   filters,
   id,
   isLoading,
+  key,
   openCustomBinModal,
   overallSurvivalData,
   plots,
@@ -174,7 +188,7 @@ const ClinicalVariableCard = ({
   resetBins,
   binsAreCustom,
   selectedBins,
-  selectedSurvivalBins = [],
+  selectedSurvivalPlots = [],
   selectedSurvivalData,
   selectedSurvivalLoadingIds,
   setId,
@@ -185,35 +199,35 @@ const ClinicalVariableCard = ({
   survivalDataLoading,
   theme,
   totalDocs,
-  updateSelectedSurvivalBins,
+  updateSelectedSurvivalPlots,
   variable,
   wrapperId,
 }) => {
   const tableData = variable.active_chart === 'box'
-    ? getBoxTableData(boxPlotValues)
-    : getTableData({
+    ? makeBoxTableData(boxPlotValues)
+    : makeTableData({
       active_chart: variable.active_chart,
       displayData,
       fieldName,
       selectedBins,
-      selectedSurvivalBins,
       selectedSurvivalLoadingIds,
+      selectedSurvivalPlots,
       setSelectedBins,
       theme,
-      updateSelectedSurvivalBins,
+      updateSelectedSurvivalPlots,
     });
 
   const histogramData =
     variable.active_chart === 'histogram'
-      ? tableData.map(tableRow => ({
-        fullLabel: tableRow.displayName,
-        label: tableRow.displayName,
-        tooltip: `${tableRow.displayName}: ${
-            tableRow.chart_doc_count.toLocaleString()} (${
-            (((tableRow.chart_doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
+      ? tableData.map(({ displayName, doc_count }) => ({
+        fullLabel: displayName,
+        label: displayName,
+        tooltip: `${displayName}: ${
+          doc_count.toLocaleString()} (${
+          (((doc_count || 0) / totalDocs) * 100).toFixed(2)}%)`,
         value: variable.active_calculation === 'number'
-            ? tableRow.chart_doc_count
-            : (tableRow.chart_doc_count / totalDocs) * 100,
+          ? doc_count
+          : (doc_count / totalDocs) * 100,
       }))
       : [];
 
@@ -223,9 +237,18 @@ const ClinicalVariableCard = ({
   ).length;
 
   const tsvSubstring = fieldName.replace(/\./g, '-');
-  const cardFilters = getCardFilters(
-    variable.plotTypes, selectedBins, fieldName, filters
-  );
+
+  const actionsFiltersArgs = {
+    fieldName,
+    filters,
+    selectedBins,
+  };
+  const actionsFilters = selectedBins.length === 0
+    ? {}
+    : variable.plotTypes === 'continuous'
+      ? makeContinuousActionsFilters(actionsFiltersArgs)
+      : makeCategoricalActionsFilters(actionsFiltersArgs);
+
   const disabledCharts = plotType => isEmpty(tableData) &&
     plotType !== 'delete';
 
@@ -234,6 +257,7 @@ const ClinicalVariableCard = ({
   return (
     <Column
       className="clinical-analysis-card"
+      key={key}
       style={{
         ...zDepth1,
         height: 560,
@@ -264,13 +288,8 @@ const ClinicalVariableCard = ({
 
         <Row>
           {plots.concat('delete')
-            .reduce((buttons, plotType) => ([
-              'demographic.year_of_birth',
-              'demographic.year_of_death',
-              'diagnoses.year_of_diagnosis',
-              'exposures.tobacco_smoking_onset_year',
-              'exposures.tobacco_smoking_quit_year',
-            ].includes(fieldName) && plotType === 'box'
+            .reduce((buttons, plotType) => (
+              FIELDS_WITHOUT_BOX_OR_QQ.includes(fieldName) && plotType === 'box'
                 ? buttons // avoid boxplot+qq for those fields
                 : buttons.concat(
                   <Tooltip Component={vizButtons[plotType].title} key={plotType}>
@@ -285,7 +304,7 @@ const ClinicalVariableCard = ({
                             variable: {
                               active_chart: plotType,
                             },
-                          })
+                          }),
                         );
                       }}
                       style={{
@@ -300,7 +319,7 @@ const ClinicalVariableCard = ({
                       <Hidden>{vizButtons[plotType].title}</Hidden>
                       {vizButtons[plotType].icon}
                     </Button>
-                  </Tooltip>
+                  </Tooltip>,
                 )), [])}
         </Row>
       </Row>
@@ -410,7 +429,7 @@ const ClinicalVariableCard = ({
 
                 {variable.active_chart === 'survival' && (
                 (variable.isSurvivalCustom &&
-                  selectedSurvivalBins.length === 0 &&
+                  selectedSurvivalPlots.length === 0 &&
                   !variable.showOverallSurvival)
                   ? (
                     <Row
@@ -427,14 +446,14 @@ const ClinicalVariableCard = ({
                   : (
                     <ClinicalSurvivalPlot
                       downloadChartName={downloadChartName}
-                      palette={selectedSurvivalBins.length > 0
-                        ? selectedSurvivalBins.map(ssBin => ssBin.color)
+                      palette={selectedSurvivalPlots.length > 0
+                        ? selectedSurvivalPlots.map(ssBin => ssBin.color)
                       : SURVIVAL_PLOT_COLORS}
-                      plotType={selectedSurvivalBins.length === 0 ||
+                      plotType={selectedSurvivalPlots.length === 0 ||
                         variable.showOverallSurvival
                         ? 'clinicalOverall'
                         : 'categorical'}
-                      survivalData={selectedSurvivalBins.length === 0 ||
+                      survivalData={selectedSurvivalPlots.length === 0 ||
                         variable.showOverallSurvival
                         ? overallSurvivalData
                         : selectedSurvivalData}
@@ -446,10 +465,10 @@ const ClinicalVariableCard = ({
                 {variable.active_chart === 'box' && (
                   <ClinicalBoxPlot
                     boxPlotValues={boxPlotValues}
-                    cardFilters={cardFilters}
                     dataBuckets={dataBuckets}
                     downloadChartName={downloadChartName}
                     fieldName={fieldName}
+                    filters={filters}
                     qqData={qqData}
                     setId={setId}
                     setQQData={setQQData}
@@ -471,9 +490,9 @@ const ClinicalVariableCard = ({
                   >
                   <ActionsDropdown
                     active_chart={variable.active_chart}
-                    cardFilters={cardFilters}
                     currentAnalysis={currentAnalysis}
                     dispatch={dispatch}
+                    filters={actionsFilters}
                     selectedBins={selectedBins}
                     styles={styles}
                     theme={theme}
@@ -507,8 +526,8 @@ const ClinicalVariableCard = ({
                         style={{
                           ...styles.actionMenuItem,
                           ...binsAreCustom || variable.isSurvivalCustom
-                          ? {}
-                          : styles.actionMenuItemDisabled(theme),
+                            ? {}
+                            : styles.actionMenuItemDisabled(theme),
                         }}
                         >
                       Reset to Default
@@ -519,16 +538,15 @@ const ClinicalVariableCard = ({
 
                 <EntityPageHorizontalTable
                   data={tableData.map(tableRow => ({
-
                     ...tableRow,
                     key: tableRow.displayName,
                   }))}
-                  headings={getHeadings(
+                  headings={makeHeadings(
                     variable.active_chart,
                     dataDimension,
                     fieldName + (binsAreCustom
-                    ? ' (User defined bins applied)'
-                    : ''),
+                      ? ' (User defined bins applied)'
+                      : ''),
                   )}
                   tableContainerStyle={{ height: 175 }}
                   tableId={`analysis-${tsvSubstring}-table`}

@@ -17,7 +17,7 @@ export class GeneExpression extends Component {
   state = {
     data: showDataButtons
       ? null
-      : dataObj.data10x5,
+      : dataObj.data100x100,
   };
 
   handleDataButton = size => {

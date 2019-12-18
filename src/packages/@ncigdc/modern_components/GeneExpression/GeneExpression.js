@@ -1,7 +1,7 @@
-/* eslint-disable react/state-in-constructor */
 /* tslint:disable */
 
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
@@ -28,6 +28,7 @@ export class GeneExpression extends Component {
 
   render() {
     const { data } = this.state;
+    // const { history } = this.props;
 
     return (
       <Column style={{ marginBottom: '1rem' }}>
@@ -42,6 +43,14 @@ export class GeneExpression extends Component {
               flex: '1 0 auto',
             }}
             >
+            <Link
+              to={{
+                pathname: '/genes/ENSG00000141510',
+                search: '',
+              }}
+              >
+          LINK FROM GENE EXPRESSION PARENT COMPONENT
+            </Link>
             <h1 style={{ margin: '0 0 20px' }}>Gene Expression</h1>
             {showDataButtons && (
               <Row>
@@ -59,6 +68,7 @@ export class GeneExpression extends Component {
             {data && (
               <GeneExpressionChart
                 data={data}
+                // history={history}
                 />
             )}
           </Column>

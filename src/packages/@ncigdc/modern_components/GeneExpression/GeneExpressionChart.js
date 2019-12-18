@@ -9,9 +9,9 @@ import './inchlib';
 const category_colors = {
   'Age at Diagnosis': 'BuGn',
   'Days to Death': 'Blues',
-  'Ethnicity': 'PuOr',
-  'Gender': 'PiYG2',
-  'Race': 'YlOrB',
+  Ethnicity: 'PuOr',
+  Gender: 'PiYG2',
+  Race: 'YlOrB',
   'Vital Status': 'RdBu',
 };
 

@@ -281,18 +281,17 @@ import Color from 'color';
         * @name InCHlib#row_onclick
         * @event
         * @param {function} function() callback function for click on the heatmap row event
-        * @eventData {array} array array of object IDs represented by row
-        * @eventData {object} event event object
+        * @eventData {string} gene_ensembl, used to create a link to the gene page
 
         * @example
         * instance.events.row_onclick = (
-        *    function(object_ids, evt) {
-        *       alert(object_ids);
+        *    function(gene_ensembl) {
+        *       alert(gene_ensembl);
         *    }
         * );
         *
         */
-      row_onclick({target: { attrs: { gene_ensembl } }}) {
+      row_onclick(gene_ensembl) {
         const clickGene = new CustomEvent('clickGene', {
           detail: {
             gene_ensembl
@@ -2241,7 +2240,7 @@ import Color from 'color';
           item_ids.push(items[i]);
         }
 
-        self.events.row_onclick(evt);
+        self.events.row_onclick(evt.target.attrs.gene_ensembl);
       }
     });
   };

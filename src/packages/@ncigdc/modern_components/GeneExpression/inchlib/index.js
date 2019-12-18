@@ -2349,6 +2349,8 @@ import Color from 'color';
       const max_text_length = self._get_max_length(current_headers);
 
       for (var i = 0, len = current_headers.length; i < len; i++) {
+        const current_header_id = current_headers[i].split('_')[0];
+        const current_header_uuid = current_headers[i].split('_')[1];
         x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
         column_header = self.objects_ref.column_header.clone({
           x,
@@ -2356,7 +2358,7 @@ import Color from 'color';
           text: current_headers[i] === 'gene_symbol' ||
             current_headers[i] === 'gene_ensembl'
             ? ''
-            : current_headers[i],
+            : current_header_id,
           position_index: i,
           fontSize: self.options.font.size,
           fontFamily: self.options.font.family,

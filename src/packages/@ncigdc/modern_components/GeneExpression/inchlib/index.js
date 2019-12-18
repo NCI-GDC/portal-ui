@@ -292,8 +292,13 @@ import Color from 'color';
         * );
         *
         */
-      row_onclick(object_ids, evt) {
-
+      row_onclick({target: { attrs: { gene_ensembl } }}) {
+        const clickGene = new CustomEvent('clickGene', {
+          detail: {
+            gene_ensembl
+          },
+        });
+        self.element.dispatchEvent(clickGene);
       },
 
       /**
@@ -2118,6 +2123,7 @@ import Color from 'color';
     y2 = y1;
   
     line = self.objects_ref.heatmap_line.clone({
+      gene_ensembl,
       points: [
         x1,
         y1,
@@ -2235,7 +2241,7 @@ import Color from 'color';
           item_ids.push(items[i]);
         }
 
-        self.events.row_onclick(item_ids, evt);
+        self.events.row_onclick(evt);
       }
     });
   };
@@ -2349,22 +2355,25 @@ import Color from 'color';
       const max_text_length = self._get_max_length(current_headers);
 
       for (var i = 0, len = current_headers.length; i < len; i++) {
-        const current_header_id = current_headers[i].split('_')[0];
-        const current_header_uuid = current_headers[i].split('_')[1];
+        // TODO this is not great. we should ask backend devs to provide
+        // id and uuid in an object.
+        const case_id = current_headers[i].split('_')[0];
+        const case_uuid = current_headers[i].split('_')[1];
         x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
         column_header = self.objects_ref.column_header.clone({
-          x,
-          y,
+          fill: self.options.font.color,
+          fontFamily: self.options.font.family,
+          fontSize: self.options.font.size,
+          fontStyle: 'bold',
+          name: case_uuid,
+          position_index: i,
+          rotation,
           text: current_headers[i] === 'gene_symbol' ||
             current_headers[i] === 'gene_ensembl'
-            ? ''
-            : current_header_id,
-          position_index: i,
-          fontSize: self.options.font.size,
-          fontFamily: self.options.font.family,
-          fill: self.options.font.color,
-          fontStyle: 'bold',
-          rotation: rotation,
+              ? ''
+              : case_id,
+          x,
+          y,
         });
         self.header_layer.add(column_header);
         distance_step++;

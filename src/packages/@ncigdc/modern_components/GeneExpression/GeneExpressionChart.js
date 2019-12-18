@@ -15,31 +15,35 @@ const category_colors = {
   'Vital Status': 'RdBu',
 };
 
+const options = {
+  button_color: theme.primary,
+  category_colors,
+  font: {
+    color: '#767676',
+    family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+    size: 12,
+  },
+  max_width: 800,
+  tooltip: {
+    fill: '#fff',
+    stroke: theme.greyScale5,
+    text_fill: theme.greyScale2,
+  },
+};
+
 class GeneExpressionChart extends Component {
   componentDidMount() {
     const { data } = this.props;
     this.options = {
-      button_color: theme.primary,
-      category_colors,
+      ...options,
       data,
-      font: {
-        color: '#767676',
-        family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-        size: 12,
-      },
-      max_width: 800,
-      tooltip: {
-        fill: '#fff',
-        stroke: theme.greyScale5,
-        text_fill: theme.greyScale2,
-      },
     };
     // this doesn't work if jquery is imported
     // in this file
     this.$el = $(this.el);
     this.$el.InCHlib(this.options);
 
-    // TODO: add event handlers
+    this.el.addEventListener('clickGene', this.handleClickGene);
   }
 
   componentDidUpdate(prevProps) {
@@ -54,12 +58,12 @@ class GeneExpressionChart extends Component {
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount');
-    // this.$el.InCHlib.destroy();
-    // this.$el.InCHlib('destroy');
+    this.el.removeEventListener('clickGene', this.handleClickGene);
+    this.$el.InCHlib('destroy');
+  }
 
-    // TODO: destroy event handlers to prevent memory leaks
-    // MAYBE: destroy inchlib instance?
+  handleClickGene = ({ detail: { gene_ensembl } }) => {
+    console.log('react event', gene_ensembl);
   }
 
   render() {

@@ -2174,7 +2174,7 @@ import Color from 'color';
         y,
       });
       row.add(text);
-      row.on('click', ({target: { attrs: { gene_ensembl = '' }}}) => {
+      row.on('click', ({ target: { attrs: { gene_ensembl = '' }}}) => {
         if (gene_ensembl !== '') {
           self.events.row_onclick(gene_ensembl);
         }

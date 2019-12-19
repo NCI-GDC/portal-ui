@@ -36,7 +36,7 @@ class GeneExpression extends Component {
     //   : dataObj.data100x100,
   };
 
-  handleInchlibClick = (
+  handleClickInchlibLink = (
     {
       detail: {
         case_uuid = '',
@@ -91,7 +91,7 @@ class GeneExpression extends Component {
             {data && (
               <GeneExpressionChart
                 data={data}
-                handleInchlibClick={this.handleInchlibClick}
+                handleClickInchlibLink={this.handleClickInchlibLink}
                 />
             )}
           </Column>

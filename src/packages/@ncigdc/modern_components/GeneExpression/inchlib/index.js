@@ -292,12 +292,12 @@ import Color from 'color';
         *
         */
       row_onclick(gene_ensembl) {
-        const clickGene = new CustomEvent('clickGene', {
+        const clickInchlibLink = new CustomEvent('clickInchlibLink', {
           detail: {
             gene_ensembl
           },
         });
-        self.element.dispatchEvent(clickGene);
+        self.element.dispatchEvent(clickInchlibLink);
       },
 
       /**

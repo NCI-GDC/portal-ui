@@ -2139,13 +2139,19 @@ import Color from 'color';
       x1 = x2;
     }
   
-    // draw gene_symbol column,
-    // whether or not it's going to contain anything
-    // at the current zoom level
-    x2 = x1 + self.pixels_for_dimension;
+    // don't draw gene symbol column if it's empty
+    x2 = x1;
     y2 = y1;
   
     if (self.current_draw_values) {
+      text = self.objects_ref.heatmap_value.clone({
+        text: gene_symbol,
+        fontSize: self.options.font.size,
+        fontWeight: 'bold',
+      });
+      const width = text.getWidth();
+      x2 = x1 + width + 10;
+      
       line = self.objects_ref.heatmap_line.clone({
         // gene_ensembl for creating links
         gene_ensembl,
@@ -2161,19 +2167,18 @@ import Color from 'color';
         strokeWidth: self.pixels_for_leaf,
       });
       row.add(line);
-      text = self.objects_ref.heatmap_value.clone({
-        text: gene_symbol,
-        fontSize: self.options.font.size,
-        fontWeight: 'bold',
-      });
   
-      const width = text.getWidth();
       const y = self._hack_round(y1 - self.value_font_size / 2);
       text.position({
         x: x1 + 5,
         y,
       });
       row.add(text);
+      row.on('click', ({target: { attrs: { gene_ensembl = '' }}}) => {
+        if (gene_ensembl !== '') {
+          self.events.row_onclick(gene_ensembl);
+        }
+      });
     }
     x1 = x2;
   
@@ -2264,8 +2269,6 @@ import Color from 'color';
         for (var i = 0; i < items.length; i++) {
           item_ids.push(items[i]);
         }
-
-        self.events.row_onclick(evt.target.attrs.gene_ensembl);
       }
     });
   };
@@ -2406,6 +2409,7 @@ import Color from 'color';
       self.stage.add(self.header_layer);
 
       self.header_layer.on('click', ({ target: { attrs: { case_uuid }}}) => {
+        console.log('test')
         self.events.heatmap_header_onclick(case_uuid);
       });
 

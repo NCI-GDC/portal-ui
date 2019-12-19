@@ -299,6 +299,28 @@ import Color from 'color';
         });
         self.element.dispatchEvent(clickInchlibLink);
       },
+      /**
+        * @name InCHlib#heatmap_header_onclick
+        * @event
+        * @param {function} function() callback function for click on the heatmap header event
+        * @eventData {string} case_uuid, used to create a link to the case page
+
+        * @example
+        * instance.events.heatmap_header_onclick = (
+        *    function(case_uuid) {
+        *       alert(case_uuid);
+        *    }
+        * );
+        *
+        */
+       heatmap_header_onclick(case_uuid) {
+        const clickInchlibLink = new CustomEvent('clickInchlibLink', {
+          detail: {
+            case_uuid
+          },
+        });
+        self.element.dispatchEvent(clickInchlibLink);
+      },
 
       /**
         * @name InCHlib#row_onmouseover
@@ -2363,11 +2385,11 @@ import Color from 'color';
         const case_uuid = current_headers[i].split('_')[1];
         x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
         column_header = self.objects_ref.column_header.clone({
+          case_uuid,
           fill: self.options.font.color,
           fontFamily: self.options.font.family,
           fontSize: self.options.font.size,
           fontStyle: 'bold',
-          name: case_uuid,
           position_index: i,
           rotation,
           text: current_headers[i] === 'gene_symbol' ||
@@ -2383,36 +2405,23 @@ import Color from 'color';
 
       self.stage.add(self.header_layer);
 
-      if (!(self.options.dendrogram)) {
-        self.header_layer.on('click', (evt) => {
-          const column = evt.target;
-          const { position_index } = column.attrs;
-          for (var i = 0; i < self.header_layer.getChildren().length; i++) {
-            self.header_layer.getChildren()[i].setFill('black');
-          }
-          evt.target.setAttrs({ fill: 'red' });
-          self._delete_layers([
-            self.heatmap_layer,
-            self.heatmap_overlay,
-            self.highlighted_rows_layer,
-          ]);
-          self._reorder_heatmap(self._translate_column_to_feature_index(position_index));
-          self._draw_heatmap();
-          self.header_layer.draw();
-        });
+      self.header_layer.on('click', ({ target: { attrs: { case_uuid }}}) => {
+        self.events.heatmap_header_onclick(case_uuid);
+      });
 
-        self.header_layer.on('mouseover', function (evt) {
-          const label = evt.target;
-          label.setOpacity(0.7);
-          this.draw();
-        });
+      self.header_layer.on('mouseover', function (evt) {
+        // TODO add tooltip?
+        const label = evt.target;
+        label.setOpacity(0.7);
+        this.draw();
+      });
 
-        self.header_layer.on('mouseout', function (evt) {
-          const label = evt.target;
-          label.setOpacity(1);
-          this.draw();
-        });
-      }
+      self.header_layer.on('mouseout', function (evt) {
+        // TODO remove tooltip?
+        const label = evt.target;
+        label.setOpacity(1);
+        this.draw();
+      });
     }
   };
 

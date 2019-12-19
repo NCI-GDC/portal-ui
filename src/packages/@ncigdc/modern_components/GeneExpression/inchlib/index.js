@@ -2090,9 +2090,9 @@ import Color from 'color';
       value = node.features[col_index];
       text_value = value;
   
-      if (self.options.alternative_data) {
-        text_value = self.alternative_data[node_id][col_index];
-      }
+      // if (self.options.alternative_data) {
+      //   text_value = self.alternative_data[node_id][col_index];
+      // }
   
       if (value !== null) {
         color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
@@ -2108,7 +2108,7 @@ import Color from 'color';
           value: text_value,
           column: ['d', col_index].join('_'),
           gene_symbol,
-          // gene_symbol for tooltip
+          // gene_symbol for heatmap cell tooltip
           strokeWidth: self.pixels_for_leaf,
         });
         row.add(line);
@@ -2117,25 +2117,28 @@ import Color from 'color';
       x1 = x2;
     }
   
-    // draw gene_symbol column
+    // draw gene_symbol column,
+    // whether or not it's going to contain anything
+    // at the current zoom level
     x2 = x1 + self.pixels_for_dimension;
     y2 = y1;
   
-    line = self.objects_ref.heatmap_line.clone({
-      gene_ensembl,
-      points: [
-        x1,
-        y1,
-        x2,
-        y2,
-      ],
-      name: gene_symbol,
-      column: ['m', 1].join('_'),
-      strokeWidth: self.pixels_for_leaf,
-    });
-    row.add(line);
-  
     if (self.current_draw_values) {
+      line = self.objects_ref.heatmap_line.clone({
+        // gene_ensembl for creating links
+        gene_ensembl,
+        points: [
+          x1,
+          y1,
+          x2,
+          y2,
+        ],
+        // gene_symbol for gene column tooltip
+        name: gene_symbol,
+        column: ['m', 1].join('_'),
+        strokeWidth: self.pixels_for_leaf,
+      });
+      row.add(line);
       text = self.objects_ref.heatmap_value.clone({
         text: gene_symbol,
         fontSize: self.options.font.size,

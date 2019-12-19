@@ -49,9 +49,11 @@ class GeneExpressionChart extends Component {
   componentDidUpdate(prevProps) {
     const { data } = this.props;
     if (!isEqual(data, prevProps.data)) {
+      // for viz demo
+      // unsure if data will update in final version
       const nextOptions = {
         ...this.options,
-        ...{ data },
+        data,
       };
       this.$el.InCHlib(nextOptions);
     }

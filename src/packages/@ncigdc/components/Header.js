@@ -1,4 +1,3 @@
-// @flow
 
 import React from 'react';
 import {
@@ -11,6 +10,7 @@ import {
 } from 'recompose';
 import { connect } from 'react-redux';
 import { isEqual } from 'lodash';
+import ResizeObserver from 'resize-observer-polyfill';
 
 import { dismissNotification, removeNotification } from '@ncigdc/dux/bannerNotification';
 import nciGdcLogo from '@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg';
@@ -51,6 +51,7 @@ const styles = {
 
 const Header = ({
   dispatch,
+  headerHeight,
   isCollapsed,
   isInSearchMode,
   notifications,
@@ -59,160 +60,173 @@ const Header = ({
   theme,
   user,
 }) => (
-  <header
-    className="navbar navbar-default navbar-static-top"
-    id="header"
-    role="banner"
-    >
-    {notifications.map(n => (
-      <Banner
-        {...n}
-        handleOnDismiss={() => dispatch(dismissNotification(n.id))}
-        key={n.id}
-        />
-    ))}
+  <React.Fragment>
+    <header
+      className="navbar navbar-default navbar-static-top"
+      id="header"
+      role="banner"
+      >
+      {notifications.map(n => (
+        <Banner
+          {...n}
+          handleOnDismiss={() => dispatch(dismissNotification(n.id))}
+          key={n.id}
+          />
+      ))}
 
-    <div className="container-fluid">
-      <div className="navbar-header">
-        <button
-          className="navbar-toggle"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          type="button"
-          >
-          <span className="sr-only test-toggle-navigation">
-              Toggle navigation
-          </span>
-          <span className="icon-bar" />
-          <span className="icon-bar" />
-          <span className="icon-bar" />
-        </button>
-        <HomeLink
-          className="navbar-brand"
-          style={{ padding: 0 }}
-          tabIndex="0"
-          >
-          <img alt="gdc-logo" src={nciGdcLogo} />
-          <Hidden>
-            <h1>GDC Home</h1>
-          </Hidden>
-        </HomeLink>
-      </div>
+      <div className="container-fluid">
+        <div className="navbar-header">
+          <button
+            className="navbar-toggle"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            type="button"
+            >
+            <span className="sr-only test-toggle-navigation">
+                Toggle navigation
+            </span>
+            <span className="icon-bar" />
+            <span className="icon-bar" />
+            <span className="icon-bar" />
+          </button>
 
-      <nav
-        aria-label="Site Navigation"
-        className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
-        data-uib-collapse="hc.isCollapsed"
-        onClick={() => setIsCollapsed(true)}
-        style={{ outline: 'none' }}
-        tabIndex="-1"
-        >
-        <ul className="nav navbar-nav">
-          <li>
-            <HomeLink activeStyle={styles.activeNavLink(theme)} exact>
-              <i className="fa fa-home" style={styles.iconPadding} />
-              <span className="header-hidden-sm">Home</span>
-              <Hidden>Home</Hidden>
-            </HomeLink>
-          </li>
-          <li>
-            <ProjectsLink activeStyle={styles.activeNavLink(theme)} exact>
-              <i className="icon-gdc-projects" style={styles.iconPadding} />
-              <span className="header-hidden-sm">Projects</span>
-              <Hidden>Projects</Hidden>
-            </ProjectsLink>
-          </li>
-          <li>
-            <ExploreLink
-              activeStyle={styles.activeNavLink(theme)}
-              exact
-              query={defaultExploreQuery}
-              >
-              <i className="icon-gdc-data" style={styles.iconPadding} />
-              <span className="header-hidden-sm">Exploration</span>
-              <Hidden>Exploration</Hidden>
-            </ExploreLink>
-          </li>
-          <li>
-            <AnalysisLink activeStyle={styles.activeNavLink(theme)} exact>
-              <Row
-                  // needed for handling IE default svg style
-                style={{ alignItems: 'center' }}
+          <HomeLink
+            className="navbar-brand"
+            style={{ padding: 0 }}
+            tabIndex="0"
+            >
+            <img alt="gdc-logo" src={nciGdcLogo} />
+            <Hidden>
+              <h1>GDC Home</h1>
+            </Hidden>
+          </HomeLink>
+        </div>
+
+        <nav
+          aria-label="Site Navigation"
+          className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
+          data-uib-collapse="hc.isCollapsed"
+          onClick={() => setIsCollapsed(true)}
+          style={{ outline: 'none' }}
+          tabIndex="-1"
+          >
+          <ul className="nav navbar-nav">
+            <li>
+              <HomeLink activeStyle={styles.activeNavLink(theme)} exact>
+                <i className="fa fa-home" style={styles.iconPadding} />
+                <span className="header-hidden-sm">Home</span>
+                <Hidden>Home</Hidden>
+              </HomeLink>
+            </li>
+            <li>
+              <ProjectsLink activeStyle={styles.activeNavLink(theme)} exact>
+                <i className="icon-gdc-projects" style={styles.iconPadding} />
+                <span className="header-hidden-sm">Projects</span>
+                <Hidden>Projects</Hidden>
+              </ProjectsLink>
+            </li>
+            <li>
+              <ExploreLink
+                activeStyle={styles.activeNavLink(theme)}
+                exact
+                query={defaultExploreQuery}
                 >
-                <AnalysisIcon style={styles.iconPadding} />
-                <span className="header-hidden-sm">Analysis</span>
-                <Hidden>Analysis</Hidden>
-              </Row>
-            </AnalysisLink>
-          </li>
-          <li>
-            <RepositoryLink activeStyle={styles.activeNavLink(theme)} exact>
-              <DatabaseIcon style={styles.iconPadding} />
-              <span className="header-hidden-sm">Repository</span>
-              <Hidden>Repository</Hidden>
-            </RepositoryLink>
-          </li>
-        </ul>
-        <ul className="nav navbar-nav navbar-right">
-          <li>
-            <QuickSearch
-              isInSearchMode={isInSearchMode}
-              setIsInSearchMode={setIsInSearchMode}
-              tabIndex="0"
-              />
-          </li>
-          {!isInSearchMode && (
-            <React.Fragment>
-              <li>
-                <ManageSetsLink activeStyle={styles.activeNavLink(theme)} />
-              </li>
+                <i className="icon-gdc-data" style={styles.iconPadding} />
+                <span className="header-hidden-sm">Exploration</span>
+                <Hidden>Exploration</Hidden>
+              </ExploreLink>
+            </li>
+            <li>
+              <AnalysisLink activeStyle={styles.activeNavLink(theme)} exact>
+                <Row
+                    // needed for handling IE default svg style
+                  style={{ alignItems: 'center' }}
+                  >
+                  <AnalysisIcon style={styles.iconPadding} />
+                  <span className="header-hidden-sm">Analysis</span>
+                  <Hidden>Analysis</Hidden>
+                </Row>
+              </AnalysisLink>
+            </li>
+            <li>
+              <RepositoryLink activeStyle={styles.activeNavLink(theme)} exact>
+                <DatabaseIcon style={styles.iconPadding} />
+                <span className="header-hidden-sm">Repository</span>
+                <Hidden>Repository</Hidden>
+              </RepositoryLink>
+            </li>
+          </ul>
+          <ul className="nav navbar-nav navbar-right">
+            <li>
+              <QuickSearch
+                isInSearchMode={isInSearchMode}
+                setIsInSearchMode={setIsInSearchMode}
+                tabIndex="0"
+                />
+            </li>
+            {!isInSearchMode && (
+              <React.Fragment>
+                <li>
+                  <ManageSetsLink activeStyle={styles.activeNavLink(theme)} />
+                </li>
 
-              {user
-                ? (
-                  <li className="header-hidden-xs">
-                    <UserDropdown />
-                  </li>
-                )
-                : (
-                  <li>
-                    <LoginButton />
-                  </li>
-                )
-              }
-              <li>
-                <CartLink>
-                  {count => (
-                    <span>
-                      <i
-                        className="fa fa-shopping-cart"
-                        style={styles.iconPadding}
-                        />
-                      <span
-                        className="header-hidden-sm header-hidden-md"
-                        style={styles.iconPadding}
-                        >
-                          Cart
-                      </span>
-                      <span className="label label-primary">
-                        {count.toLocaleString()}
-                      </span>
-                    </span>
+                {user
+                  ? (
+                    <li className="header-hidden-xs">
+                      <UserDropdown />
+                    </li>
+                  )
+                  : (
+                    <li>
+                      <LoginButton />
+                    </li>
                   )}
-                </CartLink>
-              </li>
+                <li>
+                  <CartLink>
+                    {count => (
+                      <span>
+                        <i
+                          className="fa fa-shopping-cart"
+                          style={styles.iconPadding}
+                          />
+                        <span
+                          className="header-hidden-sm header-hidden-md"
+                          style={styles.iconPadding}
+                          >
+                            Cart
+                        </span>
+                        <span className="label label-primary">
+                          {count.toLocaleString()}
+                        </span>
+                      </span>
+                    )}
+                  </CartLink>
+                </li>
 
-              <li>
-                <GDCAppsDropdown />
-              </li>
-            </React.Fragment>
-          )}
-        </ul>
-      </nav>
-    </div>
-  </header>
+                <li>
+                  <GDCAppsDropdown />
+                </li>
+              </React.Fragment>
+            )}
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div
+      id="headerSpacer"
+      style={{
+        border: 'none',
+        height: headerHeight,
+        transition: 'height 0.15s ease',
+        visibility: 'hidden',
+      }}
+      />
+  </React.Fragment>
 );
 
 export default compose(
   setDisplayName('EnhancedHeader'),
+  withState('headerHeight', 'setHeaderHeight', 0),
   withState('isCollapsed', 'setIsCollapsed', true),
   withState('isInSearchMode', 'setIsInSearchMode', false),
   withRouter,
@@ -229,15 +243,26 @@ export default compose(
         dispatch(forceLogout());
       }
     },
+    resizeObserver: ({ setHeaderHeight }) => () =>
+      new ResizeObserver(([{ target }]) => { // the target here will be the header itself
+        setHeaderHeight(target.offsetHeight);
+      }),
   }),
   lifecycle({
-    componentDidMount(): void {
-      if (this.props.error) {
-        this.props.handleApiError({
-          ...this.props.error,
-          user: this.props.user,
-        });
-      }
+    componentDidMount() {
+      const {
+        error,
+        handleApiError,
+        resizeObserver,
+        user,
+      } = this.props;
+
+      error && handleApiError({
+        ...error,
+        user,
+      });
+
+      resizeObserver().observe(document.querySelector('header#header'));
     },
     componentWillMount() {
       if (!this.props.user) {
@@ -260,6 +285,7 @@ export default compose(
     },
     shouldComponentUpdate({
       error: nextError,
+      headerHeight: nextHeaderHeight,
       isCollapsed: nextIsCollapsed,
       isInSearchMode: nextIsInSearchMode,
       location: nextLocation,
@@ -268,6 +294,7 @@ export default compose(
     }) {
       const {
         error,
+        headerHeight,
         isCollapsed,
         isInSearchMode,
         location,
@@ -277,6 +304,7 @@ export default compose(
 
       return !(
         nextError === error &&
+        nextHeaderHeight === headerHeight &&
         nextIsCollapsed === isCollapsed &&
         nextIsInSearchMode === isInSearchMode &&
         isEqual(nextNotifications, notifications) &&
@@ -286,5 +314,5 @@ export default compose(
     },
   }),
   withTheme,
-  pure
+  pure,
 )(Header);

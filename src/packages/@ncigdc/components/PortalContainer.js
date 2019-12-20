@@ -43,15 +43,10 @@ const SkipLink = styled.a({
   zIndex: 1000,
 });
 
-const PortalContainer = ({
-  notifications,
-}: {
-  notifications: Array<{ dismissed: string }>,
-}) => (
+const PortalContainer = () => (
   <div
     style={{
       minHeight: '100vh',
-      minWidth: 1024,
       position: 'relative',
     }}
     >
@@ -62,10 +57,8 @@ const PortalContainer = ({
       id="skip"
       role="main"
       style={{
+        minWidth: 1024,
         paddingBottom: '120px',
-        paddingTop: `calc(51px + ${notifications.filter(n => !n.dismissed)
-          .length * 40}px)`,
-        transition: 'padding 0.25s ease',
       }}
       >
       {AWG ? <AWGRoutes /> : <Routes />}
@@ -81,7 +74,7 @@ const PortalContainer = ({
 export default compose(
   setDisplayName('EnhancedPortalContainer'),
   withRouter,
-  connect(store => ({ notifications: store.bannerNotification })),
+  connect(),
   lifecycle({
     componentDidMount(): void {
       Cookies.get(FIRST_TIME_KEY) || this.props.dispatch(setModal(
@@ -106,16 +99,13 @@ export default compose(
     },
     shouldComponentUpdate({
       location: nextLocation,
-      notifications: nextNotifications,
     }) {
       const {
         location,
-        notifications,
       } = this.props;
 
       return !(
-        isEqual(nextLocation, location) &&
-        isEqual(nextNotifications, notifications)
+        isEqual(nextLocation, location)
       );
     },
   }),

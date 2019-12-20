@@ -153,7 +153,10 @@ import Color from 'color';
   const defaults = {
     alternative_data: false,
     button_color: 'blue',
-    category_colors: {},
+    categories: {
+      colors: {},
+      defaults: [],
+    },
     column_dendrogram: false,
     column_metadata_colors: 'RdLrBu',
     column_metadata: false,
@@ -2201,7 +2204,7 @@ import Color from 'color';
         value = self.column_metadata_descs[row_index].str2num[value];
       }
 
-      const color_value = self.options.category_colors[title] || 'Greys';
+      const color_value = self.options.categories.colors[title] || 'Greys';
 
       color = self._get_color_for_value(value, self.column_metadata_descs[row_index].min, self.column_metadata_descs[row_index].max, self.column_metadata_descs[row_index].middle, color_value);
       x2 = x1 + self.pixels_for_dimension;

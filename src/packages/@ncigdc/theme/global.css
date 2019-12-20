@@ -7555,6 +7555,8 @@ li:focus {
 .search-bar textarea {
   -moz-tab-size: 4;
   tab-size: 4;
+  max-width: 100%;
+  min-width: 100%;
 }
 #biospecimen .biospecimen-id:hover {
   border-bottom: 2px solid #60a8d2;

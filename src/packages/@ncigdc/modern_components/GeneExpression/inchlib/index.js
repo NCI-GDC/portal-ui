@@ -292,12 +292,34 @@ import Color from 'color';
         *
         */
       row_onclick(gene_ensembl) {
-        const clickGene = new CustomEvent('clickGene', {
+        const clickInchlibLink = new CustomEvent('clickInchlibLink', {
           detail: {
             gene_ensembl
           },
         });
-        self.element.dispatchEvent(clickGene);
+        self.element.dispatchEvent(clickInchlibLink);
+      },
+      /**
+        * @name InCHlib#heatmap_header_onclick
+        * @event
+        * @param {function} function() callback function for click on the heatmap header event
+        * @eventData {string} case_uuid, used to create a link to the case page
+
+        * @example
+        * instance.events.heatmap_header_onclick = (
+        *    function(case_uuid) {
+        *       alert(case_uuid);
+        *    }
+        * );
+        *
+        */
+       heatmap_header_onclick(case_uuid) {
+        const clickInchlibLink = new CustomEvent('clickInchlibLink', {
+          detail: {
+            case_uuid
+          },
+        });
+        self.element.dispatchEvent(clickInchlibLink);
       },
 
       /**
@@ -2090,9 +2112,9 @@ import Color from 'color';
       value = node.features[col_index];
       text_value = value;
   
-      if (self.options.alternative_data) {
-        text_value = self.alternative_data[node_id][col_index];
-      }
+      // if (self.options.alternative_data) {
+      //   text_value = self.alternative_data[node_id][col_index];
+      // }
   
       if (value !== null) {
         color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
@@ -2108,7 +2130,7 @@ import Color from 'color';
           value: text_value,
           column: ['d', col_index].join('_'),
           gene_symbol,
-          // gene_symbol for tooltip
+          // gene_symbol for heatmap cell tooltip
           strokeWidth: self.pixels_for_leaf,
         });
         row.add(line);
@@ -2117,23 +2139,9 @@ import Color from 'color';
       x1 = x2;
     }
   
-    // draw gene_symbol column
-    x2 = x1 + self.pixels_for_dimension;
+    // don't draw gene symbol column if it's empty
+    x2 = x1;
     y2 = y1;
-  
-    line = self.objects_ref.heatmap_line.clone({
-      gene_ensembl,
-      points: [
-        x1,
-        y1,
-        x2,
-        y2,
-      ],
-      name: gene_symbol,
-      column: ['m', 1].join('_'),
-      strokeWidth: self.pixels_for_leaf,
-    });
-    row.add(line);
   
     if (self.current_draw_values) {
       text = self.objects_ref.heatmap_value.clone({
@@ -2141,14 +2149,36 @@ import Color from 'color';
         fontSize: self.options.font.size,
         fontWeight: 'bold',
       });
-  
       const width = text.getWidth();
+      x2 = x1 + width + 10;
+      
+      line = self.objects_ref.heatmap_line.clone({
+        // gene_ensembl for creating links
+        gene_ensembl,
+        points: [
+          x1,
+          y1,
+          x2,
+          y2,
+        ],
+        // gene_symbol for gene column tooltip
+        name: gene_symbol,
+        column: ['m', 1].join('_'),
+        strokeWidth: self.pixels_for_leaf,
+      });
+      row.add(line);
+  
       const y = self._hack_round(y1 - self.value_font_size / 2);
       text.position({
         x: x1 + 5,
         y,
       });
       row.add(text);
+      row.on('click', ({ target: { attrs: { gene_ensembl = '' }}}) => {
+        if (gene_ensembl !== '') {
+          self.events.row_onclick(gene_ensembl);
+        }
+      });
     }
     x1 = x2;
   
@@ -2239,8 +2269,6 @@ import Color from 'color';
         for (var i = 0; i < items.length; i++) {
           item_ids.push(items[i]);
         }
-
-        self.events.row_onclick(evt.target.attrs.gene_ensembl);
       }
     });
   };
@@ -2360,11 +2388,11 @@ import Color from 'color';
         const case_uuid = current_headers[i].split('_')[1];
         x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
         column_header = self.objects_ref.column_header.clone({
+          case_uuid,
           fill: self.options.font.color,
           fontFamily: self.options.font.family,
           fontSize: self.options.font.size,
           fontStyle: 'bold',
-          name: case_uuid,
           position_index: i,
           rotation,
           text: current_headers[i] === 'gene_symbol' ||
@@ -2380,36 +2408,24 @@ import Color from 'color';
 
       self.stage.add(self.header_layer);
 
-      if (!(self.options.dendrogram)) {
-        self.header_layer.on('click', (evt) => {
-          const column = evt.target;
-          const { position_index } = column.attrs;
-          for (var i = 0; i < self.header_layer.getChildren().length; i++) {
-            self.header_layer.getChildren()[i].setFill('black');
-          }
-          evt.target.setAttrs({ fill: 'red' });
-          self._delete_layers([
-            self.heatmap_layer,
-            self.heatmap_overlay,
-            self.highlighted_rows_layer,
-          ]);
-          self._reorder_heatmap(self._translate_column_to_feature_index(position_index));
-          self._draw_heatmap();
-          self.header_layer.draw();
-        });
+      self.header_layer.on('click', ({ target: { attrs: { case_uuid }}}) => {
 
-        self.header_layer.on('mouseover', function (evt) {
-          const label = evt.target;
-          label.setOpacity(0.7);
-          this.draw();
-        });
+        self.events.heatmap_header_onclick(case_uuid);
+      });
 
-        self.header_layer.on('mouseout', function (evt) {
-          const label = evt.target;
-          label.setOpacity(1);
-          this.draw();
-        });
-      }
+      self.header_layer.on('mouseover', function (evt) {
+        // TODO add tooltip?
+        const label = evt.target;
+        label.setOpacity(0.7);
+        this.draw();
+      });
+
+      self.header_layer.on('mouseout', function (evt) {
+        // TODO remove tooltip?
+        const label = evt.target;
+        label.setOpacity(1);
+        this.draw();
+      });
     }
   };
 

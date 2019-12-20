@@ -33,7 +33,7 @@ const options = {
 
 class GeneExpressionChart extends Component {
   componentDidMount() {
-    const { data, handleInchlibClick } = this.props;
+    const { data, handleClickInchlibLink } = this.props;
     this.options = {
       ...options,
       data,
@@ -43,23 +43,25 @@ class GeneExpressionChart extends Component {
     this.$el = $(this.el);
     this.$el.InCHlib(this.options);
 
-    this.el.addEventListener('clickGene', handleInchlibClick);
+    this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
   }
 
   componentDidUpdate(prevProps) {
     const { data } = this.props;
     if (!isEqual(data, prevProps.data)) {
+      // for viz demo
+      // unsure if data will update in final version
       const nextOptions = {
         ...this.options,
-        ...{ data },
+        data,
       };
       this.$el.InCHlib(nextOptions);
     }
   }
 
   componentWillUnmount() {
-    const { handleInchlibClick } = this.props;
-    this.el.removeEventListener('clickGene', handleInchlibClick);
+    const { handleClickInchlibLink } = this.props;
+    this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
     // TODO: destroy this properly
     // this.$el.InCHlib('destroy');
   }

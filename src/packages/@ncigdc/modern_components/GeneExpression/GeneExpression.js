@@ -33,7 +33,7 @@ class GeneExpression extends Component {
     // data: dataObj.data3x2, // for viz demo
     data: showDataButtons
       ? null
-      : dataObj.data100x100,
+      : dataObj.data50x50,
   };
 
   handleClickInchlibLink = (

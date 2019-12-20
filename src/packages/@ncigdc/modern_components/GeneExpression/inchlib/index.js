@@ -2409,7 +2409,7 @@ import Color from 'color';
       self.stage.add(self.header_layer);
 
       self.header_layer.on('click', ({ target: { attrs: { case_uuid }}}) => {
-        console.log('test')
+
         self.events.heatmap_header_onclick(case_uuid);
       });
 

@@ -3738,12 +3738,13 @@ import Color from 'color';
       .map(category => {
         const key = category.toLowerCase().split(' ').join('-');
         const id = `${self._name}_${key}`;
-        return `<li><input type='checkbox' id='${id}' name='edit-categories' value='${category}'/><label for='${id}' class='form_label'>${category}</label></li>`;
+        const checked = self.categories_visible.includes(category)
+          ? ' checked'
+          : '';
+        return `<li><input type='checkbox' id='${id}' name='edit-categories' value='${category}'${checked}/><label for='${id}' class='form_label'>${category}</label></li>`;
       }))
-    .concat('</ul><button type="submit">Redraw</button>')
+    .concat('</ul><button type="submit">Save</button>')
     .join('');
-
-    console.log('options', options)
 
     settings_form.html(options);
     self.$element.append(settings_form);
@@ -3792,6 +3793,29 @@ import Color from 'color';
     overlay.click(() => {
       settings_form.fadeOut('fast');
       overlay.fadeOut('fast');
+    });
+
+    settings_form.submit(function (evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
+
+      const categories_updated = [];
+
+      $.each($(`#${form_id} input[name="edit-categories"]:checked`),
+        function() {
+          categories_updated.push($(this).val());
+        }
+      );
+
+      self.categories_visible = categories_updated;
+
+      // TODO: redraw categories tracks 
+      
+      // self.update_settings(settings);
+      // self.redraw_heatmap();
+      // self._update_color_scale();
+
+      overlay.trigger('click');
     });
 
   }

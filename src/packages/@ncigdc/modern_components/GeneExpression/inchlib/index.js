@@ -192,9 +192,10 @@ import Color from 'color';
     navigation_toggle: {
       color_scale: true,
       distance_scale: true,
+      edit_categories: true,
       export_button: true,
       filter_button: true,
-      hint_button: true,
+      hint_button: false,
     },
     tooltip: {
       fill: '#fff',
@@ -2536,31 +2537,6 @@ import Color from 'color';
     }
     self._draw_help();
 
-    if (!self.options.column_dendrogram && self.options.heatmap && self.options.navigation_toggle.filter_button) {
-      const filter_icon = self.objects_ref.icon.clone({
-        data: 'M26.834,6.958c0-2.094-4.852-3.791-10.834-3.791c-5.983,0-10.833,1.697-10.833,3.791c0,0.429,0.213,0.84,0.588,1.224l8.662,15.002v4.899c0,0.414,0.709,0.75,1.583,0.75c0.875,0,1.584-0.336,1.584-0.75v-4.816l8.715-15.093h-0.045C26.625,7.792,26.834,7.384,26.834,6.958zM16,9.75c-6.363,0-9.833-1.845-9.833-2.792S9.637,4.167,16,4.167c6.363,0,9.834,1.844,9.834,2.791S22.363,9.75,16,9.75z',
-        x,
-        y,
-        label: 'Filter\ncolumns',
-      });
-
-      const filter_overlay = self._draw_icon_overlay(x, y);
-      self.navigation_layer.add(filter_icon, filter_overlay);
-      x += 40;
-
-      filter_overlay.on('click', function () {
-        self._filter_icon_click(this);
-      });
-
-      filter_overlay.on('mouseover', () => {
-        self._icon_mouseover(filter_icon, filter_overlay, self.navigation_layer);
-      });
-
-      filter_overlay.on('mouseout', () => {
-        self._icon_mouseout(filter_icon, filter_overlay, self.navigation_layer);
-      });
-    }
-
     if (self.zoomed_clusters.row.length > 0 || self.zoomed_clusters.column.length > 0) {
       const refresh_icon = self.objects_ref.icon.clone({
         data: 'M24.083,15.5c-0.009,4.739-3.844,8.574-8.583,8.583c-4.741-0.009-8.577-3.844-8.585-8.583c0.008-4.741,3.844-8.577,8.585-8.585c1.913,0,3.665,0.629,5.09,1.686l-1.782,1.783l8.429,2.256l-2.26-8.427l-1.89,1.89c-2.072-1.677-4.717-2.688-7.587-2.688C8.826,3.418,3.418,8.826,3.416,15.5C3.418,22.175,8.826,27.583,15.5,27.583S27.583,22.175,27.583,15.5H24.083z',
@@ -2655,7 +2631,7 @@ import Color from 'color';
           y: 0.7,
         },
         id: 'export_icon',
-        label: 'Export\nin png format',
+        label: 'Download PNG',
       });
 
       const export_overlay = self._draw_icon_overlay(self.options.width - 62, 10);
@@ -2671,6 +2647,39 @@ import Color from 'color';
 
       export_overlay.on('mouseout', () => {
         self._icon_mouseout(export_icon, export_overlay, self.navigation_layer);
+      });
+    }
+
+    if (self.options.navigation_toggle.edit_categories) {
+      const x = self.options.width - 60;
+      const y = 45;
+      const scale = 0.6;
+
+      const categories_icon = self.objects_ref.icon.clone({
+        data: 'M26.974,16.514l3.765-1.991c-0.074-0.738-0.217-1.454-0.396-2.157l-4.182-0.579c-0.362-0.872-0.84-1.681-1.402-2.423l1.594-3.921c-0.524-0.511-1.09-0.977-1.686-1.406l-3.551,2.229c-0.833-0.438-1.73-0.77-2.672-0.984l-1.283-3.976c-0.364-0.027-0.728-0.056-1.099-0.056s-0.734,0.028-1.099,0.056l-1.271,3.941c-0.967,0.207-1.884,0.543-2.738,0.986L7.458,4.037C6.863,4.466,6.297,4.932,5.773,5.443l1.55,3.812c-0.604,0.775-1.11,1.629-1.49,2.55l-4.05,0.56c-0.178,0.703-0.322,1.418-0.395,2.157l3.635,1.923c0.041,1.013,0.209,1.994,0.506,2.918l-2.742,3.032c0.319,0.661,0.674,1.303,1.085,1.905l4.037-0.867c0.662,0.72,1.416,1.351,2.248,1.873l-0.153,4.131c0.663,0.299,1.352,0.549,2.062,0.749l2.554-3.283C15.073,26.961,15.532,27,16,27c0.507,0,1.003-0.046,1.491-0.113l2.567,3.301c0.711-0.2,1.399-0.45,2.062-0.749l-0.156-4.205c0.793-0.513,1.512-1.127,2.146-1.821l4.142,0.889c0.411-0.602,0.766-1.243,1.085-1.905l-2.831-3.131C26.778,18.391,26.93,17.467,26.974,16.514zM20.717,21.297l-1.785,1.162l-1.098-1.687c-0.571,0.22-1.186,0.353-1.834,0.353c-2.831,0-5.125-2.295-5.125-5.125c0-2.831,2.294-5.125,5.125-5.125c2.83,0,5.125,2.294,5.125,5.125c0,1.414-0.573,2.693-1.499,3.621L20.717,21.297z',
+        x,
+        y,
+        scale: {
+          x: scale,
+          y: scale,
+        },
+        id: 'categories_icon',
+        label: 'Edit categories',
+      });
+
+      const categories_overlay = self._draw_icon_overlay(x, y);
+      self.navigation_layer.add(categories_icon, categories_overlay);
+
+      categories_overlay.on('click', function () {
+        self._categories_icon_click(this);
+      });
+
+      categories_overlay.on('mouseover', () => {
+        self._icon_mouseover(categories_icon, categories_overlay, self.navigation_layer);
+      });
+
+      categories_overlay.on('mouseout', () => {
+        self._icon_mouseout(categories_icon, categories_overlay, self.navigation_layer);
       });
     }
 
@@ -2707,6 +2716,27 @@ import Color from 'color';
       self._help_mouseout();
       self._icon_mouseout(help_icon, help_overlay, self.navigation_layer);
     });
+  };
+
+  InCHlib.prototype._draw_edit_categories = function () {
+    const self = this;
+    if (!self.options.navigation_toggle.edit_categories) {
+      return;
+    }
+
+    // const categories_icon = self.objects_ref.icon.clone({
+    //   data: 'M26.974,16.514l3.765-1.991c-0.074-0.738-0.217-1.454-0.396-2.157l-4.182-0.579c-0.362-0.872-0.84-1.681-1.402-2.423l1.594-3.921c-0.524-0.511-1.09-0.977-1.686-1.406l-3.551,2.229c-0.833-0.438-1.73-0.77-2.672-0.984l-1.283-3.976c-0.364-0.027-0.728-0.056-1.099-0.056s-0.734,0.028-1.099,0.056l-1.271,3.941c-0.967,0.207-1.884,0.543-2.738,0.986L7.458,4.037C6.863,4.466,6.297,4.932,5.773,5.443l1.55,3.812c-0.604,0.775-1.11,1.629-1.49,2.55l-4.05,0.56c-0.178,0.703-0.322,1.418-0.395,2.157l3.635,1.923c0.041,1.013,0.209,1.994,0.506,2.918l-2.742,3.032c0.319,0.661,0.674,1.303,1.085,1.905l4.037-0.867c0.662,0.72,1.416,1.351,2.248,1.873l-0.153,4.131c0.663,0.299,1.352,0.549,2.062,0.749l2.554-3.283C15.073,26.961,15.532,27,16,27c0.507,0,1.003-0.046,1.491-0.113l2.567,3.301c0.711-0.2,1.399-0.45,2.062-0.749l-0.156-4.205c0.793-0.513,1.512-1.127,2.146-1.821l4.142,0.889c0.411-0.602,0.766-1.243,1.085-1.905l-2.831-3.131C26.778,18.391,26.93,17.467,26.974,16.514zM20.717,21.297l-1.785,1.162l-1.098-1.687c-0.571,0.22-1.186,0.353-1.834,0.353c-2.831,0-5.125-2.295-5.125-5.125c0-2.831,2.294-5.125,5.125-5.125c2.83,0,5.125,2.294,5.125,5.125c0,1.414-0.573,2.693-1.499,3.621L20.717,21.297z',
+    //   x: self.options.width - 60,
+    //   y: 75,
+    //   scale: {
+    //     x: 0.6,
+    //     y: 0.6,
+    //   },
+    //   id: 'categories_icon',
+    //   label: 'Edit categories',
+    // });
+
+    // self.navigation_layer.add(categories_icon);
   };
 
   InCHlib.prototype._draw_color_scale = function () {
@@ -3614,6 +3644,10 @@ import Color from 'color';
     self.redraw();
   };
 
+  InCHlib.prototype._categories_icon_click = function() {
+    console.log('clicked categories icon');
+  }
+
   InCHlib.prototype._export_icon_click = function () {
     const self = this;
     let export_menu = self.$element.find('.export_menu');
@@ -3974,9 +4008,10 @@ import Color from 'color';
       const width = icon_overlay.getWidth();
       const height = icon_overlay.getHeight();
 
-      if (icon.getAttr('id') === 'export_icon') {
+      if (icon.getAttr('id') === 'export_icon' ||
+        icon.getAttr('id') === 'categories_icon') {
         x -= 100;
-        y -= 50;
+        y -= 47;
       }
 
       self.icon_tooltip = self.objects_ref.tooltip_label.clone({
@@ -4366,6 +4401,8 @@ import Color from 'color';
     self.heatmap_layer.moveToBottom();
     self.heatmap_layer.moveUp();
   };
+
+
 
   /**
     * Destroy InCHlib

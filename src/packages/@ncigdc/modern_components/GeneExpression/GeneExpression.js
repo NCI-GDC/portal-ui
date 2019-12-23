@@ -19,7 +19,8 @@ import GeneExpressionChart from './GeneExpressionChart';
 import dataObj from './inchlib/data';
 
 const dataSizes = Object.keys(dataObj);
-const showDataButtons = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION_BUTTONS || false;
+// const showDataButtons = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION_BUTTONS || false;
+const showDataButtons = false;
 // end - for viz demo
 
 const enhance = compose(
@@ -30,10 +31,10 @@ const enhance = compose(
 
 class GeneExpression extends Component {
   state = {
-    // data: dataObj.data3x2, // for viz demo
-    data: showDataButtons
-      ? null
-      : dataObj.data50x50,
+    data: dataObj.data3x2, // for viz demo
+    // data: showDataButtons
+    //   ? null
+    //   : dataObj.data50x50,
   };
 
   handleClickInchlibLink = (

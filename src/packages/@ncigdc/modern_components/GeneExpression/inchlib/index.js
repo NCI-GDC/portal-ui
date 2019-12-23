@@ -208,7 +208,7 @@ import Color from 'color';
     const self = this;
 
     // basic plugin setup
-    self.element = element;
+    self.element = element;s
     self.$element = $(element);
     self.options = $.extend({}, defaults, options);
     self._name = plugin_name;
@@ -236,6 +236,11 @@ import Color from 'color';
 
     // proprietary styles for GDC portal
     self.styles = {
+      checkbox: {
+        float: 'left',
+        'margin-left': '-20px',
+        'margin-right': '5px',
+      },
       // @ncigdc/uikit/Input
       input: {
         'background-color': '#fff',
@@ -275,6 +280,9 @@ import Color from 'color';
         'color': 'white',
       }
     }
+
+    self.categories = [...self.options.data.column_metadata.feature_names];
+    self.categories_visible = [...self.categories];
 
     /**
     * Default function definitions for the InCHlib events
@@ -2718,27 +2726,6 @@ import Color from 'color';
     });
   };
 
-  InCHlib.prototype._draw_edit_categories = function () {
-    const self = this;
-    if (!self.options.navigation_toggle.edit_categories) {
-      return;
-    }
-
-    // const categories_icon = self.objects_ref.icon.clone({
-    //   data: 'M26.974,16.514l3.765-1.991c-0.074-0.738-0.217-1.454-0.396-2.157l-4.182-0.579c-0.362-0.872-0.84-1.681-1.402-2.423l1.594-3.921c-0.524-0.511-1.09-0.977-1.686-1.406l-3.551,2.229c-0.833-0.438-1.73-0.77-2.672-0.984l-1.283-3.976c-0.364-0.027-0.728-0.056-1.099-0.056s-0.734,0.028-1.099,0.056l-1.271,3.941c-0.967,0.207-1.884,0.543-2.738,0.986L7.458,4.037C6.863,4.466,6.297,4.932,5.773,5.443l1.55,3.812c-0.604,0.775-1.11,1.629-1.49,2.55l-4.05,0.56c-0.178,0.703-0.322,1.418-0.395,2.157l3.635,1.923c0.041,1.013,0.209,1.994,0.506,2.918l-2.742,3.032c0.319,0.661,0.674,1.303,1.085,1.905l4.037-0.867c0.662,0.72,1.416,1.351,2.248,1.873l-0.153,4.131c0.663,0.299,1.352,0.549,2.062,0.749l2.554-3.283C15.073,26.961,15.532,27,16,27c0.507,0,1.003-0.046,1.491-0.113l2.567,3.301c0.711-0.2,1.399-0.45,2.062-0.749l-0.156-4.205c0.793-0.513,1.512-1.127,2.146-1.821l4.142,0.889c0.411-0.602,0.766-1.243,1.085-1.905l-2.831-3.131C26.778,18.391,26.93,17.467,26.974,16.514zM20.717,21.297l-1.785,1.162l-1.098-1.687c-0.571,0.22-1.186,0.353-1.834,0.353c-2.831,0-5.125-2.295-5.125-5.125c0-2.831,2.294-5.125,5.125-5.125c2.83,0,5.125,2.294,5.125,5.125c0,1.414-0.573,2.693-1.499,3.621L20.717,21.297z',
-    //   x: self.options.width - 60,
-    //   y: 75,
-    //   scale: {
-    //     x: 0.6,
-    //     y: 0.6,
-    //   },
-    //   id: 'categories_icon',
-    //   label: 'Edit categories',
-    // });
-
-    // self.navigation_layer.add(categories_icon);
-  };
-
   InCHlib.prototype._draw_color_scale = function () {
     const self = this;
     if (!self.options.navigation_toggle.color_scale) {
@@ -3644,10 +3631,6 @@ import Color from 'color';
     self.redraw();
   };
 
-  InCHlib.prototype._categories_icon_click = function() {
-    console.log('clicked categories icon');
-  }
-
   InCHlib.prototype._export_icon_click = function () {
     const self = this;
     let export_menu = self.$element.find('.export_menu');
@@ -3744,6 +3727,75 @@ import Color from 'color';
     }
   };
 
+  InCHlib.prototype._categories_icon_click = function() {
+    const self = this;
+
+    const form_id = `categories_form_${self._name}`;
+    const settings_form = $(`<form class='settings_form' id='${form_id}'></form>`);
+    const overlay = self._draw_target_overlay();
+
+    const options = [`<h3>Edit Categories</h3><ul>`].concat(self.categories
+      .map(category => {
+        const key = category.toLowerCase().split(' ').join('-');
+        const id = `${self._name}_${key}`;
+        return `<li><input type='checkbox' id='${id}' name='edit-categories' value='${category}'/><label for='${id}' class='form_label'>${category}</label></li>`;
+      }))
+    .concat('</ul><button type="submit">Redraw</button>')
+    .join('');
+
+    console.log('options', options)
+
+    settings_form.html(options);
+    self.$element.append(settings_form);
+    settings_form.css({
+      'z-index': 1000,
+      position: 'absolute',
+      top: 100,
+      right: 0,
+      padding: '10px',
+      border: 'solid #D2D2D2 2px',
+      'border-radius': '5px',
+      'background-color': 'white',
+      width: '180px',
+    });
+    $(`#${form_id} > ul`).css({
+      'list-style-type': 'none',
+      'font-size': '12px',
+      'margin-bottom': '10px',
+      'padding-left': '20px',
+    });
+    $(`#${form_id} li`).css({
+      'padding': '5px 0',
+    });
+    $(`#${form_id} h3`).css({
+      'margin-top': '0px'
+    });
+    $(`#${form_id} input`).css(self.styles.checkbox);
+    $(`#${form_id} .form_label`).css({
+      ...self.styles.label,
+      'line-height': '1',
+    });
+
+    const $submit_button = $(`#${form_id} button`);
+
+    $submit_button.css(self.styles.css_primary_button_off);
+
+    $submit_button.hover(
+      function () {
+        $submit_button.css(self.styles.css_button_on);
+      },
+      function () {
+        $submit_button.css(self.styles.css_primary_button_off);
+      }
+    );
+
+    overlay.click(() => {
+      settings_form.fadeOut('fast');
+      overlay.fadeOut('fast');
+    });
+
+  }
+
   InCHlib.prototype._color_scale_click = function (icon, evt) {
     const self = this;
     let option;
@@ -3752,20 +3804,7 @@ import Color from 'color';
 
     const color_options = { heatmap_colors: 'Heatmap colors:' };
 
-    // TODO: hide these?
-    // const value_options = {
-    //   max_percentile: 'Max percentile value',
-    //   middle_percentile: 'Middle percentile value',
-    //   min_percentile: 'Min percentile value',
-    // };
-
     const value_options = {};
-
-    // TODO remove this so the BG stays white?
-    // do we need metadata colours?
-    // if (self.options.metadata) {
-    //   color_options.metadata_colors = 'Metadata colors';
-    // }
 
     const form_id = `settings_form_${self._name}`;
     let settings_form = $(`#${form_id}`);

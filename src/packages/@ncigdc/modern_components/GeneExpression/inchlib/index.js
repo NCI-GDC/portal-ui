@@ -2039,13 +2039,26 @@ import Color from 'color';
     }
   };
 
+  InCHlib.prototype._draw_column_metadata = function (x1) {
+    const self = this;
+    self.column_metadata_descs = self._get_data_min_max_middle(self.column_metadata.features, 'row');
+    let y1 = self.header_height + 0.5 * self.column_metadata_row_height;
+
+    for (var i = 0; i < self.column_metadata.features.length; i++) {
+      const heatmap_row = self._draw_column_metadata_row(self.column_metadata.features[i], self.column_metadata.feature_names[i], i, x1, y1);
+      self.heatmap_layer.add(heatmap_row);
+      self._bind_row_events(heatmap_row);
+      y1 += self.column_metadata_row_height;
+    }
+  };
+
   InCHlib.prototype._draw_heatmap = function () {
     const self = this;
     if (!self.options.heatmap) {
       return;
     }
 
-    let heatmap_row;
+    // let heatmap_row;
     let y;
     let key;
 
@@ -2065,21 +2078,13 @@ import Color from 'color';
     for (var i = 0, keys = Object.keys(self.leaves_y_coordinates), len = keys.length; i < len; i++) {
       key = keys[i];
       y = self.leaves_y_coordinates[key];
-      heatmap_row = self._draw_heatmap_row(key, x1, y);
+      const heatmap_row = self._draw_heatmap_row(key, x1, y);
       self.heatmap_layer.add(heatmap_row);
       self._bind_row_events(heatmap_row);
     }
 
     if (self.options.column_metadata) {
-      self.column_metadata_descs = self._get_data_min_max_middle(self.column_metadata.features, 'row');
-      let y1 = self.header_height + 0.5 * self.column_metadata_row_height;
-
-      for (var i = 0, len = self.column_metadata.features.length; i < len; i++) {
-        heatmap_row = self._draw_column_metadata_row(self.column_metadata.features[i], self.column_metadata.feature_names[i], i, x1, y1);
-        self.heatmap_layer.add(heatmap_row);
-        self._bind_row_events(heatmap_row);
-        y1 += self.column_metadata_row_height;
-      }
+      self._draw_column_metadata(x1);
     }
 
     if (self.options.draw_row_ids) {

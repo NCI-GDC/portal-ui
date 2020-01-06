@@ -2435,14 +2435,12 @@ import Color from 'color';
       });
 
       self.header_layer.on('mouseover', function (evt) {
-        // TODO add tooltip?
         const label = evt.target;
         label.setOpacity(0.7);
         this.draw();
       });
 
       self.header_layer.on('mouseout', function (evt) {
-        // TODO remove tooltip?
         const label = evt.target;
         label.setOpacity(1);
         this.draw();
@@ -3642,98 +3640,46 @@ import Color from 'color';
 
   InCHlib.prototype._export_icon_click = function () {
     const self = this;
-    let export_menu = self.$element.find('.export_menu');
     const overlay = self._draw_target_overlay();
+    const zoom = 3;
+    const width = self.stage.width();
+    const height = self.stage.height();
 
-    if (export_menu.length) {
-      export_menu.fadeIn('fast');
-    } else {
-      export_menu = $('<div class=\'export_menu\'><div><button type=\'submit\' data-action=\'open\'>Show image</button></div><div><button type=\'submit\' data-action=\'save\'>Save image</button></div></div>');
-      self.$element.append(export_menu);
-      export_menu.css({
-        position: 'absolute',
-        top: 45,
-        left: self.options.width - 125,
-        'font-size': '12px',
-        border: 'solid #D2D2D2 1px',
-        'border-radius': '5px',
-        padding: '10px 10px 5px',
-        'background-color': 'white',
-      });
+    const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
+    self.$element.after(loading_div);
+    self.$element.hide();
 
-      const buttons = export_menu.find('button');
-      buttons.css($.extend(
-        {},
-        self.styles.css_primary_button_off,
-        {
-          'margin-bottom': '5px',
-        },
-      ));
-
-      buttons.hover(
-        function () {
-          $(this).css(self.styles.css_button_on);
-        },
-        function () {
-          $(this).css(self.styles.css_primary_button_off);
-        },
-      );
-
-      overlay.click(() => {
-        export_menu.fadeOut('fast');
-        overlay.fadeOut('fast');
-      });
-
-      buttons.click(function () {
-        const action = $(this).attr('data-action');
-        const zoom = 3;
-        const width = self.stage.width();
-        const height = self.stage.height();
-
-        const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-        self.$element.after(loading_div);
-        self.$element.hide();
-
-        self.stage.width(width * zoom);
-        self.stage.height(height * zoom);
+    self.stage.width(width * zoom);
+    self.stage.height(height * zoom);
+    self.stage.scale({
+      x: zoom,
+      y: zoom,
+    });
+    self.stage.draw();
+    self.navigation_layer.hide();
+    self.stage.toDataURL({
+      quality: 1,
+      callback(dataUrl) {
+          download_image(dataUrl);
+        self.stage.width(width);
+        self.stage.height(height);
         self.stage.scale({
-          x: zoom,
-          y: zoom,
+          x: 1,
+          y: 1,
         });
         self.stage.draw();
-        self.navigation_layer.hide();
-        self.stage.toDataURL({
-          quality: 1,
-          callback(dataUrl) {
-            if (action === 'open') {
-              open_image(dataUrl);
-            } else {
-              download_image(dataUrl);
-            }
-            self.stage.width(width);
-            self.stage.height(height);
-            self.stage.scale({
-              x: 1,
-              y: 1,
-            });
-            self.stage.draw();
-            loading_div.remove();
-            self.$element.show();
-            self.navigation_layer.show();
-            self.navigation_layer.draw();
-            overlay.trigger('click');
-          },
-        });
-      });
-    }
+        loading_div.remove();
+        self.$element.show();
+        self.navigation_layer.show();
+        self.navigation_layer.draw();
+        overlay.trigger('click');
+      },
+    });
 
     function download_image(dataUrl) {
       $(`<a download="inchlib" href="${dataUrl}"></a>`)[0].click();
     }
 
-    function open_image(dataUrl) {
-      window.open(dataUrl, '_blank');
-    }
   };
 
   InCHlib.prototype._categories_icon_click = function() {

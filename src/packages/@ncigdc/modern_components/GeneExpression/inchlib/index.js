@@ -281,9 +281,6 @@ import Color from 'color';
       }
     }
 
-    self.categories = [...self.options.data.column_metadata.feature_names];
-    self.categories_visible = [...self.categories];
-
     /**
     * Default function definitions for the InCHlib events
     * @name InCHlib#events
@@ -1201,6 +1198,8 @@ import Color from 'color';
     }
     if (json.column_metadata !== undefined) {
       self.column_metadata = json.column_metadata;
+      self.column_metadata.visible = Array(self.column_metadata.features.length)
+        .fill(true);
       options.column_metadata = true;
     } else {
       options.column_metadata = false;
@@ -1555,8 +1554,8 @@ import Color from 'color';
       count_column: [],
     };
 
-    self.column_metadata_rows = (self.options.column_metadata)
-      ? self.column_metadata.features.length
+    self.column_metadata_rows = self.options.column_metadata
+      ? self.column_metadata.visible.filter(x => x).length
       : 0;
     self.column_metadata_height = self.column_metadata_rows * self.column_metadata_row_height;
 
@@ -1993,7 +1992,8 @@ import Color from 'color';
 
     if (self.options.column_metadata) {
       if (self.column_metadata.feature_names !== undefined) {
-        self.column_metadata_header = self.column_metadata.feature_names;
+        self.column_metadata_header = self.column_metadata.feature_names
+          .filter((x, i) => self.column_metadata.visible[i]);
       }
     }
 
@@ -2041,11 +2041,15 @@ import Color from 'color';
 
   InCHlib.prototype._draw_column_metadata = function (x1) {
     const self = this;
-    self.column_metadata_descs = self._get_data_min_max_middle(self.column_metadata.features, 'row');
+    const visible_features = self.column_metadata.features
+      .filter((x, i) => self.column_metadata.visible[i]);
+    const visible_feature_names = self.column_metadata.feature_names
+      .filter((x, i) => self.column_metadata.visible[i]);
+    self.column_metadata_descs = self._get_data_min_max_middle(visible_features, 'row');
     let y1 = self.header_height + 0.5 * self.column_metadata_row_height;
 
-    for (var i = 0; i < self.column_metadata.features.length; i++) {
-      const heatmap_row = self._draw_column_metadata_row(self.column_metadata.features[i], self.column_metadata.feature_names[i], i, x1, y1);
+    for (var i = 0; i < visible_features.length; i++) {
+      const heatmap_row = self._draw_column_metadata_row(visible_features[i], visible_feature_names[i], i, x1, y1);
       self.heatmap_layer.add(heatmap_row);
       self._bind_row_events(heatmap_row);
       y1 += self.column_metadata_row_height;
@@ -3736,28 +3740,30 @@ import Color from 'color';
     const self = this;
 
     const form_id = `categories_form_${self._name}`;
-    const settings_form = $(`<form class='settings_form' id='${form_id}'></form>`);
+    const categories_form = $(`<form class='settings_form' id='${form_id}'></form>`);
     const overlay = self._draw_target_overlay();
 
-    const options = [`<h3>Edit Categories</h3><ul>`].concat(self.categories
-      .map(category => {
-        const key = category.toLowerCase().split(' ').join('-');
-        const id = `${self._name}_${key}`;
-        const checked = self.categories_visible.includes(category)
-          ? ' checked'
-          : '';
-        return `<li><input type='checkbox' id='${id}' name='edit-categories' value='${category}'${checked}/><label for='${id}' class='form_label'>${category}</label></li>`;
-      }))
-    .concat('</ul><button type="submit">Save</button>')
-    .join('');
+    const options = [`<h3>Edit Categories</h3><ul>`]
+      .concat(self.column_metadata.feature_names
+        .map((category, i) => {
+          const key = category.toLowerCase().split(' ').join('-');
+          const id = `${self._name}_${key}`;
+          const checked = self.column_metadata.visible[i]
+            ? ' checked'
+            : '';
+          return `<li><input type='checkbox' id='${id}' name='edit-categories' value='${category}'${checked}/><label for='${id}' class='form_label'>${category}</label></li>`;
+        })
+      )
+      .concat('</ul><button type="submit">Save</button>')
+      .join('');
 
-    settings_form.html(options);
-    self.$element.append(settings_form);
-    settings_form.css({
+    categories_form.html(options);
+    self.$element.append(categories_form);
+    categories_form.css({
       'z-index': 1000,
       position: 'absolute',
-      top: 100,
-      right: 0,
+      top: 80,
+      left: self.options.width - 225,
       padding: '10px',
       border: 'solid #D2D2D2 2px',
       'border-radius': '5px',
@@ -3796,29 +3802,24 @@ import Color from 'color';
     );
 
     overlay.click(() => {
-      settings_form.fadeOut('fast');
+      categories_form.fadeOut('fast');
       overlay.fadeOut('fast');
     });
 
-    settings_form.submit(function (evt) {
+    categories_form.submit(function (evt) {
       evt.preventDefault();
       evt.stopPropagation();
 
       const categories_updated = [];
 
-      $.each($(`#${form_id} input[name="edit-categories"]:checked`),
+      $.each($(`#${form_id} input[name="edit-categories"]`),
         function() {
-          categories_updated.push($(this).val());
+          categories_updated.push($(this).is(':checked'));
         }
       );
+      self.column_metadata.visible = categories_updated;
 
-      self.categories_visible = categories_updated;
-
-      // TODO: redraw categories tracks 
-      
-      // self.update_settings(settings);
-      // self.redraw_heatmap();
-      // self._update_color_scale();
+      self.redraw_heatmap();
 
       overlay.trigger('click');
     });

@@ -3818,10 +3818,9 @@ import Color from 'color';
         }
       );
       self.column_metadata.visible = categories_updated;
-
       self.redraw_heatmap();
-
       overlay.trigger('click');
+      $(`#${form_id}`).remove();
     });
 
   }

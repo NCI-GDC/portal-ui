@@ -3668,7 +3668,7 @@ import Color from 'color';
           y: 1,
         });
         self.stage.draw();
-        loading_div.remove();
+        loading_div.fadeOut().remove();
         self.$element.show();
         self.navigation_layer.show();
         self.navigation_layer.draw();
@@ -3689,7 +3689,7 @@ import Color from 'color';
     const categories_form = $(`<form class='settings_form' id='${form_id}'></form>`);
     const overlay = self._draw_target_overlay();
 
-    const options = [`<h3>Edit Categories</h3><ul>`]
+    const options = [`<h3>Categories</h3><ul>`]
       .concat(self.column_metadata.feature_names
         .map((category, i) => {
           const key = category.toLowerCase().split(' ').join('-');
@@ -3748,8 +3748,8 @@ import Color from 'color';
     );
 
     overlay.click(() => {
-      $(`#${form_id}`).remove();
-      overlay.fadeOut('fast');
+      $(`#${form_id}`).fadeOut().remove();
+      overlay.fadeOut().remove();
     });
 
     categories_form.submit(function (evt) {
@@ -3773,29 +3773,15 @@ import Color from 'color';
   InCHlib.prototype._color_scale_click = function (icon, evt) {
     const self = this;
 
-    // const overlay = self._draw_target_overlay();
-    // overlay.click(function() {
-    //   overlay.fadeOut().remove();
-    // })
-
-    const settings = { heatmap_colors: 'Purples2' };
-    self.update_settings(settings);
-    self.redraw_heatmap();
-    self._update_color_scale();
-    // overlay.trigger('click');
-    evt.preventDefault();
-    evt.stopPropagation();
-  };
-
-  InCHlib.prototype._draw_color_scales_select = function (element, evt) {
-    const self = this;
-
-    self.$element.find('.color_scales').remove();
+    const overlay = self._draw_target_overlay();
 
     let scale_divs;
     let scales_div = $('<div class=\'color_scales\'></div>');
-    let scale; let color_1; let color_2; let color_3; let
-      key;
+    let scale;
+    let color_1;
+    let color_2;
+    let color_3;
+    let key;
 
     for (let i = 0, keys = Object.keys(self.colors), len = keys.length; i < len; i++) {
       key = keys[i];
@@ -3805,14 +3791,15 @@ import Color from 'color';
       scale = `<div class='color_scale' data-scale_acronym='${key}' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div>`;
       scales_div.append(scale);
     }
+
     self.$element.append(scales_div);
     scales_div.css({
       border: 'solid #D2D2D2 2px',
       'border-radius': '5px',
       padding: '5px',
       position: 'absolute',
-      top: 110,
-      left: 250,
+      top: 105,
+      left: 0,
       width: 110,
       'max-height': 400,
       'overflow-y': 'auto',
@@ -3837,17 +3824,21 @@ import Color from 'color';
       function () { $(this).css({ opacity: 1 }); },
     );
 
-    self.$element.find('.target_overlay').click(() => {
-      scales_div.fadeOut('fast');
+    overlay.click(function() {
+      scales_div.fadeOut().remove();
+      scale_divs.fadeOut().remove();
+      overlay.fadeOut().remove();
     });
 
     scale_divs.on('click', function () {
       const color = $(this).attr('data-scale_acronym');
-      const input = $(element).prev('input:first').val(color);
-
-      $(element).css({ background: `linear-gradient(to right, ${self._get_color_for_value(0, 0, 1, 0.5, color)},${self._get_color_for_value(0.5, 0, 1, 0.5, color)},${self._get_color_for_value(1, 0, 1, 0.5, color)})` });
-      scales_div.fadeOut('fast');
-      scale_divs.off('click');
+      const settings = { heatmap_colors: color };
+      self.update_settings(settings);
+      self.redraw_heatmap();
+      self._update_color_scale();
+      overlay.trigger('click');
+      evt.preventDefault();
+      evt.stopPropagation();
     });
   };
 
@@ -4242,7 +4233,7 @@ import Color from 'color';
   InCHlib.prototype.add_color_scale = function (color_scale_name, color_scale) {
     const self = this;
     self.colors[color_scale_name] = color_scale;
-    self.$element.find('.color_scales').remove();
+    self.$element.find('.color_scales').fadeOut().remove();
   };
 
   InCHlib.prototype._get_visible_count = function () {
@@ -4323,7 +4314,7 @@ import Color from 'color';
       }, 50);
 
       setTimeout(function () {
-        loading_div.remove();
+        loading_div.fadeOut().remove();
         self.$element.show();
       }, 50);
     }

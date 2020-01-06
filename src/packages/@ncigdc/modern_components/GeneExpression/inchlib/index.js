@@ -1558,7 +1558,7 @@ import Color from 'color';
       ? self.column_metadata.visible.filter(x => x).length
       : 0;
     self.column_metadata_height = self.column_metadata_rows * self.column_metadata_row_height;
-
+    
     if (self.options.heatmap) {
       self.last_column = null;
       self.dimensions = self._get_dimensions();
@@ -3818,7 +3818,7 @@ import Color from 'color';
         }
       );
       self.column_metadata.visible = categories_updated;
-      self.redraw_heatmap();
+      self.redraw();
       overlay.trigger('click');
       $(`#${form_id}`).remove();
     });

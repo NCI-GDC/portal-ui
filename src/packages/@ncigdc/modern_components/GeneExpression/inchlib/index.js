@@ -1725,7 +1725,7 @@ import Color from 'color';
     self.stage_layer = new Konva.Layer();
     const stage_rect = new Konva.Rect({
       fill: '#fff',
-      height: self.options.height,
+      height: self.options.height + 130,
       opacity: 1,
       width: self.options.width,
       x: 0,

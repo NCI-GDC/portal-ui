@@ -2224,7 +2224,7 @@ import Color from 'color';
 
       const color_value = self.options.categories.colors[title] || 'Greys';
 
-      color = self._get_color_for_value(value, self.column_metadata_descs[row_index].min, self.column_metadata_descs[row_index].max, self.column_metadata_descs[row_index].middle, color_value);
+      color = self.options.categories.more_colors[title][text_value] || '#ccc';
       x2 = x1 + self.pixels_for_dimension;
       y2 = y1;
 

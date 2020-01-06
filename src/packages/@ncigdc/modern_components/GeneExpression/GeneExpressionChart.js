@@ -15,18 +15,24 @@ const category_colors = {
   'Vital Status': 'RdBu',
 };
 
-const default_visible_categories = [
-  'Age at Diagnosis',
-  'Days to Death',
-  'Race',
-  'Vital Status',
-];
+const more_category_colors = {
+  // 'Age at Diagnosis': 'BuGn',
+  // 'Days to Death': 'Blues',
+  // Ethnicity: 'PuOr',
+  Gender: {
+    female: 'rgb(220,96,156)',
+    male: 'rgb(67,6,147)',
+  },
+  // Race: 'YlOrB',
+  // 'Vital Status': 'RdBu',
+
+};
 
 const options = {
   button_color: theme.primary,
   categories: {
     colors: category_colors,
-    defaults: default_visible_categories,
+    more_colors: more_category_colors,
   },
   font: {
     color: '#767676',

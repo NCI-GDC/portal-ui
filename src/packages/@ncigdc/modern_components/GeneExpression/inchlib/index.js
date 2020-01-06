@@ -3645,6 +3645,10 @@ import Color from 'color';
     const width = self.stage.width();
     const height = self.stage.height();
 
+    overlay.click(function() {
+      overlay.fadeOut().remove();
+    });
+
     const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
     self.$element.after(loading_div);
     self.$element.hide();

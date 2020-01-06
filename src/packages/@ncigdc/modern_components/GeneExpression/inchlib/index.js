@@ -2748,7 +2748,7 @@ import Color from 'color';
     ];
 
     const color_scale = self.objects_ref.rect_gradient.clone({
-      label: 'Color settings',
+      label: 'Edit heatmap colors',
       fillLinearGradientColorStops: color_steps,
       id: `${self._name}_color_scale`,
     });
@@ -3772,143 +3772,19 @@ import Color from 'color';
 
   InCHlib.prototype._color_scale_click = function (icon, evt) {
     const self = this;
-    let option;
-    let key;
-    let value;
 
-    const color_options = { heatmap_colors: 'Heatmap colors:' };
+    // const overlay = self._draw_target_overlay();
+    // overlay.click(function() {
+    //   overlay.fadeOut().remove();
+    // })
 
-    const value_options = {};
-
-    const form_id = `settings_form_${self._name}`;
-    let settings_form = $(`#${form_id}`);
-    const overlay = self._draw_target_overlay();
-
-    if (settings_form.length > 0) {
-      settings_form.fadeIn('fast');
-    } else {
-      settings_form = $(`<form class='settings_form' id='${form_id}'></form>`);
-      let options = '';
-      let color_1;
-      let color_2;
-      let color_3;
-
-      for (var i = 0, keys = Object.keys(color_options), len = keys.length; i < len; i++) {
-        key = keys[i];
-        color_1 = self._get_color_for_value(0, 0, 1, 0.5, self.options[key]);
-        color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, self.options[key]);
-        color_3 = self._get_color_for_value(1, 0, 1, 0.5, self.options[key]);
-
-        option = `<div><label for='${self._name}_${key}' class='form_label'>${color_options[key]}</label><input type='text' id='${self._name}_${key}' name='${key}' value='${self.options[key]}'/> <div class='color_button' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div></div>`;
-        options += option;
-      }
-
-      // for (var i = 0, keys = Object.keys(value_options), len = keys.length; i < len; i++) {
-      //   key = keys[i];
-      //   option = `<div><div class='form_label'>${value_options[key]}</div><input type='text' name='${key}' value='${self.options[key]}'/></div>`;
-      //   options += option;
-      // }
-      // option = '<div><div class=\'form_label\'>Heatmap coloring</div>\
-      //           <select name=\'independent_columns\'>';
-
-      // if (self.options.independent_columns) {
-      //   option += '<option value=\'true\' selected>By columns</option>\
-      //             <option value=\'false\'>Entire heatmap</option>';
-      // } else {
-      //   option += '<option value=\'true\'>By columns</option>\
-      //             <option value=\'false\' selected>Entire heatmap</option>';
-      // }
-      // option += '</select></div>';
-      // options += option;
-
-      options += '<button type="submit">Redraw</button>';
-      settings_form.html(options);
-
-      self.$element.append(settings_form);
-      settings_form.css({
-        'z-index': 1000,
-        position: 'absolute',
-        top: 110,
-        left: 0,
-        padding: '10px',
-        border: 'solid #D2D2D2 2px',
-        'border-radius': '5px',
-        'background-color': 'white',
-      });
-      $(`#${form_id} > div`).css({
-        'font-size': '12px',
-        'margin-bottom': '10px',
-      });
-      $(`#${form_id} input`).css(self.styles.input);
-      $(`#${form_id} .form_label`).css(self.styles.label);
-
-      const $submit_button = $(`#${form_id} button`);
-
-      $submit_button.css(self.styles.css_primary_button_off);
-
-      $submit_button.hover(
-        function () {
-          $submit_button.css(self.styles.css_button_on);
-        },
-        function () {
-          $submit_button.css(self.styles.css_primary_button_off);
-        }
-      );
-
-      overlay.click(() => {
-        settings_form.fadeOut('fast');
-        overlay.fadeOut('fast');
-      });
-
-      const color_buttons = $(`#${form_id} .color_button`);
-
-      color_buttons.css({
-        border: 'solid #D2D2D2 1px',
-        float: 'right',
-        height: '34px',
-        'margin-left': '5px',
-        width: '34px',
-      });
-
-      color_buttons.hover(
-        function () {
-          $(this).css({
-            cursor: 'pointer',
-            opacity: 0.7,
-          });
-        },
-        function () { $(this).css({ opacity: 1 }); },
-      );
-
-      color_buttons.click(function (evt) {
-        self._draw_color_scales_select(this, evt);
-      });
-
-      settings_form.submit(function (evt) {
-        const settings = {};
-        const settings_fieldset = $(this).find('input, select');
-
-        settings_fieldset.each(function () {
-          option = $(this);
-          key = option.attr('name');
-          value = option.val();
-          if (value != '') {
-            if (value === 'true') {
-              value = true;
-            } else if (value === 'false') {
-              value = false;
-            }
-            settings[key] = value;
-          }
-        });
-        self.update_settings(settings);
-        self.redraw_heatmap();
-        self._update_color_scale();
-        overlay.trigger('click');
-        evt.preventDefault();
-        evt.stopPropagation();
-      });
-    }
+    const settings = { heatmap_colors: 'Purples2' };
+    self.update_settings(settings);
+    self.redraw_heatmap();
+    self._update_color_scale();
+    // overlay.trigger('click');
+    evt.preventDefault();
+    evt.stopPropagation();
   };
 
   InCHlib.prototype._draw_color_scales_select = function (element, evt) {

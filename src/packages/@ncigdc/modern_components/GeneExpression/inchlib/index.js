@@ -234,6 +234,32 @@ import Color from 'color';
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
 
+    // column metadata colors
+    self.MAX_DAYS_TO_DEATH = 3379;
+    self.MAX_AGE_AT_DIAGNOSIS = 90;
+    self.invalid_column_metadata_color = '#fff';
+    self.age_dx_colors = {
+      hue: 106,
+      max_light: 88,
+      min_light: 45,
+      sat: 25,
+    };
+
+    self.get_days_to_death_color = val => {
+      const red_green = Math.floor(255 - (val / self.MAX_DAYS_TO_DEATH * 255));
+      return isNaN(red_green)
+        ? self.invalid_column_metadata_color
+        : `rgb(${red_green},${red_green},255)`;
+    };
+
+    self.get_age_at_diagnosis_color = val => {
+      const percentage = 1 - (val / self.MAX_AGE_AT_DIAGNOSIS);
+      const lightness = (percentage * (self.age_dx_colors.max_light - self.age_dx_colors.min_light)) + self.age_dx_colors.min_light;
+      return isNaN(percentage)
+        ? self.invalid_column_metadata_color
+        : `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${lightness}%)`;
+    }
+
     // proprietary styles for GDC portal
     self.styles = {
       checkbox: {
@@ -2206,40 +2232,14 @@ import Color from 'color';
     return row;
   };
 
-  // make metadata colors
-  const MAX_DAYS_TO_DEATH = 3379;
-  const MAX_AGE_AT_DIAGNOSIS = 90;
-  const invalidColor = '#fff';
-  const ageDxColors = {
-    hue: 106,
-    maxLight: 88,
-    minLight: 45,
-    sat: 25,
-  };
-
-  const getDaysToDeathColor = val => {
-    const redGreen = Math.floor(255 - (val / MAX_DAYS_TO_DEATH * 255));
-    return isNaN(redGreen)
-      ? invalidColor
-      : `rgb(${redGreen},${redGreen},255)`;
-  };
-
-  const getAgeAtDiagnosisColor = val => {
-    const percentage = 1 - (val / MAX_AGE_AT_DIAGNOSIS);
-    const lightness = (percentage * (ageDxColors.maxLight - ageDxColors.minLight)) + ageDxColors.minLight;
-    return isNaN(percentage)
-      ? invalidColor
-      : `hsl(${ageDxColors.hue},${ageDxColors.sat}%,${lightness}%)`;
-  }
-
   InCHlib.prototype._get_column_metadata_color = function (title, text_value) {
     const self = this;
     return title === 'Days to Death'
-      ? getDaysToDeathColor(text_value)
+      ? self.get_days_to_death_color(text_value)
       : title === 'Age at Diagnosis'
-        ? getAgeAtDiagnosisColor(text_value)
+        ? self.get_age_at_diagnosis_color(text_value)
         : self.options.categories.colors[title][text_value] ||
-          invalidColor;
+          self.invalid_column_metadata_color;
   };
 
   InCHlib.prototype._draw_column_metadata_row = function (data, title, row_index, x1, y1) {

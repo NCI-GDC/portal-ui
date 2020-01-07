@@ -2206,6 +2206,42 @@ import Color from 'color';
     return row;
   };
 
+  // make metadata colors
+  const MAX_DAYS_TO_DEATH = 3379;
+  const MAX_AGE_AT_DIAGNOSIS = 90;
+  const invalidColor = '#fff';
+  const ageDxColors = {
+    hue: 106,
+    maxLight: 88,
+    minLight: 45,
+    sat: 25,
+  };
+
+  const getDaysToDeathColor = val => {
+    const redGreen = Math.floor(255 - (val / MAX_DAYS_TO_DEATH * 255));
+    return isNaN(redGreen)
+      ? invalidColor
+      : `rgb(${redGreen},${redGreen},255)`;
+  };
+
+  const getAgeAtDiagnosisColor = val => {
+    const percentage = 1 - (val / MAX_AGE_AT_DIAGNOSIS);
+    const lightness = (percentage * (ageDxColors.maxLight - ageDxColors.minLight)) + ageDxColors.minLight;
+    return isNaN(percentage)
+      ? invalidColor
+      : `hsl(${ageDxColors.hue},${ageDxColors.sat}%,${lightness}%)`;
+  }
+
+  InCHlib.prototype._get_column_metadata_color = function (title, text_value) {
+    const self = this;
+    return title === 'Days to Death'
+      ? getDaysToDeathColor(text_value)
+      : title === 'Age at Diagnosis'
+        ? getAgeAtDiagnosisColor(text_value)
+        : self.options.categories.colors[title][text_value] ||
+          invalidColor;
+  };
+
   InCHlib.prototype._draw_column_metadata_row = function (data, title, row_index, x1, y1) {
     const self = this;
     const row = new Konva.Group({ class: 'column_metadata' });
@@ -2222,9 +2258,9 @@ import Color from 'color';
         value = self.column_metadata_descs[row_index].str2num[value];
       }
 
-      const color_value = self.options.categories.colors[title] || 'Greys';
+      const color = self._get_column_metadata_color(title, text_value);
 
-      color = self.options.categories.more_colors[title][text_value] || '#ccc';
+      // console.log(color);
       x2 = x1 + self.pixels_for_dimension;
       y2 = y1;
 

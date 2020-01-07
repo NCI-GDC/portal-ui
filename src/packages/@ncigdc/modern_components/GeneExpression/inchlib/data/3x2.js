@@ -6,39 +6,39 @@ const data = {
         'female',
         'male',
       ],
-            // [
-            //     "american_indian_or_alaska_native",
-            //     "asian",
-            //     "black_or_african_american"
-            // ],
-            // [
-            //     "not_hispanic_or_latino",
-            //     "not_hispanic_or_latino",
-            //     "hispanic_or_latino"
-            // ],
-            // [
-            //     "65",
-            //     "85",
-            //     "85"
-            // ],
-            // [
-            //     "alive",
-            //     "dead",
-            //     "alive"
-            // ],
-            // [
-            //     "3000",
-            //     "3000",
-            //     "500"
-            // ]
+      [
+        'american_indian_or_alaska_native',
+        'asian',
+        'black_or_african_american',
+      ],
+      [
+        'not_hispanic_or_latino',
+        'not_hispanic_or_latino',
+        'hispanic_or_latino',
+      ],
+      [
+        '0',
+        '45',
+        '90',
+      ],
+      [
+        'alive',
+        'dead',
+        'alive',
+      ],
+      [
+        '3000',
+        '500',
+        'not verified',
+      ],
     ],
     feature_names: [
       'Gender',
-            // "Race",
-            // "Ethnicity",
-            // "Age at Diagnosis",
-            // "Vital Status",
-            // "Days to Death"
+      'Race',
+      'Ethnicity',
+      'Age at Diagnosis',
+      'Vital Status',
+      'Days to Death',
     ],
   },
   metadata: {

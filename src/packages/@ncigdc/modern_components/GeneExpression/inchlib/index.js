@@ -3794,7 +3794,7 @@ import Color from 'color';
       'z-index': 1000,
       position: 'absolute',
       top: 0,
-      left: self.options.width - 300,
+      left: self.options.width - 260,
       padding: '10px 10px 0',
       border: 'solid #D2D2D2 2px',
       'border-radius': '5px',
@@ -3813,7 +3813,7 @@ import Color from 'color';
       'padding-bottom': '5px',
     });
     $(`#${legend_id} .legend-list li`).css({
-      'padding-left': '20px',
+      'padding-left': '17px',
       'position': 'relative',
     });
     $(`#${legend_id} h3`).css({
@@ -3821,18 +3821,19 @@ import Color from 'color';
     });
     $(`#${legend_id} span`).css({
       'display': 'inline-block',
-      'height': '15px',
-      'border': '1px solid #ccc',
-      'width': '15px',
+      'height': '12px',
+      'width': '12px',
     });
     $(`#${legend_id} .legend-bullet`).css({
       'position': 'absolute',
-      'top': '1px',
+      'top': '2px',
       'left': '0',
       'display': 'block',
     });
     $(`#${legend_id} [class^="legend-gradient"]`).css({
       'width': '70px',
+      // 'height': '10px',
+      // 'border': '1px solid #ccc',
     });
     $(`#${legend_id} .legend-gradient-age`).css({
       'background': 'linear-gradient(90deg, rgb(255,255,255) 0%, rgb(0,0,255) 100%)'
@@ -3873,8 +3874,8 @@ import Color from 'color';
     categories_form.css({
       'z-index': 1000,
       position: 'absolute',
-      top: 80,
-      left: self.options.width - 225,
+      top: 0,
+      left: self.options.width - 210,
       padding: '10px',
       border: 'solid #D2D2D2 2px',
       'border-radius': '5px',

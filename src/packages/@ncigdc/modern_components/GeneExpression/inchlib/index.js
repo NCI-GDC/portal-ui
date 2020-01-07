@@ -190,6 +190,7 @@ import Color from 'color';
     min_percentile: 0,
     min_row_height: 1,
     navigation_toggle: {
+      categories_legend: true,
       color_scale: true,
       distance_scale: true,
       edit_categories: true,
@@ -2703,6 +2704,37 @@ import Color from 'color';
       });
     }
 
+    if (self.options.navigation_toggle.categories_legend) {
+      const x = self.options.width - 60;
+      const y = 75;
+      const scale = 0.6;
+      const legend_icon = self.objects_ref.icon.clone({
+        data: 'M18.386,16.009l0.009-0.006l-0.58-0.912c1.654-2.226,1.876-5.319,0.3-7.8c-2.043-3.213-6.303-4.161-9.516-2.118c-3.212,2.042-4.163,6.302-2.12,9.517c1.528,2.402,4.3,3.537,6.944,3.102l0.424,0.669l0.206,0.045l0.779-0.447l-0.305,1.377l2.483,0.552l-0.296,1.325l1.903,0.424l-0.68,3.06l1.406,0.313l-0.424,1.906l4.135,0.918l0.758-3.392L18.386,16.009z M10.996,8.944c-0.685,0.436-1.593,0.233-2.029-0.452C8.532,7.807,8.733,6.898,9.418,6.463s1.594-0.233,2.028,0.452C11.883,7.6,11.68,8.509,10.996,8.944z',
+        x,
+        y,
+        scale: {
+          x: scale,
+          y: scale,
+        },
+        id: 'legend_icon',
+        label: 'View legend',
+      });
+      const legend_overlay = self._draw_icon_overlay(x, y);
+      self.navigation_layer.add(legend_icon, legend_overlay);
+
+      legend_overlay.on('click', function () {
+        self._legend_icon_click(this);
+      });
+
+      legend_overlay.on('mouseover', () => {
+        self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
+      });
+
+      legend_overlay.on('mouseout', () => {
+        self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
+      });
+    }
+
     if (self.options.navigation_toggle.edit_categories) {
       const x = self.options.width - 60;
       const y = 45;
@@ -3724,6 +3756,97 @@ import Color from 'color';
 
   };
 
+  InCHlib.prototype._legend_icon_click = function() {
+    const self = this;
+
+    const legend_id = `legend_${self._name}`;
+    const legend_div = $(`<div id='${legend_id}'></div>`);
+    const overlay = self._draw_target_overlay();
+
+    const continuous_categories = ['Age at Diagnosis', 'Days to Death'];
+
+    const legend_names = Object.keys(self.options.categories.colors)
+      .concat(...continuous_categories)
+      .sort();
+
+    const options = [`<h3>Legend</h3><ul>`]
+      .concat(legend_names
+        .map(name => {
+          if (continuous_categories.includes(name)) {
+            return `<li><strong>${name}</strong>
+            <ul><li>0 <span class="legend-gradient-${name.toLowerCase().split(' ')[0]}"></span> ${name === 'Age at Diagnosis'
+              ? self.MAX_AGE_AT_DIAGNOSIS
+              : self.MAX_DAYS_TO_DEATH}</li></ul></li>`
+          } else {
+            const legendList = Object.keys(self.options.categories.colors[name])
+              .map(value => `<li ${name === 'Gender' || name === 'Vital Status' ? 'style="display: inline-block; margin-right: 10px;"' : ''}><span class='legend-bullet' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
+              .join('');
+            return `<li><strong>${name}</strong><ul class="legend-list">${legendList}</ul></li>`;
+          }
+        })
+      )
+      .concat('</ul>')
+      .join('');
+
+    legend_div.html(options);
+    self.$element.append(legend_div);
+    legend_div.css({
+      'z-index': 1000,
+      position: 'absolute',
+      top: 0,
+      left: self.options.width - 300,
+      padding: '10px 10px 0',
+      border: 'solid #D2D2D2 2px',
+      'border-radius': '5px',
+      'background-color': 'white',
+      width: '230px',
+    });
+    $(`#${legend_id} > ul`).css({
+      'margin-bottom': 'px',
+    });
+    $(`#${legend_id} ul`).css({
+      'font-size': '12px',
+      'list-style-type': 'none',
+      'padding-left': 0,
+    });
+    $(`#${legend_id} li`).css({
+      'padding-bottom': '5px',
+    });
+    $(`#${legend_id} .legend-list li`).css({
+      'padding-left': '20px',
+      'position': 'relative',
+    });
+    $(`#${legend_id} h3`).css({
+      'margin-top': '0px'
+    });
+    $(`#${legend_id} span`).css({
+      'display': 'inline-block',
+      'height': '15px',
+      'border': '1px solid #ccc',
+      'width': '15px',
+    });
+    $(`#${legend_id} .legend-bullet`).css({
+      'position': 'absolute',
+      'top': '1px',
+      'left': '0',
+      'display': 'block',
+    });
+    $(`#${legend_id} [class^="legend-gradient"]`).css({
+      'width': '70px',
+    });
+    $(`#${legend_id} .legend-gradient-age`).css({
+      'background': 'linear-gradient(90deg, rgb(255,255,255) 0%, rgb(0,0,255) 100%)'
+    });
+    $(`#${legend_id} .legend-gradient-days`).css({
+      'background': `linear-gradient(90deg, hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%), hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%) 100%)`
+    });
+
+    overlay.click(() => {
+      $(`#${legend_id}`).fadeOut().remove();
+      overlay.fadeOut().remove();
+    });
+  }
+
   InCHlib.prototype._categories_icon_click = function() {
     const self = this;
 
@@ -3929,7 +4052,8 @@ import Color from 'color';
       const height = icon_overlay.getHeight();
 
       if (icon.getAttr('id') === 'export_icon' ||
-        icon.getAttr('id') === 'categories_icon') {
+        icon.getAttr('id') === 'categories_icon' ||
+        icon.getAttr('id') === 'legend_icon') {
         x -= 100;
         y -= 47;
       }

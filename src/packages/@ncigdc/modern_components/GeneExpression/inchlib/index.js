@@ -3832,8 +3832,6 @@ import Color from 'color';
     });
     $(`#${legend_id} [class^="legend-gradient"]`).css({
       'width': '70px',
-      // 'height': '10px',
-      // 'border': '1px solid #ccc',
     });
     $(`#${legend_id} .legend-gradient-age`).css({
       'background': 'linear-gradient(90deg, rgb(255,255,255) 0%, rgb(0,0,255) 100%)'

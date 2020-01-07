@@ -7,10 +7,9 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 
 import GeneExpressionChart from './GeneExpressionChart';
 
-import data10x5 from './inchlib/data';
-import data2000x50 from './inchlib/zhenyu-2000x50';
+import dataObj from './inchlib/data';
 
-const dataSizes = ['10x5', '2000x50'];
+const dataSizes = Object.keys(dataObj);
 
 const showDataButtons = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION_BUTTONS;
 
@@ -18,21 +17,11 @@ export class GeneExpression extends Component {
   state = {
     data: showDataButtons
       ? null
-      : data10x5,
+      : dataObj.data100x100,
   };
 
-  handleButton = size => {
-    let data;
-    switch (size) {
-      case '10x5':
-        data = data10x5;
-        break;
-      case '2000x50':
-        data = data2000x50;
-        break;
-      default:
-        data = null;
-    }
+  handleDataButton = size => {
+    const data = dataObj[size];
     this.setState({ data });
   };
 
@@ -58,10 +47,10 @@ export class GeneExpression extends Component {
                 {dataSizes.map(size => (
                   <button
                     key={size}
-                    onClick={() => this.handleButton(size)}
+                    onClick={() => this.handleDataButton(size)}
                     type="button"
                     >
-                    {`Show ${size} dataset`}
+                    {size.split('data')[1]}
                   </button>
                 ))}
               </Row>

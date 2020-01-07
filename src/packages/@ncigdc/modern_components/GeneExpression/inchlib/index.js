@@ -156,7 +156,6 @@ import Color from 'color';
     category_colors: {},
     column_dendrogram: false,
     column_metadata_colors: 'RdLrBu',
-    column_metadata_row_height: 20,
     column_metadata: false,
     columns_order: [],
     count_column_colors: 'Reds',
@@ -227,6 +226,9 @@ import Color from 'color';
     self.header_height = 150;
     self.footer_height = 70;
     self.dendrogram_heatmap_distance = 5;
+
+    self.min_size_draw_values = 20;
+    self.column_metadata_row_height = self.min_size_draw_values;
 
     // proprietary styles for GDC portal
     self.styles = {
@@ -1518,7 +1520,7 @@ import Color from 'color';
     self.column_metadata_rows = (self.options.column_metadata)
       ? self.column_metadata.features.length
       : 0;
-    self.column_metadata_height = self.column_metadata_rows * self.options.column_metadata_row_height;
+    self.column_metadata_height = self.column_metadata_rows * self.column_metadata_row_height;
 
     if (self.options.heatmap) {
       self.last_column = null;
@@ -1542,7 +1544,7 @@ import Color from 'color';
     }
 
     self._adjust_horizontal_sizes();
-    self.top_heatmap_distance = self.header_height + self.column_metadata_height + self.options.column_metadata_row_height / 2;
+    self.top_heatmap_distance = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2;
 
     if (self.options.column_dendrogram && self.heatmap_header) {
       self.footer_height = 150;
@@ -1965,7 +1967,7 @@ import Color from 'color';
     }
 
     self._adjust_horizontal_sizes();
-    self.top_heatmap_distance = self.header_height + self.column_metadata_height + self.options.column_metadata_row_height / 2;
+    self.top_heatmap_distance = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2;
   };
 
   InCHlib.prototype._set_on_features = function (features) {
@@ -2016,7 +2018,7 @@ import Color from 'color';
     self.max_value_length = self._get_max_value_length();
     self.value_font_size = self._get_font_size(self.max_value_length, self.pixels_for_dimension, self.pixels_for_leaf, 12);
 
-    if (self.value_font_size < 4) {
+    if (self.pixels_for_leaf < self.min_size_draw_values) {
       self.current_draw_values = false;
     }
 
@@ -2032,13 +2034,13 @@ import Color from 'color';
 
     if (self.options.column_metadata) {
       self.column_metadata_descs = self._get_data_min_max_middle(self.column_metadata.features, 'row');
-      let y1 = self.header_height + 0.5 * self.options.column_metadata_row_height;
+      let y1 = self.header_height + 0.5 * self.column_metadata_row_height;
 
       for (var i = 0, len = self.column_metadata.features.length; i < len; i++) {
         heatmap_row = self._draw_column_metadata_row(self.column_metadata.features[i], self.column_metadata.feature_names[i], i, x1, y1);
         self.heatmap_layer.add(heatmap_row);
         self._bind_row_events(heatmap_row);
-        y1 += self.options.column_metadata_row_height;
+        y1 += self.column_metadata_row_height;
       }
     }
 
@@ -2215,7 +2217,7 @@ import Color from 'color';
       y2 = y1;
 
       line = self.objects_ref.heatmap_line.clone({
-        strokeWidth: self.options.column_metadata_row_height,
+        strokeWidth: self.column_metadata_row_height,
         stroke: color,
         // category value
         name: text_value,
@@ -2361,14 +2363,21 @@ import Color from 'color';
 
   InCHlib.prototype._draw_heatmap_header = function () {
     const self = this;
-    if (self.options.heatmap_header && self.header.length > 0) {
+    if (self.options.heatmap_header &&
+      self.header.length > 0 &&
+      self.pixels_for_dimension >= self.min_size_draw_values) {
       self.header_layer = new Konva.Layer();
       const count = self._hack_size(self.leaves_y_coordinates);
-      const y = (self.options.column_dendrogram && self.heatmap_header) ? self.header_height + (self.pixels_for_leaf * count) + 15 + self.column_metadata_height : self.header_height - 20;
-      const rotation = (self.options.column_dendrogram && self.heatmap_header) ? 45 : -45;
+      const y = (self.options.column_dendrogram && self.heatmap_header)
+        ? self.header_height + (self.pixels_for_leaf * count) + 15 + self.column_metadata_height
+        : self.header_height - 20;
+      const rotation = (self.options.column_dendrogram && self.heatmap_header)
+        ? 45 
+        : -45;
       let distance_step = 0;
-      let x; let column_header; let
-        key;
+      let x;
+      let column_header;
+      let key;
       const current_headers = [];
 
       for (var i = 0, len = self.on_features.data.length; i < len; i++) {
@@ -2382,17 +2391,6 @@ import Color from 'color';
         current_headers.push(self.header[self.dimensions.overall - 1]);
       }
       const max_text_length = self._get_max_length(current_headers);
-
-      // TODO: control whether gene IDs are displayed, based on 
-      // how many rows are visible, or how tall the rows are
-      // BUT - keep the font size static & legible.
-      // original implementation is below - font size is dynamic,
-      // gene IDs are hidden if font size is too small
-
-      // const font_size = self._get_font_size(max_text_length, self.header_height, self.pixels_for_dimension, 16);
-      // if (font_size < 8) {
-      //   return;
-      // }
 
       for (var i = 0, len = current_headers.length; i < len; i++) {
         x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
@@ -2468,7 +2466,7 @@ import Color from 'color';
     if (!self.options.navigation_toggle.distance_scale) {
       return;
     }
-    const y1 = self.header_height + self.column_metadata_height + self.options.column_metadata_row_height / 2 - 10;
+    const y1 = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2 - 10;
     const y2 = y1;
     const x1 = 0;
     const x2 = self.distance;
@@ -3096,7 +3094,7 @@ import Color from 'color';
     const x2 = self._hack_round((self.current_column_ids[0] + self.current_column_ids.length - self.columns_start_index) * self.pixels_for_dimension);
     const y1 = 0;
     const y2 = self.options.height - self.footer_height + 5;
-    const height = self.options.height - self.footer_height - self.header_height + self.options.column_metadata_row_height;
+    const height = self.options.height - self.footer_height - self.header_height + self.column_metadata_row_height;
 
     const cluster_border_1 = self.objects_ref.cluster_border.clone({
       points: [

@@ -1114,7 +1114,7 @@ import Color from 'color';
       popup_box: new Konva.Rect({
         x: 0,
         y: 0,
-        width: self.popup_styles.width,
+        width: self.popup_styles.width + 40,
         height: 250,
         fill: self.popup_styles['background'],
         stroke: self.popup_styles['border-color'],
@@ -3915,34 +3915,38 @@ import Color from 'color';
 
     for (let i = 0; i < self.legend_headings.length; i++) {
       const heading = self.legend_headings[i];
-      const legend_heading = new Konva.Text({ fontWeight: 'bold', text: heading, x, y });
+      const legend_heading = new Konva.Text({ fontWeight: 'bold', text: heading, x, y, fontFamily: 'Arial', });
       y += 20;
-
       legend_sections.add(legend_heading);
+
+      if (self.legend_continuous_categories.includes(heading)) {
+        let localX = x;
+        let localY = y;
+      } else {
+        const legend_list = Object.keys(self.options.categories.colors[heading]);
+        const textX = x + 20;
+        
+        for (let n = 0; n < legend_list.length; n++) {
+          const value = legend_list[n];
+          const text = value.split('_').join(' ');
+          const legend_square = new Konva.Rect({
+            fill: self.options.categories.colors[heading][value],
+            height: 12,
+            width: 12,
+            x, 
+            y, 
+          });
+          const legend_text = new Konva.Text({
+            text,
+            x: textX,
+            y,
+          });
+          legend_sections.add(legend_square, legend_text);
+          y += 20;
+        }
+        y += 5;
+      }
     }
-
-    // const options = [`<h3>Legend</h3><ul>`]
-    // .concat(self.legend_headings
-    //   .map(heading => {
-    //     if (self.legend_continuous_categories.includes(heading)) {
-    //       return `<li><strong>${heading}</strong>
-    //       <ul><li>0 <span class="legend-gradient-${heading.toLowerCase().split(' ')[0]}"></span> ${self.legend_gradient_upper_value(heading)}</li></ul></li>`
-    //     } else {
-    //       const legend_list = Object.keys(self.options.categories.colors[heading])
-    //         .map(value => `<li ${
-    //           self.legend_horizontal_categories
-    //             .includes(heading) 
-    //               ? 'style="display: inline-block; margin-right: 10px;"' 
-    //               : ''
-    //           }><span class='legend-bullet' style='background: ${self.options.categories.colors[heading][value]}'></span> ${value.split('_').join(' ')}</li>`)
-    //         .join('');
-    //       return `<li><strong>${heading}</strong><ul class="legend-list">${legend_list}</ul></li>`;
-    //     }
-    //   })
-    // )
-    // .concat('</ul>')
-    // .join('');
-
     const legend = self.objects_ref.popup_box.clone({
       x: boxX,
       y: boxY,

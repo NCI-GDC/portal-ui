@@ -235,7 +235,7 @@ import Color from 'color';
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
 
-    // column metadata colors
+    // column metadata colors & legend
     self.MAX_DAYS_TO_DEATH = 3379;
     self.MAX_AGE_AT_DIAGNOSIS = 90;
     self.invalid_column_metadata_color = '#fff';
@@ -260,6 +260,12 @@ import Color from 'color';
         ? self.invalid_column_metadata_color
         : `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${lightness}%)`;
     }
+
+    self.legend_id = `legend_${self._name}`;
+    self.continuous_categories = ['Age at Diagnosis', 'Days to Death'];
+    self.legend_names = Object.keys(self.options.categories.colors)
+      .concat(...self.continuous_categories)
+      .sort();
 
     // proprietary styles for GDC portal
     self.styles = {
@@ -2723,7 +2729,7 @@ import Color from 'color';
       self.navigation_layer.add(legend_icon, legend_overlay);
 
       legend_overlay.on('click', function () {
-        self._legend_icon_click(this);
+        self._legend_icon_click();
       });
 
       legend_overlay.on('mouseover', () => {
@@ -3753,26 +3759,15 @@ import Color from 'color';
     function download_image(dataUrl) {
       $(`<a download="inchlib" href="${dataUrl}"></a>`)[0].click();
     }
-
   };
 
-  InCHlib.prototype._legend_icon_click = function() {
+  InCHlib.prototype._draw_legend_for_screen = function() {
     const self = this;
-
-    const legend_id = `legend_${self._name}`;
-    const legend_div = $(`<div id='${legend_id}'></div>`);
-    const overlay = self._draw_target_overlay();
-
-    const continuous_categories = ['Age at Diagnosis', 'Days to Death'];
-
-    const legend_names = Object.keys(self.options.categories.colors)
-      .concat(...continuous_categories)
-      .sort();
-
+    const legend_div = $(`<div id='${self.legend_id}'></div>`);
     const options = [`<h3>Legend</h3><ul>`]
-      .concat(legend_names
+      .concat(self.legend_names
         .map(name => {
-          if (continuous_categories.includes(name)) {
+          if (self.continuous_categories.includes(name)) {
             return `<li><strong>${name}</strong>
             <ul><li>0 <span class="legend-gradient-${name.toLowerCase().split(' ')[0]}"></span> ${name === 'Age at Diagnosis'
               ? self.MAX_AGE_AT_DIAGNOSIS
@@ -3791,57 +3786,66 @@ import Color from 'color';
     legend_div.html(options);
     self.$element.append(legend_div);
     legend_div.css({
-      'z-index': 1000,
-      position: 'absolute',
-      top: 0,
+      'background-color': 'white',
+      'border-radius': '5px',
+      'z-index': 100,
+      border: 'solid #D2D2D2 2px',
       left: self.options.width - 260,
       padding: '10px 10px 0',
-      border: 'solid #D2D2D2 2px',
-      'border-radius': '5px',
-      'background-color': 'white',
+      position: 'absolute',
+      top: 0,
       width: '230px',
     });
-    $(`#${legend_id} > ul`).css({
+    $(`#${self.legend_id} > ul`).css({
       'margin-bottom': 'px',
     });
-    $(`#${legend_id} ul`).css({
+    $(`#${self.legend_id} ul`).css({
       'font-size': '12px',
       'list-style-type': 'none',
       'padding-left': 0,
     });
-    $(`#${legend_id} li`).css({
+    $(`#${self.legend_id} li`).css({
       'padding-bottom': '5px',
     });
-    $(`#${legend_id} .legend-list li`).css({
+    $(`#${self.legend_id} .legend-list li`).css({
       'padding-left': '17px',
       'position': 'relative',
     });
-    $(`#${legend_id} h3`).css({
+    $(`#${self.legend_id} h3`).css({
       'margin-top': '0px'
     });
-    $(`#${legend_id} span`).css({
+    $(`#${self.legend_id} span`).css({
       'display': 'inline-block',
       'height': '12px',
       'width': '12px',
     });
-    $(`#${legend_id} .legend-bullet`).css({
+    $(`#${self.legend_id} .legend-bullet`).css({
       'position': 'absolute',
       'top': '2px',
       'left': '0',
       'display': 'block',
     });
-    $(`#${legend_id} [class^="legend-gradient"]`).css({
+    $(`#${self.legend_id} [class^="legend-gradient"]`).css({
       'width': '70px',
     });
-    $(`#${legend_id} .legend-gradient-age`).css({
+    $(`#${self.legend_id} .legend-gradient-age`).css({
       'background': 'linear-gradient(90deg, rgb(255,255,255) 0%, rgb(0,0,255) 100%)'
     });
-    $(`#${legend_id} .legend-gradient-days`).css({
+    $(`#${self.legend_id} .legend-gradient-days`).css({
       'background': `linear-gradient(90deg, hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%), hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%) 100%)`
     });
+  };
 
+  InCHlib.prototype._draw_legend_for_png = function() {
+
+  };
+
+  InCHlib.prototype._legend_icon_click = function() {
+    const self = this;
+    const overlay = self._draw_target_overlay();
+    self._draw_legend_for_screen();
     overlay.click(() => {
-      $(`#${legend_id}`).fadeOut().remove();
+      $(`#${self.legend_id}`).fadeOut().remove();
       overlay.fadeOut().remove();
     });
   }

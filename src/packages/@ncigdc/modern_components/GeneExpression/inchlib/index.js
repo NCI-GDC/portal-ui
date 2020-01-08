@@ -1826,7 +1826,7 @@ import Color from 'color';
       fill: '#fff',
       height: self.options.height + 130 < 500 ? 500 : self.options.height + 130,
       opacity: 1,
-      width: self.options.width,
+      width: self.options.width + 280,
       x: 0,
       y: 0,
     });
@@ -3785,7 +3785,7 @@ import Color from 'color';
     const overlay = self._draw_target_overlay();
     const zoom = 3;
     const width = self.stage.width();
-    const height = self.stage.height() < 500 ? 500 : self.stage.height();
+    const height = self.stage.height();
 
     overlay.click(function() {
       overlay.fadeOut().remove();
@@ -3795,8 +3795,8 @@ import Color from 'color';
     self.$element.after(loading_div);
     self.$element.hide();
 
-    self.stage.width(width * zoom);
-    self.stage.height(height * zoom);
+    self.stage.width((width + 280) * zoom);
+    self.stage.height((height < 500 ? 500 : height) * zoom);
     self.stage.scale({
       x: zoom,
       y: zoom,
@@ -3902,7 +3902,7 @@ import Color from 'color';
     self.stage.add(self.legend_layer);
 
     const boxY = 5;
-    const boxX = 100;
+    const boxX = self.stage.width() + 5;
 
     const legend_title = self.objects_ref.legend_title.clone({
       x: boxX + 10,

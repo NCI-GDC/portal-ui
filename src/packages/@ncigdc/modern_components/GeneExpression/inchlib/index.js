@@ -1824,7 +1824,7 @@ import Color from 'color';
     self.stage_layer = new Konva.Layer();
     const stage_rect = new Konva.Rect({
       fill: '#fff',
-      height: self.options.height + 130,
+      height: self.options.height + 130 < 500 ? 500 : self.options.height + 130,
       opacity: 1,
       width: self.options.width,
       x: 0,
@@ -3785,7 +3785,7 @@ import Color from 'color';
     const overlay = self._draw_target_overlay();
     const zoom = 3;
     const width = self.stage.width();
-    const height = self.stage.height();
+    const height = self.stage.height() < 500 ? 500 : self.stage.height();
 
     overlay.click(function() {
       overlay.fadeOut().remove();
@@ -3920,8 +3920,38 @@ import Color from 'color';
       legend_sections.add(legend_heading);
 
       if (self.legend_continuous_categories.includes(heading)) {
-        let localX = x;
-        let localY = y;
+        const zero = new Konva.Text({
+          text: '0',
+          x,
+          y,
+        });
+
+        const gradient = new Konva.Rect({
+          x: x + 15,
+          y,
+          width: 75,
+          height: 12,
+          fillLinearGradientStartPoint: {
+            x: x + 10,
+            y,
+          },
+          fillLinearGradientEndPoint: {
+            x: x + 85,
+            y,
+          },
+          fillLinearGradientColorStops: heading === 'Age at Diagnosis'
+            ? [0, 'white', 1, 'blue']
+            : [0, 'green', 1, 'cyan'],
+        });
+
+        const end = new Konva.Text({
+          text: self.legend_gradient_upper_value(heading),
+          x: x + 95,
+          y,
+        });
+
+        legend_sections.add(zero, gradient, end);
+        y += 25;
       } else {
         const legend_list = Object.keys(self.options.categories.colors[heading]);
         const textX = x + 20;
@@ -3950,7 +3980,7 @@ import Color from 'color';
     const legend = self.objects_ref.popup_box.clone({
       x: boxX,
       y: boxY,
-      height: y + 25,
+      height: y + 15,
     });
 
     self.legend_layer.add(legend, legend_title, legend_sections);

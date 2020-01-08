@@ -235,7 +235,7 @@ import Color from 'color';
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
 
-    // column metadata colors & legend
+    // column metadata colors & legend info
     self.MAX_DAYS_TO_DEATH = 3379;
     self.MAX_AGE_AT_DIAGNOSIS = 90;
     self.invalid_column_metadata_color = '#fff';
@@ -262,10 +262,46 @@ import Color from 'color';
     }
 
     self.legend_id = `legend_${self._name}`;
-    self.continuous_categories = ['Age at Diagnosis', 'Days to Death'];
-    self.legend_names = Object.keys(self.options.categories.colors)
-      .concat(...self.continuous_categories)
-      .sort();
+    self.legend_continuous_categories = ['Age at Diagnosis', 'Days to Death'];
+    self.legend_horizontal_categories = ['Gender', 'Vital Status'];
+    self.legend_names = [
+      ...Object.keys(self.options.categories.colors),
+      ...self.legend_continuous_categories
+    ]
+    .sort();
+
+    self.legend_gradient_upper_value = name => name === 'Age at Diagnosis'
+      ? self.MAX_AGE_AT_DIAGNOSIS
+      : self.MAX_DAYS_TO_DEATH;
+
+    self.legend_styles = {
+      width: '230px',
+      color_box: {
+        size: '12px',
+      },
+      gradient: {
+        width: '70px',
+        age_bg: 'linear-gradient(90deg, rgb(255,255,255) 0%, rgb(0,0,255) 100%)',
+        days_bg: `linear-gradient(90deg, hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%), hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%) 100%)`,
+      },
+    };
+
+    self.popup_styles = {
+      border: 'solid #D2D2D2 2px',
+      background: '#fff',
+      'border-radius': '5px',
+      'font-size': '12px',
+      'padding-left': '10px',
+      'padding-right': '10px',
+      'padding-top': '10px',
+      position: 'absolute',
+      'z-index': 100,
+    };
+
+    self.popup_list_styles = {
+      'list-style-type': 'none',
+      'padding-left': 0,
+    };
 
     // proprietary styles for GDC portal
     self.styles = {
@@ -3767,16 +3803,19 @@ import Color from 'color';
     const options = [`<h3>Legend</h3><ul>`]
       .concat(self.legend_names
         .map(name => {
-          if (self.continuous_categories.includes(name)) {
+          if (self.legend_continuous_categories.includes(name)) {
             return `<li><strong>${name}</strong>
-            <ul><li>0 <span class="legend-gradient-${name.toLowerCase().split(' ')[0]}"></span> ${name === 'Age at Diagnosis'
-              ? self.MAX_AGE_AT_DIAGNOSIS
-              : self.MAX_DAYS_TO_DEATH}</li></ul></li>`
+            <ul><li>0 <span class="legend-gradient-${name.toLowerCase().split(' ')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
           } else {
-            const legendList = Object.keys(self.options.categories.colors[name])
-              .map(value => `<li ${name === 'Gender' || name === 'Vital Status' ? 'style="display: inline-block; margin-right: 10px;"' : ''}><span class='legend-bullet' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
+            const legend_list = Object.keys(self.options.categories.colors[name])
+              .map(value => `<li ${
+                self.legend_horizontal_categories
+                  .includes(name) 
+                    ? 'style="display: inline-block; margin-right: 10px;"' 
+                    : ''
+                }><span class='legend-bullet' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
               .join('');
-            return `<li><strong>${name}</strong><ul class="legend-list">${legendList}</ul></li>`;
+            return `<li><strong>${name}</strong><ul class="legend-list">${legend_list}</ul></li>`;
           }
         })
       )
@@ -3786,23 +3825,14 @@ import Color from 'color';
     legend_div.html(options);
     self.$element.append(legend_div);
     legend_div.css({
-      'background-color': 'white',
-      'border-radius': '5px',
-      'z-index': 100,
-      border: 'solid #D2D2D2 2px',
+      ...self.popup_styles,
       left: self.options.width - 260,
-      padding: '10px 10px 0',
-      position: 'absolute',
+      'padding-bottom': 0,
       top: 0,
-      width: '230px',
-    });
-    $(`#${self.legend_id} > ul`).css({
-      'margin-bottom': 'px',
+      width: self.legend_styles.width,
     });
     $(`#${self.legend_id} ul`).css({
-      'font-size': '12px',
-      'list-style-type': 'none',
-      'padding-left': 0,
+      ...self.popup_list_styles
     });
     $(`#${self.legend_id} li`).css({
       'padding-bottom': '5px',
@@ -3816,8 +3846,8 @@ import Color from 'color';
     });
     $(`#${self.legend_id} span`).css({
       'display': 'inline-block',
-      'height': '12px',
-      'width': '12px',
+      'height': self.legend_styles.color_box.size,
+      'width': self.legend_styles.color_box.size,
     });
     $(`#${self.legend_id} .legend-bullet`).css({
       'position': 'absolute',
@@ -3826,17 +3856,18 @@ import Color from 'color';
       'display': 'block',
     });
     $(`#${self.legend_id} [class^="legend-gradient"]`).css({
-      'width': '70px',
+      width: self.legend_styles.gradient.width,
     });
     $(`#${self.legend_id} .legend-gradient-age`).css({
-      'background': 'linear-gradient(90deg, rgb(255,255,255) 0%, rgb(0,0,255) 100%)'
+      background: self.legend_styles.gradient.age_bg
     });
     $(`#${self.legend_id} .legend-gradient-days`).css({
-      'background': `linear-gradient(90deg, hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%), hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%) 100%)`
+      background: self.legend_styles.gradient.days_bg
     });
   };
 
   InCHlib.prototype._draw_legend_for_png = function() {
+    const self = this;
 
   };
 

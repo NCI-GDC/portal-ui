@@ -287,15 +287,18 @@ import Color from 'color';
     };
 
     self.popup_styles = {
-      border: 'solid #D2D2D2 2px',
+      'border-style': 'solid',
+      'border-color': '#D2D2D2',
+      'border-width': 2,
       background: '#fff',
-      'border-radius': '5px',
+      'border-radius': 5,
       'font-size': '12px',
       'padding-left': '10px',
       'padding-right': '10px',
       'padding-top': '10px',
       position: 'absolute',
       'z-index': 100,
+      width: 230,
     };
 
     self.popup_list_styles = {
@@ -1108,6 +1111,16 @@ import Color from 'color';
     * @name InCHlib#objects_ref
     */
     self.objects_ref = {
+      popup_box: new Konva.Rect({
+        x: 0,
+        y: 0,
+        width: self.popup_styles.width,
+        height: 20,
+        stroke: self.popup_styles['border-color'],
+        strokeWidth: self.popup_styles['border-width'],
+        cornerRadius: self.popup_styles['border-radius'],
+      }),
+
       tooltip_label: new Konva.Label({
         opacity: 1,
         listening: false,
@@ -1205,7 +1218,7 @@ import Color from 'color';
           y: 80,
         },
         stroke: self.options.tooltip.stroke,
-        strokeWidth: 1,
+        strokeWidth: 2,
       }),
 
       image: new Konva.Image({
@@ -1689,6 +1702,7 @@ import Color from 'color';
     self._draw_heatmap_header();
     self._draw_navigation();
     self.highlight_rows(self.options.highlighted_rows);
+    self._draw_legend_for_png(); // temporary
   };
 
   InCHlib.prototype._draw_dendrogram_layers = function () {
@@ -3856,7 +3870,7 @@ import Color from 'color';
       'display': 'block',
     });
     $(`#${self.legend_id} [class^="legend-gradient"]`).css({
-      width: self.legend_styles.gradient.width,
+      ...self.legend_styles.gradient,
     });
     $(`#${self.legend_id} .legend-gradient-age`).css({
       background: self.legend_styles.gradient.age_bg
@@ -3867,8 +3881,36 @@ import Color from 'color';
   };
 
   InCHlib.prototype._draw_legend_for_png = function() {
-    const self = this;
+    // const self = this;
 
+    // self.legend_layer = new Konva.Layer();
+
+    // console.log('drawing legend for png');
+
+    // const legend_rect = new Konva.Rect({
+    //   cornerRadius: self.popup_styles['border-radius'],
+    //   fill: self.popup_styles.background,
+    //   height: 250,
+    //   width: self.legend_styles.width,
+    //   stroke: self.popup_styles['border-color'],
+    //   strokeWidth: self.popup_styles['border-width'],
+    //   x: 0,
+    //   y: 0,
+    // });
+    // self.legend_layer.add(legend_rect);
+
+    // self.stage.add(self.legend_layer);
+    // console.log('self.stage', self.stage);
+
+    const self = this;
+    self.legend_layer = new Konva.Layer();
+    self.stage.add(self.legend_layer);
+
+    const box = self.objects_ref.popup_box.clone();
+    self.legend_layer.add(box);
+    self.legend_layer.draw();
+
+    // self.legend_layer.box.moveToTop();
   };
 
   InCHlib.prototype._legend_icon_click = function() {

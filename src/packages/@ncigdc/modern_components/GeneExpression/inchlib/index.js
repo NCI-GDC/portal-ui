@@ -2352,11 +2352,9 @@ import Color from 'color';
 
   InCHlib.prototype._draw_heatmap_header = function () {
     const self = this;
-    if (
-      self.options.heatmap_header &&
+    if (self.options.heatmap_header &&
       self.header.length > 0 &&
-      self.pixels_for_dimension >= self.min_size_draw_values
-    ) {
+      self.pixels_for_dimension >= self.min_size_draw_values) {
       self.header_layer = new Konva.Layer();
       const count = self._hack_size(self.leaves_y_coordinates);
       const y = (self.options.column_dendrogram && self.heatmap_header)

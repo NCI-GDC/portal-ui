@@ -264,7 +264,7 @@ import Color from 'color';
     self.legend_id = `legend_${self._name}`;
     self.legend_continuous_categories = ['Age at Diagnosis', 'Days to Death'];
     self.legend_horizontal_categories = ['Gender', 'Vital Status'];
-    self.legend_names = [
+    self.legend_headings = [
       ...Object.keys(self.options.categories.colors),
       ...self.legend_continuous_categories
     ]
@@ -1115,11 +1115,27 @@ import Color from 'color';
         x: 0,
         y: 0,
         width: self.popup_styles.width,
-        height: 20,
+        height: 250,
+        fill: self.popup_styles['background'],
         stroke: self.popup_styles['border-color'],
         strokeWidth: self.popup_styles['border-width'],
         cornerRadius: self.popup_styles['border-radius'],
       }),
+
+      legend_title: new Konva.Text({
+        fill: 'black',
+        text: 'Legend',
+        fontFamily: 'franklin_gothic_fsbook',
+        fontSize: 18,
+      }),
+
+      // legend_section: new Konva.Text({
+      //   fill: 'magenta'
+      // }).
+      
+      // legend_text: new Konva.Text({
+      //   fill: 'green'
+      // }),
 
       tooltip_label: new Konva.Label({
         opacity: 1,
@@ -3815,7 +3831,7 @@ import Color from 'color';
     const self = this;
     const legend_div = $(`<div id='${self.legend_id}'></div>`);
     const options = [`<h3>Legend</h3><ul>`]
-      .concat(self.legend_names
+      .concat(self.legend_headings
         .map(name => {
           if (self.legend_continuous_categories.includes(name)) {
             return `<li><strong>${name}</strong>
@@ -3881,36 +3897,60 @@ import Color from 'color';
   };
 
   InCHlib.prototype._draw_legend_for_png = function() {
-    // const self = this;
-
-    // self.legend_layer = new Konva.Layer();
-
-    // console.log('drawing legend for png');
-
-    // const legend_rect = new Konva.Rect({
-    //   cornerRadius: self.popup_styles['border-radius'],
-    //   fill: self.popup_styles.background,
-    //   height: 250,
-    //   width: self.legend_styles.width,
-    //   stroke: self.popup_styles['border-color'],
-    //   strokeWidth: self.popup_styles['border-width'],
-    //   x: 0,
-    //   y: 0,
-    // });
-    // self.legend_layer.add(legend_rect);
-
-    // self.stage.add(self.legend_layer);
-    // console.log('self.stage', self.stage);
-
     const self = this;
     self.legend_layer = new Konva.Layer();
     self.stage.add(self.legend_layer);
 
-    const box = self.objects_ref.popup_box.clone();
-    self.legend_layer.add(box);
-    self.legend_layer.draw();
+    const boxY = 5;
+    const boxX = 5;
+    let x = boxX + 10;
+    let y = boxY + 10;
 
-    // self.legend_layer.box.moveToTop();
+    const legend_title = self.objects_ref.legend_title.clone({x,y});
+
+    y += 8;
+    x -= 7;
+
+    const legend_sections = new Konva.Group({x,y});
+
+    for (let i = 0; i < self.legend_headings.length; i++) {
+      const heading = self.legend_headings[i];
+      const legend_heading = new Konva.Text({ fontWeight: 'bold', text: heading, x, y });
+      y += 20;
+
+      legend_sections.add(legend_heading);
+    }
+
+    // const options = [`<h3>Legend</h3><ul>`]
+    // .concat(self.legend_headings
+    //   .map(heading => {
+    //     if (self.legend_continuous_categories.includes(heading)) {
+    //       return `<li><strong>${heading}</strong>
+    //       <ul><li>0 <span class="legend-gradient-${heading.toLowerCase().split(' ')[0]}"></span> ${self.legend_gradient_upper_value(heading)}</li></ul></li>`
+    //     } else {
+    //       const legend_list = Object.keys(self.options.categories.colors[heading])
+    //         .map(value => `<li ${
+    //           self.legend_horizontal_categories
+    //             .includes(heading) 
+    //               ? 'style="display: inline-block; margin-right: 10px;"' 
+    //               : ''
+    //           }><span class='legend-bullet' style='background: ${self.options.categories.colors[heading][value]}'></span> ${value.split('_').join(' ')}</li>`)
+    //         .join('');
+    //       return `<li><strong>${heading}</strong><ul class="legend-list">${legend_list}</ul></li>`;
+    //     }
+    //   })
+    // )
+    // .concat('</ul>')
+    // .join('');
+
+    const legend = self.objects_ref.popup_box.clone({
+      x: boxX,
+      y: boxY,
+      height: y + 25,
+    });
+
+    self.legend_layer.add(legend, legend_title, legend_sections);
+    self.legend_layer.draw();
   };
 
   InCHlib.prototype._legend_icon_click = function() {

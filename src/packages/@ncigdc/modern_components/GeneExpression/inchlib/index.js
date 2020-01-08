@@ -3902,16 +3902,22 @@ import Color from 'color';
     self.stage.add(self.legend_layer);
 
     const boxY = 5;
-    const boxX = 5;
-    let x = boxX + 10;
-    let y = boxY + 10;
+    const boxX = 100;
 
-    const legend_title = self.objects_ref.legend_title.clone({x,y});
+    const legend_title = self.objects_ref.legend_title.clone({
+      x: boxX + 10,
+      y: boxY + 10,
+    });
 
-    y += 8;
-    x -= 7;
+    const legend_sections = new Konva.Group({
+      x: boxX + 10,
+      y: boxY + 40,
+      stroke: 'blue',
+      strokeWidth: 2,
+    });
 
-    const legend_sections = new Konva.Group({x,y});
+    let y = 0
+    let x = 0;
 
     for (let i = 0; i < self.legend_headings.length; i++) {
       const heading = self.legend_headings[i];
@@ -3954,7 +3960,6 @@ import Color from 'color';
         y += 25;
       } else {
         const legend_list = Object.keys(self.options.categories.colors[heading]);
-        const textX = x + 20;
         
         for (let n = 0; n < legend_list.length; n++) {
           const value = legend_list[n];
@@ -3968,7 +3973,7 @@ import Color from 'color';
           });
           const legend_text = new Konva.Text({
             text,
-            x: textX,
+            x: x + 20,
             y,
           });
           legend_sections.add(legend_square, legend_text);
@@ -3978,9 +3983,9 @@ import Color from 'color';
       }
     }
     const legend = self.objects_ref.popup_box.clone({
+      height: y + 40,
       x: boxX,
       y: boxY,
-      height: y + 15,
     });
 
     self.legend_layer.add(legend, legend_title, legend_sections);

@@ -270,21 +270,20 @@ import Color from 'color';
     ]
     .sort();
 
+    self.legend_gradients = {
+      age: {
+        max: 'rgb(0,0,255)',
+        min: 'rgb(255,255,255)',
+      },
+      days: {
+        max: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%)`,
+        min: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%)`,
+      }
+    }
+
     self.legend_gradient_upper_value = name => name === 'Age at Diagnosis'
       ? self.MAX_AGE_AT_DIAGNOSIS
       : self.MAX_DAYS_TO_DEATH;
-
-    self.legend_styles = {
-      width: '230px',
-      color_box: {
-        size: '12px',
-      },
-      gradient: {
-        width: '70px',
-        age_bg: 'linear-gradient(90deg, rgb(255,255,255) 0%, rgb(0,0,255) 100%)',
-        days_bg: `linear-gradient(90deg, hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%), hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%) 100%)`,
-      },
-    };
 
     self.popup_styles = {
       'border-style': 'solid',
@@ -1120,13 +1119,6 @@ import Color from 'color';
         stroke: self.popup_styles['border-color'],
         strokeWidth: self.popup_styles['border-width'],
         cornerRadius: self.popup_styles['border-radius'],
-      }),
-
-      legend_title: new Konva.Text({
-        fill: 'black',
-        text: 'Legend',
-        fontFamily: 'franklin_gothic_fsbook',
-        fontSize: 18,
       }),
 
       // legend_section: new Konva.Text({
@@ -2161,7 +2153,6 @@ import Color from 'color';
       return;
     }
 
-    // let heatmap_row;
     let y;
     let key;
 
@@ -2231,10 +2222,6 @@ import Color from 'color';
       y2 = y1;
       value = node.features[col_index];
       text_value = value;
-  
-      // if (self.options.alternative_data) {
-      //   text_value = self.alternative_data[node_id][col_index];
-      // }
   
       if (value !== null) {
         color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
@@ -2333,7 +2320,6 @@ import Color from 'color';
 
       const color = self._get_column_metadata_color(title, text_value);
 
-      // console.log(color);
       x2 = x1 + self.pixels_for_dimension;
       y2 = y1;
 
@@ -3752,6 +3738,7 @@ import Color from 'color';
       });
     }
   };
+
   InCHlib.prototype._draw_target_overlay = function () {
     const self = this;
     let overlay = self.$element.find('.target_overlay');
@@ -3859,8 +3846,9 @@ import Color from 'color';
       left: self.options.width - 260,
       'padding-bottom': 0,
       top: 0,
-      width: self.legend_styles.width,
+      width: 230,
     });
+
     $(`#${self.legend_id} ul`).css({
       ...self.popup_list_styles
     });
@@ -3876,8 +3864,8 @@ import Color from 'color';
     });
     $(`#${self.legend_id} span`).css({
       'display': 'inline-block',
-      'height': self.legend_styles.color_box.size,
-      'width': self.legend_styles.color_box.size,
+      'height': 12,
+      'width': 12,
     });
     $(`#${self.legend_id} .legend-bullet`).css({
       'position': 'absolute',
@@ -3886,13 +3874,13 @@ import Color from 'color';
       'display': 'block',
     });
     $(`#${self.legend_id} [class^="legend-gradient"]`).css({
-      ...self.legend_styles.gradient,
+      width: 70,
     });
     $(`#${self.legend_id} .legend-gradient-age`).css({
-      background: self.legend_styles.gradient.age_bg
+      background: `linear-gradient(90deg, ${self.legend_gradients.age.min} 0%, ${self.legend_gradients.age.max} 100%)`
     });
     $(`#${self.legend_id} .legend-gradient-days`).css({
-      background: self.legend_styles.gradient.days_bg
+      background: `linear-gradient(90deg, ${self.legend_gradients.days.min} 0%, ${self.legend_gradients.days.max} 100%)`
     });
   };
 
@@ -3904,7 +3892,10 @@ import Color from 'color';
     const boxY = 5;
     const boxX = self.stage.width() + 5;
 
-    const legend_title = self.objects_ref.legend_title.clone({
+    const legend_title = new Konva.Text({
+      text: 'Legend',
+      fontFamily: 'franklin_gothic_fsbook',
+      fontSize: 18,
       x: boxX + 10,
       y: boxY + 10,
     });
@@ -3912,8 +3903,6 @@ import Color from 'color';
     const legend_sections = new Konva.Group({
       x: boxX + 10,
       y: boxY + 40,
-      stroke: 'blue',
-      strokeWidth: 2,
     });
 
     let y = 0
@@ -3934,8 +3923,8 @@ import Color from 'color';
 
         const gradient = new Konva.Rect({
           fillLinearGradientColorStops: heading === 'Age at Diagnosis'
-            ? [0, 'green', 1, 'cyan']
-            : [0, 'rgb(255,255,255)', 1, 'rgb(0,0,255)'],
+            ? [0, self.legend_gradients.age.min, 1, self.legend_gradients.age.max]
+            : [0, self.legend_gradients.days.min, 1, self.legend_gradients.days.max],
           fillLinearGradientEndPoint: {
             x: x + 85,
             y,
@@ -3950,13 +3939,13 @@ import Color from 'color';
           y,
         });
 
-        const end = new Konva.Text({
+        const max = new Konva.Text({
           text: self.legend_gradient_upper_value(heading),
           x: x + 95,
           y,
         });
 
-        legend_sections.add(zero, gradient, end);
+        legend_sections.add(zero, gradient, max);
         y += 25;
       } else {
         const legend_list = Object.keys(self.options.categories.colors[heading]);

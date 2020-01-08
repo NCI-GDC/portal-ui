@@ -3915,7 +3915,7 @@ import Color from 'color';
 
     for (let i = 0; i < self.legend_headings.length; i++) {
       const heading = self.legend_headings[i];
-      const legend_heading = new Konva.Text({ fontWeight: 'bold', text: heading, x, y, fontFamily: 'Arial', });
+      const legend_heading = new Konva.Text({ text: heading, x, y, });
       y += 20;
       legend_sections.add(legend_heading);
 
@@ -3927,21 +3927,21 @@ import Color from 'color';
         });
 
         const gradient = new Konva.Rect({
-          x: x + 15,
-          y,
-          width: 75,
-          height: 12,
-          fillLinearGradientStartPoint: {
-            x: x + 10,
-            y,
-          },
+          fillLinearGradientColorStops: heading === 'Age at Diagnosis'
+            ? [0, 'green', 1, 'cyan']
+            : [0, 'rgb(255,255,255)', 1, 'rgb(0,0,255)'],
           fillLinearGradientEndPoint: {
             x: x + 85,
             y,
           },
-          fillLinearGradientColorStops: heading === 'Age at Diagnosis'
-            ? [0, 'white', 1, 'blue']
-            : [0, 'green', 1, 'cyan'],
+          fillLinearGradientStartPoint: {
+            x: x + 10,
+            y,
+          },
+          height: 12,
+          width: 75,
+          x: x + 15,
+          y,
         });
 
         const end = new Konva.Text({

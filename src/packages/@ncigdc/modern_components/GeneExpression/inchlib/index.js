@@ -3905,7 +3905,7 @@ import { round } from 'lodash';
     const legendX = self.stage.width() + 5;
 
     const scale_group = new Konva.Group({
-      x: legendX + 200,
+      x: legendX + 180,
       // x: legendX  - 200,
       y: legendY + 40,
     });
@@ -3914,6 +3914,15 @@ import { round } from 'lodash';
     let scaleY = 0;
 
     const scale_height = 125;
+
+    const scale_heading = new Konva.Text({
+      text: 'Heatmap',
+      x: scaleX,
+      y: scaleY,
+    });
+
+    scaleX += 1;
+    scaleY += 19;
 
     const scale_gradient = new Konva.Rect({
       fillLinearGradientColorStops: self.color_steps,
@@ -3932,7 +3941,7 @@ import { round } from 'lodash';
       stroke: 'grey',
       strokeWidth: 1,
     });
-    scale_group.add(scale_gradient);
+    scale_group.add(scale_gradient, scale_heading);
 
     scaleX += 28;
 

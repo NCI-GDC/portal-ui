@@ -173,7 +173,7 @@ import { round } from 'lodash';
       family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
       size: 10,
     },
-    heatmap_colors: 'Greens',
+    heatmap_colors: 'RdLrGr',
     heatmap_header: true,
     heatmap_part_width: 0.7,
     heatmap: true,
@@ -1205,23 +1205,6 @@ import { round } from 'lodash';
         fill: 'grey',
       }),
 
-      rect_gradient: new Konva.Rect({
-        x: 0,
-        y: 80,
-        width: 100,
-        height: 20,
-        fillLinearGradientStartPoint: {
-          x: 0,
-          y: 80,
-        },
-        fillLinearGradientEndPoint: {
-          x: 100,
-          y: 80,
-        },
-        stroke: self.options.tooltip.stroke,
-        strokeWidth: 2,
-      }),
-
       image: new Konva.Image({
         stroke: '#D2D2D2',
         strokeWidth: 1,
@@ -1245,7 +1228,6 @@ import { round } from 'lodash';
 
     self.get_scale_values = () => {
       const [min, max, mid] = self.data_descs_all;
-
       return [
         min,
         (((mid - min) / 2) + min),
@@ -1253,7 +1235,7 @@ import { round } from 'lodash';
         (((max - mid) / 2) + mid),
         max,
       ]
-      .map(x => round(x, 1));
+      .map(x => round(x, 1).toFixed(1));
     }
 
     // start plugin
@@ -2270,7 +2252,6 @@ import { round } from 'lodash';
       text = self.objects_ref.heatmap_value.clone({
         text: gene_symbol,
         fontSize: self.options.font.size,
-        fontWeight: 'bold',
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
@@ -2884,11 +2865,53 @@ import { round } from 'lodash';
       return;
     }
 
-    const color_scale = self.objects_ref.rect_gradient.clone({
+    const scale_height = 20;
+    const scale_width = 150;
+    const scale_x = 2;
+    const scale_y = 80;
+
+    const color_scale = new Konva.Rect({
       label: 'Edit heatmap colors',
       fillLinearGradientColorStops: self.color_steps,
       id: `${self._name}_color_scale`,
+      x: scale_x,
+      y: scale_y,
+      width: scale_width,
+      height: scale_height,
+      fillLinearGradientStartPoint: {
+        x: scale_x,
+        y: scale_y,
+      },
+      fillLinearGradientEndPoint: {
+        x: scale_width,
+        y: scale_y,
+      },
     });
+
+    const scale_values = self.get_scale_values();
+
+    const scale_values_group = new Konva.Group({
+      x: scale_x,
+      y: scale_height + scale_y + 5,
+    });
+
+    let x = 0;
+    let y = 0;
+
+    const scale_x_int = (scale_width / scale_values.length) + 3.5;
+
+    for (let i = 0; i < scale_values.length; i++) {
+      const text = scale_values[i];
+      const scale_text = new Konva.Text({
+        text,
+        x,
+        y,
+        fontStyle: '500',
+        fill: self.options.font.color,
+      });
+      x += scale_x_int;
+      scale_values_group.add(scale_text);
+    }
 
     color_scale.on('mouseover', () => {
       self._color_scale_mouseover(color_scale, self.navigation_layer);
@@ -2902,7 +2925,7 @@ import { round } from 'lodash';
       self._color_scale_click(color_scale, self.navigation_layer);
     });
 
-    self.navigation_layer.add(color_scale);
+    self.navigation_layer.add(color_scale, scale_values_group);
   };
 
   InCHlib.prototype._update_color_scale = function () {
@@ -3906,7 +3929,6 @@ import { round } from 'lodash';
 
     const scale_group = new Konva.Group({
       x: legendX + 180,
-      // x: legendX  - 200,
       y: legendY + 40,
     });
 
@@ -3919,16 +3941,18 @@ import { round } from 'lodash';
       text: 'Heatmap',
       x: scaleX,
       y: scaleY,
+      fontStyle: 'bold',
+      fontFamily: self.options.font.family,
+      fill: '#3a3a3a',
     });
 
-    scaleX += 1;
-    scaleY += 19;
+    scaleY += 20;
 
     const scale_gradient = new Konva.Rect({
       fillLinearGradientColorStops: self.color_steps,
       fillLinearGradientEndPoint: {
         x: scaleX,
-        y: scaleY + scale_height,
+        y: 110,
       },
       fillLinearGradientStartPoint: {
         x: scaleX,
@@ -3938,8 +3962,6 @@ import { round } from 'lodash';
       width: 20,
       x: scaleX,
       y: scaleY,
-      stroke: 'grey',
-      strokeWidth: 1,
     });
     scale_group.add(scale_gradient, scale_heading);
 
@@ -3951,11 +3973,12 @@ import { round } from 'lodash';
     const scaleY_int = Math.floor(scale_height / scale_values.length) + 3.5;
 
     for (let i = 0; i < scale_values.length; i++) {
-      const text = scale_values[i].toString();
+      const text = scale_values[i];
       const scale_text = new Konva.Text({
         text,
         x: scaleX,
         y: scaleY,
+        fill: '#3a3a3a',
       });
       scale_group.add(scale_text);
       scaleY += scaleY_int;
@@ -3967,6 +3990,7 @@ import { round } from 'lodash';
       fontSize: 18,
       x: legendX + 10,
       y: legendY + 10,
+      fill: '#3a3a3a',
     });
 
     const legend_group = new Konva.Group({
@@ -3979,7 +4003,15 @@ import { round } from 'lodash';
 
     for (let i = 0; i < self.legend_headings.length; i++) {
       const heading = self.legend_headings[i];
-      const legend_heading = new Konva.Text({ text: heading, x, y, });
+      const legend_heading = new Konva.Text({
+        fill: self.options.font.color,
+        fontStyle: 'bold',
+        fontFamily: self.options.font.family,
+        text: heading,
+        fill: '#3a3a3a',
+        x,
+        y,
+      });
       y += 20;
       legend_group.add(legend_heading);
 
@@ -3988,6 +4020,7 @@ import { round } from 'lodash';
           text: '0',
           x,
           y,
+          fill: '#3a3a3a',
         });
 
         const gradient = new Konva.Rect({
@@ -4012,6 +4045,7 @@ import { round } from 'lodash';
           text: self.legend_gradient_upper_value(heading),
           x: x + 95,
           y,
+          fill: '#3a3a3a',
         });
 
         legend_group.add(zero, gradient, max);
@@ -4033,6 +4067,7 @@ import { round } from 'lodash';
             text,
             x: x + 20,
             y,
+            fill: '#3a3a3a',
           });
           legend_group.add(legend_square, legend_text);
           y += 20;

@@ -1890,10 +1890,12 @@ import { round } from 'lodash';
     const self = this;
 
     layer.on('mouseover', function (evt) {
+      self.hover_on();
       self._dendrogram_layers_mouseover(this, evt);
     });
 
     layer.on('mouseout', function (evt) {
+      self.hover_off();
       self._dendrogram_layers_mouseout(this, evt);
     });
   };
@@ -2530,12 +2532,14 @@ import { round } from 'lodash';
 
       self.header_layer.on('mouseover', function (evt) {
         const label = evt.target;
+        self.hover_on();
         label.setOpacity(0.7);
         this.draw();
       });
 
       self.header_layer.on('mouseout', function (evt) {
         const label = evt.target;
+        self.hover_off();
         label.setOpacity(1);
         this.draw();
       });
@@ -2645,7 +2649,6 @@ import { round } from 'lodash';
     if (self.options.heatmap) {
       self._draw_color_scale();
     }
-    self._draw_help();
 
     if (self.zoomed_clusters.row.length > 0 || self.zoomed_clusters.column.length > 0) {
       const refresh_icon = self.objects_ref.icon.clone({
@@ -2664,10 +2667,12 @@ import { round } from 'lodash';
       });
 
       refresh_overlay.on('mouseover', () => {
+        self.hover_on();
         self._icon_mouseover(refresh_icon, refresh_overlay, self.navigation_layer);
       });
 
       refresh_overlay.on('mouseout', () => {
+        self.hover_off();
         self._icon_mouseout(refresh_icon, refresh_overlay, self.navigation_layer);
       });
     }
@@ -2693,10 +2698,12 @@ import { round } from 'lodash';
       });
 
       unzoom_overlay.on('mouseover', () => {
+        self.hover_on();
         self._icon_mouseover(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
 
       unzoom_overlay.on('mouseout', () => {
+        self.hover_off();
         self._icon_mouseout(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
     }
@@ -2723,10 +2730,12 @@ import { round } from 'lodash';
       });
 
       column_unzoom_overlay.on('mouseover', () => {
+        self.hover_on();
         self._icon_mouseover(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
 
       column_unzoom_overlay.on('mouseout', () => {
+        self.hover_off();
         self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
     }
@@ -2752,10 +2761,12 @@ import { round } from 'lodash';
       });
 
       export_overlay.on('mouseover', () => {
+        self.hover_on();
         self._icon_mouseover(export_icon, export_overlay, self.navigation_layer);
       });
 
       export_overlay.on('mouseout', () => {
+        self.hover_off();
         self._icon_mouseout(export_icon, export_overlay, self.navigation_layer);
       });
     }
@@ -2783,10 +2794,12 @@ import { round } from 'lodash';
       });
 
       legend_overlay.on('mouseover', () => {
+        self.hover_on();
         self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
       });
 
       legend_overlay.on('mouseout', () => {
+        self.hover_off();
         self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
       });
     }
@@ -2816,47 +2829,17 @@ import { round } from 'lodash';
       });
 
       categories_overlay.on('mouseover', () => {
+        self.hover_on();
         self._icon_mouseover(categories_icon, categories_overlay, self.navigation_layer);
       });
 
       categories_overlay.on('mouseout', () => {
+        self.hover_off();
         self._icon_mouseout(categories_icon, categories_overlay, self.navigation_layer);
       });
     }
 
     self.stage.add(self.navigation_layer);
-  };
-
-  InCHlib.prototype._draw_help = function () {
-    const self = this;
-    if (!self.options.navigation_toggle.hint_button) {
-      return;
-    }
-    const help_icon = self.objects_ref.icon.clone({
-      data: self.paths_ref.lightbulb,
-      x: self.options.width - 63,
-      y: 40,
-      scale: {
-        x: 0.8,
-        y: 0.8,
-      },
-      id: 'help_icon',
-      label: 'Tip',
-    });
-
-    const help_overlay = self._draw_icon_overlay(self.options.width - 63, 40);
-
-    self.navigation_layer.add(help_icon, help_overlay);
-
-    help_overlay.on('mouseover', () => {
-      self._icon_mouseover(help_icon, help_overlay, self.navigation_layer);
-      self._help_mouseover();
-    });
-
-    help_overlay.on('mouseout', () => {
-      self._help_mouseout();
-      self._icon_mouseout(help_icon, help_overlay, self.navigation_layer);
-    });
   };
 
   InCHlib.prototype._draw_color_scale = function () {
@@ -2914,10 +2897,12 @@ import { round } from 'lodash';
     }
 
     color_scale.on('mouseover', () => {
+      self.hover_on();
       self._color_scale_mouseover(color_scale, self.navigation_layer);
     });
 
     color_scale.on('mouseout', () => {
+      self.hover_off();
       self._color_scale_mouseout(color_scale, self.navigation_layer);
     });
 
@@ -3225,10 +3210,12 @@ import { round } from 'lodash';
     self.navigation_layer.moveToTop();
 
     zoom_overlay.on('mouseover', () => {
+      self.hover_on();
       self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('mouseout', () => {
+      self.hover_off();
       self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
@@ -3309,10 +3296,12 @@ import { round } from 'lodash';
     self.navigation_layer.moveToTop();
 
     zoom_overlay.on('mouseover', () => {
+      self.hover_on();
       self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('mouseout', () => {
+      self.hover_off();
       self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
@@ -4702,7 +4691,15 @@ import { round } from 'lodash';
     self.heatmap_layer.moveUp();
   };
 
-
+  /**
+   * Hover
+   */
+  InCHlib.prototype.hover_on = function () {
+    document.body.style.cursor = 'pointer';
+  }
+  InCHlib.prototype.hover_off = function () {
+    document.body.style.cursor = 'default';
+  }
 
   /**
     * Destroy InCHlib

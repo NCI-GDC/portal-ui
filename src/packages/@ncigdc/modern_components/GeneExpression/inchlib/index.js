@@ -235,7 +235,7 @@ import { round } from 'lodash';
 
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
-
+    
     // column metadata colors & legend info
     self.MAX_DAYS_TO_DEATH = 3379;
     self.MAX_AGE_AT_DIAGNOSIS = 90;
@@ -1644,6 +1644,7 @@ import { round } from 'lodash';
     self.column_metadata_rows = self.options.column_metadata
       ? self.column_metadata.visible.filter(x => x).length
       : 0;
+
     self.column_metadata_height = (self.column_metadata_rows * self.column_metadata_row_height) + 15;
 
     if (self.options.heatmap) {
@@ -2220,7 +2221,7 @@ import { round } from 'lodash';
       y2 = y1;
       value = node.features[col_index];
       text_value = value;
-  
+
       if (value !== null) {
         color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
   
@@ -2563,7 +2564,6 @@ import { round } from 'lodash';
       return;
     }
     const y1 = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2 - 10;
-    // THIS maybe?? remove the '- 10'
     const y2 = y1;
     const x1 = 0;
     const x2 = self.distance;

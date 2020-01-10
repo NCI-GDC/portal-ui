@@ -2467,6 +2467,8 @@ import { round } from 'lodash';
   };
 
   InCHlib.prototype._draw_heatmap_header = function () {
+    // the header goes at the bottom
+    // because we're using a dendrogram on top
     const self = this;
     if (
       self.options.heatmap_header &&
@@ -2507,7 +2509,8 @@ import { round } from 'lodash';
         x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
         column_header = self.objects_ref.column_header.clone({
           case_uuid,
-          fill: self.options.font.color,
+          fill: '#3a3a3a',
+          opacity: 0.6,
           fontFamily: self.options.font.family,
           fontSize: self.options.font.size,
           fontStyle: 'bold',
@@ -2515,7 +2518,7 @@ import { round } from 'lodash';
           rotation,
           text: current_headers[i] === 'gene_symbol' ||
             current_headers[i] === 'gene_ensembl'
-              ? ''
+              ? '' // hide columns without messing up structure
               : case_id,
           x,
           y,
@@ -2527,19 +2530,20 @@ import { round } from 'lodash';
       self.stage.add(self.header_layer);
 
       self.header_layer.on('click', ({ target: { attrs: { case_uuid }}}) => {
-
         self.events.heatmap_header_onclick(case_uuid);
       });
 
       self.header_layer.on('mouseover', function (evt) {
+        self._hover_on();
         const label = evt.target;
-        label.setOpacity(0.7);
+        label.setOpacity(1);
         this.draw();
       });
 
       self.header_layer.on('mouseout', function (evt) {
+        self._hover_off();
         const label = evt.target;
-        label.setOpacity(1);
+        label.setOpacity(0.6);
         this.draw();
       });
     }

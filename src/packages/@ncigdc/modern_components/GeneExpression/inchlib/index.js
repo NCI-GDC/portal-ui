@@ -281,19 +281,45 @@ import Color from 'color';
         * @name InCHlib#row_onclick
         * @event
         * @param {function} function() callback function for click on the heatmap row event
-        * @eventData {array} array array of object IDs represented by row
-        * @eventData {object} event event object
+        * @eventData {string} gene_ensembl, used to create a link to the gene page
 
         * @example
         * instance.events.row_onclick = (
-        *    function(object_ids, evt) {
-        *       alert(object_ids);
+        *    function(gene_ensembl) {
+        *       alert(gene_ensembl);
         *    }
         * );
         *
         */
-      row_onclick(object_ids, evt) {
+      row_onclick(gene_ensembl) {
+        const clickInchlibLink = new CustomEvent('clickInchlibLink', {
+          detail: {
+            gene_ensembl
+          },
+        });
+        self.element.dispatchEvent(clickInchlibLink);
+      },
+      /**
+        * @name InCHlib#heatmap_header_onclick
+        * @event
+        * @param {function} function() callback function for click on the heatmap header event
+        * @eventData {string} case_uuid, used to create a link to the case page
 
+        * @example
+        * instance.events.heatmap_header_onclick = (
+        *    function(case_uuid) {
+        *       alert(case_uuid);
+        *    }
+        * );
+        *
+        */
+       heatmap_header_onclick(case_uuid) {
+        const clickInchlibLink = new CustomEvent('clickInchlibLink', {
+          detail: {
+            case_uuid
+          },
+        });
+        self.element.dispatchEvent(clickInchlibLink);
       },
 
       /**
@@ -2067,23 +2093,32 @@ import Color from 'color';
     const self = this;
     const node = self.data.nodes[node_id];
     const row = new Konva.Group({ id: node_id });
-    let x2; let y2; let color; let line; let value; let text; let text_value; let
-      col_index;
-
+    let x2;
+    let y2;
+    let color;
+    let line;
+    let value;
+    let text;
+    let text_value;
+    let col_index;
+  
+    const [ gene_ensembl, gene_symbol ] = self.metadata.nodes[node_id];
+  
+    // draw heatmap cells
     for (var i = 0, len = self.on_features.data.length; i < len; i++) {
       col_index = self.on_features.data[i];
       x2 = x1 + self.pixels_for_dimension;
       y2 = y1;
       value = node.features[col_index];
       text_value = value;
-
-      if (self.options.alternative_data) {
-        text_value = self.alternative_data[node_id][col_index];
-      }
-
+  
+      // if (self.options.alternative_data) {
+      //   text_value = self.alternative_data[node_id][col_index];
+      // }
+  
       if (value !== null) {
         color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
-
+  
         line = self.objects_ref.heatmap_line.clone({
           stroke: color,
           points: [
@@ -2094,103 +2129,59 @@ import Color from 'color';
           ],
           value: text_value,
           column: ['d', col_index].join('_'),
-          gene_id: self.metadata.nodes[node_id],
-          // gene_id for tooltip
+          gene_symbol,
+          // gene_symbol for heatmap cell tooltip
           strokeWidth: self.pixels_for_leaf,
         });
         row.add(line);
       }
-
+  
       x1 = x2;
     }
-
-    if (self.options.metadata) {
-      const metadata = self.metadata.nodes[node_id];
-
-      if (metadata !== undefined) {
-        for (var i = 0, len = self.on_features.metadata.length; i < len; i++) {
-          col_index = self.on_features.metadata[i];
-          value = metadata[col_index];
-          x2 = x1 + self.pixels_for_dimension;
-          y2 = y1;
-
-          if (value !== null && value !== undefined) {
-            text_value = value;
-
-            if (self.metadata_descs[col_index].str2num !== undefined) {
-              value = self.metadata_descs[col_index].str2num[value];
-            }
-
-            line = self.objects_ref.heatmap_line.clone({
-              stroke: '#fff',
-              points: [
-                x1,
-                y1,
-                x2,
-                y2,
-              ],
-              // name = gene_id
-              name: text_value,
-              column: ['m', col_index].join('_'),
-              strokeWidth: self.pixels_for_leaf,
-            });
-            row.add(line);
-
-            if (self.current_draw_values) {
-              text = self.objects_ref.heatmap_value.clone({
-                text: text_value,
-                fontSize: self.options.font.size,
-                fontWeight: 'bold',
-              });
-
-              const width = text.getWidth();
-              const y = self._hack_round(y1 - self.value_font_size / 2);
-              text.position({
-                x: x1 + 5,
-                y,
-              });
-              row.add(text);
-            }
-          }
-          x1 = x2;
-        }
-      }
-    }
-
-    if (self.options.count_column && self.features[self.dimensions.overall - 1]) {
-      x2 = x1 + self.pixels_for_dimension;
-      const count = node.objects.length;
-      color = self._get_color_for_value(count, self.min_item_count, self.max_item_count, self.middle_item_count, self.options.count_column_colors);
-
+  
+    // don't draw gene symbol column if it's empty
+    x2 = x1;
+    y2 = y1;
+  
+    if (self.current_draw_values) {
+      text = self.objects_ref.heatmap_value.clone({
+        text: gene_symbol,
+        fontSize: self.options.font.size,
+        fontWeight: 'bold',
+      });
+      const width = text.getWidth();
+      x2 = x1 + width + 10;
+      
       line = self.objects_ref.heatmap_line.clone({
-        stroke: color,
+        // gene_ensembl for creating links
+        gene_ensembl,
         points: [
           x1,
           y1,
           x2,
           y2,
         ],
-        value: Number(count),
-        column: 'Count',
+        // gene_symbol for gene column tooltip
+        name: gene_symbol,
+        column: ['m', 1].join('_'),
         strokeWidth: self.pixels_for_leaf,
       });
       row.add(line);
-
-      if (self.current_draw_values) {
-        text = self.objects_ref.heatmap_value.clone({
-          text: count,
-        });
-
-        width = text.getWidth();
-        x = self._hack_round((x1 + x2) / 2 - width / 2);
-        y = self._hack_round(y1 - self.value_font_size / 2);
-        text.position({
-          x,
-          y,
-        });
-        row.add(text);
-      }
+  
+      const y = self._hack_round(y1 - self.value_font_size / 2);
+      text.position({
+        x: x1 + 5,
+        y,
+      });
+      row.add(text);
+      row.on('click', ({ target: { attrs: { gene_ensembl = '' }}}) => {
+        if (gene_ensembl !== '') {
+          self.events.row_onclick(gene_ensembl);
+        }
+      });
     }
+    x1 = x2;
+  
     return row;
   };
 
@@ -2278,8 +2269,6 @@ import Color from 'color';
         for (var i = 0; i < items.length; i++) {
           item_ids.push(items[i]);
         }
-
-        self.events.row_onclick(item_ids, evt);
       }
     });
   };
@@ -2393,19 +2382,25 @@ import Color from 'color';
       const max_text_length = self._get_max_length(current_headers);
 
       for (var i = 0, len = current_headers.length; i < len; i++) {
+        // TODO this is not great. we should ask backend devs to provide
+        // id and uuid in an object.
+        const case_id = current_headers[i].split('_')[0];
+        const case_uuid = current_headers[i].split('_')[1];
         x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
         column_header = self.objects_ref.column_header.clone({
+          case_uuid,
+          fill: self.options.font.color,
+          fontFamily: self.options.font.family,
+          fontSize: self.options.font.size,
+          fontStyle: 'bold',
+          position_index: i,
+          rotation,
+          text: current_headers[i] === 'gene_symbol' ||
+            current_headers[i] === 'gene_ensembl'
+              ? ''
+              : case_id,
           x,
           y,
-          text: current_headers[i] === 'gene_id'
-            ? ''
-            : current_headers[i],
-          position_index: i,
-          fontSize: self.options.font.size,
-          fontFamily: self.options.font.family,
-          fill: self.options.font.color,
-          fontStyle: 'bold',
-          rotation: rotation,
         });
         self.header_layer.add(column_header);
         distance_step++;
@@ -2413,36 +2408,24 @@ import Color from 'color';
 
       self.stage.add(self.header_layer);
 
-      if (!(self.options.dendrogram)) {
-        self.header_layer.on('click', (evt) => {
-          const column = evt.target;
-          const { position_index } = column.attrs;
-          for (var i = 0; i < self.header_layer.getChildren().length; i++) {
-            self.header_layer.getChildren()[i].setFill('black');
-          }
-          evt.target.setAttrs({ fill: 'red' });
-          self._delete_layers([
-            self.heatmap_layer,
-            self.heatmap_overlay,
-            self.highlighted_rows_layer,
-          ]);
-          self._reorder_heatmap(self._translate_column_to_feature_index(position_index));
-          self._draw_heatmap();
-          self.header_layer.draw();
-        });
+      self.header_layer.on('click', ({ target: { attrs: { case_uuid }}}) => {
 
-        self.header_layer.on('mouseover', function (evt) {
-          const label = evt.target;
-          label.setOpacity(0.7);
-          this.draw();
-        });
+        self.events.heatmap_header_onclick(case_uuid);
+      });
 
-        self.header_layer.on('mouseout', function (evt) {
-          const label = evt.target;
-          label.setOpacity(1);
-          this.draw();
-        });
-      }
+      self.header_layer.on('mouseover', function (evt) {
+        // TODO add tooltip?
+        const label = evt.target;
+        label.setOpacity(0.7);
+        this.draw();
+      });
+
+      self.header_layer.on('mouseout', function (evt) {
+        // TODO remove tooltip?
+        const label = evt.target;
+        label.setOpacity(1);
+        this.draw();
+      });
     }
   };
 
@@ -4277,12 +4260,12 @@ import Color from 'color';
 
     const { name, value } = attrs;
 
-    const header_text = header_value === 'gene_id'
+    const header_text = header_value === 'gene_symbol'
       ? 'Gene'
       : header_value === 'case_id'
         ? 'Case'
         : self.heatmap_header.includes(header_value)
-          ? `Case: ${header_value}, Gene: ${attrs.gene_id}`
+          ? `Case: ${header_value.split('_')[0]}, Gene: ${attrs.gene_symbol}`
           : header_value;
 
     const tooltip_value = typeof value === 'undefined'

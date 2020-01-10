@@ -1725,7 +1725,7 @@ import Color from 'color';
     self.stage_layer = new Konva.Layer();
     const stage_rect = new Konva.Rect({
       fill: '#fff',
-      height: self.options.height,
+      height: self.options.height + 130,
       opacity: 1,
       width: self.options.width,
       x: 0,
@@ -2435,14 +2435,12 @@ import Color from 'color';
       });
 
       self.header_layer.on('mouseover', function (evt) {
-        // TODO add tooltip?
         const label = evt.target;
         label.setOpacity(0.7);
         this.draw();
       });
 
       self.header_layer.on('mouseout', function (evt) {
-        // TODO remove tooltip?
         const label = evt.target;
         label.setOpacity(1);
         this.draw();
@@ -2750,7 +2748,7 @@ import Color from 'color';
     ];
 
     const color_scale = self.objects_ref.rect_gradient.clone({
-      label: 'Color settings',
+      label: 'Edit heatmap colors',
       fillLinearGradientColorStops: color_steps,
       id: `${self._name}_color_scale`,
     });
@@ -3642,98 +3640,50 @@ import Color from 'color';
 
   InCHlib.prototype._export_icon_click = function () {
     const self = this;
-    let export_menu = self.$element.find('.export_menu');
     const overlay = self._draw_target_overlay();
+    const zoom = 3;
+    const width = self.stage.width();
+    const height = self.stage.height();
 
-    if (export_menu.length) {
-      export_menu.fadeIn('fast');
-    } else {
-      export_menu = $('<div class=\'export_menu\'><div><button type=\'submit\' data-action=\'open\'>Show image</button></div><div><button type=\'submit\' data-action=\'save\'>Save image</button></div></div>');
-      self.$element.append(export_menu);
-      export_menu.css({
-        position: 'absolute',
-        top: 45,
-        left: self.options.width - 125,
-        'font-size': '12px',
-        border: 'solid #D2D2D2 1px',
-        'border-radius': '5px',
-        padding: '10px 10px 5px',
-        'background-color': 'white',
-      });
+    overlay.click(function() {
+      overlay.fadeOut().remove();
+    });
 
-      const buttons = export_menu.find('button');
-      buttons.css($.extend(
-        {},
-        self.styles.css_primary_button_off,
-        {
-          'margin-bottom': '5px',
-        },
-      ));
+    const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
+    self.$element.after(loading_div);
+    self.$element.hide();
 
-      buttons.hover(
-        function () {
-          $(this).css(self.styles.css_button_on);
-        },
-        function () {
-          $(this).css(self.styles.css_primary_button_off);
-        },
-      );
-
-      overlay.click(() => {
-        export_menu.fadeOut('fast');
-        overlay.fadeOut('fast');
-      });
-
-      buttons.click(function () {
-        const action = $(this).attr('data-action');
-        const zoom = 3;
-        const width = self.stage.width();
-        const height = self.stage.height();
-
-        const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-        self.$element.after(loading_div);
-        self.$element.hide();
-
-        self.stage.width(width * zoom);
-        self.stage.height(height * zoom);
+    self.stage.width(width * zoom);
+    self.stage.height(height * zoom);
+    self.stage.scale({
+      x: zoom,
+      y: zoom,
+    });
+    self.stage.draw();
+    self.navigation_layer.hide();
+    self.stage.toDataURL({
+      quality: 1,
+      callback(dataUrl) {
+          download_image(dataUrl);
+        self.stage.width(width);
+        self.stage.height(height);
         self.stage.scale({
-          x: zoom,
-          y: zoom,
+          x: 1,
+          y: 1,
         });
         self.stage.draw();
-        self.navigation_layer.hide();
-        self.stage.toDataURL({
-          quality: 1,
-          callback(dataUrl) {
-            if (action === 'open') {
-              open_image(dataUrl);
-            } else {
-              download_image(dataUrl);
-            }
-            self.stage.width(width);
-            self.stage.height(height);
-            self.stage.scale({
-              x: 1,
-              y: 1,
-            });
-            self.stage.draw();
-            loading_div.remove();
-            self.$element.show();
-            self.navigation_layer.show();
-            self.navigation_layer.draw();
-            overlay.trigger('click');
-          },
-        });
-      });
-    }
+        loading_div.fadeOut().remove();
+        self.$element.show();
+        self.navigation_layer.show();
+        self.navigation_layer.draw();
+        overlay.trigger('click');
+      },
+    });
 
     function download_image(dataUrl) {
       $(`<a download="inchlib" href="${dataUrl}"></a>`)[0].click();
     }
 
-    function open_image(dataUrl) {
-      window.open(dataUrl, '_blank');
-    }
   };
 
   InCHlib.prototype._categories_icon_click = function() {
@@ -3743,7 +3693,7 @@ import Color from 'color';
     const categories_form = $(`<form class='settings_form' id='${form_id}'></form>`);
     const overlay = self._draw_target_overlay();
 
-    const options = [`<h3>Edit Categories</h3><ul>`]
+    const options = [`<h3>Categories</h3><ul>`]
       .concat(self.column_metadata.feature_names
         .map((category, i) => {
           const key = category.toLowerCase().split(' ').join('-');
@@ -3802,8 +3752,8 @@ import Color from 'color';
     );
 
     overlay.click(() => {
-      $(`#${form_id}`).remove();
-      overlay.fadeOut('fast');
+      $(`#${form_id}`).fadeOut().remove();
+      overlay.fadeOut().remove();
     });
 
     categories_form.submit(function (evt) {
@@ -3826,154 +3776,16 @@ import Color from 'color';
 
   InCHlib.prototype._color_scale_click = function (icon, evt) {
     const self = this;
-    let option;
-    let key;
-    let value;
 
-    const color_options = { heatmap_colors: 'Heatmap colors:' };
-
-    const value_options = {};
-
-    const form_id = `settings_form_${self._name}`;
-    let settings_form = $(`#${form_id}`);
     const overlay = self._draw_target_overlay();
-
-    if (settings_form.length > 0) {
-      settings_form.fadeIn('fast');
-    } else {
-      settings_form = $(`<form class='settings_form' id='${form_id}'></form>`);
-      let options = '';
-      let color_1;
-      let color_2;
-      let color_3;
-
-      for (var i = 0, keys = Object.keys(color_options), len = keys.length; i < len; i++) {
-        key = keys[i];
-        color_1 = self._get_color_for_value(0, 0, 1, 0.5, self.options[key]);
-        color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, self.options[key]);
-        color_3 = self._get_color_for_value(1, 0, 1, 0.5, self.options[key]);
-
-        option = `<div><label for='${self._name}_${key}' class='form_label'>${color_options[key]}</label><input type='text' id='${self._name}_${key}' name='${key}' value='${self.options[key]}'/> <div class='color_button' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div></div>`;
-        options += option;
-      }
-
-      // for (var i = 0, keys = Object.keys(value_options), len = keys.length; i < len; i++) {
-      //   key = keys[i];
-      //   option = `<div><div class='form_label'>${value_options[key]}</div><input type='text' name='${key}' value='${self.options[key]}'/></div>`;
-      //   options += option;
-      // }
-      // option = '<div><div class=\'form_label\'>Heatmap coloring</div>\
-      //           <select name=\'independent_columns\'>';
-
-      // if (self.options.independent_columns) {
-      //   option += '<option value=\'true\' selected>By columns</option>\
-      //             <option value=\'false\'>Entire heatmap</option>';
-      // } else {
-      //   option += '<option value=\'true\'>By columns</option>\
-      //             <option value=\'false\' selected>Entire heatmap</option>';
-      // }
-      // option += '</select></div>';
-      // options += option;
-
-      options += '<button type="submit">Redraw</button>';
-      settings_form.html(options);
-
-      self.$element.append(settings_form);
-      settings_form.css({
-        'z-index': 1000,
-        position: 'absolute',
-        top: 110,
-        left: 0,
-        padding: '10px',
-        border: 'solid #D2D2D2 2px',
-        'border-radius': '5px',
-        'background-color': 'white',
-      });
-      $(`#${form_id} > div`).css({
-        'font-size': '12px',
-        'margin-bottom': '10px',
-      });
-      $(`#${form_id} input`).css(self.styles.input);
-      $(`#${form_id} .form_label`).css(self.styles.label);
-
-      const $submit_button = $(`#${form_id} button`);
-
-      $submit_button.css(self.styles.css_primary_button_off);
-
-      $submit_button.hover(
-        function () {
-          $submit_button.css(self.styles.css_button_on);
-        },
-        function () {
-          $submit_button.css(self.styles.css_primary_button_off);
-        }
-      );
-
-      overlay.click(() => {
-        settings_form.fadeOut('fast');
-        overlay.fadeOut('fast');
-      });
-
-      const color_buttons = $(`#${form_id} .color_button`);
-
-      color_buttons.css({
-        border: 'solid #D2D2D2 1px',
-        float: 'right',
-        height: '34px',
-        'margin-left': '5px',
-        width: '34px',
-      });
-
-      color_buttons.hover(
-        function () {
-          $(this).css({
-            cursor: 'pointer',
-            opacity: 0.7,
-          });
-        },
-        function () { $(this).css({ opacity: 1 }); },
-      );
-
-      color_buttons.click(function (evt) {
-        self._draw_color_scales_select(this, evt);
-      });
-
-      settings_form.submit(function (evt) {
-        const settings = {};
-        const settings_fieldset = $(this).find('input, select');
-
-        settings_fieldset.each(function () {
-          option = $(this);
-          key = option.attr('name');
-          value = option.val();
-          if (value != '') {
-            if (value === 'true') {
-              value = true;
-            } else if (value === 'false') {
-              value = false;
-            }
-            settings[key] = value;
-          }
-        });
-        self.update_settings(settings);
-        self.redraw_heatmap();
-        self._update_color_scale();
-        overlay.trigger('click');
-        evt.preventDefault();
-        evt.stopPropagation();
-      });
-    }
-  };
-
-  InCHlib.prototype._draw_color_scales_select = function (element, evt) {
-    const self = this;
-
-    self.$element.find('.color_scales').remove();
 
     let scale_divs;
     let scales_div = $('<div class=\'color_scales\'></div>');
-    let scale; let color_1; let color_2; let color_3; let
-      key;
+    let scale;
+    let color_1;
+    let color_2;
+    let color_3;
+    let key;
 
     for (let i = 0, keys = Object.keys(self.colors), len = keys.length; i < len; i++) {
       key = keys[i];
@@ -3983,14 +3795,15 @@ import Color from 'color';
       scale = `<div class='color_scale' data-scale_acronym='${key}' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div>`;
       scales_div.append(scale);
     }
+
     self.$element.append(scales_div);
     scales_div.css({
       border: 'solid #D2D2D2 2px',
       'border-radius': '5px',
       padding: '5px',
       position: 'absolute',
-      top: 110,
-      left: 250,
+      top: 105,
+      left: 0,
       width: 110,
       'max-height': 400,
       'overflow-y': 'auto',
@@ -4015,17 +3828,21 @@ import Color from 'color';
       function () { $(this).css({ opacity: 1 }); },
     );
 
-    self.$element.find('.target_overlay').click(() => {
-      scales_div.fadeOut('fast');
+    overlay.click(function() {
+      scales_div.fadeOut().remove();
+      scale_divs.fadeOut().remove();
+      overlay.fadeOut().remove();
     });
 
     scale_divs.on('click', function () {
       const color = $(this).attr('data-scale_acronym');
-      const input = $(element).prev('input:first').val(color);
-
-      $(element).css({ background: `linear-gradient(to right, ${self._get_color_for_value(0, 0, 1, 0.5, color)},${self._get_color_for_value(0.5, 0, 1, 0.5, color)},${self._get_color_for_value(1, 0, 1, 0.5, color)})` });
-      scales_div.fadeOut('fast');
-      scale_divs.off('click');
+      const settings = { heatmap_colors: color };
+      self.update_settings(settings);
+      self.redraw_heatmap();
+      self._update_color_scale();
+      overlay.trigger('click');
+      evt.preventDefault();
+      evt.stopPropagation();
     });
   };
 
@@ -4420,7 +4237,7 @@ import Color from 'color';
   InCHlib.prototype.add_color_scale = function (color_scale_name, color_scale) {
     const self = this;
     self.colors[color_scale_name] = color_scale;
-    self.$element.find('.color_scales').remove();
+    self.$element.find('.color_scales').fadeOut().remove();
   };
 
   InCHlib.prototype._get_visible_count = function () {
@@ -4501,7 +4318,7 @@ import Color from 'color';
       }, 50);
 
       setTimeout(function () {
-        loading_div.remove();
+        loading_div.fadeOut().remove();
         self.$element.show();
       }, 50);
     }

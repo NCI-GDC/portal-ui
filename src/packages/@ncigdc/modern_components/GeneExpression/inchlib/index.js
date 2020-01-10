@@ -1174,7 +1174,8 @@ import { round } from 'lodash';
 
       heatmap_value: new Konva.Text({
         fontFamily: self.options.font.family,
-        fill: self.options.font.color,
+        fill: self.hover_fill,
+        opacity: self.hover_opacity_off,
         listening: false,
         fontStyle: '500',
       }),
@@ -1185,7 +1186,8 @@ import { round } from 'lodash';
 
       column_header: new Konva.Text({
         fontFamily: self.options.font.family,
-        fill: self.options.font.color,
+        fill: self.hover_fill,
+        opacity: self.hover_opacity_off,
       }),
 
       count: new Konva.Text({
@@ -1666,11 +1668,9 @@ import { round } from 'lodash';
     }
     self._adjust_leaf_size(self.heatmap_array.length);
 
-    if (self.options.draw_row_ids) {
-      self._get_row_id_size();
-    } else {
-      self.right_margin = 100;
-    }
+  
+    self.right_margin = 100;
+    
 
     self._adjust_horizontal_sizes();
     self.top_heatmap_distance = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2;
@@ -2186,10 +2186,6 @@ import { round } from 'lodash';
       self._draw_column_metadata(x1);
     }
 
-    if (self.options.draw_row_ids) {
-      self._draw_row_ids();
-    }
-
     self.highlighted_rows_layer = new Konva.Layer();
     self.stage.add(self.heatmap_layer, self.heatmap_overlay, self.highlighted_rows_layer);
 
@@ -2259,7 +2255,7 @@ import { round } from 'lodash';
       text = self.objects_ref.heatmap_value.clone({
         text: gene_symbol,
         fontSize: self.options.font.size,
-        fill: self.hover_fill,
+        opacity: self.hover_opacity_on,
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
@@ -2412,83 +2408,6 @@ import { round } from 'lodash';
         }
       }
     });
-  };
-
-  InCHlib.prototype._draw_row_ids = function () {
-    const self = this;
-    if (self.pixels_for_leaf < 6 || self.row_id_size < 5) {
-      return;
-    }
-    let objects;
-    const object_y = [];
-    let leaf;
-    const values = [];
-    let text;
-
-    for (var i = 0, keys = Object.keys(self.leaves_y_coordinates), len = keys.length; i < len; i++) {
-      leaf_id = keys[i];
-      objects = self.data.nodes[leaf_id].objects;
-      if (objects.length > 1) {
-        return;
-      }
-      object_y.push([objects[0], self.leaves_y_coordinates[leaf_id]]);
-    }
-
-    const x = self.distance + self._get_visible_count() * self.pixels_for_dimension + 15;
-
-    for (var i = 0; i < object_y.length; i++) {
-      text = self.objects_ref.heatmap_value.clone({
-        x,
-        y: self._hack_round(object_y[i][1] - self.row_id_size / 2),
-        fontSize: self.options.font.size,
-        text: object_y[i][0],
-        fontStyle: 'italic',
-        fill: self.options.font.color,
-      });
-      self.heatmap_layer.add(text);
-    }
-  };
-
-  InCHlib.prototype._get_row_id_size = function () {
-    const self = this;
-    let objects;
-    const object_y = [];
-    let leaf_id;
-    const values = [];
-    let text;
-
-    for (var i = 0, len = self.heatmap_array.length; i < len; i++) {
-      leaf_id = self.heatmap_array[i][0];
-      objects = self.data.nodes[leaf_id].objects;
-      if (objects.length > 1) {
-        return;
-      }
-      values.push(objects[0]);
-    }
-    const max_length = self._get_max_length(values);
-    let test_string = '';
-    for (var i = 0; i < max_length; i++) {
-      test_string += 'E';
-    }
-
-    if (self.options.fixed_row_id_size) {
-      const test = new Konva.Text({
-        fontFamily: self.options.font.family,
-        fontSize: self.options.font.size,
-        fontStyle: 'italic',
-        listening: false,
-        text: test_string,
-      });
-      self.row_id_size = self.options.fixed_row_id_size;
-      self.right_margin = 20 + test.width();
-
-      if (this.right_margin < 100) {
-        self.right_margin = 100;
-      }
-    } else {
-      self.row_id_size = self._get_font_size(max_length, 85, self.pixels_for_leaf, 10);
-      self.right_margin = 100;
-    }
   };
 
   InCHlib.prototype._draw_heatmap_header = function () {
@@ -2918,7 +2837,8 @@ import { round } from 'lodash';
         x,
         y,
         fontStyle: '500',
-        fill: self.options.font.color,
+        fill: self.hover_fill,
+        opacity: self.hover_opacity_off,
       });
       x += scale_x_int;
       scale_values_group.add(scale_text);
@@ -4021,7 +3941,8 @@ import { round } from 'lodash';
     for (let i = 0; i < self.legend_headings.length; i++) {
       const heading = self.legend_headings[i];
       const legend_heading = new Konva.Text({
-        fill: self.options.font.color,
+        fill: self.hover_fill,
+        opacity: self.hover_opacity_off,
         fontStyle: 'bold',
         fontFamily: self.options.font.family,
         text: heading,

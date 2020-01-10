@@ -1655,6 +1655,7 @@ import { round } from 'lodash';
 
     if (self.options.heatmap) {
       self.active_column = null;
+      self.active_header_column = null;
       self.dimensions = self._get_dimensions();
       self._set_heatmap_settings();
     } else {
@@ -2419,12 +2420,8 @@ import { round } from 'lodash';
       const y = (self.options.column_dendrogram && self.heatmap_header)
         ? self.header_height + (self.pixels_for_leaf * count) + 15 + self.column_metadata_height
         : self.header_height - 20;
-      const rotation = (self.options.column_dendrogram && self.heatmap_header)
-        ? 45 
-        : -45;
+      const rotation = 90;
       let distance_step = 0;
-      let x;
-      let column_header;
       let key;
       const current_headers = [];
 
@@ -2445,24 +2442,38 @@ import { round } from 'lodash';
         // id and uuid in an object.
         const case_id = current_headers[i].split('_')[0];
         const case_uuid = current_headers[i].split('_')[1];
-        x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
-        column_header = self.objects_ref.column_header.clone({
-          case_uuid,
+        const is_header_hidden = current_headers[i] === 'gene_symbol' ||
+        current_headers[i] === 'gene_ensembl';
+        const x = (self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2) + 5;
+        const column_header = self.objects_ref.column_header.clone({
           fill: self.hover_fill,
-          opacity: self.hover_opacity_off,
+          opacity: self.hover_opacity_on,
           fontFamily: self.options.font.family,
           fontSize: self.options.font.size,
           fontStyle: 'bold',
           position_index: i,
           rotation,
-          text: current_headers[i] === 'gene_symbol' ||
-            current_headers[i] === 'gene_ensembl'
-              ? '' // hide columns without messing up structure
-              : case_id,
+          text: is_header_hidden
+            ? '' // hide columns without messing up structure
+            : case_id,
           x,
           y,
         });
-        self.header_layer.add(column_header);
+        const rect_height = column_header.getWidth() + 10;
+        const rect_x = self.heatmap_distance + (self.pixels_for_dimension * distance_step);
+        const rect_y = y - 5;
+        var rect = new Konva.Rect({
+          case_uuid,
+          width: self.pixels_for_dimension,
+          height: is_header_hidden
+            ? 0
+            : rect_height,
+          fill: 'white',
+          x: rect_x,
+          y: rect_y,
+          opacity: 1 - self.hover_opacity_off,
+        });
+        self.header_layer.add(column_header, rect);
         distance_step++;
       }
 
@@ -2475,21 +2486,49 @@ import { round } from 'lodash';
       self.header_layer.on('mouseover', function (evt) {
         // TODO remove column overlay
         // self._draw_col_label(evt);
+        self._draw_col_overlay_for_header(evt);
         self._hover_on();
         const label = evt.target;
-        label.setOpacity(self.hover_opacity_on);
+        label.setOpacity(1 - self.hover_opacity_on);
         this.draw();
       });
 
       self.header_layer.on('mouseout', function (evt) {
         // TODO add column overlay
-        
+        // self.heatmap_overlay.find('#column_overlay')[0].destroy();
         self._hover_off();
         const label = evt.target;
-        label.setOpacity(self.hover_opacity_off);
+        label.setOpacity(1 - self.hover_opacity_off);
         this.draw();
       });
     }
+  };
+
+  InCHlib.prototype._draw_col_overlay_for_header = function(evt) {
+    const self = this;
+    const { text, x, y } = evt.target.attrs;
+
+    // console.log(evt.target.attrs);
+
+    if (self.active_header_column !== text) {
+      self.column_overlay.destroy();
+      self.active_header_column = text;
+      self.column_overlay = self.objects_ref.heatmap_line.clone({
+        points: [
+          x,
+          self.header_height,
+          x,
+          self.header_height + 10 + self.column_metadata_height + (self.heatmap_array.length) * self.pixels_for_leaf,
+        ],
+        strokeWidth: self.pixels_for_dimension,
+        stroke: 'magenta',
+        opacity: 0.3,
+        listening: false,
+        id: 'column_overlay',
+      });
+      self.heatmap_overlay.add(self.column_overlay);
+    }
+
   };
 
   InCHlib.prototype._translate_column_to_feature_index = function (column_index) {
@@ -4493,16 +4532,11 @@ import { round } from 'lodash';
     self.events.row_onmouseout(evt);
   };
 
-  InCHlib.prototype._draw_case_id_overlay = function (evt) {
-    const self = this;
-    const { attrs } = evt.target;
-  }
-
   InCHlib.prototype._draw_col_label = function (evt) {
     const self = this;
     let line;
     const { attrs } = evt.target;
-    console.log('attrs', attrs)
+    // console.log('attrs', attrs)
     const { column: original_column, points } = attrs;
     const is_gene_symbol_column = original_column === 'm_1';
     const x = self._hack_round((points[0] + points[2]) / 2);

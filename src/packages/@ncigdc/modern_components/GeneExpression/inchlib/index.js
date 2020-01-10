@@ -2350,8 +2350,7 @@ import { round } from 'lodash';
       y,
     });
     row.add(text);
-    // TODO: add an X button here with a click event, to remove this row
-
+    
     return row;
   };
 
@@ -2369,8 +2368,14 @@ import { round } from 'lodash';
       self._draw_col_label(evt);
     });
 
-    row.on('mouseout', (evt) => {
+    row.on('mouseout', ({ target: { attrs: { 
+      gene_ensembl = '', gene_symbol = '' 
+    }}}) => {
       // TODO: gene mouseover
+      const is_gene_symbol_column = gene_ensembl !== '' && gene_symbol === '';
+      if (is_gene_symbol_column) {
+        self._hover_off();
+      }
       self.heatmap_overlay.find('#col_label')[0].destroy();
       self.heatmap_overlay.find('#column_overlay')[0].destroy();
       self.heatmap_overlay.draw();
@@ -4620,6 +4625,10 @@ import { round } from 'lodash';
     });
 
     tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
+
+    if (is_gene_symbol_column) {
+      self._hover_on();
+    }
 
     self.heatmap_overlay.add(tooltip);
     self.heatmap_overlay.moveToTop();

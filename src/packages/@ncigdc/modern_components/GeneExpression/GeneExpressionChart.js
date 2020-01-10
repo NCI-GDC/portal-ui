@@ -7,26 +7,33 @@ import { theme } from '@ncigdc/theme';
 import './inchlib';
 
 const category_colors = {
-  'Age at Diagnosis': 'BuGn',
-  'Days to Death': 'Blues',
-  Ethnicity: 'PuOr',
-  Gender: 'PiYG2',
-  Race: 'YlOrB',
-  'Vital Status': 'RdBu',
+  Ethnicity: {
+    hispanic_or_latino: 'rgb(255,150,148)',
+    not_hispanic_or_latino: 'rgb(215,40,40)',
+    not_reported: 'rgb(255,189,122)',
+  },
+  Gender: {
+    female: 'rgb(220,96,156)',
+    male: 'rgb(67,6,147)',
+  },
+  Race: {
+    american_indian_or_alaska_native: 'rgb(153,223,139)',
+    asian: 'rgb(30,117,179)',
+    black_or_african_american: 'rgb(175,200,233)',
+    native_hawaiian_or_other_pacific_islander: 'rgb(44,160,44)',
+    not_reported: 'rgb(255,189,122)',
+    white: 'rgb(255,127,15)',
+  },
+  'Vital Status': {
+    alive: 'rgb(22,147,192)',
+    dead: 'rgb(138,0,0)',
+  },
 };
-
-const default_visible_categories = [
-  'Age at Diagnosis',
-  'Days to Death',
-  'Race',
-  'Vital Status',
-];
 
 const options = {
   button_color: theme.primary,
   categories: {
     colors: category_colors,
-    defaults: default_visible_categories,
   },
   font: {
     color: '#767676',

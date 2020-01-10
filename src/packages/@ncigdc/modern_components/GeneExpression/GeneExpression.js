@@ -19,8 +19,8 @@ import GeneExpressionChart from './GeneExpressionChart';
 import dataObj from './inchlib/data';
 
 const dataSizes = Object.keys(dataObj);
-// const showDataButtons = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION_BUTTONS || false;
-const showDataButtons = false;
+const showDataButtons = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION_BUTTONS || false;
+// const showDataButtons = false;
 // end - for viz demo
 
 const enhance = compose(

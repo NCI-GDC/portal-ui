@@ -190,6 +190,7 @@ import Color from 'color';
     min_percentile: 0,
     min_row_height: 1,
     navigation_toggle: {
+      categories_legend: true,
       color_scale: true,
       distance_scale: true,
       edit_categories: true,
@@ -233,6 +234,76 @@ import Color from 'color';
 
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
+
+    // column metadata colors & legend info
+    self.MAX_DAYS_TO_DEATH = 3379;
+    self.MAX_AGE_AT_DIAGNOSIS = 90;
+    self.invalid_column_metadata_color = '#fff';
+    self.age_dx_colors = {
+      hue: 106,
+      max_light: 88,
+      min_light: 45,
+      sat: 25,
+    };
+
+    self.get_days_to_death_color = val => {
+      const red_green = Math.floor(255 - (val / self.MAX_DAYS_TO_DEATH * 255));
+      return isNaN(red_green)
+        ? self.invalid_column_metadata_color
+        : `rgb(${red_green},${red_green},255)`;
+    };
+
+    self.get_age_at_diagnosis_color = val => {
+      const percentage = 1 - (val / self.MAX_AGE_AT_DIAGNOSIS);
+      const lightness = (percentage * (self.age_dx_colors.max_light - self.age_dx_colors.min_light)) + self.age_dx_colors.min_light;
+      return isNaN(percentage)
+        ? self.invalid_column_metadata_color
+        : `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${lightness}%)`;
+    }
+
+    self.legend_id = `legend_${self._name}`;
+    self.legend_continuous_categories = ['Age at Diagnosis', 'Days to Death'];
+    self.legend_horizontal_categories = ['Gender', 'Vital Status'];
+    self.legend_headings = [
+      ...Object.keys(self.options.categories.colors),
+      ...self.legend_continuous_categories
+    ]
+    .sort();
+
+    self.legend_gradients = {
+      age: {
+        max: 'rgb(0,0,255)',
+        min: 'rgb(255,255,255)',
+      },
+      days: {
+        max: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%)`,
+        min: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%)`,
+      }
+    }
+
+    self.legend_gradient_upper_value = name => name === 'Age at Diagnosis'
+      ? self.MAX_AGE_AT_DIAGNOSIS
+      : self.MAX_DAYS_TO_DEATH;
+
+    self.popup_styles = {
+      'border-style': 'solid',
+      'border-color': '#D2D2D2',
+      'border-width': 2,
+      background: '#fff',
+      'border-radius': 5,
+      'font-size': '12px',
+      'padding-left': '10px',
+      'padding-right': '10px',
+      'padding-top': '10px',
+      position: 'absolute',
+      'z-index': 100,
+      width: 230,
+    };
+
+    self.popup_list_styles = {
+      'list-style-type': 'none',
+      'padding-left': 0,
+    };
 
     // proprietary styles for GDC portal
     self.styles = {
@@ -1039,6 +1110,25 @@ import Color from 'color';
     * @name InCHlib#objects_ref
     */
     self.objects_ref = {
+      popup_box: new Konva.Rect({
+        x: 0,
+        y: 0,
+        width: self.popup_styles.width + 40,
+        height: 250,
+        fill: self.popup_styles['background'],
+        stroke: self.popup_styles['border-color'],
+        strokeWidth: self.popup_styles['border-width'],
+        cornerRadius: self.popup_styles['border-radius'],
+      }),
+
+      // legend_section: new Konva.Text({
+      //   fill: 'magenta'
+      // }).
+      
+      // legend_text: new Konva.Text({
+      //   fill: 'green'
+      // }),
+
       tooltip_label: new Konva.Label({
         opacity: 1,
         listening: false,
@@ -1136,7 +1226,7 @@ import Color from 'color';
           y: 80,
         },
         stroke: self.options.tooltip.stroke,
-        strokeWidth: 1,
+        strokeWidth: 2,
       }),
 
       image: new Konva.Image({
@@ -1620,6 +1710,7 @@ import Color from 'color';
     self._draw_heatmap_header();
     self._draw_navigation();
     self.highlight_rows(self.options.highlighted_rows);
+    self._draw_legend_for_png(); // temporary
   };
 
   InCHlib.prototype._draw_dendrogram_layers = function () {
@@ -1725,9 +1816,9 @@ import Color from 'color';
     self.stage_layer = new Konva.Layer();
     const stage_rect = new Konva.Rect({
       fill: '#fff',
-      height: self.options.height + 130,
+      height: self.options.height + 130 < 500 ? 500 : self.options.height + 130,
       opacity: 1,
-      width: self.options.width,
+      width: self.options.width + 280,
       x: 0,
       y: 0,
     });
@@ -2062,7 +2153,6 @@ import Color from 'color';
       return;
     }
 
-    // let heatmap_row;
     let y;
     let key;
 
@@ -2133,10 +2223,6 @@ import Color from 'color';
       value = node.features[col_index];
       text_value = value;
   
-      // if (self.options.alternative_data) {
-      //   text_value = self.alternative_data[node_id][col_index];
-      // }
-  
       if (value !== null) {
         color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
   
@@ -2206,6 +2292,16 @@ import Color from 'color';
     return row;
   };
 
+  InCHlib.prototype._get_column_metadata_color = function (title, text_value) {
+    const self = this;
+    return title === 'Days to Death'
+      ? self.get_days_to_death_color(text_value)
+      : title === 'Age at Diagnosis'
+        ? self.get_age_at_diagnosis_color(text_value)
+        : self.options.categories.colors[title][text_value] ||
+          self.invalid_column_metadata_color;
+  };
+
   InCHlib.prototype._draw_column_metadata_row = function (data, title, row_index, x1, y1) {
     const self = this;
     const row = new Konva.Group({ class: 'column_metadata' });
@@ -2222,9 +2318,8 @@ import Color from 'color';
         value = self.column_metadata_descs[row_index].str2num[value];
       }
 
-      const color_value = self.options.categories.colors[title] || 'Greys';
+      const color = self._get_column_metadata_color(title, text_value);
 
-      color = self._get_color_for_value(value, self.column_metadata_descs[row_index].min, self.column_metadata_descs[row_index].max, self.column_metadata_descs[row_index].middle, color_value);
       x2 = x1 + self.pixels_for_dimension;
       y2 = y1;
 
@@ -2373,9 +2468,11 @@ import Color from 'color';
 
   InCHlib.prototype._draw_heatmap_header = function () {
     const self = this;
-    if (self.options.heatmap_header &&
+    if (
+      self.options.heatmap_header &&
       self.header.length > 0 &&
-      self.pixels_for_dimension >= self.min_size_draw_values) {
+      self.pixels_for_dimension >= self.min_size_draw_values
+    ) {
       self.header_layer = new Konva.Layer();
       const count = self._hack_size(self.leaves_y_coordinates);
       const y = (self.options.column_dendrogram && self.heatmap_header)
@@ -2662,6 +2759,37 @@ import Color from 'color';
 
       export_overlay.on('mouseout', () => {
         self._icon_mouseout(export_icon, export_overlay, self.navigation_layer);
+      });
+    }
+
+    if (self.options.navigation_toggle.categories_legend) {
+      const x = self.options.width - 60;
+      const y = 75;
+      const scale = 0.6;
+      const legend_icon = self.objects_ref.icon.clone({
+        data: 'M18.386,16.009l0.009-0.006l-0.58-0.912c1.654-2.226,1.876-5.319,0.3-7.8c-2.043-3.213-6.303-4.161-9.516-2.118c-3.212,2.042-4.163,6.302-2.12,9.517c1.528,2.402,4.3,3.537,6.944,3.102l0.424,0.669l0.206,0.045l0.779-0.447l-0.305,1.377l2.483,0.552l-0.296,1.325l1.903,0.424l-0.68,3.06l1.406,0.313l-0.424,1.906l4.135,0.918l0.758-3.392L18.386,16.009z M10.996,8.944c-0.685,0.436-1.593,0.233-2.029-0.452C8.532,7.807,8.733,6.898,9.418,6.463s1.594-0.233,2.028,0.452C11.883,7.6,11.68,8.509,10.996,8.944z',
+        x,
+        y,
+        scale: {
+          x: scale,
+          y: scale,
+        },
+        id: 'legend_icon',
+        label: 'View legend',
+      });
+      const legend_overlay = self._draw_icon_overlay(x, y);
+      self.navigation_layer.add(legend_icon, legend_overlay);
+
+      legend_overlay.on('click', function () {
+        self._legend_icon_click();
+      });
+
+      legend_overlay.on('mouseover', () => {
+        self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
+      });
+
+      legend_overlay.on('mouseout', () => {
+        self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
       });
     }
 
@@ -3610,6 +3738,7 @@ import Color from 'color';
       });
     }
   };
+
   InCHlib.prototype._draw_target_overlay = function () {
     const self = this;
     let overlay = self.$element.find('.target_overlay');
@@ -3653,8 +3782,8 @@ import Color from 'color';
     self.$element.after(loading_div);
     self.$element.hide();
 
-    self.stage.width(width * zoom);
-    self.stage.height(height * zoom);
+    self.stage.width((width + 280) * zoom);
+    self.stage.height((height < 500 ? 500 : height) * zoom);
     self.stage.scale({
       x: zoom,
       y: zoom,
@@ -3683,8 +3812,183 @@ import Color from 'color';
     function download_image(dataUrl) {
       $(`<a download="inchlib" href="${dataUrl}"></a>`)[0].click();
     }
-
   };
+
+  InCHlib.prototype._draw_legend_for_screen = function() {
+    const self = this;
+    const legend_div = $(`<div id='${self.legend_id}'></div>`);
+    const options = [`<h3>Legend</h3><ul>`]
+      .concat(self.legend_headings
+        .map(name => {
+          if (self.legend_continuous_categories.includes(name)) {
+            return `<li><strong>${name}</strong>
+            <ul><li>0 <span class="legend-gradient-${name.toLowerCase().split(' ')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
+          } else {
+            const legend_list = Object.keys(self.options.categories.colors[name])
+              .map(value => `<li ${
+                self.legend_horizontal_categories
+                  .includes(name) 
+                    ? 'style="display: inline-block; margin-right: 10px;"' 
+                    : ''
+                }><span class='legend-bullet' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
+              .join('');
+            return `<li><strong>${name}</strong><ul class="legend-list">${legend_list}</ul></li>`;
+          }
+        })
+      )
+      .concat('</ul>')
+      .join('');
+
+    legend_div.html(options);
+    self.$element.append(legend_div);
+    legend_div.css({
+      ...self.popup_styles,
+      left: self.options.width - 260,
+      'padding-bottom': 0,
+      top: 0,
+      width: 230,
+    });
+
+    $(`#${self.legend_id} ul`).css({
+      ...self.popup_list_styles
+    });
+    $(`#${self.legend_id} li`).css({
+      'padding-bottom': '5px',
+    });
+    $(`#${self.legend_id} .legend-list li`).css({
+      'padding-left': '17px',
+      'position': 'relative',
+    });
+    $(`#${self.legend_id} h3`).css({
+      'margin-top': '0px'
+    });
+    $(`#${self.legend_id} span`).css({
+      'display': 'inline-block',
+      'height': 12,
+      'width': 12,
+    });
+    $(`#${self.legend_id} .legend-bullet`).css({
+      'position': 'absolute',
+      'top': '2px',
+      'left': '0',
+      'display': 'block',
+    });
+    $(`#${self.legend_id} [class^="legend-gradient"]`).css({
+      width: 70,
+    });
+    $(`#${self.legend_id} .legend-gradient-age`).css({
+      background: `linear-gradient(90deg, ${self.legend_gradients.age.min} 0%, ${self.legend_gradients.age.max} 100%)`
+    });
+    $(`#${self.legend_id} .legend-gradient-days`).css({
+      background: `linear-gradient(90deg, ${self.legend_gradients.days.min} 0%, ${self.legend_gradients.days.max} 100%)`
+    });
+  };
+
+  InCHlib.prototype._draw_legend_for_png = function() {
+    const self = this;
+    self.legend_layer = new Konva.Layer();
+    self.stage.add(self.legend_layer);
+
+    const boxY = 5;
+    const boxX = self.stage.width() + 5;
+
+    const legend_title = new Konva.Text({
+      text: 'Legend',
+      fontFamily: 'franklin_gothic_fsbook',
+      fontSize: 18,
+      x: boxX + 10,
+      y: boxY + 10,
+    });
+
+    const legend_sections = new Konva.Group({
+      x: boxX + 10,
+      y: boxY + 40,
+    });
+
+    let y = 0
+    let x = 0;
+
+    for (let i = 0; i < self.legend_headings.length; i++) {
+      const heading = self.legend_headings[i];
+      const legend_heading = new Konva.Text({ text: heading, x, y, });
+      y += 20;
+      legend_sections.add(legend_heading);
+
+      if (self.legend_continuous_categories.includes(heading)) {
+        const zero = new Konva.Text({
+          text: '0',
+          x,
+          y,
+        });
+
+        const gradient = new Konva.Rect({
+          fillLinearGradientColorStops: heading === 'Age at Diagnosis'
+            ? [0, self.legend_gradients.age.min, 1, self.legend_gradients.age.max]
+            : [0, self.legend_gradients.days.min, 1, self.legend_gradients.days.max],
+          fillLinearGradientEndPoint: {
+            x: x + 85,
+            y,
+          },
+          fillLinearGradientStartPoint: {
+            x: x + 10,
+            y,
+          },
+          height: 12,
+          width: 75,
+          x: x + 15,
+          y,
+        });
+
+        const max = new Konva.Text({
+          text: self.legend_gradient_upper_value(heading),
+          x: x + 95,
+          y,
+        });
+        legend_sections.add(zero, gradient, max);
+        y += 25;
+      } else {
+        const legend_list = Object.keys(self.options.categories.colors[heading]);
+        
+        for (let n = 0; n < legend_list.length; n++) {
+          const value = legend_list[n];
+          const text = value.split('_').join(' ');
+          const legend_square = new Konva.Rect({
+            fill: self.options.categories.colors[heading][value],
+            height: 12,
+            width: 12,
+            x, 
+            y, 
+          });
+          const legend_text = new Konva.Text({
+            text,
+            x: x + 20,
+            y,
+          });
+          legend_sections.add(legend_square, legend_text);
+          y += 20;
+        }
+        y += 5;
+      }
+    }
+    const legend = self.objects_ref.popup_box.clone({
+      height: y + 40,
+      x: boxX,
+      y: boxY,
+    });
+
+    self.legend_layer.add(legend, legend_title, legend_sections);
+    self.legend_layer.draw();
+  };
+
+  InCHlib.prototype._legend_icon_click = function() {
+    const self = this;
+    const overlay = self._draw_target_overlay();
+    self._draw_legend_for_screen();
+    overlay.click(() => {
+      $(`#${self.legend_id}`).fadeOut().remove();
+      overlay.fadeOut().remove();
+    });
+  }
 
   InCHlib.prototype._categories_icon_click = function() {
     const self = this;
@@ -3712,8 +4016,8 @@ import Color from 'color';
     categories_form.css({
       'z-index': 1000,
       position: 'absolute',
-      top: 80,
-      left: self.options.width - 225,
+      top: 0,
+      left: self.options.width - 210,
       padding: '10px',
       border: 'solid #D2D2D2 2px',
       'border-radius': '5px',
@@ -3758,7 +4062,6 @@ import Color from 'color';
 
     categories_form.submit(function (evt) {
       evt.preventDefault();
-      evt.stopPropagation();
 
       const categories_updated = [];
 
@@ -3842,7 +4145,6 @@ import Color from 'color';
       self._update_color_scale();
       overlay.trigger('click');
       evt.preventDefault();
-      evt.stopPropagation();
     });
   };
 
@@ -3893,7 +4195,8 @@ import Color from 'color';
       const height = icon_overlay.getHeight();
 
       if (icon.getAttr('id') === 'export_icon' ||
-        icon.getAttr('id') === 'categories_icon') {
+        icon.getAttr('id') === 'categories_icon' ||
+        icon.getAttr('id') === 'legend_icon') {
         x -= 100;
         y -= 47;
       }

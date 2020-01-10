@@ -1121,7 +1121,7 @@ import { round } from 'lodash';
         strokeWidth: self.popup_styles['border-width'],
         cornerRadius: self.popup_styles['border-radius'],
       }),
-
+      
       tooltip_label: new Konva.Label({
         opacity: 1,
         listening: false,

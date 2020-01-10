@@ -2570,7 +2570,6 @@ import { round } from 'lodash';
       return;
     }
     const y1 = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2 - 10;
-    // THIS maybe?? remove the '- 10'
     const y2 = y1;
     const x1 = 0;
     const x2 = self.distance;

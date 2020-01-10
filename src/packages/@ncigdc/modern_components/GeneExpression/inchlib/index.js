@@ -236,6 +236,11 @@ import { round } from 'lodash';
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
 
+    // control hover color with opacity
+    self.hover_fill = '#3a3a3a';
+    self.hover_opacity_off = 0.7;
+    self.hover_opacity_on = 1;
+
     // column metadata colors & legend info
     self.MAX_DAYS_TO_DEATH = 3379;
     self.MAX_AGE_AT_DIAGNOSIS = 90;
@@ -328,7 +333,7 @@ import { round } from 'lodash';
         'transition': 'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
       },
       label: {
-        'color': '#3a3a3a',
+        'color': self.hover_fill,
         'display': 'block',
         'font-size': '14px',
         'margin-bottom': '5px',
@@ -1196,7 +1201,7 @@ import { round } from 'lodash';
       }),
 
       cluster_border: new Konva.Line({
-        stroke: '#3a3a3a',
+        stroke: self.hover_fill,
         strokeWidth: 1,
         dash: [6, 2],
       }),
@@ -2254,6 +2259,7 @@ import { round } from 'lodash';
       text = self.objects_ref.heatmap_value.clone({
         text: gene_symbol,
         fontSize: self.options.font.size,
+        fill: self.hover_fill,
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
@@ -2271,15 +2277,18 @@ import { round } from 'lodash';
         name: gene_symbol,
         column: ['m', 1].join('_'),
         strokeWidth: self.pixels_for_leaf,
+        opacity: 1 - self.hover_opacity_off,
+        // this hover is being controlled by having an overlay
+        // on top of the text
+        stroke: 'white',
       });
-      row.add(line);
   
       const y = self._hack_round(y1 - self.value_font_size / 2);
       text.position({
         x: x1 + 5,
         y,
       });
-      row.add(text);
+      row.add(text, line);
       row.on('click', ({ target: { attrs: { gene_ensembl = '' }}}) => {
         if (gene_ensembl !== '') {
           self.events.row_onclick(gene_ensembl);
@@ -2365,15 +2374,26 @@ import { round } from 'lodash';
     });
 
     row.on('mouseover', (evt) => {
+      const { target: { attrs: { 
+        gene_ensembl = '', gene_symbol = '' 
+      }}} = evt;
+      const is_gene_symbol_column = gene_ensembl !== '' && gene_symbol === '';
+      if (is_gene_symbol_column) {
+        evt.target.opacity(1 - self.hover_opacity_on);
+        self.heatmap_layer.draw();
+        self._hover_on();
+      }
       self._draw_col_label(evt);
     });
 
-    row.on('mouseout', ({ target: { attrs: { 
-      gene_ensembl = '', gene_symbol = '' 
-    }}}) => {
-      // TODO: gene mouseover
+    row.on('mouseout', (evt) => {
+      const { target: { attrs: { 
+        gene_ensembl = '', gene_symbol = '' 
+      }}} = evt;
       const is_gene_symbol_column = gene_ensembl !== '' && gene_symbol === '';
       if (is_gene_symbol_column) {
+        evt.target.opacity(1 - self.hover_opacity_off);
+        self.heatmap_layer.draw();
         self._hover_off();
       }
       self.heatmap_overlay.find('#col_label')[0].destroy();
@@ -2514,8 +2534,8 @@ import { round } from 'lodash';
         x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
         column_header = self.objects_ref.column_header.clone({
           case_uuid,
-          fill: '#3a3a3a',
-          opacity: 0.6,
+          fill: self.hover_fill,
+          opacity: self.hover_opacity_off,
           fontFamily: self.options.font.family,
           fontSize: self.options.font.size,
           fontStyle: 'bold',
@@ -2539,18 +2559,16 @@ import { round } from 'lodash';
       });
 
       self.header_layer.on('mouseover', function (evt) {
-        // console.log(evt);
         self._hover_on();
         const label = evt.target;
-        label.setOpacity(1);
-        // self._draw_col_label(evt);
+        label.setOpacity(self.hover_opacity_on)
         this.draw();
       });
 
       self.header_layer.on('mouseout', function (evt) {
         self._hover_off();
         const label = evt.target;
-        label.setOpacity(0.6);
+        label.setOpacity(self.hover_opacity_off);
         this.draw();
       });
     }
@@ -2613,7 +2631,8 @@ import { round } from 'lodash';
       text: distance,
       fontSize: self.options.font.size,
       fontFamily: self.options.font.family,
-      fill: self.options.font.color,
+      fill: self.hover_fill,
+      opacity: self.hover_opacity_off,
       align: 'right',
       listening: false,
     });
@@ -3941,7 +3960,7 @@ import { round } from 'lodash';
       y: scaleY,
       fontStyle: 'bold',
       fontFamily: self.options.font.family,
-      fill: '#3a3a3a',
+      fill: self.hover_fill,
     });
 
     scaleY += 20;
@@ -3976,7 +3995,7 @@ import { round } from 'lodash';
         text,
         x: scaleX,
         y: scaleY,
-        fill: '#3a3a3a',
+        fill: self.hover_fill,
       });
       scale_group.add(scale_text);
       scaleY += scaleY_int;
@@ -3988,7 +4007,7 @@ import { round } from 'lodash';
       fontSize: 18,
       x: legendX + 10,
       y: legendY + 10,
-      fill: '#3a3a3a',
+      fill: self.hover_fill,
     });
 
     const legend_group = new Konva.Group({
@@ -4006,7 +4025,7 @@ import { round } from 'lodash';
         fontStyle: 'bold',
         fontFamily: self.options.font.family,
         text: heading,
-        fill: '#3a3a3a',
+        fill: self.hover_fill,
         x,
         y,
       });
@@ -4018,7 +4037,7 @@ import { round } from 'lodash';
           text: '0',
           x,
           y,
-          fill: '#3a3a3a',
+          fill: self.hover_fill,
         });
 
         const gradient = new Konva.Rect({
@@ -4043,7 +4062,7 @@ import { round } from 'lodash';
           text: self.legend_gradient_upper_value(heading),
           x: x + 95,
           y,
-          fill: '#3a3a3a',
+          fill: self.hover_fill,
         });
 
         legend_group.add(zero, gradient, max);
@@ -4065,7 +4084,7 @@ import { round } from 'lodash';
             text,
             x: x + 20,
             y,
-            fill: '#3a3a3a',
+            fill: self.hover_fill,
           });
           legend_group.add(legend_square, legend_text);
           y += 20;
@@ -4321,7 +4340,7 @@ import { round } from 'lodash';
       self.icon_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
       layer.add(self.icon_tooltip);
     }
-    icon.setFill('#3a3a3a');
+    icon.setFill(self.hover_fill);
     layer.draw();
   };
 

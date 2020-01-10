@@ -4,6 +4,7 @@
 import $ from 'jquery';
 import Konva from 'konva';
 import Color from 'color';
+import { round } from 'lodash';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -172,7 +173,7 @@ import Color from 'color';
       family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
       size: 10,
     },
-    heatmap_colors: 'Greens',
+    heatmap_colors: 'RdLrGr',
     heatmap_header: true,
     heatmap_part_width: 0.7,
     heatmap: true,
@@ -1120,15 +1121,7 @@ import Color from 'color';
         strokeWidth: self.popup_styles['border-width'],
         cornerRadius: self.popup_styles['border-radius'],
       }),
-
-      // legend_section: new Konva.Text({
-      //   fill: 'magenta'
-      // }).
       
-      // legend_text: new Konva.Text({
-      //   fill: 'green'
-      // }),
-
       tooltip_label: new Konva.Label({
         opacity: 1,
         listening: false,
@@ -1212,23 +1205,6 @@ import Color from 'color';
         fill: 'grey',
       }),
 
-      rect_gradient: new Konva.Rect({
-        x: 0,
-        y: 80,
-        width: 100,
-        height: 20,
-        fillLinearGradientStartPoint: {
-          x: 0,
-          y: 80,
-        },
-        fillLinearGradientEndPoint: {
-          x: 100,
-          y: 80,
-        },
-        stroke: self.options.tooltip.stroke,
-        strokeWidth: 2,
-      }),
-
       image: new Konva.Image({
         stroke: '#D2D2D2',
         strokeWidth: 1,
@@ -1240,6 +1216,27 @@ import Color from 'color';
       unzoom_icon: 'M22.646,19.307c0.96-1.583,1.523-3.435,1.524-5.421C24.169,8.093,19.478,3.401,13.688,3.399C7.897,3.401,3.204,8.093,3.204,13.885c0,5.789,4.693,10.481,10.484,10.481c1.987,0,3.839-0.563,5.422-1.523l7.128,7.127l3.535-3.537L22.646,19.307zM13.688,20.369c-3.582-0.008-6.478-2.904-6.484-6.484c0.006-3.582,2.903-6.478,6.484-6.486c3.579,0.008,6.478,2.904,6.484,6.486C20.165,17.465,17.267,20.361,13.688,20.369zM8.854,11.884v4.001l9.665-0.001v-3.999L8.854,11.884z',
       lightbulb: 'M15.5,2.833c-3.866,0-7,3.134-7,7c0,3.859,3.945,4.937,4.223,9.499h5.553c0.278-4.562,4.224-5.639,4.224-9.499C22.5,5.968,19.366,2.833,15.5,2.833zM15.5,28.166c1.894,0,2.483-1.027,2.667-1.666h-5.334C13.017,27.139,13.606,28.166,15.5,28.166zM12.75,25.498h5.5v-5.164h-5.5V25.498z',
     };
+
+    self.color_steps = [
+      0,
+      self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
+      .5,
+      self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
+      1,
+      self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
+    ];
+
+    self.get_scale_values = () => {
+      const [min, max, mid] = self.data_descs_all;
+      return [
+        min,
+        (((mid - min) / 2) + min),
+        mid,
+        (((max - mid) / 2) + mid),
+        max,
+      ]
+      .map(x => round(x, 1).toFixed(1));
+    }
 
     // start plugin
     self.init();
@@ -1994,15 +1991,16 @@ import Color from 'color';
     }
 
     self.data_descs = {};
+    self.data_descs_all = self._get_min_max_middle(data);
+
     if (self.options.independent_columns) {
       self.data_descs = self._get_data_min_max_middle(data);
     } else {
-      const min_max_middle = self._get_min_max_middle(data);
       for (var i = 0; i < self.dimensions.data; i++) {
         self.data_descs[i] = {
-          min: min_max_middle[0],
-          max: min_max_middle[1],
-          middle: min_max_middle[2],
+          min: self.data_descs_all[0],
+          max: self.data_descs_all[1],
+          middle: self.data_descs_all[2],
         };
       }
     }
@@ -2254,7 +2252,6 @@ import Color from 'color';
       text = self.objects_ref.heatmap_value.clone({
         text: gene_symbol,
         fontSize: self.options.font.size,
-        fontWeight: 'bold',
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
@@ -2867,20 +2864,54 @@ import Color from 'color';
     if (!self.options.navigation_toggle.color_scale) {
       return;
     }
-    const color_steps = [
-      self.options.min_percentile / 100,
-      self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
-      self.options.middle_percentile / 100,
-      self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
-      self.options.max_percentile / 100,
-      self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
-    ];
 
-    const color_scale = self.objects_ref.rect_gradient.clone({
+    const scale_height = 20;
+    const scale_width = 150;
+    const scale_x = 2;
+    const scale_y = 80;
+
+    const color_scale = new Konva.Rect({
       label: 'Edit heatmap colors',
-      fillLinearGradientColorStops: color_steps,
+      fillLinearGradientColorStops: self.color_steps,
       id: `${self._name}_color_scale`,
+      x: scale_x,
+      y: scale_y,
+      width: scale_width,
+      height: scale_height,
+      fillLinearGradientStartPoint: {
+        x: scale_x,
+        y: scale_y,
+      },
+      fillLinearGradientEndPoint: {
+        x: scale_width,
+        y: scale_y,
+      },
     });
+
+    const scale_values = self.get_scale_values();
+
+    const scale_values_group = new Konva.Group({
+      x: scale_x,
+      y: scale_height + scale_y + 5,
+    });
+
+    let x = 0;
+    let y = 0;
+
+    const scale_x_int = (scale_width / scale_values.length) + 3.5;
+
+    for (let i = 0; i < scale_values.length; i++) {
+      const text = scale_values[i];
+      const scale_text = new Konva.Text({
+        text,
+        x,
+        y,
+        fontStyle: '500',
+        fill: self.options.font.color,
+      });
+      x += scale_x_int;
+      scale_values_group.add(scale_text);
+    }
 
     color_scale.on('mouseover', () => {
       self._color_scale_mouseover(color_scale, self.navigation_layer);
@@ -2894,22 +2925,25 @@ import Color from 'color';
       self._color_scale_click(color_scale, self.navigation_layer);
     });
 
-    self.navigation_layer.add(color_scale);
+    self.navigation_layer.add(color_scale, scale_values_group);
   };
 
   InCHlib.prototype._update_color_scale = function () {
     const self = this;
     const color_scale = self.navigation_layer.find(`#${self._name}_color_scale`);
 
-    color_scale.fillLinearGradientColorStops([
-      self.options.min_percentile / 100,
+    self.color_steps = [
+      0,
       self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
-      self.options.middle_percentile / 100,
+      0.5,
       self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
-      self.options.max_percentile / 100,
+      1,
       self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
-    ]);
+    ];
+
+    color_scale.fillLinearGradientColorStops(self.color_steps);
     self.navigation_layer.draw();
+    self.redraw_legend();
   };
 
   InCHlib.prototype._draw_icon_overlay = function (x, y) {
@@ -3890,36 +3924,103 @@ import Color from 'color';
     self.legend_layer = new Konva.Layer();
     self.stage.add(self.legend_layer);
 
-    const boxY = 5;
-    const boxX = self.stage.width() + 5;
+    const legendY = 5;
+    const legendX = self.stage.width() + 5;
+
+    const scale_group = new Konva.Group({
+      x: legendX + 180,
+      y: legendY + 40,
+    });
+
+    let scaleX = 0;
+    let scaleY = 0;
+
+    const scale_height = 125;
+
+    const scale_heading = new Konva.Text({
+      text: 'Heatmap',
+      x: scaleX,
+      y: scaleY,
+      fontStyle: 'bold',
+      fontFamily: self.options.font.family,
+      fill: '#3a3a3a',
+    });
+
+    scaleY += 20;
+
+    const scale_gradient = new Konva.Rect({
+      fillLinearGradientColorStops: self.color_steps,
+      fillLinearGradientEndPoint: {
+        x: scaleX,
+        y: 110,
+      },
+      fillLinearGradientStartPoint: {
+        x: scaleX,
+        y: scaleY,
+      },
+      height: scale_height,
+      width: 20,
+      x: scaleX,
+      y: scaleY,
+    });
+    scale_group.add(scale_gradient, scale_heading);
+
+    scaleX += 28;
+
+    const scale_values = self.get_scale_values();
+
+    scaleY += 1
+    const scaleY_int = Math.floor(scale_height / scale_values.length) + 3.5;
+
+    for (let i = 0; i < scale_values.length; i++) {
+      const text = scale_values[i];
+      const scale_text = new Konva.Text({
+        text,
+        x: scaleX,
+        y: scaleY,
+        fill: '#3a3a3a',
+      });
+      scale_group.add(scale_text);
+      scaleY += scaleY_int;
+    }
 
     const legend_title = new Konva.Text({
       text: 'Legend',
       fontFamily: 'franklin_gothic_fsbook',
       fontSize: 18,
-      x: boxX + 10,
-      y: boxY + 10,
+      x: legendX + 10,
+      y: legendY + 10,
+      fill: '#3a3a3a',
     });
 
-    const legend_sections = new Konva.Group({
-      x: boxX + 10,
-      y: boxY + 40,
+    const legend_group = new Konva.Group({
+      x: legendX + 10,
+      y: legendY + 40,
     });
 
-    let y = 0
+    let y = 0;
     let x = 0;
 
     for (let i = 0; i < self.legend_headings.length; i++) {
       const heading = self.legend_headings[i];
-      const legend_heading = new Konva.Text({ text: heading, x, y, });
+      const legend_heading = new Konva.Text({
+        fill: self.options.font.color,
+        fontStyle: 'bold',
+        fontFamily: self.options.font.family,
+        text: heading,
+        fill: '#3a3a3a',
+        x,
+        y,
+      });
       y += 20;
-      legend_sections.add(legend_heading);
+      legend_group.add(legend_heading);
 
       if (self.legend_continuous_categories.includes(heading)) {
         const zero = new Konva.Text({
           text: '0',
           x,
           y,
+          fill: '#3a3a3a',
         });
 
         const gradient = new Konva.Rect({
@@ -3944,8 +4045,10 @@ import Color from 'color';
           text: self.legend_gradient_upper_value(heading),
           x: x + 95,
           y,
+          fill: '#3a3a3a',
         });
-        legend_sections.add(zero, gradient, max);
+
+        legend_group.add(zero, gradient, max);
         y += 25;
       } else {
         const legend_list = Object.keys(self.options.categories.colors[heading]);
@@ -3964,8 +4067,9 @@ import Color from 'color';
             text,
             x: x + 20,
             y,
+            fill: '#3a3a3a',
           });
-          legend_sections.add(legend_square, legend_text);
+          legend_group.add(legend_square, legend_text);
           y += 20;
         }
         y += 5;
@@ -3973,11 +4077,20 @@ import Color from 'color';
     }
     const legend = self.objects_ref.popup_box.clone({
       height: y + 40,
-      x: boxX,
-      y: boxY,
+      x: legendX,
+      y: legendY,
     });
-    self.legend_layer.add(legend, legend_title, legend_sections);
+
+    self.legend_layer.add(legend, legend_title, legend_group, scale_group);
     self.legend_layer.draw();
+  };
+
+  InCHlib.prototype.redraw_legend = function() {
+    const self = this;
+    self._delete_layers([
+      self.legend_layer,
+    ]);
+    self._draw_legend_for_png();
   };
 
   InCHlib.prototype._legend_icon_click = function() {

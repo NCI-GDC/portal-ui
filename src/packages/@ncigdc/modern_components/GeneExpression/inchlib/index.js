@@ -1890,10 +1890,12 @@ import { round } from 'lodash';
     const self = this;
 
     layer.on('mouseover', function (evt) {
+      self._hover_on();
       self._dendrogram_layers_mouseover(this, evt);
     });
 
     layer.on('mouseout', function (evt) {
+      self._hover_off();
       self._dendrogram_layers_mouseout(this, evt);
     });
   };
@@ -2368,6 +2370,7 @@ import { round } from 'lodash';
     });
 
     row.on('mouseout', (evt) => {
+      // TODO: gene mouseover
       self.heatmap_overlay.find('#col_label')[0].destroy();
       self.heatmap_overlay.find('#column_overlay')[0].destroy();
       self.heatmap_overlay.draw();
@@ -2664,10 +2667,12 @@ import { round } from 'lodash';
       });
 
       refresh_overlay.on('mouseover', () => {
+        self._hover_on();
         self._icon_mouseover(refresh_icon, refresh_overlay, self.navigation_layer);
       });
 
       refresh_overlay.on('mouseout', () => {
+        self._hover_off();
         self._icon_mouseout(refresh_icon, refresh_overlay, self.navigation_layer);
       });
     }
@@ -2693,10 +2698,12 @@ import { round } from 'lodash';
       });
 
       unzoom_overlay.on('mouseover', () => {
+        self._hover_on();
         self._icon_mouseover(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
 
       unzoom_overlay.on('mouseout', () => {
+        self._hover_off();
         self._icon_mouseout(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
     }
@@ -2723,10 +2730,12 @@ import { round } from 'lodash';
       });
 
       column_unzoom_overlay.on('mouseover', () => {
+        self._hover_on();
         self._icon_mouseover(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
 
       column_unzoom_overlay.on('mouseout', () => {
+        self._hover_off();
         self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
     }
@@ -2752,10 +2761,12 @@ import { round } from 'lodash';
       });
 
       export_overlay.on('mouseover', () => {
+        self._hover_on();
         self._icon_mouseover(export_icon, export_overlay, self.navigation_layer);
       });
 
       export_overlay.on('mouseout', () => {
+        self._hover_off();
         self._icon_mouseout(export_icon, export_overlay, self.navigation_layer);
       });
     }
@@ -2783,10 +2794,12 @@ import { round } from 'lodash';
       });
 
       legend_overlay.on('mouseover', () => {
+        self._hover_on();
         self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
       });
 
       legend_overlay.on('mouseout', () => {
+        self._hover_off();
         self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
       });
     }
@@ -2816,10 +2829,12 @@ import { round } from 'lodash';
       });
 
       categories_overlay.on('mouseover', () => {
+        self._hover_on();
         self._icon_mouseover(categories_icon, categories_overlay, self.navigation_layer);
       });
 
       categories_overlay.on('mouseout', () => {
+        self._hover_off();
         self._icon_mouseout(categories_icon, categories_overlay, self.navigation_layer);
       });
     }
@@ -2828,6 +2843,7 @@ import { round } from 'lodash';
   };
 
   InCHlib.prototype._draw_help = function () {
+    // TODO: REMOVE
     const self = this;
     if (!self.options.navigation_toggle.hint_button) {
       return;
@@ -2914,10 +2930,12 @@ import { round } from 'lodash';
     }
 
     color_scale.on('mouseover', () => {
+      self._hover_on();
       self._color_scale_mouseover(color_scale, self.navigation_layer);
     });
 
     color_scale.on('mouseout', () => {
+      self._hover_off();
       self._color_scale_mouseout(color_scale, self.navigation_layer);
     });
 
@@ -3225,10 +3243,12 @@ import { round } from 'lodash';
     self.navigation_layer.moveToTop();
 
     zoom_overlay.on('mouseover', () => {
+      self._hover_on();
       self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('mouseout', () => {
+      self._hover_off();
       self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
@@ -3309,10 +3329,12 @@ import { round } from 'lodash';
     self.navigation_layer.moveToTop();
 
     zoom_overlay.on('mouseover', () => {
+      self._hover_on();
       self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('mouseout', () => {
+      self._hover_off();
       self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
@@ -4702,6 +4724,16 @@ import { round } from 'lodash';
     self.heatmap_layer.moveUp();
   };
 
+  /**
+    * Hover - change to hand cursor & back again
+    */
+  InCHlib.prototype._hover_on = function() {
+    document.body.style.cursor = 'pointer';
+  }
+
+  InCHlib.prototype._hover_off = function() {
+    document.body.style.cursor = 'default';
+  }
 
 
   /**

@@ -45,11 +45,13 @@ class GeneExpression extends Component {
       },
     },
   ) => {
-    const { history } = this.props;
     const nextPage = gene_ensembl === ''
       ? `/cases/${case_uuid}`
       : `/genes/${gene_ensembl}`;
-    history.push(nextPage);
+    Object.assign(document.createElement('a'), {
+      href: nextPage,
+      target: '_blank',
+    }).click();
   }
 
   handleDataButton = size => {

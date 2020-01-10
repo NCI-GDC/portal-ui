@@ -3945,7 +3945,6 @@ import Color from 'color';
           x: x + 95,
           y,
         });
-
         legend_sections.add(zero, gradient, max);
         y += 25;
       } else {
@@ -3977,7 +3976,6 @@ import Color from 'color';
       x: boxX,
       y: boxY,
     });
-
     self.legend_layer.add(legend, legend_title, legend_sections);
     self.legend_layer.draw();
   };

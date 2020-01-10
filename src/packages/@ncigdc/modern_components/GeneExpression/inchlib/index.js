@@ -1647,7 +1647,7 @@ import Color from 'color';
     self.column_metadata_rows = self.options.column_metadata
       ? self.column_metadata.visible.filter(x => x).length
       : 0;
-    self.column_metadata_height = self.column_metadata_rows * self.column_metadata_row_height;
+    self.column_metadata_height = (self.column_metadata_rows * self.column_metadata_row_height) + 15;
 
     if (self.options.heatmap) {
       self.last_column = null;
@@ -2566,6 +2566,7 @@ import Color from 'color';
       return;
     }
     const y1 = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2 - 10;
+    // THIS maybe?? remove the '- 10'
     const y2 = y1;
     const x1 = 0;
     const x2 = self.distance;
@@ -3975,7 +3976,6 @@ import Color from 'color';
       x: boxX,
       y: boxY,
     });
-
     self.legend_layer.add(legend, legend_title, legend_sections);
     self.legend_layer.draw();
   };

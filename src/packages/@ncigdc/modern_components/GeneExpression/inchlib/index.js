@@ -3944,7 +3944,6 @@ import Color from 'color';
           x: x + 95,
           y,
         });
-
         legend_sections.add(zero, gradient, max);
         y += 25;
       } else {

@@ -31,7 +31,7 @@ const enhance = compose(
 
 class GeneExpression extends Component {
   state = {
-    data: dataObj.data3x2, // for viz demo
+    data: dataObj.data10x5, // for viz demo
     // data: showDataButtons
     //   ? null
     //   : dataObj.data50x50,

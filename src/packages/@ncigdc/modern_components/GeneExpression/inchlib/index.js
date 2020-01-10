@@ -2648,7 +2648,6 @@ import { round } from 'lodash';
     if (self.options.heatmap) {
       self._draw_color_scale();
     }
-    self._draw_help();
 
     if (self.zoomed_clusters.row.length > 0 || self.zoomed_clusters.column.length > 0) {
       const refresh_icon = self.objects_ref.icon.clone({
@@ -2840,39 +2839,6 @@ import { round } from 'lodash';
     }
 
     self.stage.add(self.navigation_layer);
-  };
-
-  InCHlib.prototype._draw_help = function () {
-    // TODO: REMOVE
-    const self = this;
-    if (!self.options.navigation_toggle.hint_button) {
-      return;
-    }
-    const help_icon = self.objects_ref.icon.clone({
-      data: self.paths_ref.lightbulb,
-      x: self.options.width - 63,
-      y: 40,
-      scale: {
-        x: 0.8,
-        y: 0.8,
-      },
-      id: 'help_icon',
-      label: 'Tip',
-    });
-
-    const help_overlay = self._draw_icon_overlay(self.options.width - 63, 40);
-
-    self.navigation_layer.add(help_icon, help_overlay);
-
-    help_overlay.on('mouseover', () => {
-      self._icon_mouseover(help_icon, help_overlay, self.navigation_layer);
-      self._help_mouseover();
-    });
-
-    help_overlay.on('mouseout', () => {
-      self._help_mouseout();
-      self._icon_mouseout(help_icon, help_overlay, self.navigation_layer);
-    });
   };
 
   InCHlib.prototype._draw_color_scale = function () {

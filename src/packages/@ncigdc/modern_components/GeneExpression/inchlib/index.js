@@ -2350,7 +2350,7 @@ import { round } from 'lodash';
       y,
     });
     row.add(text);
-    
+
     return row;
   };
 
@@ -4532,11 +4532,11 @@ import { round } from 'lodash';
         points: [
           x,
           y,
-          x + self.heatmap_width,
+          x + self.heatmap_width - (self.pixels_for_dimension * 2),
           y,
         ],
         strokeWidth: self.pixels_for_leaf,
-        stroke: '#FFFFFF',
+        stroke: 'white',
         opacity: 0.3,
         listening: false,
       });
@@ -4593,7 +4593,7 @@ import { round } from 'lodash';
           self.header_height + 10 + self.column_metadata_height + (self.heatmap_array.length) * self.pixels_for_leaf,
         ],
         strokeWidth: self.pixels_for_dimension,
-        stroke: 'magenta',
+        stroke: 'white',
         opacity: is_gene_symbol_column
           ? 0
           : 0.3,

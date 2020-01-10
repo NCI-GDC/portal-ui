@@ -15,9 +15,19 @@ const category_colors = {
   'Vital Status': 'RdBu',
 };
 
+const default_visible_categories = [
+  'Age at Diagnosis',
+  'Days to Death',
+  'Race',
+  'Vital Status',
+];
+
 const options = {
   button_color: theme.primary,
-  category_colors,
+  categories: {
+    colors: category_colors,
+    defaults: default_visible_categories,
+  },
   font: {
     color: '#767676',
     family: '"Helvetica Neue", Helvetica, Arial, sans-serif',

@@ -2370,10 +2370,8 @@ import { round } from 'lodash';
     });
 
     row.on('mouseover', (evt) => {
-      const { target: { attrs: { 
-        gene_ensembl = '', gene_symbol = '' 
-      }}} = evt;
-      const is_gene_symbol_column = gene_ensembl !== '' && gene_symbol === '';
+      const { target: { attrs: { column = '' }}} = evt;
+      const is_gene_symbol_column = column === 'm_1';
       if (is_gene_symbol_column) {
         evt.target.opacity(1 - self.hover_opacity_on);
         self.heatmap_layer.draw();
@@ -2383,10 +2381,8 @@ import { round } from 'lodash';
     });
 
     row.on('mouseout', (evt) => {
-      const { target: { attrs: { 
-        gene_ensembl = '', gene_symbol = '' 
-      }}} = evt;
-      const is_gene_symbol_column = gene_ensembl !== '' && gene_symbol === '';
+      const { target: { attrs: { column = '' }}} = evt;
+      const is_gene_symbol_column = column === 'm_1';
       if (is_gene_symbol_column) {
         evt.target.opacity(1 - self.hover_opacity_off);
         self.heatmap_layer.draw();
@@ -2402,7 +2398,6 @@ import { round } from 'lodash';
       if (evt.target.parent.attrs.class !== 'column_metadata') {
         const items = self.data.nodes[row_id].objects;
         const item_ids = [];
-
         for (var i = 0; i < items.length; i++) {
           item_ids.push(items[i]);
         }
@@ -2478,13 +2473,17 @@ import { round } from 'lodash';
       });
 
       self.header_layer.on('mouseover', function (evt) {
+        // TODO remove column overlay
+        // self._draw_col_label(evt);
         self._hover_on();
         const label = evt.target;
-        label.setOpacity(self.hover_opacity_on)
+        label.setOpacity(self.hover_opacity_on);
         this.draw();
       });
 
       self.header_layer.on('mouseout', function (evt) {
+        // TODO add column overlay
+        
         self._hover_off();
         const label = evt.target;
         label.setOpacity(self.hover_opacity_off);
@@ -4503,13 +4502,12 @@ import { round } from 'lodash';
     const self = this;
     let line;
     const { attrs } = evt.target;
-    // console.log('attrs', attrs)
-    const { points } = attrs;
-    const { gene_ensembl = '', gene_symbol = ''} = attrs; 
-    const is_gene_symbol_column = gene_ensembl !== '' && gene_symbol === '';
+    console.log('attrs', attrs)
+    const { column: original_column, points } = attrs;
+    const is_gene_symbol_column = original_column === 'm_1';
     const x = self._hack_round((points[0] + points[2]) / 2);
     const y = points[1] - 0.5 * self.pixels_for_leaf;
-    const column = attrs.column.split('_');
+    const column = original_column.split('_');
     const header_type2value = {
       d: self.heatmap_header[column[1]],
       m: self.metadata_header[column[1]],

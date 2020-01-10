@@ -2450,7 +2450,7 @@ import { round } from 'lodash';
           opacity: self.hover_opacity_on,
           fontFamily: self.options.font.family,
           fontSize: self.options.font.size,
-          fontStyle: 'bold',
+          fontStyle: '500',
           position_index: i,
           rotation,
           text: is_header_hidden
@@ -2484,8 +2484,6 @@ import { round } from 'lodash';
       });
 
       self.header_layer.on('mouseover', function (evt) {
-        // TODO remove column overlay
-        // self._draw_col_label(evt);
         self._draw_col_overlay_for_header(evt);
         self._hover_cursor_on();
         const label = evt.target;
@@ -2494,8 +2492,8 @@ import { round } from 'lodash';
       });
 
       self.header_layer.on('mouseout', function (evt) {
-        // TODO add column overlay
-        // self.heatmap_overlay.find('#column_overlay')[0].destroy();
+        self.column_overlay.destroy();
+        self.heatmap_overlay.draw();
         self._hover_cursor_off();
         const label = evt.target;
         label.setOpacity(1 - self.hover_opacity_off);
@@ -2506,13 +2504,11 @@ import { round } from 'lodash';
 
   InCHlib.prototype._draw_col_overlay_for_header = function(evt) {
     const self = this;
-    const { text, x, y } = evt.target.attrs;
+    const { case_uuid, x, y } = evt.target.attrs;
 
-    // console.log(evt.target.attrs);
-
-    if (self.active_header_column !== text) {
+    if (self.active_header_column !== case_uuid) {
       self.column_overlay.destroy();
-      self.active_header_column = text;
+      self.active_header_column = case_uuid;
       self.column_overlay = self.objects_ref.heatmap_line.clone({
         points: [
           x,
@@ -2527,8 +2523,9 @@ import { round } from 'lodash';
         id: 'column_overlay',
       });
       self.heatmap_overlay.add(self.column_overlay);
+      self.heatmap_overlay.moveToTop();
+      self.heatmap_overlay.draw();
     }
-
   };
 
   InCHlib.prototype._translate_column_to_feature_index = function (column_index) {
@@ -3640,7 +3637,7 @@ import { round } from 'lodash';
         'padding-left': '15px',
         'padding-bottom': '10px',
         'padding-right': '15px',
-        'font-weight': 'bold',
+        'font-weight': '500',
         'font-size': '14px',
         'z-index': 1000,
         'font-family': self.options.font.family,
@@ -3916,7 +3913,7 @@ import { round } from 'lodash';
       text: 'Heatmap',
       x: scaleX,
       y: scaleY,
-      fontStyle: 'bold',
+      fontStyle: '500',
       fontFamily: self.options.font.family,
       fill: self.hover_fill,
     });
@@ -3981,7 +3978,7 @@ import { round } from 'lodash';
       const legend_heading = new Konva.Text({
         fill: self.hover_fill,
         opacity: self.hover_opacity_off,
-        fontStyle: 'bold',
+        fontStyle: '500',
         fontFamily: self.options.font.family,
         text: heading,
         fill: self.hover_fill,

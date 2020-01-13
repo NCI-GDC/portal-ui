@@ -1198,7 +1198,7 @@ import { round } from 'lodash';
       }),
 
       cluster_overlay: new Konva.Rect({
-        fill: '#fff',
+        fill: 'cyan',
         opacity: 0.5,
       }),
 
@@ -3156,9 +3156,9 @@ import { round } from 'lodash';
 
     const cluster_overlay_1 = self.objects_ref.cluster_overlay.clone({
       x,
-      y: self.header_height + self.column_metadata_height + 5,
+      y: self.header_height + self.column_metadata_height + 10,
       width,
-      height: self._hack_round(upper_y - self.header_height - self.column_metadata_height - 5),
+      height: self._hack_round(upper_y - self.header_height - self.column_metadata_height - 10),
     });
 
     const cluster_border_1 = self.objects_ref.cluster_border.clone({
@@ -3633,7 +3633,7 @@ import { round } from 'lodash';
         'border-radius': '5px',
         'text-align': 'center',
         position: 'absolute',
-        'background-color': '#ffffff',
+        'background-color': '#fff',
         border: 'solid 2px #DEDEDE',
         'padding-top': '5px',
         'padding-left': '15px',

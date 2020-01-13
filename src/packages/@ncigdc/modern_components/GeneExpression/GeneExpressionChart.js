@@ -59,7 +59,6 @@ class GeneExpressionChart extends Component {
     // in this file. ignore the eslint error
     this.$el = $(this.el);
     this.$el.InCHlib(this.options);
-
     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
   }
 
@@ -70,6 +69,7 @@ class GeneExpressionChart extends Component {
     if (!isEqual(data, prevProps.data)) {
       // destroy inchlib
       this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
+      this.$el.children().remove();
 
       const nextOptions = {
         ...this.options,
@@ -84,8 +84,7 @@ class GeneExpressionChart extends Component {
     const { handleClickInchlibLink } = this.props;
     // destroy inchlib
     this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
-    // TODO: destroy this properly
-    // this.$el.InCHlib('destroy');
+    this.$el.children().remove();
   }
 
   render() {

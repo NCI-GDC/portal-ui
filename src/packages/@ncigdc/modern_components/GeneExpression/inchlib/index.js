@@ -3174,7 +3174,7 @@ import { round } from 'lodash';
       x,
       y: lower_y,
       width,
-      height: self.options.height - lower_y - self.footer_height + 5,
+      height: self.options.height - lower_y - self.footer_height + 10,
     });
 
     const cluster_border_2 = self.objects_ref.cluster_border.clone({

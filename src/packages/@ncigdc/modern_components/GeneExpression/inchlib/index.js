@@ -2507,8 +2507,6 @@ import { round } from 'lodash';
     const self = this;
     const { case_uuid, x, y } = evt.target.attrs;
 
-    console.log(self.active_header_column)
-
     if (self.active_header_column !== case_uuid) {
       const overlayX = x + (self.pixels_for_dimension / 2);
       self.column_overlay.destroy();
@@ -4537,7 +4535,6 @@ import { round } from 'lodash';
     const self = this;
     let line;
     const { attrs } = evt.target;
-    // console.log('attrs', attrs)
     const { column: original_column, points } = attrs;
     const is_gene_symbol_column = original_column === 'm_1';
     const x = self._hack_round((points[0] + points[2]) / 2);

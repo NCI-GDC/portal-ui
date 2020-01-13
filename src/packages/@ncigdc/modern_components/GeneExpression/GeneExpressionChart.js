@@ -64,20 +64,25 @@ class GeneExpressionChart extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { data } = this.props;
+    // for viz demo
+    // unsure if data will update in final version
+    const { data, handleClickInchlibLink } = this.props;
     if (!isEqual(data, prevProps.data)) {
-      // for viz demo
-      // unsure if data will update in final version
+      // destroy inchlib
+      this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
+
       const nextOptions = {
         ...this.options,
         data,
       };
       this.$el.InCHlib(nextOptions);
+      this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
     }
   }
 
   componentWillUnmount() {
     const { handleClickInchlibLink } = this.props;
+    // destroy inchlib
     this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
     // TODO: destroy this properly
     // this.$el.InCHlib('destroy');

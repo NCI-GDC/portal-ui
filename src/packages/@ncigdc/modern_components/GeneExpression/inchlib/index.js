@@ -3779,7 +3779,7 @@ import { round } from 'lodash';
   InCHlib.prototype._export_icon_click = function () {
     const self = this;
     const overlay = self._draw_target_overlay();
-    const zoom = 3;
+    const zoom = 1;
     const width = self.stage.width();
     const height = self.stage.height();
 

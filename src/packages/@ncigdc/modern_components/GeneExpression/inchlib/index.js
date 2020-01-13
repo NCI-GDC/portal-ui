@@ -343,7 +343,7 @@ import { round } from 'lodash';
         'background-color': self.options.button_color,
         'border-radius': '4px',
         'border': '1px solid transparent',
-        'color': 'white',
+        'color': '#fff',
         'font-size': '14px',
         'font-weight': 'normal',
         'padding': '6px 12px',
@@ -354,7 +354,7 @@ import { round } from 'lodash';
         'background-color': Color(self.options.button_color)
           .lighten(0.7)
           .rgbString(),
-        'color': 'white',
+        'color': '#fff',
       }
     }
 
@@ -1162,7 +1162,7 @@ import { round } from 'lodash';
       }),
 
       node_rect: new Konva.Rect({
-        fill: 'white',
+        fill: '#fff',
         opacity: 0,
       }),
 
@@ -1198,7 +1198,7 @@ import { round } from 'lodash';
       }),
 
       cluster_overlay: new Konva.Rect({
-        fill: 'white',
+        fill: '#fff',
         opacity: 0.5,
       }),
 
@@ -2277,7 +2277,7 @@ import { round } from 'lodash';
         opacity: 1 - self.hover_opacity_off,
         // this hover is being controlled by having an overlay
         // on top of the text
-        stroke: 'white',
+        stroke: '#fff',
       });
   
       const y = self._hack_round(y1 - self.value_font_size / 2);
@@ -2468,7 +2468,7 @@ import { round } from 'lodash';
           height: is_header_hidden
             ? 0
             : rect_height,
-          fill: 'white',
+          fill: '#fff',
           x: rect_x,
           y: rect_y,
           opacity: 1 - self.hover_opacity_off,
@@ -2497,6 +2497,7 @@ import { round } from 'lodash';
         self._hover_cursor_off();
         const label = evt.target;
         label.setOpacity(1 - self.hover_opacity_off);
+        self.active_header_column = null;
         this.draw();
       });
     }
@@ -2506,18 +2507,21 @@ import { round } from 'lodash';
     const self = this;
     const { case_uuid, x, y } = evt.target.attrs;
 
+    console.log(self.active_header_column)
+
     if (self.active_header_column !== case_uuid) {
+      const overlayX = x + (self.pixels_for_dimension / 2);
       self.column_overlay.destroy();
       self.active_header_column = case_uuid;
       self.column_overlay = self.objects_ref.heatmap_line.clone({
         points: [
-          x,
+          overlayX,
           self.header_height,
-          x,
+          overlayX,
           self.header_height + 10 + self.column_metadata_height + (self.heatmap_array.length) * self.pixels_for_leaf,
         ],
         strokeWidth: self.pixels_for_dimension,
-        stroke: 'magenta',
+        stroke: '#fff',
         opacity: 0.3,
         listening: false,
         id: 'column_overlay',
@@ -3755,7 +3759,7 @@ import { round } from 'lodash';
     } else {
       overlay = $('<div class=\'target_overlay\'></div>');
       overlay.css({
-        'background-color': 'white',
+        'background-color': '#fff',
         position: 'absolute',
         top: 0,
         left: 0,
@@ -4107,7 +4111,7 @@ import { round } from 'lodash';
       padding: '10px',
       border: 'solid #D2D2D2 2px',
       'border-radius': '5px',
-      'background-color': 'white',
+      'background-color': '#fff',
       width: '180px',
     });
     $(`#${form_id} > ul`).css({
@@ -4196,7 +4200,7 @@ import { round } from 'lodash';
       width: 110,
       'max-height': 400,
       'overflow-y': 'auto',
-      'background-color': 'white',
+      'background-color': '#fff',
     });
 
     scale_divs = self.$element.find('.color_scale');
@@ -4323,7 +4327,7 @@ import { round } from 'lodash';
         'font-size': 12,
         'padding-right': 15,
         width: 200,
-        'background-color': 'white',
+        'background-color': '#fff',
         'border-radius': 5,
         border: 'solid #DEDEDE 2px',
         'z-index': 1000,
@@ -4511,7 +4515,7 @@ import { round } from 'lodash';
           y,
         ],
         strokeWidth: self.pixels_for_leaf,
-        stroke: 'white',
+        stroke: '#fff',
         opacity: 0.3,
         listening: false,
       });
@@ -4562,7 +4566,7 @@ import { round } from 'lodash';
           self.header_height + 10 + self.column_metadata_height + (self.heatmap_array.length) * self.pixels_for_leaf,
         ],
         strokeWidth: self.pixels_for_dimension,
-        stroke: 'white',
+        stroke: '#fff',
         opacity: is_gene_symbol_column
           ? 0
           : 0.3,

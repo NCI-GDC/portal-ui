@@ -1198,7 +1198,7 @@ import { round } from 'lodash';
       }),
 
       cluster_overlay: new Konva.Rect({
-        fill: 'cyan',
+        fill: '#fff',
         opacity: 0.5,
       }),
 
@@ -3238,8 +3238,8 @@ import { round } from 'lodash';
     const x1 = self._hack_round((self.current_column_ids[0] - self.columns_start_index) * self.pixels_for_dimension);
     const x2 = self._hack_round((self.current_column_ids[0] + self.current_column_ids.length - self.columns_start_index) * self.pixels_for_dimension);
     const y1 = 0;
-    const y2 = self.options.height - self.footer_height + 5;
-    const height = self.options.height - self.footer_height - self.header_height + self.column_metadata_row_height;
+    const y2 = self.options.height + 5;
+    const height = self.options.height - self.header_height + self.column_metadata_row_height;
 
     const cluster_border_1 = self.objects_ref.cluster_border.clone({
       points: [

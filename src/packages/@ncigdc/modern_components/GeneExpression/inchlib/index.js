@@ -210,7 +210,7 @@ import { round } from 'lodash';
     const self = this;
 
     // basic plugin setup
-    self.element = element;s
+    self.element = element;
     self.$element = $(element);
     self.options = $.extend({}, defaults, options);
     self._name = plugin_name;
@@ -238,8 +238,8 @@ import { round } from 'lodash';
 
     // control hover color with opacity
     self.hover_fill = '#3a3a3a';
-    self.hover_opacity_off = 0.7;
-    self.hover_opacity_on = 1;
+    self.hover_opacity_off = 1;
+    self.hover_opacity_on = 0.7;
 
     // column metadata colors & legend info
     self.MAX_DAYS_TO_DEATH = 3379;
@@ -2904,7 +2904,6 @@ import { round } from 'lodash';
         y,
         fontStyle: '500',
         fill: self.hover_fill,
-        opacity: self.hover_opacity_off,
       });
       x += scale_x_int;
       scale_values_group.add(scale_text);

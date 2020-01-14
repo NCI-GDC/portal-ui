@@ -236,6 +236,11 @@ import { round } from 'lodash';
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
 
+    // control hover color with opacity
+    self.hover_fill = '#3a3a3a';
+    self.hover_opacity_off = 0.7;
+    self.hover_opacity_on = 1;
+
     // column metadata colors & legend info
     self.MAX_DAYS_TO_DEATH = 3379;
     self.MAX_AGE_AT_DIAGNOSIS = 90;
@@ -328,7 +333,7 @@ import { round } from 'lodash';
         'transition': 'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
       },
       label: {
-        'color': '#3a3a3a',
+        'color': self.hover_fill,
         'display': 'block',
         'font-size': '14px',
         'margin-bottom': '5px',
@@ -338,7 +343,7 @@ import { round } from 'lodash';
         'background-color': self.options.button_color,
         'border-radius': '4px',
         'border': '1px solid transparent',
-        'color': 'white',
+        'color': '#fff',
         'font-size': '14px',
         'font-weight': 'normal',
         'padding': '6px 12px',
@@ -349,7 +354,7 @@ import { round } from 'lodash';
         'background-color': Color(self.options.button_color)
           .lighten(0.7)
           .rgbString(),
-        'color': 'white',
+        'color': '#fff',
       }
     }
 
@@ -1157,7 +1162,7 @@ import { round } from 'lodash';
       }),
 
       node_rect: new Konva.Rect({
-        fill: 'white',
+        fill: '#fff',
         opacity: 0,
       }),
 
@@ -1169,7 +1174,8 @@ import { round } from 'lodash';
 
       heatmap_value: new Konva.Text({
         fontFamily: self.options.font.family,
-        fill: self.options.font.color,
+        fill: self.hover_fill,
+        opacity: self.hover_opacity_off,
         listening: false,
         fontStyle: '500',
       }),
@@ -1180,7 +1186,8 @@ import { round } from 'lodash';
 
       column_header: new Konva.Text({
         fontFamily: self.options.font.family,
-        fill: self.options.font.color,
+        fill: self.hover_fill,
+        opacity: self.hover_opacity_off,
       }),
 
       count: new Konva.Text({
@@ -1191,12 +1198,12 @@ import { round } from 'lodash';
       }),
 
       cluster_overlay: new Konva.Rect({
-        fill: 'white',
+        fill: '#fff',
         opacity: 0.5,
       }),
 
       cluster_border: new Konva.Line({
-        stroke: '#3a3a3a',
+        stroke: self.hover_fill,
         strokeWidth: 1,
         dash: [6, 2],
       }),
@@ -1647,7 +1654,8 @@ import { round } from 'lodash';
     self.column_metadata_height = (self.column_metadata_rows * self.column_metadata_row_height) + 15;
 
     if (self.options.heatmap) {
-      self.last_column = null;
+      self.active_column = null;
+      self.active_header_column = null;
       self.dimensions = self._get_dimensions();
       self._set_heatmap_settings();
     } else {
@@ -1661,11 +1669,9 @@ import { round } from 'lodash';
     }
     self._adjust_leaf_size(self.heatmap_array.length);
 
-    if (self.options.draw_row_ids) {
-      self._get_row_id_size();
-    } else {
-      self.right_margin = 100;
-    }
+  
+    self.right_margin = 100;
+    
 
     self._adjust_horizontal_sizes();
     self.top_heatmap_distance = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2;
@@ -1890,10 +1896,12 @@ import { round } from 'lodash';
     const self = this;
 
     layer.on('mouseover', function (evt) {
+      self._hover_cursor_on();
       self._dendrogram_layers_mouseover(this, evt);
     });
 
     layer.on('mouseout', function (evt) {
+      self._hover_cursor_off();
       self._dendrogram_layers_mouseout(this, evt);
     });
   };
@@ -2179,10 +2187,6 @@ import { round } from 'lodash';
       self._draw_column_metadata(x1);
     }
 
-    if (self.options.draw_row_ids) {
-      self._draw_row_ids();
-    }
-
     self.highlighted_rows_layer = new Konva.Layer();
     self.stage.add(self.heatmap_layer, self.heatmap_overlay, self.highlighted_rows_layer);
 
@@ -2252,6 +2256,7 @@ import { round } from 'lodash';
       text = self.objects_ref.heatmap_value.clone({
         text: gene_symbol,
         fontSize: self.options.font.size,
+        opacity: self.hover_opacity_on,
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
@@ -2269,15 +2274,18 @@ import { round } from 'lodash';
         name: gene_symbol,
         column: ['m', 1].join('_'),
         strokeWidth: self.pixels_for_leaf,
+        opacity: 1 - self.hover_opacity_off,
+        // this hover is being controlled by having an overlay
+        // on top of the text
+        stroke: '#fff',
       });
-      row.add(line);
   
       const y = self._hack_round(y1 - self.value_font_size / 2);
       text.position({
         x: x1 + 5,
         y,
       });
-      row.add(text);
+      row.add(text, line);
       row.on('click', ({ target: { attrs: { gene_ensembl = '' }}}) => {
         if (gene_ensembl !== '') {
           self.events.row_onclick(gene_ensembl);
@@ -2348,7 +2356,6 @@ import { round } from 'lodash';
       y,
     });
     row.add(text);
-    // TODO: add an X button here with a click event, to remove this row
 
     return row;
   };
@@ -2364,10 +2371,24 @@ import { round } from 'lodash';
     });
 
     row.on('mouseover', (evt) => {
+      const { target: { attrs: { column = '' }}} = evt;
+      const is_gene_symbol_column = column === 'm_1';
+      if (is_gene_symbol_column) {
+        evt.target.opacity(1 - self.hover_opacity_on);
+        self.heatmap_layer.draw();
+        self._hover_cursor_on();
+      }
       self._draw_col_label(evt);
     });
 
     row.on('mouseout', (evt) => {
+      const { target: { attrs: { column = '' }}} = evt;
+      const is_gene_symbol_column = column === 'm_1';
+      if (is_gene_symbol_column) {
+        evt.target.opacity(1 - self.hover_opacity_off);
+        self.heatmap_layer.draw();
+        self._hover_cursor_off();
+      }
       self.heatmap_overlay.find('#col_label')[0].destroy();
       self.heatmap_overlay.find('#column_overlay')[0].destroy();
       self.heatmap_overlay.draw();
@@ -2378,7 +2399,6 @@ import { round } from 'lodash';
       if (evt.target.parent.attrs.class !== 'column_metadata') {
         const items = self.data.nodes[row_id].objects;
         const item_ids = [];
-
         for (var i = 0; i < items.length; i++) {
           item_ids.push(items[i]);
         }
@@ -2386,84 +2406,9 @@ import { round } from 'lodash';
     });
   };
 
-  InCHlib.prototype._draw_row_ids = function () {
-    const self = this;
-    if (self.pixels_for_leaf < 6 || self.row_id_size < 5) {
-      return;
-    }
-    let objects;
-    const object_y = [];
-    let leaf;
-    const values = [];
-    let text;
-
-    for (var i = 0, keys = Object.keys(self.leaves_y_coordinates), len = keys.length; i < len; i++) {
-      leaf_id = keys[i];
-      objects = self.data.nodes[leaf_id].objects;
-      if (objects.length > 1) {
-        return;
-      }
-      object_y.push([objects[0], self.leaves_y_coordinates[leaf_id]]);
-    }
-
-    const x = self.distance + self._get_visible_count() * self.pixels_for_dimension + 15;
-
-    for (var i = 0; i < object_y.length; i++) {
-      text = self.objects_ref.heatmap_value.clone({
-        x,
-        y: self._hack_round(object_y[i][1] - self.row_id_size / 2),
-        fontSize: self.options.font.size,
-        text: object_y[i][0],
-        fontStyle: 'italic',
-        fill: self.options.font.color,
-      });
-      self.heatmap_layer.add(text);
-    }
-  };
-
-  InCHlib.prototype._get_row_id_size = function () {
-    const self = this;
-    let objects;
-    const object_y = [];
-    let leaf_id;
-    const values = [];
-    let text;
-
-    for (var i = 0, len = self.heatmap_array.length; i < len; i++) {
-      leaf_id = self.heatmap_array[i][0];
-      objects = self.data.nodes[leaf_id].objects;
-      if (objects.length > 1) {
-        return;
-      }
-      values.push(objects[0]);
-    }
-    const max_length = self._get_max_length(values);
-    let test_string = '';
-    for (var i = 0; i < max_length; i++) {
-      test_string += 'E';
-    }
-
-    if (self.options.fixed_row_id_size) {
-      const test = new Konva.Text({
-        fontFamily: self.options.font.family,
-        fontSize: self.options.font.size,
-        fontStyle: 'italic',
-        listening: false,
-        text: test_string,
-      });
-      self.row_id_size = self.options.fixed_row_id_size;
-      self.right_margin = 20 + test.width();
-
-      if (this.right_margin < 100) {
-        self.right_margin = 100;
-      }
-    } else {
-      self.row_id_size = self._get_font_size(max_length, 85, self.pixels_for_leaf, 10);
-      self.right_margin = 100;
-    }
-  };
-
   InCHlib.prototype._draw_heatmap_header = function () {
+    // the header goes at the bottom
+    // because we're using a dendrogram on top
     const self = this;
     if (
       self.options.heatmap_header &&
@@ -2475,12 +2420,8 @@ import { round } from 'lodash';
       const y = (self.options.column_dendrogram && self.heatmap_header)
         ? self.header_height + (self.pixels_for_leaf * count) + 15 + self.column_metadata_height
         : self.header_height - 20;
-      const rotation = (self.options.column_dendrogram && self.heatmap_header)
-        ? 45 
-        : -45;
+      const rotation = 90;
       let distance_step = 0;
-      let x;
-      let column_header;
       let key;
       const current_headers = [];
 
@@ -2501,44 +2442,91 @@ import { round } from 'lodash';
         // id and uuid in an object.
         const case_id = current_headers[i].split('_')[0];
         const case_uuid = current_headers[i].split('_')[1];
-        x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
-        column_header = self.objects_ref.column_header.clone({
-          case_uuid,
-          fill: self.options.font.color,
+        const is_header_hidden = current_headers[i] === 'gene_symbol' ||
+        current_headers[i] === 'gene_ensembl';
+        const x = (self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2) + 5;
+        const column_header = self.objects_ref.column_header.clone({
+          fill: self.hover_fill,
+          opacity: self.hover_opacity_on,
           fontFamily: self.options.font.family,
           fontSize: self.options.font.size,
-          fontStyle: 'bold',
+          fontStyle: '500',
           position_index: i,
           rotation,
-          text: current_headers[i] === 'gene_symbol' ||
-            current_headers[i] === 'gene_ensembl'
-              ? ''
-              : case_id,
+          text: is_header_hidden
+            ? '' // hide columns without messing up structure
+            : case_id,
           x,
           y,
         });
-        self.header_layer.add(column_header);
+        const rect_height = column_header.getWidth() + 10;
+        const rect_x = self.heatmap_distance + (self.pixels_for_dimension * distance_step);
+        const rect_y = y - 5;
+        var rect = new Konva.Rect({
+          case_uuid,
+          width: self.pixels_for_dimension,
+          height: is_header_hidden
+            ? 0
+            : rect_height,
+          fill: '#fff',
+          x: rect_x,
+          y: rect_y,
+          opacity: 1 - self.hover_opacity_off,
+        });
+        self.header_layer.add(column_header, rect);
         distance_step++;
       }
 
       self.stage.add(self.header_layer);
 
       self.header_layer.on('click', ({ target: { attrs: { case_uuid }}}) => {
-
         self.events.heatmap_header_onclick(case_uuid);
       });
 
       self.header_layer.on('mouseover', function (evt) {
+        self._draw_col_overlay_for_header(evt);
+        self._hover_cursor_on();
         const label = evt.target;
-        label.setOpacity(0.7);
+        label.setOpacity(1 - self.hover_opacity_on);
         this.draw();
       });
 
       self.header_layer.on('mouseout', function (evt) {
+        self.column_overlay.destroy();
+        self.heatmap_overlay.draw();
+        self._hover_cursor_off();
         const label = evt.target;
-        label.setOpacity(1);
+        label.setOpacity(1 - self.hover_opacity_off);
+        self.active_header_column = null;
         this.draw();
       });
+    }
+  };
+
+  InCHlib.prototype._draw_col_overlay_for_header = function(evt) {
+    const self = this;
+    const { case_uuid, x, y } = evt.target.attrs;
+
+    if (self.active_header_column !== case_uuid) {
+      const overlayX = x + (self.pixels_for_dimension / 2);
+      self.column_overlay.destroy();
+      self.active_header_column = case_uuid;
+      self.column_overlay = self.objects_ref.heatmap_line.clone({
+        points: [
+          overlayX,
+          self.header_height,
+          overlayX,
+          self.header_height + 10 + self.column_metadata_height + (self.heatmap_array.length) * self.pixels_for_leaf,
+        ],
+        strokeWidth: self.pixels_for_dimension,
+        stroke: '#fff',
+        opacity: 0.3,
+        listening: false,
+        id: 'column_overlay',
+      });
+      self.heatmap_overlay.add(self.column_overlay);
+      self.heatmap_overlay.moveToTop();
+      self.heatmap_overlay.draw();
     }
   };
 
@@ -2563,7 +2551,6 @@ import { round } from 'lodash';
       return;
     }
     const y1 = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2 - 10;
-    // THIS maybe?? remove the '- 10'
     const y2 = y1;
     const x1 = 0;
     const x2 = self.distance;
@@ -2600,7 +2587,8 @@ import { round } from 'lodash';
       text: distance,
       fontSize: self.options.font.size,
       fontFamily: self.options.font.family,
-      fill: self.options.font.color,
+      fill: self.hover_fill,
+      opacity: self.hover_opacity_off,
       align: 'right',
       listening: false,
     });
@@ -2645,7 +2633,6 @@ import { round } from 'lodash';
     if (self.options.heatmap) {
       self._draw_color_scale();
     }
-    self._draw_help();
 
     if (self.zoomed_clusters.row.length > 0 || self.zoomed_clusters.column.length > 0) {
       const refresh_icon = self.objects_ref.icon.clone({
@@ -2664,10 +2651,12 @@ import { round } from 'lodash';
       });
 
       refresh_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
         self._icon_mouseover(refresh_icon, refresh_overlay, self.navigation_layer);
       });
 
       refresh_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
         self._icon_mouseout(refresh_icon, refresh_overlay, self.navigation_layer);
       });
     }
@@ -2693,10 +2682,12 @@ import { round } from 'lodash';
       });
 
       unzoom_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
         self._icon_mouseover(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
 
       unzoom_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
         self._icon_mouseout(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
     }
@@ -2723,10 +2714,12 @@ import { round } from 'lodash';
       });
 
       column_unzoom_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
         self._icon_mouseover(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
 
       column_unzoom_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
         self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
     }
@@ -2752,10 +2745,12 @@ import { round } from 'lodash';
       });
 
       export_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
         self._icon_mouseover(export_icon, export_overlay, self.navigation_layer);
       });
 
       export_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
         self._icon_mouseout(export_icon, export_overlay, self.navigation_layer);
       });
     }
@@ -2783,10 +2778,12 @@ import { round } from 'lodash';
       });
 
       legend_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
         self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
       });
 
       legend_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
         self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
       });
     }
@@ -2816,47 +2813,17 @@ import { round } from 'lodash';
       });
 
       categories_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
         self._icon_mouseover(categories_icon, categories_overlay, self.navigation_layer);
       });
 
       categories_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
         self._icon_mouseout(categories_icon, categories_overlay, self.navigation_layer);
       });
     }
 
     self.stage.add(self.navigation_layer);
-  };
-
-  InCHlib.prototype._draw_help = function () {
-    const self = this;
-    if (!self.options.navigation_toggle.hint_button) {
-      return;
-    }
-    const help_icon = self.objects_ref.icon.clone({
-      data: self.paths_ref.lightbulb,
-      x: self.options.width - 63,
-      y: 40,
-      scale: {
-        x: 0.8,
-        y: 0.8,
-      },
-      id: 'help_icon',
-      label: 'Tip',
-    });
-
-    const help_overlay = self._draw_icon_overlay(self.options.width - 63, 40);
-
-    self.navigation_layer.add(help_icon, help_overlay);
-
-    help_overlay.on('mouseover', () => {
-      self._icon_mouseover(help_icon, help_overlay, self.navigation_layer);
-      self._help_mouseover();
-    });
-
-    help_overlay.on('mouseout', () => {
-      self._help_mouseout();
-      self._icon_mouseout(help_icon, help_overlay, self.navigation_layer);
-    });
   };
 
   InCHlib.prototype._draw_color_scale = function () {
@@ -2907,17 +2874,20 @@ import { round } from 'lodash';
         x,
         y,
         fontStyle: '500',
-        fill: self.options.font.color,
+        fill: self.hover_fill,
+        opacity: self.hover_opacity_off,
       });
       x += scale_x_int;
       scale_values_group.add(scale_text);
     }
 
     color_scale.on('mouseover', () => {
+      self._hover_cursor_on();
       self._color_scale_mouseover(color_scale, self.navigation_layer);
     });
 
     color_scale.on('mouseout', () => {
+      self._hover_cursor_off();
       self._color_scale_mouseout(color_scale, self.navigation_layer);
     });
 
@@ -3225,10 +3195,12 @@ import { round } from 'lodash';
     self.navigation_layer.moveToTop();
 
     zoom_overlay.on('mouseover', () => {
+      self._hover_cursor_on();
       self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('mouseout', () => {
+      self._hover_cursor_off();
       self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
@@ -3309,10 +3281,12 @@ import { round } from 'lodash';
     self.navigation_layer.moveToTop();
 
     zoom_overlay.on('mouseover', () => {
+      self._hover_cursor_on();
       self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('mouseout', () => {
+      self._hover_cursor_off();
       self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
@@ -3665,7 +3639,7 @@ import { round } from 'lodash';
         'padding-left': '15px',
         'padding-bottom': '10px',
         'padding-right': '15px',
-        'font-weight': 'bold',
+        'font-weight': '500',
         'font-size': '14px',
         'z-index': 1000,
         'font-family': self.options.font.family,
@@ -3783,7 +3757,7 @@ import { round } from 'lodash';
     } else {
       overlay = $('<div class=\'target_overlay\'></div>');
       overlay.css({
-        'background-color': 'white',
+        'background-color': '#fff',
         position: 'absolute',
         top: 0,
         left: 0,
@@ -3941,9 +3915,9 @@ import { round } from 'lodash';
       text: 'Heatmap',
       x: scaleX,
       y: scaleY,
-      fontStyle: 'bold',
+      fontStyle: '500',
       fontFamily: self.options.font.family,
-      fill: '#3a3a3a',
+      fill: self.hover_fill,
     });
 
     scaleY += 20;
@@ -3978,7 +3952,7 @@ import { round } from 'lodash';
         text,
         x: scaleX,
         y: scaleY,
-        fill: '#3a3a3a',
+        fill: self.hover_fill,
       });
       scale_group.add(scale_text);
       scaleY += scaleY_int;
@@ -3990,7 +3964,7 @@ import { round } from 'lodash';
       fontSize: 18,
       x: legendX + 10,
       y: legendY + 10,
-      fill: '#3a3a3a',
+      fill: self.hover_fill,
     });
 
     const legend_group = new Konva.Group({
@@ -4004,11 +3978,12 @@ import { round } from 'lodash';
     for (let i = 0; i < self.legend_headings.length; i++) {
       const heading = self.legend_headings[i];
       const legend_heading = new Konva.Text({
-        fill: self.options.font.color,
-        fontStyle: 'bold',
+        fill: self.hover_fill,
+        opacity: self.hover_opacity_off,
+        fontStyle: '500',
         fontFamily: self.options.font.family,
         text: heading,
-        fill: '#3a3a3a',
+        fill: self.hover_fill,
         x,
         y,
       });
@@ -4020,7 +3995,7 @@ import { round } from 'lodash';
           text: '0',
           x,
           y,
-          fill: '#3a3a3a',
+          fill: self.hover_fill,
         });
 
         const gradient = new Konva.Rect({
@@ -4045,7 +4020,7 @@ import { round } from 'lodash';
           text: self.legend_gradient_upper_value(heading),
           x: x + 95,
           y,
-          fill: '#3a3a3a',
+          fill: self.hover_fill,
         });
 
         legend_group.add(zero, gradient, max);
@@ -4067,7 +4042,7 @@ import { round } from 'lodash';
             text,
             x: x + 20,
             y,
-            fill: '#3a3a3a',
+            fill: self.hover_fill,
           });
           legend_group.add(legend_square, legend_text);
           y += 20;
@@ -4134,7 +4109,7 @@ import { round } from 'lodash';
       padding: '10px',
       border: 'solid #D2D2D2 2px',
       'border-radius': '5px',
-      'background-color': 'white',
+      'background-color': '#fff',
       width: '180px',
     });
     $(`#${form_id} > ul`).css({
@@ -4223,7 +4198,7 @@ import { round } from 'lodash';
       width: 110,
       'max-height': 400,
       'overflow-y': 'auto',
-      'background-color': 'white',
+      'background-color': '#fff',
     });
 
     scale_divs = self.$element.find('.color_scale');
@@ -4323,7 +4298,7 @@ import { round } from 'lodash';
       self.icon_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
       layer.add(self.icon_tooltip);
     }
-    icon.setFill('#3a3a3a');
+    icon.setFill(self.hover_fill);
     layer.draw();
   };
 
@@ -4350,7 +4325,7 @@ import { round } from 'lodash';
         'font-size': 12,
         'padding-right': 15,
         width: 200,
-        'background-color': 'white',
+        'background-color': '#fff',
         'border-radius': 5,
         border: 'solid #DEDEDE 2px',
         'z-index': 1000,
@@ -4534,11 +4509,11 @@ import { round } from 'lodash';
         points: [
           x,
           y,
-          x + self.heatmap_width,
+          x + self.heatmap_width - (self.pixels_for_dimension * 2),
           y,
         ],
         strokeWidth: self.pixels_for_leaf,
-        stroke: '#FFFFFF',
+        stroke: '#fff',
         opacity: 0.3,
         listening: false,
       });
@@ -4560,10 +4535,11 @@ import { round } from 'lodash';
     const self = this;
     let line;
     const { attrs } = evt.target;
-    const { points } = attrs;
+    const { column: original_column, points } = attrs;
+    const is_gene_symbol_column = original_column === 'm_1';
     const x = self._hack_round((points[0] + points[2]) / 2);
     const y = points[1] - 0.5 * self.pixels_for_leaf;
-    const column = attrs.column.split('_');
+    const column = original_column.split('_');
     const header_type2value = {
       d: self.heatmap_header[column[1]],
       m: self.metadata_header[column[1]],
@@ -4576,35 +4552,32 @@ import { round } from 'lodash';
 
     const header_value = header_type2value[column[0]];
 
-    if (header_value !== self.last_column) {
+    if (header_value !== self.active_column) {
       self.column_overlay.destroy();
-      self.last_column = attrs.column;
+      self.active_column = attrs.column;
       self.column_overlay = self.objects_ref.heatmap_line.clone({
         points: [
           x,
           self.header_height,
           x,
-          self.header_height + self.column_metadata_height + (self.heatmap_array.length + 0.5) * self.pixels_for_leaf,
+          self.header_height + 10 + self.column_metadata_height + (self.heatmap_array.length) * self.pixels_for_leaf,
         ],
         strokeWidth: self.pixels_for_dimension,
-        stroke: '#FFFFFF',
-        opacity: 0.3,
+        stroke: '#fff',
+        opacity: is_gene_symbol_column
+          ? 0
+          : 0.3,
         listening: false,
         id: 'column_overlay',
       });
-
       self.heatmap_overlay.add(self.column_overlay);
     }
 
     const { name, value } = attrs;
 
-    const header_text = header_value === 'gene_symbol'
-      ? 'Gene'
-      : header_value === 'case_id'
-        ? 'Case'
-        : self.heatmap_header.includes(header_value)
-          ? `Case: ${header_value.split('_')[0]}, Gene: ${attrs.gene_symbol}`
-          : header_value;
+    const header_text = self.heatmap_header.includes(header_value)
+      ? `Case: ${header_value.split('_')[0]}, Gene: ${attrs.gene_symbol}`
+      : header_value;
 
     const tooltip_value = typeof value === 'undefined'
       ? name.split('_').join(' ')
@@ -4616,9 +4589,16 @@ import { round } from 'lodash';
       x,
       y,
       id: 'col_label',
+      opacity: is_gene_symbol_column
+        ? 0
+        : 1,
     });
 
     tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
+
+    if (is_gene_symbol_column) {
+      self._hover_cursor_on();
+    }
 
     self.heatmap_overlay.add(tooltip);
     self.heatmap_overlay.moveToTop();
@@ -4702,6 +4682,16 @@ import { round } from 'lodash';
     self.heatmap_layer.moveUp();
   };
 
+  /**
+    * Hover - change to hand cursor & back again
+    */
+  InCHlib.prototype._hover_cursor_on = function() {
+    document.body.style.cursor = 'pointer';
+  }
+
+  InCHlib.prototype._hover_cursor_off = function() {
+    document.body.style.cursor = 'default';
+  }
 
 
   /**

@@ -254,6 +254,8 @@ import { round } from 'lodash';
         : `rgb(${red_green},${red_green},255)`;
     };
 
+    // test
+
     self.get_age_at_diagnosis_color = val => {
       const percentage = 1 - (val / self.MAX_AGE_AT_DIAGNOSIS);
       const lightness = (percentage * (self.age_dx_colors.max_light - self.age_dx_colors.min_light)) + self.age_dx_colors.min_light;

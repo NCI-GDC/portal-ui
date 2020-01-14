@@ -56,31 +56,35 @@ class GeneExpressionChart extends Component {
       data,
     };
     // this doesn't work if jquery is imported
-    // in this file
+    // in this file. ignore the eslint error
     this.$el = $(this.el);
     this.$el.InCHlib(this.options);
-
     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
   }
 
   componentDidUpdate(prevProps) {
-    const { data } = this.props;
+    // for viz demo
+    // unsure if data will update in final version
+    const { data, handleClickInchlibLink } = this.props;
     if (!isEqual(data, prevProps.data)) {
-      // for viz demo
-      // unsure if data will update in final version
+      // destroy inchlib
+      this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
+      this.$el.children().remove();
+
       const nextOptions = {
         ...this.options,
         data,
       };
       this.$el.InCHlib(nextOptions);
+      this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
     }
   }
 
   componentWillUnmount() {
     const { handleClickInchlibLink } = this.props;
+    // destroy inchlib
     this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
-    // TODO: destroy this properly
-    // this.$el.InCHlib('destroy');
+    this.$el.children().remove();
   }
 
   render() {

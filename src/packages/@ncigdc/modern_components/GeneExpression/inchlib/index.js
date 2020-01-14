@@ -3156,9 +3156,9 @@ import { round } from 'lodash';
 
     const cluster_overlay_1 = self.objects_ref.cluster_overlay.clone({
       x,
-      y: self.header_height + self.column_metadata_height + 5,
+      y: self.header_height + self.column_metadata_height + 10,
       width,
-      height: self._hack_round(upper_y - self.header_height - self.column_metadata_height - 5),
+      height: self._hack_round(upper_y - self.header_height - self.column_metadata_height - 10),
     });
 
     const cluster_border_1 = self.objects_ref.cluster_border.clone({
@@ -3174,7 +3174,7 @@ import { round } from 'lodash';
       x,
       y: lower_y,
       width,
-      height: self.options.height - lower_y - self.footer_height + 5,
+      height: self.options.height - lower_y - self.footer_height + 10,
     });
 
     const cluster_border_2 = self.objects_ref.cluster_border.clone({
@@ -3238,8 +3238,8 @@ import { round } from 'lodash';
     const x1 = self._hack_round((self.current_column_ids[0] - self.columns_start_index) * self.pixels_for_dimension);
     const x2 = self._hack_round((self.current_column_ids[0] + self.current_column_ids.length - self.columns_start_index) * self.pixels_for_dimension);
     const y1 = 0;
-    const y2 = self.options.height - self.footer_height + 5;
-    const height = self.options.height - self.footer_height - self.header_height + self.column_metadata_row_height;
+    const y2 = self.options.height + 5;
+    const height = self.options.height - self.header_height + self.column_metadata_row_height;
 
     const cluster_border_1 = self.objects_ref.cluster_border.clone({
       points: [
@@ -3633,7 +3633,7 @@ import { round } from 'lodash';
         'border-radius': '5px',
         'text-align': 'center',
         position: 'absolute',
-        'background-color': '#ffffff',
+        'background-color': '#fff',
         border: 'solid 2px #DEDEDE',
         'padding-top': '5px',
         'padding-left': '15px',
@@ -3779,7 +3779,7 @@ import { round } from 'lodash';
   InCHlib.prototype._export_icon_click = function () {
     const self = this;
     const overlay = self._draw_target_overlay();
-    const zoom = 3;
+    const zoom = 1;
     const width = self.stage.width();
     const height = self.stage.height();
 
@@ -4693,41 +4693,36 @@ import { round } from 'lodash';
     document.body.style.cursor = 'default';
   }
 
-
   /**
-    * Destroy InCHlib
+    * Hover - change to hand cursor & back again
     */
-  InCHlib.prototype.destroy = function () {
-    const self = this;
-    self._delete_all_layers();
-    // TODO: more destruction
-    // make sure to delete the whole instance
-    // in react i guess?
-  };
+  InCHlib.prototype._hover_cursor_on = function() {
+    document.body.style.cursor = 'pointer';
+  }
+
+  InCHlib.prototype._hover_cursor_off = function() {
+    document.body.style.cursor = 'default';
+  }
 
   /**
     * Initiate InCHlib
     */
   InCHlib.prototype.init = function () {
     const self = this;
-    if (self.user_options === 'destroy') {
-      self.destroy();
-    } else {
-      // setTimeout is used to force synchronicity;
-      const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-      self.$element.after(loading_div);
-      self.$element.hide();
+    // setTimeout is used to force synchronicity in canvas
+    const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
+    self.$element.after(loading_div);
+    self.$element.hide();
 
-      setTimeout(function () {
-        self.read_data(self.options.data);
-        self.draw();
-      }, 50);
+    setTimeout(function () {
+      self.read_data(self.options.data);
+      self.draw();
+    }, 50);
 
-      setTimeout(function () {
-        loading_div.fadeOut().remove();
-        self.$element.show();
-      }, 50);
-    }
+    setTimeout(function () {
+      loading_div.fadeOut().remove();
+      self.$element.show();
+    }, 50);
   };
 
   $.fn[plugin_name] = function (options) {

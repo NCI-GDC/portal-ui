@@ -273,13 +273,13 @@ import { round } from 'lodash';
 
     self.legend_gradients = {
       age: {
+        max: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%)`,
+        min: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%)`,
+      },
+      days: {
         max: 'rgb(0,0,255)',
         min: 'rgb(255,255,255)',
       },
-      days: {
-        max: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%)`,
-        min: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%)`,
-      }
     }
 
     self.legend_gradient_upper_value = name => name === 'Age at Diagnosis'

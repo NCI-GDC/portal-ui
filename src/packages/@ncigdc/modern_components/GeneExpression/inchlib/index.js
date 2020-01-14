@@ -171,7 +171,7 @@ import { round } from 'lodash';
     font: {
       color: '#3a3a3a',
       family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-      size: 10,
+      size: 12,
     },
     heatmap_colors: 'RdLrGr',
     heatmap_header: true,
@@ -328,7 +328,7 @@ import { round } from 'lodash';
         'transition': 'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
       },
       label: {
-        'color': '#3a3a3a',
+        'color': self.options.font.color,
         'display': 'block',
         'font-size': '14px',
         'margin-bottom': '5px',
@@ -1196,7 +1196,7 @@ import { round } from 'lodash';
       }),
 
       cluster_border: new Konva.Line({
-        stroke: '#3a3a3a',
+        stroke: self.options.font.color,
         strokeWidth: 1,
         dash: [6, 2],
       }),
@@ -2867,7 +2867,7 @@ import { round } from 'lodash';
 
     const scale_height = 20;
     const scale_width = 150;
-    const scale_x = 5;
+    const scale_x = 15;
     const scale_y = 80;
 
     const color_scale = new Konva.Rect({
@@ -2886,21 +2886,13 @@ import { round } from 'lodash';
         x: scale_width,
         y: scale_y,
       },
-      stroke: '#3a3a3a',
+      stroke: self.options.font.color,
       strokeWidth: 1,
       lineCap: 'square',
       shadowForStrokeEnabled: false,
     });
 
     // add ticks to heatmap scale
-
-    const ticks_x = [
-      0,
-      scale_width * .25,
-      scale_width * .5,
-      scale_width * .75,
-      scale_width,
-    ];
 
     const ticks_group = new Konva.Group({
       x: scale_x,
@@ -2910,39 +2902,41 @@ import { round } from 'lodash';
     let x = 0;
     let y = 0;
 
-    for (let i = 0; i < ticks_x.length; i++) {
+    for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
       const tick = new Konva.Rect({
-        x: Math.round(ticks_x[i]),
-        y: 0,
-        stroke: '#3a3a3a',
-        strokeWidth: 1,
         height: 10,
+        stroke: self.options.font.color,
+        strokeWidth: 1,
+        x: Math.round(scale_width * (0.25 * i)),
+        y: 0,
       });
       ticks_group.add(tick);
     }
 
-    // add labels to heatmap scale
+    // add values to heatmap scale
 
     const scale_values = self.get_scale_values();
 
     const scale_values_group = new Konva.Group({
-      x: scale_x,
-      y: scale_height + scale_y + 25,
+      x: scale_x - 12,
+      y: scale_height + scale_y + 20,
     });
 
     y = 0;
     x = 0;
 
-    const scale_x_int = (scale_width / scale_values.length) + 3.5;
+    const scale_x_int = (scale_width / scale_values.length) + 7.5;
 
     for (let i = 0; i < scale_values.length; i++) {
       const text = scale_values[i];
       const scale_text = new Konva.Text({
+        align: 'center',
+        fill: self.options.font.color,
+        fontStyle: '500',
         text,
+        width: 25,
         x,
         y,
-        fontStyle: '500',
-        fill: self.options.font.color,
       });
       x += scale_x_int;
       scale_values_group.add(scale_text);
@@ -3978,7 +3972,7 @@ import { round } from 'lodash';
       y: scaleY,
       fontStyle: 'bold',
       fontFamily: self.options.font.family,
-      fill: '#3a3a3a',
+      fill: self.options.font.color,
     });
 
     scaleY += 20;
@@ -4013,7 +4007,7 @@ import { round } from 'lodash';
         text,
         x: scaleX,
         y: scaleY,
-        fill: '#3a3a3a',
+        fill: self.options.font.color,
       });
       scale_group.add(scale_text);
       scaleY += scaleY_int;
@@ -4025,7 +4019,7 @@ import { round } from 'lodash';
       fontSize: 18,
       x: legendX + 10,
       y: legendY + 10,
-      fill: '#3a3a3a',
+      fill: self.options.font.color,
     });
 
     const legend_group = new Konva.Group({
@@ -4043,7 +4037,7 @@ import { round } from 'lodash';
         fontStyle: 'bold',
         fontFamily: self.options.font.family,
         text: heading,
-        fill: '#3a3a3a',
+        fill: self.options.font.color,
         x,
         y,
       });
@@ -4055,7 +4049,7 @@ import { round } from 'lodash';
           text: '0',
           x,
           y,
-          fill: '#3a3a3a',
+          fill: self.options.font.color,
         });
 
         const gradient = new Konva.Rect({
@@ -4080,7 +4074,7 @@ import { round } from 'lodash';
           text: self.legend_gradient_upper_value(heading),
           x: x + 95,
           y,
-          fill: '#3a3a3a',
+          fill: self.options.font.color,
         });
 
         legend_group.add(zero, gradient, max);
@@ -4102,7 +4096,7 @@ import { round } from 'lodash';
             text,
             x: x + 20,
             y,
-            fill: '#3a3a3a',
+            fill: self.options.font.color,
           });
           legend_group.add(legend_square, legend_text);
           y += 20;
@@ -4356,7 +4350,7 @@ import { round } from 'lodash';
       self.icon_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
       layer.add(self.icon_tooltip);
     }
-    icon.setFill('#3a3a3a');
+    icon.setFill(self.options.font.color);
     layer.draw();
   };
 

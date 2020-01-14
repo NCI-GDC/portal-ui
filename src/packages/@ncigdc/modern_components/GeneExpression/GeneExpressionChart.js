@@ -35,11 +35,6 @@ const options = {
   categories: {
     colors: category_colors,
   },
-  font: {
-    color: '#767676',
-    family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-    size: 12,
-  },
   max_width: 800,
   tooltip: {
     fill: '#fff',

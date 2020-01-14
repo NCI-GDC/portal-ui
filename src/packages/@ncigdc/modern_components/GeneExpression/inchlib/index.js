@@ -278,13 +278,13 @@ import { round } from 'lodash';
 
     self.legend_gradients = {
       age: {
+        max: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%)`,
+        min: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%)`,
+      },
+      days: {
         max: 'rgb(0,0,255)',
         min: 'rgb(255,255,255)',
       },
-      days: {
-        max: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%)`,
-        min: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%)`,
-      }
     }
 
     self.legend_gradient_upper_value = name => name === 'Age at Diagnosis'
@@ -4681,6 +4681,17 @@ import { round } from 'lodash';
     self.heatmap_layer.moveToBottom();
     self.heatmap_layer.moveUp();
   };
+
+  /**
+    * Hover - change to hand cursor & back again
+    */
+  InCHlib.prototype._hover_cursor_on = function() {
+    document.body.style.cursor = 'pointer';
+  }
+
+  InCHlib.prototype._hover_cursor_off = function() {
+    document.body.style.cursor = 'default';
+  }
 
   /**
     * Hover - change to hand cursor & back again

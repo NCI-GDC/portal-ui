@@ -2584,6 +2584,7 @@ import { round } from 'lodash';
       text: distance,
       fontSize: self.options.font.size,
       fontFamily: self.options.font.family,
+      fontStyle: '500',
       fill: self.hover_fill,
       align: 'right',
       listening: false,
@@ -2849,8 +2850,8 @@ import { round } from 'lodash';
         x: scale_width,
         y: scale_y,
       },
-      stroke: self.options.font.color,
-      strokeWidth: 1,
+      stroke: 'grey',
+      strokeWidth: 2,
       lineCap: 'square',
       shadowForStrokeEnabled: false,
     });
@@ -2868,7 +2869,7 @@ import { round } from 'lodash';
     for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
       const tick = new Konva.Rect({
         height: 10,
-        stroke: self.hover_fill,
+        stroke: 'grey',
         strokeWidth: 1,
         x: Math.round(scale_width * (0.25 * i)),
         y: 0,
@@ -2894,12 +2895,13 @@ import { round } from 'lodash';
       const text = scale_values[i];
       const scale_text = new Konva.Text({
         align: 'center',
+        fill: self.hover_fill,
+        fontFamily: self.options.font.family,
+        fontStyle: '500', 
         text,
         width: 25,
         x,
         y,
-        fontStyle: '500',
-        fill: self.hover_fill,
       });
       x += scale_x_int;
       scale_values_group.add(scale_text);
@@ -3940,7 +3942,7 @@ import { round } from 'lodash';
     const scale_height = 125;
 
     const scale_heading = new Konva.Text({
-      fill:  self.hover_fill,
+      fill: self.hover_fill,
       fontFamily: self.options.font.family,
       fontStyle: '500',
       text: 'Heatmap',
@@ -3962,9 +3964,10 @@ import { round } from 'lodash';
         x: scale_x,
         y: scale_y,
       },
+      linecap: 'square',
       height: scale_height,
-      stroke: self.hover_fill,
-      strokeWidth: 1,
+      stroke: 'grey',
+      strokeWidth: 2,
       width: scale_width,
       x: scale_x,
       y: scale_y,
@@ -3977,7 +3980,7 @@ import { round } from 'lodash';
 
     for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
       const tick = new Konva.Rect({
-        stroke: self.hover_fill,
+        stroke: 'grey',
         strokeWidth: 1,
         width: 10,
         x: scale_x,
@@ -3999,6 +4002,8 @@ import { round } from 'lodash';
       const text = scale_values[i];
       const scale_text = new Konva.Text({
         fill: self.hover_fill,
+        fontFamily: self.options.font.family,
+        fontStyle: '500', 
         text,
         x: scale_x,
         y: scale_y,

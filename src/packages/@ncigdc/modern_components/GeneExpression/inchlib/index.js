@@ -2859,7 +2859,7 @@ import { round } from 'lodash';
 
     const ticks_group = new Konva.Group({
       x: scale_x,
-      y: scale_height + scale_y + 0,
+      y: scale_height + scale_y,
     });
 
     let x = 0;
@@ -2868,7 +2868,7 @@ import { round } from 'lodash';
     for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
       const tick = new Konva.Rect({
         height: 10,
-        stroke: self.options.font.color,
+        stroke: self.hover_fill,
         strokeWidth: 1,
         x: Math.round(scale_width * (0.25 * i)),
         y: 0,
@@ -2882,7 +2882,7 @@ import { round } from 'lodash';
 
     const scale_values_group = new Konva.Group({
       x: scale_x - 12,
-      y: scale_height + scale_y + 20,
+      y: scale_height + scale_y + 18,
     });
 
     y = 0;
@@ -3922,16 +3922,20 @@ import { round } from 'lodash';
     self.legend_layer = new Konva.Layer();
     self.stage.add(self.legend_layer);
 
-    const legendY = 5;
-    const legendX = self.stage.width() + 5;
+    const legend_y = 5;
+    // const legend_x = self.stage.width() + 5;
+    // this is hidden in screen view by moving it off-stage
+    const legend_x = self.stage.width() - 300;
+
+    // add heatmap scale to PNG
 
     const scale_group = new Konva.Group({
-      x: legendX + 180,
-      y: legendY + 40,
+      x: legend_x + 180,
+      y: legend_y + 40,
     });
 
-    let scaleX = 0;
-    let scaleY = 0;
+    let scale_x = 0;
+    let scale_y = 0;
 
     const scale_height = 125;
 
@@ -3940,34 +3944,55 @@ import { round } from 'lodash';
       fontFamily: self.options.font.family,
       fontStyle: '500',
       text: 'Heatmap',
-      x: scaleX,
-      y: scaleY,
+      x: scale_x,
+      y: scale_y,
     });
 
-    scaleY += 20;
+    scale_y += 20;
+
+    const scale_width = 20;
 
     const scale_gradient = new Konva.Rect({
       fillLinearGradientColorStops: self.color_steps,
       fillLinearGradientEndPoint: {
-        x: scaleX,
+        x: scale_x,
         y: 110,
       },
       fillLinearGradientStartPoint: {
-        x: scaleX,
-        y: scaleY,
+        x: scale_x,
+        y: scale_y,
       },
       height: scale_height,
-      width: 20,
-      x: scaleX,
-      y: scaleY,
+      stroke: self.hover_fill,
+      strokeWidth: 1,
+      width: scale_width,
+      x: scale_x,
+      y: scale_y,
     });
     scale_group.add(scale_gradient, scale_heading);
 
-    scaleX += 28;
+    // add ticks to heatmap scale
+
+    scale_x += scale_width;
+
+    for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
+      const tick = new Konva.Rect({
+        stroke: self.hover_fill,
+        strokeWidth: 1,
+        width: 10,
+        x: scale_x,
+        y: Math.round(scale_y + (scale_height * (0.25 * i))),
+      });
+      scale_group.add(tick);
+    }
+
+    // add values to heatmap scale
+
+    scale_x += 15;
 
     const scale_values = self.get_scale_values();
 
-    scaleY += 1
+    scale_y += 1
     const scaleY_int = Math.floor(scale_height / scale_values.length) + 3.5;
 
     for (let i = 0; i < scale_values.length; i++) {
@@ -3975,11 +4000,11 @@ import { round } from 'lodash';
       const scale_text = new Konva.Text({
         fill: self.hover_fill,
         text,
-        x: scaleX,
-        y: scaleY,
+        x: scale_x,
+        y: scale_y,
       });
       scale_group.add(scale_text);
-      scaleY += scaleY_int;
+      scale_y += scaleY_int;
     }
 
     const legend_title = new Konva.Text({
@@ -3987,13 +4012,13 @@ import { round } from 'lodash';
       fontFamily: 'franklin_gothic_fsbook',
       fontSize: 18,
       text: 'Legend',
-      x: legendX + 10,
-      y: legendY + 10,
+      x: legend_x + 10,
+      y: legend_y + 10,
     });
 
     const legend_group = new Konva.Group({
-      x: legendX + 10,
-      y: legendY + 40,
+      x: legend_x + 10,
+      y: legend_y + 40,
     });
 
     let y = 0;
@@ -4074,8 +4099,8 @@ import { round } from 'lodash';
     }
     const legend = self.objects_ref.popup_box.clone({
       height: y + 40,
-      x: legendX,
-      y: legendY,
+      x: legend_x,
+      y: legend_y,
     });
 
     self.legend_layer.add(legend, legend_title, legend_group, scale_group);

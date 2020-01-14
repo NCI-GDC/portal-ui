@@ -3925,9 +3925,9 @@ import { round } from 'lodash';
     self.stage.add(self.legend_layer);
 
     const legend_y = 5;
-    // const legend_x = self.stage.width() + 5;
+    const legend_x = self.stage.width() + 5;
     // this is hidden in screen view by moving it off-stage
-    const legend_x = self.stage.width() - 300;
+    // const legend_x = self.stage.width() - 300;
 
     // add heatmap scale to PNG
 
@@ -3950,7 +3950,7 @@ import { round } from 'lodash';
       y: scale_y,
     });
 
-    scale_y += 20;
+    scale_y += 25;
 
     const scale_width = 20;
 
@@ -3958,7 +3958,7 @@ import { round } from 'lodash';
       fillLinearGradientColorStops: self.color_steps,
       fillLinearGradientEndPoint: {
         x: scale_x,
-        y: 110,
+        y: scale_y + 90,
       },
       fillLinearGradientStartPoint: {
         x: scale_x,
@@ -3995,8 +3995,8 @@ import { round } from 'lodash';
 
     const scale_values = self.get_scale_values();
 
-    scale_y += 1
-    const scaleY_int = Math.floor(scale_height / scale_values.length) + 3.5;
+    scale_y -= 5;
+    const scaleY_int = Math.floor(scale_height / scale_values.length) + 6;
 
     for (let i = 0; i < scale_values.length; i++) {
       const text = scale_values[i];
@@ -4004,7 +4004,7 @@ import { round } from 'lodash';
         fill: self.hover_fill,
         fontFamily: self.options.font.family,
         fontStyle: '500', 
-        text,
+        text: '8.8',
         x: scale_x,
         y: scale_y,
       });

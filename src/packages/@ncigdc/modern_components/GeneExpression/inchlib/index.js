@@ -2867,7 +2867,7 @@ import { round } from 'lodash';
 
     const scale_height = 20;
     const scale_width = 150;
-    const scale_x = 2;
+    const scale_x = 5;
     const scale_y = 80;
 
     const color_scale = new Konva.Rect({
@@ -2886,17 +2886,52 @@ import { round } from 'lodash';
         x: scale_width,
         y: scale_y,
       },
+      stroke: '#3a3a3a',
+      strokeWidth: 1,
+      lineCap: 'square',
+      shadowForStrokeEnabled: false,
     });
+
+    // add ticks to heatmap scale
+
+    const ticks_x = [
+      0,
+      scale_width * .25,
+      scale_width * .5,
+      scale_width * .75,
+      scale_width,
+    ];
+
+    const ticks_group = new Konva.Group({
+      x: scale_x,
+      y: scale_height + scale_y + 0,
+    });
+
+    let x = 0;
+    let y = 0;
+
+    for (let i = 0; i < ticks_x.length; i++) {
+      const tick = new Konva.Rect({
+        x: Math.round(ticks_x[i]),
+        y: 0,
+        stroke: '#3a3a3a',
+        strokeWidth: 1,
+        height: 10,
+      });
+      ticks_group.add(tick);
+    }
+
+    // add labels to heatmap scale
 
     const scale_values = self.get_scale_values();
 
     const scale_values_group = new Konva.Group({
       x: scale_x,
-      y: scale_height + scale_y + 5,
+      y: scale_height + scale_y + 25,
     });
 
-    let x = 0;
-    let y = 0;
+    y = 0;
+    x = 0;
 
     const scale_x_int = (scale_width / scale_values.length) + 3.5;
 
@@ -2925,7 +2960,7 @@ import { round } from 'lodash';
       self._color_scale_click(color_scale, self.navigation_layer);
     });
 
-    self.navigation_layer.add(color_scale, scale_values_group);
+    self.navigation_layer.add(color_scale, ticks_group, scale_values_group);
   };
 
   InCHlib.prototype._update_color_scale = function () {
@@ -4277,14 +4312,12 @@ import { round } from 'lodash';
 
     layer.add(self.icon_tooltip);
     self.icon_tooltip.moveToTop();
-    color_scale.setOpacity(0.7);
     layer.draw();
   };
 
   InCHlib.prototype._color_scale_mouseout = function (color_scale, layer) {
     const self = this;
     self.icon_tooltip.destroy();
-    color_scale.setOpacity(1);
     layer.draw();
   };
 

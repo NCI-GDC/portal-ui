@@ -1175,7 +1175,6 @@ import { round } from 'lodash';
       heatmap_value: new Konva.Text({
         fontFamily: self.options.font.family,
         fill: self.hover_fill,
-        opacity: self.hover_opacity_off,
         listening: false,
         fontStyle: '500',
       }),
@@ -1243,7 +1242,7 @@ import { round } from 'lodash';
         max,
       ]
       .map(x => round(x, 1).toFixed(1));
-    }
+    };
 
     // start plugin
     self.init();
@@ -2256,7 +2255,6 @@ import { round } from 'lodash';
       text = self.objects_ref.heatmap_value.clone({
         text: gene_symbol,
         fontSize: self.options.font.size,
-        opacity: self.hover_opacity_on,
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
@@ -2447,7 +2445,6 @@ import { round } from 'lodash';
         const x = (self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2) + 5;
         const column_header = self.objects_ref.column_header.clone({
           fill: self.hover_fill,
-          opacity: self.hover_opacity_on,
           fontFamily: self.options.font.family,
           fontSize: self.options.font.size,
           fontStyle: '500',
@@ -2588,7 +2585,6 @@ import { round } from 'lodash';
       fontSize: self.options.font.size,
       fontFamily: self.options.font.family,
       fill: self.hover_fill,
-      opacity: self.hover_opacity_off,
       align: 'right',
       listening: false,
     });
@@ -3807,7 +3803,7 @@ import { round } from 'lodash';
   InCHlib.prototype._export_icon_click = function () {
     const self = this;
     const overlay = self._draw_target_overlay();
-    const zoom = 1;
+    const zoom = 3;
     const width = self.stage.width();
     const height = self.stage.height();
 
@@ -3940,12 +3936,12 @@ import { round } from 'lodash';
     const scale_height = 125;
 
     const scale_heading = new Konva.Text({
+      fill:  self.hover_fill,
+      fontFamily: self.options.font.family,
+      fontStyle: '500',
       text: 'Heatmap',
       x: scaleX,
       y: scaleY,
-      fontStyle: '500',
-      fontFamily: self.options.font.family,
-      fill: self.hover_fill,
     });
 
     scaleY += 20;
@@ -3977,22 +3973,22 @@ import { round } from 'lodash';
     for (let i = 0; i < scale_values.length; i++) {
       const text = scale_values[i];
       const scale_text = new Konva.Text({
+        fill: self.hover_fill,
         text,
         x: scaleX,
         y: scaleY,
-        fill: self.hover_fill,
       });
       scale_group.add(scale_text);
       scaleY += scaleY_int;
     }
 
     const legend_title = new Konva.Text({
-      text: 'Legend',
+      fill: self.hover_fill,
       fontFamily: 'franklin_gothic_fsbook',
       fontSize: 18,
+      text: 'Legend',
       x: legendX + 10,
       y: legendY + 10,
-      fill: self.hover_fill,
     });
 
     const legend_group = new Konva.Group({
@@ -4007,11 +4003,9 @@ import { round } from 'lodash';
       const heading = self.legend_headings[i];
       const legend_heading = new Konva.Text({
         fill: self.hover_fill,
-        opacity: self.hover_opacity_off,
-        fontStyle: '500',
         fontFamily: self.options.font.family,
+        fontStyle: '500',
         text: heading,
-        fill: self.hover_fill,
         x,
         y,
       });
@@ -4020,10 +4014,10 @@ import { round } from 'lodash';
 
       if (self.legend_continuous_categories.includes(heading)) {
         const zero = new Konva.Text({
+          fill: self.hover_fill,
           text: '0',
           x,
           y,
-          fill: self.hover_fill,
         });
 
         const gradient = new Konva.Rect({
@@ -4045,10 +4039,10 @@ import { round } from 'lodash';
         });
 
         const max = new Konva.Text({
+          fill: self.hover_fill,
           text: self.legend_gradient_upper_value(heading),
           x: x + 95,
           y,
-          fill: self.hover_fill,
         });
 
         legend_group.add(zero, gradient, max);
@@ -4067,10 +4061,10 @@ import { round } from 'lodash';
             y, 
           });
           const legend_text = new Konva.Text({
+            fill: self.hover_fill,
             text,
             x: x + 20,
             y,
-            fill: self.hover_fill,
           });
           legend_group.add(legend_square, legend_text);
           y += 20;

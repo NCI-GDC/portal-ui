@@ -210,7 +210,7 @@ import { round } from 'lodash';
     const self = this;
 
     // basic plugin setup
-    self.element = element;s
+    self.element = element;
     self.$element = $(element);
     self.options = $.extend({}, defaults, options);
     self._name = plugin_name;

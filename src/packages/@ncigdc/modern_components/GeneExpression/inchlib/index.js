@@ -2449,12 +2449,14 @@ import { round } from 'lodash';
       const max_text_length = self._get_max_length(current_headers);
 
       for (var i = 0, len = current_headers.length; i < len; i++) {
+        const skip_column = ['gene_ensembl', 'gene_symbol']
+          .includes(current_headers[i]);
+        if (skip_column) {
+          continue;
+        }
         // TODO this is not great. we should ask backend devs to provide
         // id and uuid in an object.
-        const case_id = current_headers[i].split('_')[0];
-        const case_uuid = current_headers[i].split('_')[1];
-        const is_header_hidden = current_headers[i] === 'gene_symbol' ||
-        current_headers[i] === 'gene_ensembl';
+        const [ case_id, case_uuid ] = current_headers[i].split('_');
         const x = (self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2) + 5;
         const column_header = self.objects_ref.column_header.clone({
           fill: self.hover_fill,
@@ -2463,9 +2465,7 @@ import { round } from 'lodash';
           fontStyle: '500',
           position_index: i,
           rotation,
-          text: is_header_hidden
-            ? '' // hide columns without messing up structure
-            : case_id,
+          text: case_id,
           x,
           y,
         });
@@ -2475,9 +2475,7 @@ import { round } from 'lodash';
         var rect = new Konva.Rect({
           case_uuid,
           width: self.pixels_for_dimension,
-          height: is_header_hidden
-            ? 0
-            : rect_height,
+          height: rect_height,
           fill: '#fff',
           x: rect_x,
           y: rect_y,

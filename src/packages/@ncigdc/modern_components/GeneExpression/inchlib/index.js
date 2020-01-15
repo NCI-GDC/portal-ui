@@ -199,6 +199,7 @@ import { round } from 'lodash';
       filter_button: true,
       hint_button: false,
     },
+    png_padding: 20,
     tooltip: {
       fill: '#fff',
       stroke: 'lightgrey',
@@ -1821,14 +1822,20 @@ import { round } from 'lodash';
 
   InCHlib.prototype._draw_stage_layer = function () {
     const self = this;
+    const { height, png_padding, width } = self.options;
     self.stage_layer = new Konva.Layer();
+    // drawing a large white background for PNG download.
+    // the extra width/height is to accommodate the legend
+    // and padding in the PNG.
     const stage_rect = new Konva.Rect({
       fill: '#fff',
-      height: self.options.height + 130 < 500 ? 500 : self.options.height + 130,
+      height: height + 130 + (png_padding * 2) < 500 + (png_padding * 2)
+        ? 500 + (png_padding * 2)
+        : height + 250 + (png_padding * 2),
       opacity: 1,
-      width: self.options.width + 280,
-      x: 0,
-      y: 0,
+      width: width + 300 + (png_padding * 2),
+      x: (png_padding * -1),
+      y: (png_padding * -1),
     });
     self.stage_layer.add(stage_rect);
     stage_rect.moveToBottom();
@@ -3814,6 +3821,7 @@ import { round } from 'lodash';
     const zoom = 3;
     const width = self.stage.width();
     const height = self.stage.height();
+    const { png_padding } = self.options;
 
     overlay.click(function() {
       overlay.fadeOut().remove();
@@ -3823,12 +3831,18 @@ import { round } from 'lodash';
     self.$element.after(loading_div);
     self.$element.hide();
 
-    self.stage.width((width + 280) * zoom);
-    self.stage.height((height < 500 ? 500 : height) * zoom);
+    self.stage.width((width + 300 + png_padding) * zoom);
+    self.stage.height((
+      height < 500 + (png_padding * 2)
+        ? 500 + (png_padding * 2)
+        : height
+      ) * zoom);
     self.stage.scale({
       x: zoom,
       y: zoom,
     });
+    self.stage.x(png_padding * 2);
+    self.stage.y(png_padding * 2);
     self.stage.draw();
     self.navigation_layer.hide();
     self.stage.toDataURL({
@@ -3841,6 +3855,8 @@ import { round } from 'lodash';
           x: 1,
           y: 1,
         });
+        self.stage.x(0);
+        self.stage.y(0);
         self.stage.draw();
         loading_div.fadeOut().remove();
         self.$element.show();
@@ -3936,8 +3952,8 @@ import { round } from 'lodash';
     self.legend_layer = new Konva.Layer();
     self.stage.add(self.legend_layer);
 
-    const legend_y = 5;
-    const legend_x = self.stage.width() + 5;
+    const legend_y = 0;
+    const legend_x = self.stage.width() + 25;
     // this is hidden in screen view by moving it off-stage
 
     // add heatmap scale to PNG
@@ -4015,7 +4031,7 @@ import { round } from 'lodash';
         fill: self.hover_fill,
         fontFamily: self.options.font.family,
         fontStyle: '500', 
-        text: '8.8',
+        text,
         x: scale_x,
         y: scale_y,
       });

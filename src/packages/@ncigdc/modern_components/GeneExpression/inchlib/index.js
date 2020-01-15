@@ -215,6 +215,7 @@ import { round } from 'lodash';
     self.$element = $(element);
     self.options = $.extend({}, defaults, options);
     self._name = plugin_name;
+    self.$element.attr('id', self._name);
 
     // inchlib setup
     self.user_options = options || {};
@@ -4798,6 +4799,17 @@ import { round } from 'lodash';
       loading_div.fadeOut().remove();
       self.$element.show();
     }, 50);
+
+    $('html').on('click', function(e) {
+      const $target = $(e.target);
+      const $overlay = $('.target_overlay');
+      if (
+        !$target.is(`#${self._name}, #${self._name} *`) &&
+        $overlay.length
+      ) {
+        $overlay.trigger('click');
+      }
+    });
   };
 
   $.fn[plugin_name] = function (options) {

@@ -20,6 +20,16 @@ const options = {
   },
 };
 
+const handleOverlayClickOut = ({ target }) => {
+  const id = 'InCHlib';
+  if (target.id !== id && target.closest(`#${id}`) === null) {
+    const overlay = document.querySelector(`#${id} .target_overlay`);
+    if (overlay !== null) {
+      overlay.click();
+    }
+  }
+};
+
 class GeneExpressionChart extends Component {
   componentDidMount() {
     const { data, handleClickInchlibLink } = this.props;
@@ -32,6 +42,7 @@ class GeneExpressionChart extends Component {
     this.$el = $(this.el);
     this.$el.InCHlib(this.options);
     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
+    document.addEventListener('click', handleOverlayClickOut);
   }
 
   componentDidUpdate(prevProps) {
@@ -56,6 +67,7 @@ class GeneExpressionChart extends Component {
     const { handleClickInchlibLink } = this.props;
     // destroy inchlib
     this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
+    document.removeEventListener('click', handleOverlayClickOut);
     this.$el.children().remove();
   }
 

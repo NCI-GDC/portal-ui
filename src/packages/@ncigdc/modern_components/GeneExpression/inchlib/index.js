@@ -4301,6 +4301,7 @@ import { round } from 'lodash';
       scales_div.fadeOut().remove();
       scale_divs.fadeOut().remove();
       overlay.fadeOut().remove();
+      // self._unbind_overlay_click_out();
     });
 
     scale_divs.on('click', function () {
@@ -4799,17 +4800,6 @@ import { round } from 'lodash';
       loading_div.fadeOut().remove();
       self.$element.show();
     }, 50);
-
-    $('html').on('click', function(e) {
-      const $target = $(e.target);
-      const $overlay = $('.target_overlay');
-      if (
-        !$target.is(`#${self._name}, #${self._name} *`) &&
-        $overlay.length
-      ) {
-        $overlay.trigger('click');
-      }
-    });
   };
 
   $.fn[plugin_name] = function (options) {

@@ -253,16 +253,22 @@ import { round } from 'lodash';
     };
 
     self.get_days_to_death_color = val => {
+      // create red & green values for RGB().
+      // will result in a shade of blue.
+      // higher value = darker blue.
       const red_green = Math.floor(255 - (val / self.MAX_DAYS_TO_DEATH * 255));
-      return isNaN(red_green)
+      return isNaN(red_green) // i.e. val is "not reported"
         ? self.invalid_column_metadata_color
         : `rgb(${red_green},${red_green},255)`;
     };
 
     self.get_age_at_diagnosis_color = val => {
+      // create lightness value for HSL().
+      // will result in a shade of green.
+      // higher value = darker green.
       const percentage = 1 - (val / self.MAX_AGE_AT_DIAGNOSIS);
       const lightness = (percentage * (self.age_dx_colors.max_light - self.age_dx_colors.min_light)) + self.age_dx_colors.min_light;
-      return isNaN(percentage)
+      return isNaN(percentage) // i.e. val is "not reported"
         ? self.invalid_column_metadata_color
         : `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${lightness}%)`;
     }
@@ -1712,7 +1718,7 @@ import { round } from 'lodash';
     self._draw_heatmap_header();
     self._draw_navigation();
     self.highlight_rows(self.options.highlighted_rows);
-    self._draw_legend_for_png(); // temporary
+    self._draw_legend_for_png();
   };
 
   InCHlib.prototype._draw_dendrogram_layers = function () {

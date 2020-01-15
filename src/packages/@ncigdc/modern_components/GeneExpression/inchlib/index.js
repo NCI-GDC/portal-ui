@@ -3834,7 +3834,7 @@ import { round } from 'lodash';
     self.stage.toDataURL({
       quality: 1,
       callback(dataUrl) {
-          download_image(dataUrl);
+        downloadURI(dataUrl, 'gene-expression.png');
         self.stage.width(width);
         self.stage.height(height);
         self.stage.scale({
@@ -3850,8 +3850,14 @@ import { round } from 'lodash';
       },
     });
 
-    function download_image(dataUrl) {
-      $(`<a download="inchlib" href="${dataUrl}"></a>`)[0].click();
+    // function from https://stackoverflow.com/a/15832662/512042
+    function downloadURI(uri, name) {
+      var link = document.createElement('a');
+      link.download = name;
+      link.href = uri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   };
 
@@ -3933,7 +3939,6 @@ import { round } from 'lodash';
     const legend_y = 5;
     const legend_x = self.stage.width() + 5;
     // this is hidden in screen view by moving it off-stage
-    // const legend_x = self.stage.width() - 300;
 
     // add heatmap scale to PNG
 

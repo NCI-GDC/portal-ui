@@ -20,7 +20,6 @@ import dataObj from './inchlib/data';
 
 const dataSizes = Object.keys(dataObj);
 const showDataButtons = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION_BUTTONS || false;
-// const showDataButtons = true;
 // end - for viz demo
 
 const enhance = compose(
@@ -31,11 +30,7 @@ const enhance = compose(
 
 class GeneExpression extends Component {
   state = {
-    // data: null,
     data: dataObj.data10x5, // for viz demo
-    // data: showDataButtons
-    //   ? null
-    //   : dataObj.data50x50,
   };
 
   handleClickInchlibLink = (

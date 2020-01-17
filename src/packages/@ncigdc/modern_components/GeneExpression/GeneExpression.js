@@ -1,38 +1,59 @@
-/* eslint-disable react/state-in-constructor */
 /* tslint:disable */
+/* eslint-disable camelcase */
 
 import React, { Component } from 'react';
+import {
+  compose,
+  pure,
+  setDisplayName,
+} from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import withRouter from '@ncigdc/utils/withRouter';
 
 import GeneExpressionChart from './GeneExpressionChart';
 
-import data10x5 from './inchlib/data';
-import data2000x50 from './inchlib/zhenyu-2000x50';
+// start - for viz demo
+// import pre-made clustered data,
+// and use buttons to switch between datasets
+import dataObj from './inchlib/data';
 
-const dataSizes = ['10x5', '2000x50'];
+const dataSizes = Object.keys(dataObj);
+const showDataButtons = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION_BUTTONS || false;
+// end - for viz demo
 
-const showDataButtons = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION_BUTTONS;
+const enhance = compose(
+  setDisplayName('EnhancedGeneExpression'),
+  withRouter,
+  pure,
+);
 
-export class GeneExpression extends Component {
+class GeneExpression extends Component {
   state = {
+    // data: dataObj.data3x2, // for viz demo
     data: showDataButtons
       ? null
-      : data10x5,
+      : dataObj.data50x50,
   };
 
-  handleButton = size => {
-    let data;
-    switch (size) {
-      case '10x5':
-        data = data10x5;
-        break;
-      case '2000x50':
-        data = data2000x50;
-        break;
-      default:
-        data = null;
-    }
+  handleClickInchlibLink = (
+    {
+      detail: {
+        case_uuid = '',
+        gene_ensembl = '',
+      },
+    },
+  ) => {
+    const { history } = this.props;
+    const nextPage = gene_ensembl === ''
+      ? `/cases/${case_uuid}`
+      : `/genes/${gene_ensembl}`;
+    history.push(nextPage);
+  }
+
+  handleDataButton = size => {
+    // for viz demo
+    const data = dataObj[size];
     this.setState({ data });
   };
 
@@ -54,14 +75,15 @@ export class GeneExpression extends Component {
             >
             <h1 style={{ margin: '0 0 20px' }}>Gene Expression</h1>
             {showDataButtons && (
+              // for viz demo
               <Row>
                 {dataSizes.map(size => (
                   <button
                     key={size}
-                    onClick={() => this.handleButton(size)}
+                    onClick={() => this.handleDataButton(size)}
                     type="button"
                     >
-                    {`Show ${size} dataset`}
+                    {size.split('data')[1]}
                   </button>
                 ))}
               </Row>
@@ -69,6 +91,7 @@ export class GeneExpression extends Component {
             {data && (
               <GeneExpressionChart
                 data={data}
+                handleClickInchlibLink={this.handleClickInchlibLink}
                 />
             )}
           </Column>
@@ -78,4 +101,4 @@ export class GeneExpression extends Component {
   }
 }
 
-export default GeneExpression;
+export default enhance(GeneExpression);

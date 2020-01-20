@@ -44,6 +44,7 @@ class GeneExpression extends Component {
     const nextPage = gene_ensembl === ''
       ? `/cases/${case_uuid}`
       : `/genes/${gene_ensembl}`;
+    // This opens the link in a new tab
     Object.assign(document.createElement('a'), {
       href: nextPage,
       target: '_blank',

@@ -171,7 +171,7 @@ import { round } from 'lodash';
     font: {
       color: '#3a3a3a',
       family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-      size: 10,
+      size: 12,
     },
     heatmap_colors: 'RdLrGr',
     heatmap_header: true,
@@ -199,6 +199,7 @@ import { round } from 'lodash';
       filter_button: true,
       hint_button: false,
     },
+    png_padding: 20,
     tooltip: {
       fill: '#fff',
       stroke: 'lightgrey',
@@ -214,6 +215,7 @@ import { round } from 'lodash';
     self.$element = $(element);
     self.options = $.extend({}, defaults, options);
     self._name = plugin_name;
+    self.$element.attr('id', self._name);
 
     // inchlib setup
     self.user_options = options || {};
@@ -238,8 +240,8 @@ import { round } from 'lodash';
 
     // control hover color with opacity
     self.hover_fill = '#3a3a3a';
-    self.hover_opacity_off = 0.7;
-    self.hover_opacity_on = 1;
+    self.hover_opacity_off = 1;
+    self.hover_opacity_on = 0.7;
 
     // column metadata colors & legend info
     self.MAX_DAYS_TO_DEATH = 3379;
@@ -253,16 +255,22 @@ import { round } from 'lodash';
     };
 
     self.get_days_to_death_color = val => {
+      // create red & green values for RGB().
+      // will result in a shade of blue.
+      // higher value = darker blue.
       const red_green = Math.floor(255 - (val / self.MAX_DAYS_TO_DEATH * 255));
-      return isNaN(red_green)
+      return isNaN(red_green) // i.e. val is "not reported"
         ? self.invalid_column_metadata_color
         : `rgb(${red_green},${red_green},255)`;
     };
 
     self.get_age_at_diagnosis_color = val => {
+      // create lightness value for HSL().
+      // will result in a shade of green.
+      // higher value = darker green.
       const percentage = 1 - (val / self.MAX_AGE_AT_DIAGNOSIS);
       const lightness = (percentage * (self.age_dx_colors.max_light - self.age_dx_colors.min_light)) + self.age_dx_colors.min_light;
-      return isNaN(percentage)
+      return isNaN(percentage) // i.e. val is "not reported"
         ? self.invalid_column_metadata_color
         : `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${lightness}%)`;
     }
@@ -1175,7 +1183,6 @@ import { round } from 'lodash';
       heatmap_value: new Konva.Text({
         fontFamily: self.options.font.family,
         fill: self.hover_fill,
-        opacity: self.hover_opacity_off,
         listening: false,
         fontStyle: '500',
       }),
@@ -1243,7 +1250,7 @@ import { round } from 'lodash';
         max,
       ]
       .map(x => round(x, 1).toFixed(1));
-    }
+    };
 
     // start plugin
     self.init();
@@ -1713,7 +1720,7 @@ import { round } from 'lodash';
     self._draw_heatmap_header();
     self._draw_navigation();
     self.highlight_rows(self.options.highlighted_rows);
-    self._draw_legend_for_png(); // temporary
+    self._draw_legend_for_png();
   };
 
   InCHlib.prototype._draw_dendrogram_layers = function () {
@@ -1816,14 +1823,20 @@ import { round } from 'lodash';
 
   InCHlib.prototype._draw_stage_layer = function () {
     const self = this;
+    const { height, png_padding, width } = self.options;
     self.stage_layer = new Konva.Layer();
+    // drawing a large white background for PNG download.
+    // the extra width/height is to accommodate the legend
+    // and padding in the PNG.
     const stage_rect = new Konva.Rect({
       fill: '#fff',
-      height: self.options.height + 130 < 500 ? 500 : self.options.height + 130,
+      height: height + 130 + (png_padding * 2) < 500 + (png_padding * 2)
+        ? 500 + (png_padding * 2)
+        : height + 250 + (png_padding * 2),
       opacity: 1,
-      width: self.options.width + 280,
-      x: 0,
-      y: 0,
+      width: width + 300 + (png_padding * 2),
+      x: (png_padding * -1),
+      y: (png_padding * -1),
     });
     self.stage_layer.add(stage_rect);
     stage_rect.moveToBottom();
@@ -2256,7 +2269,6 @@ import { round } from 'lodash';
       text = self.objects_ref.heatmap_value.clone({
         text: gene_symbol,
         fontSize: self.options.font.size,
-        opacity: self.hover_opacity_on,
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
@@ -2438,24 +2450,23 @@ import { round } from 'lodash';
       const max_text_length = self._get_max_length(current_headers);
 
       for (var i = 0, len = current_headers.length; i < len; i++) {
+        const skip_column = ['gene_ensembl', 'gene_symbol']
+          .includes(current_headers[i]);
+        if (skip_column) {
+          continue;
+        }
         // TODO this is not great. we should ask backend devs to provide
         // id and uuid in an object.
-        const case_id = current_headers[i].split('_')[0];
-        const case_uuid = current_headers[i].split('_')[1];
-        const is_header_hidden = current_headers[i] === 'gene_symbol' ||
-        current_headers[i] === 'gene_ensembl';
+        const [ case_id, case_uuid ] = current_headers[i].split('_');
         const x = (self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2) + 5;
         const column_header = self.objects_ref.column_header.clone({
           fill: self.hover_fill,
-          opacity: self.hover_opacity_on,
           fontFamily: self.options.font.family,
           fontSize: self.options.font.size,
           fontStyle: '500',
           position_index: i,
           rotation,
-          text: is_header_hidden
-            ? '' // hide columns without messing up structure
-            : case_id,
+          text: case_id,
           x,
           y,
         });
@@ -2465,9 +2476,7 @@ import { round } from 'lodash';
         var rect = new Konva.Rect({
           case_uuid,
           width: self.pixels_for_dimension,
-          height: is_header_hidden
-            ? 0
-            : rect_height,
+          height: rect_height,
           fill: '#fff',
           x: rect_x,
           y: rect_y,
@@ -2587,8 +2596,8 @@ import { round } from 'lodash';
       text: distance,
       fontSize: self.options.font.size,
       fontFamily: self.options.font.family,
+      fontStyle: '500',
       fill: self.hover_fill,
-      opacity: self.hover_opacity_off,
       align: 'right',
       listening: false,
     });
@@ -2834,7 +2843,7 @@ import { round } from 'lodash';
 
     const scale_height = 20;
     const scale_width = 150;
-    const scale_x = 2;
+    const scale_x = 15;
     const scale_y = 80;
 
     const color_scale = new Konva.Rect({
@@ -2853,29 +2862,58 @@ import { round } from 'lodash';
         x: scale_width,
         y: scale_y,
       },
+      stroke: 'grey',
+      strokeWidth: 2,
+      lineCap: 'square',
+      shadowForStrokeEnabled: false,
     });
 
-    const scale_values = self.get_scale_values();
+    // add ticks to heatmap scale
 
-    const scale_values_group = new Konva.Group({
+    const ticks_group = new Konva.Group({
       x: scale_x,
-      y: scale_height + scale_y + 5,
+      y: scale_height + scale_y,
     });
 
     let x = 0;
     let y = 0;
 
-    const scale_x_int = (scale_width / scale_values.length) + 3.5;
+    for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
+      const tick = new Konva.Rect({
+        height: 10,
+        stroke: 'grey',
+        strokeWidth: 1,
+        x: Math.round(scale_width * (0.25 * i)),
+        y: 0,
+      });
+      ticks_group.add(tick);
+    }
+
+    // add values to heatmap scale
+
+    const scale_values = self.get_scale_values();
+
+    const scale_values_group = new Konva.Group({
+      x: scale_x - 12,
+      y: scale_height + scale_y + 18,
+    });
+
+    y = 0;
+    x = 0;
+
+    const scale_x_int = (scale_width / scale_values.length) + 7.5;
 
     for (let i = 0; i < scale_values.length; i++) {
       const text = scale_values[i];
       const scale_text = new Konva.Text({
+        align: 'center',
+        fill: self.hover_fill,
+        fontFamily: self.options.font.family,
+        fontStyle: '500', 
         text,
+        width: 25,
         x,
         y,
-        fontStyle: '500',
-        fill: self.hover_fill,
-        opacity: self.hover_opacity_off,
       });
       x += scale_x_int;
       scale_values_group.add(scale_text);
@@ -2895,7 +2933,7 @@ import { round } from 'lodash';
       self._color_scale_click(color_scale, self.navigation_layer);
     });
 
-    self.navigation_layer.add(color_scale, scale_values_group);
+    self.navigation_layer.add(color_scale, ticks_group, scale_values_group);
   };
 
   InCHlib.prototype._update_color_scale = function () {
@@ -3779,9 +3817,10 @@ import { round } from 'lodash';
   InCHlib.prototype._export_icon_click = function () {
     const self = this;
     const overlay = self._draw_target_overlay();
-    const zoom = 1;
+    const zoom = 3;
     const width = self.stage.width();
     const height = self.stage.height();
+    const { png_padding } = self.options;
 
     overlay.click(function() {
       overlay.fadeOut().remove();
@@ -3791,24 +3830,32 @@ import { round } from 'lodash';
     self.$element.after(loading_div);
     self.$element.hide();
 
-    self.stage.width((width + 280) * zoom);
-    self.stage.height((height < 500 ? 500 : height) * zoom);
+    self.stage.width((width + 300 + png_padding) * zoom);
+    self.stage.height((
+      height < 500 + (png_padding * 2)
+        ? 500 + (png_padding * 2)
+        : height
+      ) * zoom);
     self.stage.scale({
       x: zoom,
       y: zoom,
     });
+    self.stage.x(png_padding * 2);
+    self.stage.y(png_padding * 2);
     self.stage.draw();
     self.navigation_layer.hide();
     self.stage.toDataURL({
       quality: 1,
       callback(dataUrl) {
-          download_image(dataUrl);
+        downloadURI(dataUrl, 'gene-expression.png');
         self.stage.width(width);
         self.stage.height(height);
         self.stage.scale({
           x: 1,
           y: 1,
         });
+        self.stage.x(0);
+        self.stage.y(0);
         self.stage.draw();
         loading_div.fadeOut().remove();
         self.$element.show();
@@ -3818,8 +3865,14 @@ import { round } from 'lodash';
       },
     });
 
-    function download_image(dataUrl) {
-      $(`<a download="inchlib" href="${dataUrl}"></a>`)[0].click();
+    // function from https://stackoverflow.com/a/15832662/512042
+    function downloadURI(uri, name) {
+      var link = document.createElement('a');
+      link.download = name;
+      link.href = uri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   };
 
@@ -3898,78 +3951,105 @@ import { round } from 'lodash';
     self.legend_layer = new Konva.Layer();
     self.stage.add(self.legend_layer);
 
-    const legendY = 5;
-    const legendX = self.stage.width() + 5;
+    const legend_y = 0;
+    const legend_x = self.stage.width() + 25;
+    // this is hidden in screen view by moving it off-stage
+
+    // add heatmap scale to PNG
 
     const scale_group = new Konva.Group({
-      x: legendX + 180,
-      y: legendY + 40,
+      x: legend_x + 180,
+      y: legend_y + 40,
     });
 
-    let scaleX = 0;
-    let scaleY = 0;
+    let scale_x = 0;
+    let scale_y = 0;
 
     const scale_height = 125;
 
     const scale_heading = new Konva.Text({
-      text: 'Heatmap',
-      x: scaleX,
-      y: scaleY,
-      fontStyle: '500',
-      fontFamily: self.options.font.family,
       fill: self.hover_fill,
+      fontFamily: self.options.font.family,
+      fontStyle: '500',
+      text: 'Heatmap',
+      x: scale_x,
+      y: scale_y,
     });
 
-    scaleY += 20;
+    scale_y += 25;
+
+    const scale_width = 20;
 
     const scale_gradient = new Konva.Rect({
       fillLinearGradientColorStops: self.color_steps,
       fillLinearGradientEndPoint: {
-        x: scaleX,
-        y: 110,
+        x: scale_x,
+        y: scale_y + 90,
       },
       fillLinearGradientStartPoint: {
-        x: scaleX,
-        y: scaleY,
+        x: scale_x,
+        y: scale_y,
       },
+      linecap: 'square',
       height: scale_height,
-      width: 20,
-      x: scaleX,
-      y: scaleY,
+      stroke: 'grey',
+      strokeWidth: 2,
+      width: scale_width,
+      x: scale_x,
+      y: scale_y,
     });
     scale_group.add(scale_gradient, scale_heading);
 
-    scaleX += 28;
+    // add ticks to heatmap scale
+
+    scale_x += scale_width;
+
+    for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
+      const tick = new Konva.Rect({
+        stroke: 'grey',
+        strokeWidth: 1,
+        width: 10,
+        x: scale_x,
+        y: Math.round(scale_y + (scale_height * (0.25 * i))),
+      });
+      scale_group.add(tick);
+    }
+
+    // add values to heatmap scale
+
+    scale_x += 15;
 
     const scale_values = self.get_scale_values();
 
-    scaleY += 1
-    const scaleY_int = Math.floor(scale_height / scale_values.length) + 3.5;
+    scale_y -= 5;
+    const scaleY_int = Math.floor(scale_height / scale_values.length) + 6;
 
     for (let i = 0; i < scale_values.length; i++) {
       const text = scale_values[i];
       const scale_text = new Konva.Text({
-        text,
-        x: scaleX,
-        y: scaleY,
         fill: self.hover_fill,
+        fontFamily: self.options.font.family,
+        fontStyle: '500', 
+        text,
+        x: scale_x,
+        y: scale_y,
       });
       scale_group.add(scale_text);
-      scaleY += scaleY_int;
+      scale_y += scaleY_int;
     }
 
     const legend_title = new Konva.Text({
-      text: 'Legend',
+      fill: self.hover_fill,
       fontFamily: 'franklin_gothic_fsbook',
       fontSize: 18,
-      x: legendX + 10,
-      y: legendY + 10,
-      fill: self.hover_fill,
+      text: 'Legend',
+      x: legend_x + 10,
+      y: legend_y + 10,
     });
 
     const legend_group = new Konva.Group({
-      x: legendX + 10,
-      y: legendY + 40,
+      x: legend_x + 10,
+      y: legend_y + 40,
     });
 
     let y = 0;
@@ -3979,11 +4059,9 @@ import { round } from 'lodash';
       const heading = self.legend_headings[i];
       const legend_heading = new Konva.Text({
         fill: self.hover_fill,
-        opacity: self.hover_opacity_off,
-        fontStyle: '500',
         fontFamily: self.options.font.family,
+        fontStyle: '500',
         text: heading,
-        fill: self.hover_fill,
         x,
         y,
       });
@@ -3992,10 +4070,10 @@ import { round } from 'lodash';
 
       if (self.legend_continuous_categories.includes(heading)) {
         const zero = new Konva.Text({
+          fill: self.hover_fill,
           text: '0',
           x,
           y,
-          fill: self.hover_fill,
         });
 
         const gradient = new Konva.Rect({
@@ -4017,10 +4095,10 @@ import { round } from 'lodash';
         });
 
         const max = new Konva.Text({
+          fill: self.hover_fill,
           text: self.legend_gradient_upper_value(heading),
           x: x + 95,
           y,
-          fill: self.hover_fill,
         });
 
         legend_group.add(zero, gradient, max);
@@ -4039,10 +4117,10 @@ import { round } from 'lodash';
             y, 
           });
           const legend_text = new Konva.Text({
+            fill: self.hover_fill,
             text,
             x: x + 20,
             y,
-            fill: self.hover_fill,
           });
           legend_group.add(legend_square, legend_text);
           y += 20;
@@ -4052,8 +4130,8 @@ import { round } from 'lodash';
     }
     const legend = self.objects_ref.popup_box.clone({
       height: y + 40,
-      x: legendX,
-      y: legendY,
+      x: legend_x,
+      y: legend_y,
     });
 
     self.legend_layer.add(legend, legend_title, legend_group, scale_group);
@@ -4193,8 +4271,8 @@ import { round } from 'lodash';
       'border-radius': '5px',
       padding: '5px',
       position: 'absolute',
-      top: 105,
-      left: 0,
+      top: 100,
+      left: 14,
       width: 110,
       'max-height': 400,
       'overflow-y': 'auto',
@@ -4223,6 +4301,7 @@ import { round } from 'lodash';
       scales_div.fadeOut().remove();
       scale_divs.fadeOut().remove();
       overlay.fadeOut().remove();
+      // self._unbind_overlay_click_out();
     });
 
     scale_divs.on('click', function () {
@@ -4252,14 +4331,12 @@ import { round } from 'lodash';
 
     layer.add(self.icon_tooltip);
     self.icon_tooltip.moveToTop();
-    color_scale.setOpacity(0.7);
     layer.draw();
   };
 
   InCHlib.prototype._color_scale_mouseout = function (color_scale, layer) {
     const self = this;
     self.icon_tooltip.destroy();
-    color_scale.setOpacity(1);
     layer.draw();
   };
 

@@ -7,19 +7,19 @@ const data = {
         'male',
       ],
       [
-        'american_indian_or_alaska_native',
-        'asian',
         'black_or_african_american',
+        'american_indian_or_alaska_native',
+        'not_reported',
       ],
       [
-        'not_hispanic_or_latino',
         'not_hispanic_or_latino',
         'hispanic_or_latino',
+        'not_hispanic_or_latino',
       ],
       [
-        '0',
-        '45',
         '90',
+        '75',
+        '50',
       ],
       [
         'alive',
@@ -27,9 +27,9 @@ const data = {
         'alive',
       ],
       [
-        '3000',
+        '0',
         '500',
-        'not verified',
+        '1500',
       ],
     ],
     feature_names: [
@@ -43,8 +43,8 @@ const data = {
   },
   metadata: {
     nodes: {
-      0: ['ENSG00000188167', 'TMPPE'],
-      1: ['ENSG00000170266', 'GLB1'],
+      0: ['ENSG000003UUEEO', 'R9TO'],
+      1: ['ENSG0000013JD7E', '9JVV'],
     },
     feature_names: ['gene_ensembl', 'gene_symbol'],
   },
@@ -80,9 +80,9 @@ const data = {
       },
     },
     feature_names: [
-      'TCGA-EO-A22U_30bc72d5-07b5-48d2-b025-bba9bcf2f09f',
-      'TCGA-IB-7651_3559f697-8fec-4f36-962c-632272fe9c9c',
-      'TCGA-2W-A8YY_5aeac31a-176a-4f93-a376-a93a670821bb',
+      'TCGA-G9-ENPS_klu11i19-38fn-a86n-xhhk-ehsq0bg7dht6',
+      'TCGA-YM-D4NA_q7n5j4dr-ce9y-apy6-b1ic-anbwredwk0ar',
+      'TCGA-RZ-9PQT_6kcbmrht-5p5h-gf7d-7ts2-04bq6cqhixx6',
     ],
   },
   column_dendrogram: {

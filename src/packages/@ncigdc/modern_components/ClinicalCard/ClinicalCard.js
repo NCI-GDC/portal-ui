@@ -403,6 +403,10 @@ export default compose(
                           th: 'Weight',
                         },
                         {
+                          td: x.node.tobacco_smoking_status,
+                          th: 'Tobacco Smoking Status',
+                        },
+                        {
                           td: x.node.years_smoked,
                           th: 'Years Smoked',
                         },

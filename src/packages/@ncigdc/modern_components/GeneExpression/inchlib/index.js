@@ -4641,9 +4641,7 @@ import { round } from 'lodash';
         ],
         strokeWidth: self.pixels_for_dimension,
         stroke: '#fff',
-        opacity: is_gene_symbol_column
-          ? 0
-          : 0.3,
+        opacity: 0.3 * !is_gene_symbol_column,
         listening: false,
         id: 'column_overlay',
       });
@@ -4666,9 +4664,7 @@ import { round } from 'lodash';
       x,
       y,
       id: 'col_label',
-      opacity: is_gene_symbol_column
-        ? 0
-        : 1,
+      opacity: + !is_gene_symbol_column,
     });
 
     tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));

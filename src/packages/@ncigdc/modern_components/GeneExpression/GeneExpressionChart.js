@@ -5,23 +5,12 @@ import { isEqual } from 'lodash';
 
 import { theme } from '@ncigdc/theme';
 import './inchlib';
-
-const category_colors = {
-  'Age at Diagnosis': 'BuGn',
-  'Days to Death': 'Blues',
-  Ethnicity: 'PuOr',
-  Gender: 'PiYG2',
-  Race: 'YlOrB',
-  'Vital Status': 'RdBu',
-};
+import { CATEGORY_COLORS } from '@ncigdc/utils/constants';
 
 const options = {
   button_color: theme.primary,
-  category_colors,
-  font: {
-    color: '#767676',
-    family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-    size: 12,
+  categories: {
+    colors: CATEGORY_COLORS,
   },
   max_width: 800,
   tooltip: {
@@ -29,6 +18,16 @@ const options = {
     stroke: theme.greyScale5,
     text_fill: theme.greyScale2,
   },
+};
+
+const handleOverlayClickOut = ({ target }) => {
+  const id = 'InCHlib';
+  if (target.id !== id && target.closest(`#${id}`) === null) {
+    const overlay = document.querySelector(`#${id} .target_overlay`);
+    if (overlay !== null) {
+      overlay.click();
+    }
+  }
 };
 
 class GeneExpressionChart extends Component {
@@ -39,31 +38,37 @@ class GeneExpressionChart extends Component {
       data,
     };
     // this doesn't work if jquery is imported
-    // in this file
+    // in this file. ignore the eslint error
     this.$el = $(this.el);
     this.$el.InCHlib(this.options);
-
     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
+    document.addEventListener('click', handleOverlayClickOut);
   }
 
   componentDidUpdate(prevProps) {
-    const { data } = this.props;
+    // for viz demo
+    // unsure if data will update in final version
+    const { data, handleClickInchlibLink } = this.props;
     if (!isEqual(data, prevProps.data)) {
-      // for viz demo
-      // unsure if data will update in final version
+      // destroy inchlib
+      this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
+      this.$el.children().remove();
+
       const nextOptions = {
         ...this.options,
         data,
       };
       this.$el.InCHlib(nextOptions);
+      this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
     }
   }
 
   componentWillUnmount() {
     const { handleClickInchlibLink } = this.props;
+    // destroy inchlib
     this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
-    // TODO: destroy this properly
-    // this.$el.InCHlib('destroy');
+    document.removeEventListener('click', handleOverlayClickOut);
+    this.$el.children().remove();
   }
 
   render() {

@@ -4,6 +4,7 @@
 import $ from 'jquery';
 import Konva from 'konva';
 import Color from 'color';
+import { round } from 'lodash';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -153,7 +154,10 @@ import Color from 'color';
   const defaults = {
     alternative_data: false,
     button_color: 'blue',
-    category_colors: {},
+    categories: {
+      colors: {},
+      defaults: [],
+    },
     column_dendrogram: false,
     column_metadata_colors: 'RdLrBu',
     column_metadata: false,
@@ -167,9 +171,9 @@ import Color from 'color';
     font: {
       color: '#3a3a3a',
       family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-      size: 10,
+      size: 12,
     },
-    heatmap_colors: 'Greens',
+    heatmap_colors: 'RdLrGr',
     heatmap_header: true,
     heatmap_part_width: 0.7,
     heatmap: true,
@@ -187,12 +191,15 @@ import Color from 'color';
     min_percentile: 0,
     min_row_height: 1,
     navigation_toggle: {
+      categories_legend: true,
       color_scale: true,
       distance_scale: true,
+      edit_categories: true,
       export_button: true,
       filter_button: true,
-      hint_button: true,
+      hint_button: false,
     },
+    png_padding: 20,
     tooltip: {
       fill: '#fff',
       stroke: 'lightgrey',
@@ -208,6 +215,7 @@ import Color from 'color';
     self.$element = $(element);
     self.options = $.extend({}, defaults, options);
     self._name = plugin_name;
+    self.$element.attr('id', self._name);
 
     // inchlib setup
     self.user_options = options || {};
@@ -230,8 +238,94 @@ import Color from 'color';
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
 
+    // control hover color with opacity
+    self.hover_fill = '#3a3a3a';
+    self.hover_opacity_off = 1;
+    self.hover_opacity_on = 0.7;
+
+    // column metadata colors & legend info
+    self.MAX_DAYS_TO_DEATH = 3379;
+    self.MAX_AGE_AT_DIAGNOSIS = 90;
+    self.invalid_column_metadata_color = '#fff';
+    self.age_dx_colors = {
+      hue: 106,
+      max_light: 88,
+      min_light: 45,
+      sat: 25,
+    };
+
+    self.get_days_to_death_color = val => {
+      // create red & green values for RGB().
+      // will result in a shade of blue.
+      // higher value = darker blue.
+      const red_green = Math.floor(255 - (val / self.MAX_DAYS_TO_DEATH * 255));
+      return isNaN(red_green) // i.e. val is "not reported"
+        ? self.invalid_column_metadata_color
+        : `rgb(${red_green},${red_green},255)`;
+    };
+
+    self.get_age_at_diagnosis_color = val => {
+      // create lightness value for HSL().
+      // will result in a shade of green.
+      // higher value = darker green.
+      const percentage = 1 - (val / self.MAX_AGE_AT_DIAGNOSIS);
+      const lightness = (percentage * (self.age_dx_colors.max_light - self.age_dx_colors.min_light)) + self.age_dx_colors.min_light;
+      return isNaN(percentage) // i.e. val is "not reported"
+        ? self.invalid_column_metadata_color
+        : `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${lightness}%)`;
+    }
+
+    self.legend_id = `legend_${self._name}`;
+    self.legend_continuous_categories = ['Age at Diagnosis', 'Days to Death'];
+    self.legend_horizontal_categories = ['Gender', 'Vital Status'];
+    self.legend_headings = [
+      ...Object.keys(self.options.categories.colors),
+      ...self.legend_continuous_categories
+    ]
+    .sort();
+
+    self.legend_gradients = {
+      age: {
+        max: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.min_light}%)`,
+        min: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%)`,
+      },
+      days: {
+        max: 'rgb(0,0,255)',
+        min: 'rgb(255,255,255)',
+      },
+    }
+
+    self.legend_gradient_upper_value = name => name === 'Age at Diagnosis'
+      ? self.MAX_AGE_AT_DIAGNOSIS
+      : self.MAX_DAYS_TO_DEATH;
+
+    self.popup_styles = {
+      'border-style': 'solid',
+      'border-color': '#D2D2D2',
+      'border-width': 2,
+      background: '#fff',
+      'border-radius': 5,
+      'font-size': '12px',
+      'padding-left': '10px',
+      'padding-right': '10px',
+      'padding-top': '10px',
+      position: 'absolute',
+      'z-index': 100,
+      width: 230,
+    };
+
+    self.popup_list_styles = {
+      'list-style-type': 'none',
+      'padding-left': 0,
+    };
+
     // proprietary styles for GDC portal
     self.styles = {
+      checkbox: {
+        float: 'left',
+        'margin-left': '-20px',
+        'margin-right': '5px',
+      },
       // @ncigdc/uikit/Input
       input: {
         'background-color': '#fff',
@@ -247,7 +341,7 @@ import Color from 'color';
         'transition': 'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
       },
       label: {
-        'color': '#3a3a3a',
+        'color': self.hover_fill,
         'display': 'block',
         'font-size': '14px',
         'margin-bottom': '5px',
@@ -257,7 +351,7 @@ import Color from 'color';
         'background-color': self.options.button_color,
         'border-radius': '4px',
         'border': '1px solid transparent',
-        'color': 'white',
+        'color': '#fff',
         'font-size': '14px',
         'font-weight': 'normal',
         'padding': '6px 12px',
@@ -268,7 +362,7 @@ import Color from 'color';
         'background-color': Color(self.options.button_color)
           .lighten(0.7)
           .rgbString(),
-        'color': 'white',
+        'color': '#fff',
       }
     }
 
@@ -1030,6 +1124,17 @@ import Color from 'color';
     * @name InCHlib#objects_ref
     */
     self.objects_ref = {
+      popup_box: new Konva.Rect({
+        x: 0,
+        y: 0,
+        width: self.popup_styles.width + 40,
+        height: 250,
+        fill: self.popup_styles['background'],
+        stroke: self.popup_styles['border-color'],
+        strokeWidth: self.popup_styles['border-width'],
+        cornerRadius: self.popup_styles['border-radius'],
+      }),
+      
       tooltip_label: new Konva.Label({
         opacity: 1,
         listening: false,
@@ -1065,7 +1170,7 @@ import Color from 'color';
       }),
 
       node_rect: new Konva.Rect({
-        fill: 'white',
+        fill: '#fff',
         opacity: 0,
       }),
 
@@ -1077,7 +1182,7 @@ import Color from 'color';
 
       heatmap_value: new Konva.Text({
         fontFamily: self.options.font.family,
-        fill: self.options.font.color,
+        fill: self.hover_fill,
         listening: false,
         fontStyle: '500',
       }),
@@ -1088,7 +1193,8 @@ import Color from 'color';
 
       column_header: new Konva.Text({
         fontFamily: self.options.font.family,
-        fill: self.options.font.color,
+        fill: self.hover_fill,
+        opacity: self.hover_opacity_off,
       }),
 
       count: new Konva.Text({
@@ -1099,35 +1205,18 @@ import Color from 'color';
       }),
 
       cluster_overlay: new Konva.Rect({
-        fill: 'white',
+        fill: '#fff',
         opacity: 0.5,
       }),
 
       cluster_border: new Konva.Line({
-        stroke: '#3a3a3a',
+        stroke: self.hover_fill,
         strokeWidth: 1,
         dash: [6, 2],
       }),
 
       icon: new Konva.Path({
         fill: 'grey',
-      }),
-
-      rect_gradient: new Konva.Rect({
-        x: 0,
-        y: 80,
-        width: 100,
-        height: 20,
-        fillLinearGradientStartPoint: {
-          x: 0,
-          y: 80,
-        },
-        fillLinearGradientEndPoint: {
-          x: 100,
-          y: 80,
-        },
-        stroke: self.options.tooltip.stroke,
-        strokeWidth: 1,
       }),
 
       image: new Konva.Image({
@@ -1140,6 +1229,27 @@ import Color from 'color';
       zoom_icon: 'M22.646,19.307c0.96-1.583,1.523-3.435,1.524-5.421C24.169,8.093,19.478,3.401,13.688,3.399C7.897,3.401,3.204,8.093,3.204,13.885c0,5.789,4.693,10.481,10.484,10.481c1.987,0,3.839-0.563,5.422-1.523l7.128,7.127l3.535-3.537L22.646,19.307zM13.688,20.369c-3.582-0.008-6.478-2.904-6.484-6.484c0.006-3.582,2.903-6.478,6.484-6.486c3.579,0.008,6.478,2.904,6.484,6.486C20.165,17.465,17.267,20.361,13.688,20.369zM15.687,9.051h-4v2.833H8.854v4.001h2.833v2.833h4v-2.834h2.832v-3.999h-2.833V9.051z',
       unzoom_icon: 'M22.646,19.307c0.96-1.583,1.523-3.435,1.524-5.421C24.169,8.093,19.478,3.401,13.688,3.399C7.897,3.401,3.204,8.093,3.204,13.885c0,5.789,4.693,10.481,10.484,10.481c1.987,0,3.839-0.563,5.422-1.523l7.128,7.127l3.535-3.537L22.646,19.307zM13.688,20.369c-3.582-0.008-6.478-2.904-6.484-6.484c0.006-3.582,2.903-6.478,6.484-6.486c3.579,0.008,6.478,2.904,6.484,6.486C20.165,17.465,17.267,20.361,13.688,20.369zM8.854,11.884v4.001l9.665-0.001v-3.999L8.854,11.884z',
       lightbulb: 'M15.5,2.833c-3.866,0-7,3.134-7,7c0,3.859,3.945,4.937,4.223,9.499h5.553c0.278-4.562,4.224-5.639,4.224-9.499C22.5,5.968,19.366,2.833,15.5,2.833zM15.5,28.166c1.894,0,2.483-1.027,2.667-1.666h-5.334C13.017,27.139,13.606,28.166,15.5,28.166zM12.75,25.498h5.5v-5.164h-5.5V25.498z',
+    };
+
+    self.color_steps = [
+      0,
+      self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
+      .5,
+      self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
+      1,
+      self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
+    ];
+
+    self.get_scale_values = () => {
+      const [min, max, mid] = self.data_descs_all;
+      return [
+        min,
+        (((mid - min) / 2) + min),
+        mid,
+        (((max - mid) / 2) + mid),
+        max,
+      ]
+      .map(x => round(x, 1).toFixed(1));
     };
 
     // start plugin
@@ -1189,6 +1299,8 @@ import Color from 'color';
     }
     if (json.column_metadata !== undefined) {
       self.column_metadata = json.column_metadata;
+      self.column_metadata.visible = Array(self.column_metadata.features.length)
+        .fill(true);
       options.column_metadata = true;
     } else {
       options.column_metadata = false;
@@ -1543,13 +1655,14 @@ import Color from 'color';
       count_column: [],
     };
 
-    self.column_metadata_rows = (self.options.column_metadata)
-      ? self.column_metadata.features.length
+    self.column_metadata_rows = self.options.column_metadata
+      ? self.column_metadata.visible.filter(x => x).length
       : 0;
-    self.column_metadata_height = self.column_metadata_rows * self.column_metadata_row_height;
+    self.column_metadata_height = (self.column_metadata_rows * self.column_metadata_row_height) + 15;
 
     if (self.options.heatmap) {
-      self.last_column = null;
+      self.active_column = null;
+      self.active_header_column = null;
       self.dimensions = self._get_dimensions();
       self._set_heatmap_settings();
     } else {
@@ -1563,11 +1676,9 @@ import Color from 'color';
     }
     self._adjust_leaf_size(self.heatmap_array.length);
 
-    if (self.options.draw_row_ids) {
-      self._get_row_id_size();
-    } else {
-      self.right_margin = 100;
-    }
+  
+    self.right_margin = 100;
+    
 
     self._adjust_horizontal_sizes();
     self.top_heatmap_distance = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2;
@@ -1609,6 +1720,7 @@ import Color from 'color';
     self._draw_heatmap_header();
     self._draw_navigation();
     self.highlight_rows(self.options.highlighted_rows);
+    self._draw_legend_for_png();
   };
 
   InCHlib.prototype._draw_dendrogram_layers = function () {
@@ -1711,14 +1823,20 @@ import Color from 'color';
 
   InCHlib.prototype._draw_stage_layer = function () {
     const self = this;
+    const { height, png_padding, width } = self.options;
     self.stage_layer = new Konva.Layer();
+    // drawing a large white background for PNG download.
+    // the extra width/height is to accommodate the legend
+    // and padding in the PNG.
     const stage_rect = new Konva.Rect({
       fill: '#fff',
-      height: self.options.height,
+      height: height + 130 + (png_padding * 2) < 500 + (png_padding * 2)
+        ? 500 + (png_padding * 2)
+        : height + 250 + (png_padding * 2),
       opacity: 1,
-      width: self.options.width,
-      x: 0,
-      y: 0,
+      width: width + 300 + (png_padding * 2),
+      x: (png_padding * -1),
+      y: (png_padding * -1),
     });
     self.stage_layer.add(stage_rect);
     stage_rect.moveToBottom();
@@ -1791,10 +1909,12 @@ import Color from 'color';
     const self = this;
 
     layer.on('mouseover', function (evt) {
+      self._hover_cursor_on();
       self._dendrogram_layers_mouseover(this, evt);
     });
 
     layer.on('mouseout', function (evt) {
+      self._hover_cursor_off();
       self._dendrogram_layers_mouseout(this, evt);
     });
   };
@@ -1892,15 +2012,16 @@ import Color from 'color';
     }
 
     self.data_descs = {};
+    self.data_descs_all = self._get_min_max_middle(data);
+
     if (self.options.independent_columns) {
       self.data_descs = self._get_data_min_max_middle(data);
     } else {
-      const min_max_middle = self._get_min_max_middle(data);
       for (var i = 0; i < self.dimensions.data; i++) {
         self.data_descs[i] = {
-          min: min_max_middle[0],
-          max: min_max_middle[1],
-          middle: min_max_middle[2],
+          min: self.data_descs_all[0],
+          max: self.data_descs_all[1],
+          middle: self.data_descs_all[2],
         };
       }
     }
@@ -1981,7 +2102,8 @@ import Color from 'color';
 
     if (self.options.column_metadata) {
       if (self.column_metadata.feature_names !== undefined) {
-        self.column_metadata_header = self.column_metadata.feature_names;
+        self.column_metadata_header = self.column_metadata.feature_names
+          .filter((x, i) => self.column_metadata.visible[i]);
       }
     }
 
@@ -2027,13 +2149,29 @@ import Color from 'color';
     }
   };
 
+  InCHlib.prototype._draw_column_metadata = function (x1) {
+    const self = this;
+    const visible_features = self.column_metadata.features
+      .filter((x, i) => self.column_metadata.visible[i]);
+    const visible_feature_names = self.column_metadata.feature_names
+      .filter((x, i) => self.column_metadata.visible[i]);
+    self.column_metadata_descs = self._get_data_min_max_middle(visible_features, 'row');
+    let y1 = self.header_height + 0.5 * self.column_metadata_row_height;
+
+    for (var i = 0; i < visible_features.length; i++) {
+      const heatmap_row = self._draw_column_metadata_row(visible_features[i], visible_feature_names[i], i, x1, y1);
+      self.heatmap_layer.add(heatmap_row);
+      self._bind_row_events(heatmap_row);
+      y1 += self.column_metadata_row_height;
+    }
+  };
+
   InCHlib.prototype._draw_heatmap = function () {
     const self = this;
     if (!self.options.heatmap) {
       return;
     }
 
-    let heatmap_row;
     let y;
     let key;
 
@@ -2053,25 +2191,13 @@ import Color from 'color';
     for (var i = 0, keys = Object.keys(self.leaves_y_coordinates), len = keys.length; i < len; i++) {
       key = keys[i];
       y = self.leaves_y_coordinates[key];
-      heatmap_row = self._draw_heatmap_row(key, x1, y);
+      const heatmap_row = self._draw_heatmap_row(key, x1, y);
       self.heatmap_layer.add(heatmap_row);
       self._bind_row_events(heatmap_row);
     }
 
     if (self.options.column_metadata) {
-      self.column_metadata_descs = self._get_data_min_max_middle(self.column_metadata.features, 'row');
-      let y1 = self.header_height + 0.5 * self.column_metadata_row_height;
-
-      for (var i = 0, len = self.column_metadata.features.length; i < len; i++) {
-        heatmap_row = self._draw_column_metadata_row(self.column_metadata.features[i], self.column_metadata.feature_names[i], i, x1, y1);
-        self.heatmap_layer.add(heatmap_row);
-        self._bind_row_events(heatmap_row);
-        y1 += self.column_metadata_row_height;
-      }
-    }
-
-    if (self.options.draw_row_ids) {
-      self._draw_row_ids();
+      self._draw_column_metadata(x1);
     }
 
     self.highlighted_rows_layer = new Konva.Layer();
@@ -2112,10 +2238,6 @@ import Color from 'color';
       value = node.features[col_index];
       text_value = value;
   
-      // if (self.options.alternative_data) {
-      //   text_value = self.alternative_data[node_id][col_index];
-      // }
-  
       if (value !== null) {
         color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
   
@@ -2147,7 +2269,6 @@ import Color from 'color';
       text = self.objects_ref.heatmap_value.clone({
         text: gene_symbol,
         fontSize: self.options.font.size,
-        fontWeight: 'bold',
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
@@ -2165,15 +2286,18 @@ import Color from 'color';
         name: gene_symbol,
         column: ['m', 1].join('_'),
         strokeWidth: self.pixels_for_leaf,
+        opacity: 1 - self.hover_opacity_off,
+        // this hover is being controlled by having an overlay
+        // on top of the text
+        stroke: '#fff',
       });
-      row.add(line);
   
       const y = self._hack_round(y1 - self.value_font_size / 2);
       text.position({
         x: x1 + 5,
         y,
       });
-      row.add(text);
+      row.add(text, line);
       row.on('click', ({ target: { attrs: { gene_ensembl = '' }}}) => {
         if (gene_ensembl !== '') {
           self.events.row_onclick(gene_ensembl);
@@ -2183,6 +2307,16 @@ import Color from 'color';
     x1 = x2;
   
     return row;
+  };
+
+  InCHlib.prototype._get_column_metadata_color = function (title, text_value) {
+    const self = this;
+    return title === 'Days to Death'
+      ? self.get_days_to_death_color(text_value)
+      : title === 'Age at Diagnosis'
+        ? self.get_age_at_diagnosis_color(text_value)
+        : self.options.categories.colors[title][text_value] ||
+          self.invalid_column_metadata_color;
   };
 
   InCHlib.prototype._draw_column_metadata_row = function (data, title, row_index, x1, y1) {
@@ -2201,9 +2335,8 @@ import Color from 'color';
         value = self.column_metadata_descs[row_index].str2num[value];
       }
 
-      const color_value = self.options.category_colors[title] || 'Greys';
+      const color = self._get_column_metadata_color(title, text_value);
 
-      color = self._get_color_for_value(value, self.column_metadata_descs[row_index].min, self.column_metadata_descs[row_index].max, self.column_metadata_descs[row_index].middle, color_value);
       x2 = x1 + self.pixels_for_dimension;
       y2 = y1;
 
@@ -2235,7 +2368,6 @@ import Color from 'color';
       y,
     });
     row.add(text);
-    // TODO: add an X button here with a click event, to remove this row
 
     return row;
   };
@@ -2251,10 +2383,24 @@ import Color from 'color';
     });
 
     row.on('mouseover', (evt) => {
+      const { target: { attrs: { column = '' }}} = evt;
+      const is_gene_symbol_column = column === 'm_1';
+      if (is_gene_symbol_column) {
+        evt.target.opacity(1 - self.hover_opacity_on);
+        self.heatmap_layer.draw();
+        self._hover_cursor_on();
+      }
       self._draw_col_label(evt);
     });
 
     row.on('mouseout', (evt) => {
+      const { target: { attrs: { column = '' }}} = evt;
+      const is_gene_symbol_column = column === 'm_1';
+      if (is_gene_symbol_column) {
+        evt.target.opacity(1 - self.hover_opacity_off);
+        self.heatmap_layer.draw();
+        self._hover_cursor_off();
+      }
       self.heatmap_overlay.find('#col_label')[0].destroy();
       self.heatmap_overlay.find('#column_overlay')[0].destroy();
       self.heatmap_overlay.draw();
@@ -2265,7 +2411,6 @@ import Color from 'color';
       if (evt.target.parent.attrs.class !== 'column_metadata') {
         const items = self.data.nodes[row_id].objects;
         const item_ids = [];
-
         for (var i = 0; i < items.length; i++) {
           item_ids.push(items[i]);
         }
@@ -2273,99 +2418,22 @@ import Color from 'color';
     });
   };
 
-  InCHlib.prototype._draw_row_ids = function () {
-    const self = this;
-    if (self.pixels_for_leaf < 6 || self.row_id_size < 5) {
-      return;
-    }
-    let objects;
-    const object_y = [];
-    let leaf;
-    const values = [];
-    let text;
-
-    for (var i = 0, keys = Object.keys(self.leaves_y_coordinates), len = keys.length; i < len; i++) {
-      leaf_id = keys[i];
-      objects = self.data.nodes[leaf_id].objects;
-      if (objects.length > 1) {
-        return;
-      }
-      object_y.push([objects[0], self.leaves_y_coordinates[leaf_id]]);
-    }
-
-    const x = self.distance + self._get_visible_count() * self.pixels_for_dimension + 15;
-
-    for (var i = 0; i < object_y.length; i++) {
-      text = self.objects_ref.heatmap_value.clone({
-        x,
-        y: self._hack_round(object_y[i][1] - self.row_id_size / 2),
-        fontSize: self.options.font.size,
-        text: object_y[i][0],
-        fontStyle: 'italic',
-        fill: self.options.font.color,
-      });
-      self.heatmap_layer.add(text);
-    }
-  };
-
-  InCHlib.prototype._get_row_id_size = function () {
-    const self = this;
-    let objects;
-    const object_y = [];
-    let leaf_id;
-    const values = [];
-    let text;
-
-    for (var i = 0, len = self.heatmap_array.length; i < len; i++) {
-      leaf_id = self.heatmap_array[i][0];
-      objects = self.data.nodes[leaf_id].objects;
-      if (objects.length > 1) {
-        return;
-      }
-      values.push(objects[0]);
-    }
-    const max_length = self._get_max_length(values);
-    let test_string = '';
-    for (var i = 0; i < max_length; i++) {
-      test_string += 'E';
-    }
-
-    if (self.options.fixed_row_id_size) {
-      const test = new Konva.Text({
-        fontFamily: self.options.font.family,
-        fontSize: self.options.font.size,
-        fontStyle: 'italic',
-        listening: false,
-        text: test_string,
-      });
-      self.row_id_size = self.options.fixed_row_id_size;
-      self.right_margin = 20 + test.width();
-
-      if (this.right_margin < 100) {
-        self.right_margin = 100;
-      }
-    } else {
-      self.row_id_size = self._get_font_size(max_length, 85, self.pixels_for_leaf, 10);
-      self.right_margin = 100;
-    }
-  };
-
   InCHlib.prototype._draw_heatmap_header = function () {
+    // the header goes at the bottom
+    // because we're using a dendrogram on top
     const self = this;
-    if (self.options.heatmap_header &&
+    if (
+      self.options.heatmap_header &&
       self.header.length > 0 &&
-      self.pixels_for_dimension >= self.min_size_draw_values) {
+      self.pixels_for_dimension >= self.min_size_draw_values
+    ) {
       self.header_layer = new Konva.Layer();
       const count = self._hack_size(self.leaves_y_coordinates);
       const y = (self.options.column_dendrogram && self.heatmap_header)
         ? self.header_height + (self.pixels_for_leaf * count) + 15 + self.column_metadata_height
         : self.header_height - 20;
-      const rotation = (self.options.column_dendrogram && self.heatmap_header)
-        ? 45 
-        : -45;
+      const rotation = 90;
       let distance_step = 0;
-      let x;
-      let column_header;
       let key;
       const current_headers = [];
 
@@ -2382,50 +2450,92 @@ import Color from 'color';
       const max_text_length = self._get_max_length(current_headers);
 
       for (var i = 0, len = current_headers.length; i < len; i++) {
+        const skip_column = ['gene_ensembl', 'gene_symbol']
+          .includes(current_headers[i]);
+        if (skip_column) {
+          continue;
+        }
         // TODO this is not great. we should ask backend devs to provide
         // id and uuid in an object.
-        const case_id = current_headers[i].split('_')[0];
-        const case_uuid = current_headers[i].split('_')[1];
-        x = self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2;
-        column_header = self.objects_ref.column_header.clone({
-          case_uuid,
-          fill: self.options.font.color,
+        const [ case_id, case_uuid ] = current_headers[i].split('_');
+        const x = (self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2) + 5;
+        const column_header = self.objects_ref.column_header.clone({
+          fill: self.hover_fill,
           fontFamily: self.options.font.family,
           fontSize: self.options.font.size,
-          fontStyle: 'bold',
+          fontStyle: '500',
           position_index: i,
           rotation,
-          text: current_headers[i] === 'gene_symbol' ||
-            current_headers[i] === 'gene_ensembl'
-              ? ''
-              : case_id,
+          text: case_id,
           x,
           y,
         });
-        self.header_layer.add(column_header);
+        const rect_height = column_header.getWidth() + 10;
+        const rect_x = self.heatmap_distance + (self.pixels_for_dimension * distance_step);
+        const rect_y = y - 5;
+        var rect = new Konva.Rect({
+          case_uuid,
+          width: self.pixels_for_dimension,
+          height: rect_height,
+          fill: '#fff',
+          x: rect_x,
+          y: rect_y,
+          opacity: 1 - self.hover_opacity_off,
+        });
+        self.header_layer.add(column_header, rect);
         distance_step++;
       }
 
       self.stage.add(self.header_layer);
 
       self.header_layer.on('click', ({ target: { attrs: { case_uuid }}}) => {
-
         self.events.heatmap_header_onclick(case_uuid);
       });
 
       self.header_layer.on('mouseover', function (evt) {
-        // TODO add tooltip?
+        self._draw_col_overlay_for_header(evt);
+        self._hover_cursor_on();
         const label = evt.target;
-        label.setOpacity(0.7);
+        label.setOpacity(1 - self.hover_opacity_on);
         this.draw();
       });
 
       self.header_layer.on('mouseout', function (evt) {
-        // TODO remove tooltip?
+        self.column_overlay.destroy();
+        self.heatmap_overlay.draw();
+        self._hover_cursor_off();
         const label = evt.target;
-        label.setOpacity(1);
+        label.setOpacity(1 - self.hover_opacity_off);
+        self.active_header_column = null;
         this.draw();
       });
+    }
+  };
+
+  InCHlib.prototype._draw_col_overlay_for_header = function(evt) {
+    const self = this;
+    const { case_uuid, x, y } = evt.target.attrs;
+
+    if (self.active_header_column !== case_uuid) {
+      const overlayX = x + (self.pixels_for_dimension / 2);
+      self.column_overlay.destroy();
+      self.active_header_column = case_uuid;
+      self.column_overlay = self.objects_ref.heatmap_line.clone({
+        points: [
+          overlayX,
+          self.header_height,
+          overlayX,
+          self.header_height + 10 + self.column_metadata_height + (self.heatmap_array.length) * self.pixels_for_leaf,
+        ],
+        strokeWidth: self.pixels_for_dimension,
+        stroke: '#fff',
+        opacity: 0.3,
+        listening: false,
+        id: 'column_overlay',
+      });
+      self.heatmap_overlay.add(self.column_overlay);
+      self.heatmap_overlay.moveToTop();
+      self.heatmap_overlay.draw();
     }
   };
 
@@ -2486,7 +2596,8 @@ import Color from 'color';
       text: distance,
       fontSize: self.options.font.size,
       fontFamily: self.options.font.family,
-      fill: self.options.font.color,
+      fontStyle: '500',
+      fill: self.hover_fill,
       align: 'right',
       listening: false,
     });
@@ -2531,32 +2642,6 @@ import Color from 'color';
     if (self.options.heatmap) {
       self._draw_color_scale();
     }
-    self._draw_help();
-
-    if (!self.options.column_dendrogram && self.options.heatmap && self.options.navigation_toggle.filter_button) {
-      const filter_icon = self.objects_ref.icon.clone({
-        data: 'M26.834,6.958c0-2.094-4.852-3.791-10.834-3.791c-5.983,0-10.833,1.697-10.833,3.791c0,0.429,0.213,0.84,0.588,1.224l8.662,15.002v4.899c0,0.414,0.709,0.75,1.583,0.75c0.875,0,1.584-0.336,1.584-0.75v-4.816l8.715-15.093h-0.045C26.625,7.792,26.834,7.384,26.834,6.958zM16,9.75c-6.363,0-9.833-1.845-9.833-2.792S9.637,4.167,16,4.167c6.363,0,9.834,1.844,9.834,2.791S22.363,9.75,16,9.75z',
-        x,
-        y,
-        label: 'Filter\ncolumns',
-      });
-
-      const filter_overlay = self._draw_icon_overlay(x, y);
-      self.navigation_layer.add(filter_icon, filter_overlay);
-      x += 40;
-
-      filter_overlay.on('click', function () {
-        self._filter_icon_click(this);
-      });
-
-      filter_overlay.on('mouseover', () => {
-        self._icon_mouseover(filter_icon, filter_overlay, self.navigation_layer);
-      });
-
-      filter_overlay.on('mouseout', () => {
-        self._icon_mouseout(filter_icon, filter_overlay, self.navigation_layer);
-      });
-    }
 
     if (self.zoomed_clusters.row.length > 0 || self.zoomed_clusters.column.length > 0) {
       const refresh_icon = self.objects_ref.icon.clone({
@@ -2575,10 +2660,12 @@ import Color from 'color';
       });
 
       refresh_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
         self._icon_mouseover(refresh_icon, refresh_overlay, self.navigation_layer);
       });
 
       refresh_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
         self._icon_mouseout(refresh_icon, refresh_overlay, self.navigation_layer);
       });
     }
@@ -2604,10 +2691,12 @@ import Color from 'color';
       });
 
       unzoom_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
         self._icon_mouseover(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
 
       unzoom_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
         self._icon_mouseout(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
     }
@@ -2634,10 +2723,12 @@ import Color from 'color';
       });
 
       column_unzoom_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
         self._icon_mouseover(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
 
       column_unzoom_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
         self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
     }
@@ -2652,7 +2743,7 @@ import Color from 'color';
           y: 0.7,
         },
         id: 'export_icon',
-        label: 'Export\nin png format',
+        label: 'Download PNG',
       });
 
       const export_overlay = self._draw_icon_overlay(self.options.width - 62, 10);
@@ -2663,47 +2754,85 @@ import Color from 'color';
       });
 
       export_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
         self._icon_mouseover(export_icon, export_overlay, self.navigation_layer);
       });
 
       export_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
         self._icon_mouseout(export_icon, export_overlay, self.navigation_layer);
       });
     }
 
-    self.stage.add(self.navigation_layer);
-  };
+    if (self.options.navigation_toggle.categories_legend) {
+      const x = self.options.width - 60;
+      const y = 75;
+      const scale = 0.6;
+      const legend_icon = self.objects_ref.icon.clone({
+        data: 'M18.386,16.009l0.009-0.006l-0.58-0.912c1.654-2.226,1.876-5.319,0.3-7.8c-2.043-3.213-6.303-4.161-9.516-2.118c-3.212,2.042-4.163,6.302-2.12,9.517c1.528,2.402,4.3,3.537,6.944,3.102l0.424,0.669l0.206,0.045l0.779-0.447l-0.305,1.377l2.483,0.552l-0.296,1.325l1.903,0.424l-0.68,3.06l1.406,0.313l-0.424,1.906l4.135,0.918l0.758-3.392L18.386,16.009z M10.996,8.944c-0.685,0.436-1.593,0.233-2.029-0.452C8.532,7.807,8.733,6.898,9.418,6.463s1.594-0.233,2.028,0.452C11.883,7.6,11.68,8.509,10.996,8.944z',
+        x,
+        y,
+        scale: {
+          x: scale,
+          y: scale,
+        },
+        id: 'legend_icon',
+        label: 'View legend',
+      });
+      const legend_overlay = self._draw_icon_overlay(x, y);
+      self.navigation_layer.add(legend_icon, legend_overlay);
 
-  InCHlib.prototype._draw_help = function () {
-    const self = this;
-    if (!self.options.navigation_toggle.hint_button) {
-      return;
+      legend_overlay.on('click', function () {
+        self._legend_icon_click();
+      });
+
+      legend_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
+        self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
+      });
+
+      legend_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
+        self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
+      });
     }
-    const help_icon = self.objects_ref.icon.clone({
-      data: self.paths_ref.lightbulb,
-      x: self.options.width - 63,
-      y: 40,
-      scale: {
-        x: 0.8,
-        y: 0.8,
-      },
-      id: 'help_icon',
-      label: 'Tip',
-    });
 
-    const help_overlay = self._draw_icon_overlay(self.options.width - 63, 40);
+    if (self.options.navigation_toggle.edit_categories) {
+      const x = self.options.width - 60;
+      const y = 45;
+      const scale = 0.6;
 
-    self.navigation_layer.add(help_icon, help_overlay);
+      const categories_icon = self.objects_ref.icon.clone({
+        data: 'M26.974,16.514l3.765-1.991c-0.074-0.738-0.217-1.454-0.396-2.157l-4.182-0.579c-0.362-0.872-0.84-1.681-1.402-2.423l1.594-3.921c-0.524-0.511-1.09-0.977-1.686-1.406l-3.551,2.229c-0.833-0.438-1.73-0.77-2.672-0.984l-1.283-3.976c-0.364-0.027-0.728-0.056-1.099-0.056s-0.734,0.028-1.099,0.056l-1.271,3.941c-0.967,0.207-1.884,0.543-2.738,0.986L7.458,4.037C6.863,4.466,6.297,4.932,5.773,5.443l1.55,3.812c-0.604,0.775-1.11,1.629-1.49,2.55l-4.05,0.56c-0.178,0.703-0.322,1.418-0.395,2.157l3.635,1.923c0.041,1.013,0.209,1.994,0.506,2.918l-2.742,3.032c0.319,0.661,0.674,1.303,1.085,1.905l4.037-0.867c0.662,0.72,1.416,1.351,2.248,1.873l-0.153,4.131c0.663,0.299,1.352,0.549,2.062,0.749l2.554-3.283C15.073,26.961,15.532,27,16,27c0.507,0,1.003-0.046,1.491-0.113l2.567,3.301c0.711-0.2,1.399-0.45,2.062-0.749l-0.156-4.205c0.793-0.513,1.512-1.127,2.146-1.821l4.142,0.889c0.411-0.602,0.766-1.243,1.085-1.905l-2.831-3.131C26.778,18.391,26.93,17.467,26.974,16.514zM20.717,21.297l-1.785,1.162l-1.098-1.687c-0.571,0.22-1.186,0.353-1.834,0.353c-2.831,0-5.125-2.295-5.125-5.125c0-2.831,2.294-5.125,5.125-5.125c2.83,0,5.125,2.294,5.125,5.125c0,1.414-0.573,2.693-1.499,3.621L20.717,21.297z',
+        x,
+        y,
+        scale: {
+          x: scale,
+          y: scale,
+        },
+        id: 'categories_icon',
+        label: 'Edit categories',
+      });
 
-    help_overlay.on('mouseover', () => {
-      self._icon_mouseover(help_icon, help_overlay, self.navigation_layer);
-      self._help_mouseover();
-    });
+      const categories_overlay = self._draw_icon_overlay(x, y);
+      self.navigation_layer.add(categories_icon, categories_overlay);
 
-    help_overlay.on('mouseout', () => {
-      self._help_mouseout();
-      self._icon_mouseout(help_icon, help_overlay, self.navigation_layer);
-    });
+      categories_overlay.on('click', function () {
+        self._categories_icon_click(this);
+      });
+
+      categories_overlay.on('mouseover', () => {
+        self._hover_cursor_on();
+        self._icon_mouseover(categories_icon, categories_overlay, self.navigation_layer);
+      });
+
+      categories_overlay.on('mouseout', () => {
+        self._hover_cursor_off();
+        self._icon_mouseout(categories_icon, categories_overlay, self.navigation_layer);
+      });
+    }
+
+    self.stage.add(self.navigation_layer);
   };
 
   InCHlib.prototype._draw_color_scale = function () {
@@ -2711,26 +2840,92 @@ import Color from 'color';
     if (!self.options.navigation_toggle.color_scale) {
       return;
     }
-    const color_steps = [
-      self.options.min_percentile / 100,
-      self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
-      self.options.middle_percentile / 100,
-      self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
-      self.options.max_percentile / 100,
-      self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
-    ];
 
-    const color_scale = self.objects_ref.rect_gradient.clone({
-      label: 'Color settings',
-      fillLinearGradientColorStops: color_steps,
+    const scale_height = 20;
+    const scale_width = 150;
+    const scale_x = 15;
+    const scale_y = 80;
+
+    const color_scale = new Konva.Rect({
+      label: 'Edit heatmap colors',
+      fillLinearGradientColorStops: self.color_steps,
       id: `${self._name}_color_scale`,
+      x: scale_x,
+      y: scale_y,
+      width: scale_width,
+      height: scale_height,
+      fillLinearGradientStartPoint: {
+        x: scale_x,
+        y: scale_y,
+      },
+      fillLinearGradientEndPoint: {
+        x: scale_width,
+        y: scale_y,
+      },
+      stroke: 'grey',
+      strokeWidth: 2,
+      lineCap: 'square',
+      shadowForStrokeEnabled: false,
     });
 
+    // add ticks to heatmap scale
+
+    const ticks_group = new Konva.Group({
+      x: scale_x,
+      y: scale_height + scale_y,
+    });
+
+    let x = 0;
+    let y = 0;
+
+    for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
+      const tick = new Konva.Rect({
+        height: 10,
+        stroke: 'grey',
+        strokeWidth: 1,
+        x: Math.round(scale_width * (0.25 * i)),
+        y: 0,
+      });
+      ticks_group.add(tick);
+    }
+
+    // add values to heatmap scale
+
+    const scale_values = self.get_scale_values();
+
+    const scale_values_group = new Konva.Group({
+      x: scale_x - 12,
+      y: scale_height + scale_y + 18,
+    });
+
+    y = 0;
+    x = 0;
+
+    const scale_x_int = (scale_width / scale_values.length) + 7.5;
+
+    for (let i = 0; i < scale_values.length; i++) {
+      const text = scale_values[i];
+      const scale_text = new Konva.Text({
+        align: 'center',
+        fill: self.hover_fill,
+        fontFamily: self.options.font.family,
+        fontStyle: '500', 
+        text,
+        width: 25,
+        x,
+        y,
+      });
+      x += scale_x_int;
+      scale_values_group.add(scale_text);
+    }
+
     color_scale.on('mouseover', () => {
+      self._hover_cursor_on();
       self._color_scale_mouseover(color_scale, self.navigation_layer);
     });
 
     color_scale.on('mouseout', () => {
+      self._hover_cursor_off();
       self._color_scale_mouseout(color_scale, self.navigation_layer);
     });
 
@@ -2738,22 +2933,25 @@ import Color from 'color';
       self._color_scale_click(color_scale, self.navigation_layer);
     });
 
-    self.navigation_layer.add(color_scale);
+    self.navigation_layer.add(color_scale, ticks_group, scale_values_group);
   };
 
   InCHlib.prototype._update_color_scale = function () {
     const self = this;
     const color_scale = self.navigation_layer.find(`#${self._name}_color_scale`);
 
-    color_scale.fillLinearGradientColorStops([
-      self.options.min_percentile / 100,
+    self.color_steps = [
+      0,
       self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
-      self.options.middle_percentile / 100,
+      0.5,
       self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
-      self.options.max_percentile / 100,
+      1,
       self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
-    ]);
+    ];
+
+    color_scale.fillLinearGradientColorStops(self.color_steps);
     self.navigation_layer.draw();
+    self.redraw_legend();
   };
 
   InCHlib.prototype._draw_icon_overlay = function (x, y) {
@@ -2996,9 +3194,9 @@ import Color from 'color';
 
     const cluster_overlay_1 = self.objects_ref.cluster_overlay.clone({
       x,
-      y: self.header_height + self.column_metadata_height + 5,
+      y: self.header_height + self.column_metadata_height + 10,
       width,
-      height: self._hack_round(upper_y - self.header_height - self.column_metadata_height - 5),
+      height: self._hack_round(upper_y - self.header_height - self.column_metadata_height - 10),
     });
 
     const cluster_border_1 = self.objects_ref.cluster_border.clone({
@@ -3014,7 +3212,7 @@ import Color from 'color';
       x,
       y: lower_y,
       width,
-      height: self.options.height - lower_y - self.footer_height + 5,
+      height: self.options.height - lower_y - self.footer_height + 10,
     });
 
     const cluster_border_2 = self.objects_ref.cluster_border.clone({
@@ -3035,10 +3233,12 @@ import Color from 'color';
     self.navigation_layer.moveToTop();
 
     zoom_overlay.on('mouseover', () => {
+      self._hover_cursor_on();
       self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('mouseout', () => {
+      self._hover_cursor_off();
       self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
@@ -3076,8 +3276,8 @@ import Color from 'color';
     const x1 = self._hack_round((self.current_column_ids[0] - self.columns_start_index) * self.pixels_for_dimension);
     const x2 = self._hack_round((self.current_column_ids[0] + self.current_column_ids.length - self.columns_start_index) * self.pixels_for_dimension);
     const y1 = 0;
-    const y2 = self.options.height - self.footer_height + 5;
-    const height = self.options.height - self.footer_height - self.header_height + self.column_metadata_row_height;
+    const y2 = self.options.height + 5;
+    const height = self.options.height - self.header_height + self.column_metadata_row_height;
 
     const cluster_border_1 = self.objects_ref.cluster_border.clone({
       points: [
@@ -3119,10 +3319,12 @@ import Color from 'color';
     self.navigation_layer.moveToTop();
 
     zoom_overlay.on('mouseover', () => {
+      self._hover_cursor_on();
       self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('mouseout', () => {
+      self._hover_cursor_off();
       self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
@@ -3469,13 +3671,13 @@ import Color from 'color';
         'border-radius': '5px',
         'text-align': 'center',
         position: 'absolute',
-        'background-color': '#ffffff',
+        'background-color': '#fff',
         border: 'solid 2px #DEDEDE',
         'padding-top': '5px',
         'padding-left': '15px',
         'padding-bottom': '10px',
         'padding-right': '15px',
-        'font-weight': 'bold',
+        'font-weight': '500',
         'font-size': '14px',
         'z-index': 1000,
         'font-family': self.options.font.family,
@@ -3583,6 +3785,7 @@ import Color from 'color';
       });
     }
   };
+
   InCHlib.prototype._draw_target_overlay = function () {
     const self = this;
     let overlay = self.$element.find('.target_overlay');
@@ -3592,7 +3795,7 @@ import Color from 'color';
     } else {
       overlay = $('<div class=\'target_overlay\'></div>');
       overlay.css({
-        'background-color': 'white',
+        'background-color': '#fff',
         position: 'absolute',
         top: 0,
         left: 0,
@@ -3613,263 +3816,445 @@ import Color from 'color';
 
   InCHlib.prototype._export_icon_click = function () {
     const self = this;
-    let export_menu = self.$element.find('.export_menu');
     const overlay = self._draw_target_overlay();
+    const zoom = 3;
+    const width = self.stage.width();
+    const height = self.stage.height();
+    const { png_padding } = self.options;
 
-    if (export_menu.length) {
-      export_menu.fadeIn('fast');
-    } else {
-      export_menu = $('<div class=\'export_menu\'><div><button type=\'submit\' data-action=\'open\'>Show image</button></div><div><button type=\'submit\' data-action=\'save\'>Save image</button></div></div>');
-      self.$element.append(export_menu);
-      export_menu.css({
-        position: 'absolute',
-        top: 45,
-        left: self.options.width - 125,
-        'font-size': '12px',
-        border: 'solid #D2D2D2 1px',
-        'border-radius': '5px',
-        padding: '10px 10px 5px',
-        'background-color': 'white',
-      });
+    overlay.click(function() {
+      overlay.fadeOut().remove();
+    });
 
-      const buttons = export_menu.find('button');
-      buttons.css($.extend(
-        {},
-        self.styles.css_primary_button_off,
-        {
-          'margin-bottom': '5px',
-        },
-      ));
+    const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
+    self.$element.after(loading_div);
+    self.$element.hide();
 
-      buttons.hover(
-        function () {
-          $(this).css(self.styles.css_button_on);
-        },
-        function () {
-          $(this).css(self.styles.css_primary_button_off);
-        },
-      );
-
-      overlay.click(() => {
-        export_menu.fadeOut('fast');
-        overlay.fadeOut('fast');
-      });
-
-      buttons.click(function () {
-        const action = $(this).attr('data-action');
-        const zoom = 3;
-        const width = self.stage.width();
-        const height = self.stage.height();
-
-        const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-        self.$element.after(loading_div);
-        self.$element.hide();
-
-        self.stage.width(width * zoom);
-        self.stage.height(height * zoom);
+    self.stage.width((width + 300 + png_padding) * zoom);
+    self.stage.height((
+      height < 500 + (png_padding * 2)
+        ? 500 + (png_padding * 2)
+        : height
+      ) * zoom);
+    self.stage.scale({
+      x: zoom,
+      y: zoom,
+    });
+    self.stage.x(png_padding * 2);
+    self.stage.y(png_padding * 2);
+    self.stage.draw();
+    self.navigation_layer.hide();
+    self.stage.toDataURL({
+      quality: 1,
+      callback(dataUrl) {
+        downloadURI(dataUrl, 'gene-expression.png');
+        self.stage.width(width);
+        self.stage.height(height);
         self.stage.scale({
-          x: zoom,
-          y: zoom,
+          x: 1,
+          y: 1,
         });
+        self.stage.x(0);
+        self.stage.y(0);
         self.stage.draw();
-        self.navigation_layer.hide();
-        self.stage.toDataURL({
-          quality: 1,
-          callback(dataUrl) {
-            if (action === 'open') {
-              open_image(dataUrl);
-            } else {
-              download_image(dataUrl);
-            }
-            self.stage.width(width);
-            self.stage.height(height);
-            self.stage.scale({
-              x: 1,
-              y: 1,
-            });
-            self.stage.draw();
-            loading_div.remove();
-            self.$element.show();
-            self.navigation_layer.show();
-            self.navigation_layer.draw();
-            overlay.trigger('click');
-          },
-        });
-      });
-    }
+        loading_div.fadeOut().remove();
+        self.$element.show();
+        self.navigation_layer.show();
+        self.navigation_layer.draw();
+        overlay.trigger('click');
+      },
+    });
 
-    function download_image(dataUrl) {
-      $(`<a download="inchlib" href="${dataUrl}"></a>`)[0].click();
-    }
-
-    function open_image(dataUrl) {
-      window.open(dataUrl, '_blank');
+    // function from https://stackoverflow.com/a/15832662/512042
+    function downloadURI(uri, name) {
+      var link = document.createElement('a');
+      link.download = name;
+      link.href = uri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   };
+
+  InCHlib.prototype._draw_legend_for_screen = function() {
+    const self = this;
+    const legend_div = $(`<div id='${self.legend_id}'></div>`);
+    const options = [`<h3>Legend</h3><ul>`]
+      .concat(self.legend_headings
+        .map(name => {
+          if (self.legend_continuous_categories.includes(name)) {
+            return `<li><strong>${name}</strong>
+            <ul><li>0 <span class="legend-gradient-${name.toLowerCase().split(' ')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
+          } else {
+            const legend_list = Object.keys(self.options.categories.colors[name])
+              .map(value => `<li ${
+                self.legend_horizontal_categories
+                  .includes(name) 
+                    ? 'style="display: inline-block; margin-right: 10px;"' 
+                    : ''
+                }><span class='legend-bullet' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
+              .join('');
+            return `<li><strong>${name}</strong><ul class="legend-list">${legend_list}</ul></li>`;
+          }
+        })
+      )
+      .concat('</ul>')
+      .join('');
+
+    legend_div.html(options);
+    self.$element.append(legend_div);
+    legend_div.css({
+      ...self.popup_styles,
+      left: self.options.width - 260,
+      'padding-bottom': 0,
+      top: 0,
+      width: 230,
+    });
+
+    $(`#${self.legend_id} ul`).css({
+      ...self.popup_list_styles
+    });
+    $(`#${self.legend_id} li`).css({
+      'padding-bottom': '5px',
+    });
+    $(`#${self.legend_id} .legend-list li`).css({
+      'padding-left': '17px',
+      'position': 'relative',
+    });
+    $(`#${self.legend_id} h3`).css({
+      'margin-top': '0px'
+    });
+    $(`#${self.legend_id} span`).css({
+      'display': 'inline-block',
+      'height': 12,
+      'width': 12,
+    });
+    $(`#${self.legend_id} .legend-bullet`).css({
+      'position': 'absolute',
+      'top': '2px',
+      'left': '0',
+      'display': 'block',
+    });
+    $(`#${self.legend_id} [class^="legend-gradient"]`).css({
+      width: 70,
+    });
+    $(`#${self.legend_id} .legend-gradient-age`).css({
+      background: `linear-gradient(90deg, ${self.legend_gradients.age.min} 0%, ${self.legend_gradients.age.max} 100%)`
+    });
+    $(`#${self.legend_id} .legend-gradient-days`).css({
+      background: `linear-gradient(90deg, ${self.legend_gradients.days.min} 0%, ${self.legend_gradients.days.max} 100%)`
+    });
+  };
+
+  InCHlib.prototype._draw_legend_for_png = function() {
+    const self = this;
+    self.legend_layer = new Konva.Layer();
+    self.stage.add(self.legend_layer);
+
+    const legend_y = 0;
+    const legend_x = self.stage.width() + 25;
+    // this is hidden in screen view by moving it off-stage
+
+    // add heatmap scale to PNG
+
+    const scale_group = new Konva.Group({
+      x: legend_x + 180,
+      y: legend_y + 40,
+    });
+
+    let scale_x = 0;
+    let scale_y = 0;
+
+    const scale_height = 125;
+
+    const scale_heading = new Konva.Text({
+      fill: self.hover_fill,
+      fontFamily: self.options.font.family,
+      fontStyle: '500',
+      text: 'Heatmap',
+      x: scale_x,
+      y: scale_y,
+    });
+
+    scale_y += 25;
+
+    const scale_width = 20;
+
+    const scale_gradient = new Konva.Rect({
+      fillLinearGradientColorStops: self.color_steps,
+      fillLinearGradientEndPoint: {
+        x: scale_x,
+        y: scale_y + 90,
+      },
+      fillLinearGradientStartPoint: {
+        x: scale_x,
+        y: scale_y,
+      },
+      linecap: 'square',
+      height: scale_height,
+      stroke: 'grey',
+      strokeWidth: 2,
+      width: scale_width,
+      x: scale_x,
+      y: scale_y,
+    });
+    scale_group.add(scale_gradient, scale_heading);
+
+    // add ticks to heatmap scale
+
+    scale_x += scale_width;
+
+    for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
+      const tick = new Konva.Rect({
+        stroke: 'grey',
+        strokeWidth: 1,
+        width: 10,
+        x: scale_x,
+        y: Math.round(scale_y + (scale_height * (0.25 * i))),
+      });
+      scale_group.add(tick);
+    }
+
+    // add values to heatmap scale
+
+    scale_x += 15;
+
+    const scale_values = self.get_scale_values();
+
+    scale_y -= 5;
+    const scaleY_int = Math.floor(scale_height / scale_values.length) + 6;
+
+    for (let i = 0; i < scale_values.length; i++) {
+      const text = scale_values[i];
+      const scale_text = new Konva.Text({
+        fill: self.hover_fill,
+        fontFamily: self.options.font.family,
+        fontStyle: '500', 
+        text,
+        x: scale_x,
+        y: scale_y,
+      });
+      scale_group.add(scale_text);
+      scale_y += scaleY_int;
+    }
+
+    const legend_title = new Konva.Text({
+      fill: self.hover_fill,
+      fontFamily: 'franklin_gothic_fsbook',
+      fontSize: 18,
+      text: 'Legend',
+      x: legend_x + 10,
+      y: legend_y + 10,
+    });
+
+    const legend_group = new Konva.Group({
+      x: legend_x + 10,
+      y: legend_y + 40,
+    });
+
+    let y = 0;
+    let x = 0;
+
+    for (let i = 0; i < self.legend_headings.length; i++) {
+      const heading = self.legend_headings[i];
+      const legend_heading = new Konva.Text({
+        fill: self.hover_fill,
+        fontFamily: self.options.font.family,
+        fontStyle: '500',
+        text: heading,
+        x,
+        y,
+      });
+      y += 20;
+      legend_group.add(legend_heading);
+
+      if (self.legend_continuous_categories.includes(heading)) {
+        const zero = new Konva.Text({
+          fill: self.hover_fill,
+          text: '0',
+          x,
+          y,
+        });
+
+        const gradient = new Konva.Rect({
+          fillLinearGradientColorStops: heading === 'Age at Diagnosis'
+            ? [0, self.legend_gradients.age.min, 1, self.legend_gradients.age.max]
+            : [0, self.legend_gradients.days.min, 1, self.legend_gradients.days.max],
+          fillLinearGradientEndPoint: {
+            x: x + 85,
+            y,
+          },
+          fillLinearGradientStartPoint: {
+            x: x + 10,
+            y,
+          },
+          height: 12,
+          width: 75,
+          x: x + 15,
+          y,
+        });
+
+        const max = new Konva.Text({
+          fill: self.hover_fill,
+          text: self.legend_gradient_upper_value(heading),
+          x: x + 95,
+          y,
+        });
+
+        legend_group.add(zero, gradient, max);
+        y += 25;
+      } else {
+        const legend_list = Object.keys(self.options.categories.colors[heading]);
+        
+        for (let n = 0; n < legend_list.length; n++) {
+          const value = legend_list[n];
+          const text = value.split('_').join(' ');
+          const legend_square = new Konva.Rect({
+            fill: self.options.categories.colors[heading][value],
+            height: 12,
+            width: 12,
+            x, 
+            y, 
+          });
+          const legend_text = new Konva.Text({
+            fill: self.hover_fill,
+            text,
+            x: x + 20,
+            y,
+          });
+          legend_group.add(legend_square, legend_text);
+          y += 20;
+        }
+        y += 5;
+      }
+    }
+    const legend = self.objects_ref.popup_box.clone({
+      height: y + 40,
+      x: legend_x,
+      y: legend_y,
+    });
+
+    self.legend_layer.add(legend, legend_title, legend_group, scale_group);
+    self.legend_layer.draw();
+  };
+
+  InCHlib.prototype.redraw_legend = function() {
+    const self = this;
+    self._delete_layers([
+      self.legend_layer,
+    ]);
+    self._draw_legend_for_png();
+  };
+
+  InCHlib.prototype._legend_icon_click = function() {
+    const self = this;
+    const overlay = self._draw_target_overlay();
+    self._draw_legend_for_screen();
+    overlay.click(() => {
+      $(`#${self.legend_id}`).fadeOut().remove();
+      overlay.fadeOut().remove();
+    });
+  }
+
+  InCHlib.prototype._categories_icon_click = function() {
+    const self = this;
+
+    const form_id = `categories_form_${self._name}`;
+    const categories_form = $(`<form class='settings_form' id='${form_id}'></form>`);
+    const overlay = self._draw_target_overlay();
+
+    const options = [`<h3>Categories</h3><ul>`]
+      .concat(self.column_metadata.feature_names
+        .map((category, i) => {
+          const key = category.toLowerCase().split(' ').join('-');
+          const id = `${self._name}_${key}`;
+          const checked = self.column_metadata.visible[i]
+            ? ' checked'
+            : '';
+          return `<li><input type='checkbox' id='${id}' name='edit-categories' value='${category}'${checked}/><label for='${id}' class='form_label'>${category}</label></li>`;
+        })
+      )
+      .concat('</ul><button type="submit">Save</button>')
+      .join('');
+
+    categories_form.html(options);
+    self.$element.append(categories_form);
+    categories_form.css({
+      'z-index': 1000,
+      position: 'absolute',
+      top: 0,
+      left: self.options.width - 210,
+      padding: '10px',
+      border: 'solid #D2D2D2 2px',
+      'border-radius': '5px',
+      'background-color': '#fff',
+      width: '180px',
+    });
+    $(`#${form_id} > ul`).css({
+      'list-style-type': 'none',
+      'font-size': '12px',
+      'margin-bottom': '10px',
+      'padding-left': '20px',
+    });
+    $(`#${form_id} li`).css({
+      'padding': '5px 0',
+    });
+    $(`#${form_id} h3`).css({
+      'margin-top': '0px'
+    });
+    $(`#${form_id} input`).css(self.styles.checkbox);
+    $(`#${form_id} .form_label`).css({
+      ...self.styles.label,
+      'line-height': '1',
+    });
+
+    const $submit_button = $(`#${form_id} button`);
+
+    $submit_button.css(self.styles.css_primary_button_off);
+
+    $submit_button.hover(
+      function () {
+        $submit_button.css(self.styles.css_button_on);
+      },
+      function () {
+        $submit_button.css(self.styles.css_primary_button_off);
+      }
+    );
+
+    overlay.click(() => {
+      $(`#${form_id}`).fadeOut().remove();
+      overlay.fadeOut().remove();
+    });
+
+    categories_form.submit(function (evt) {
+      evt.preventDefault();
+
+      const categories_updated = [];
+
+      $.each($(`#${form_id} input[name="edit-categories"]`),
+        function() {
+          categories_updated.push($(this).is(':checked'));
+        }
+      );
+      self.column_metadata.visible = categories_updated;
+      self.redraw();
+      overlay.trigger('click');
+    });
+
+  }
 
   InCHlib.prototype._color_scale_click = function (icon, evt) {
     const self = this;
-    let option;
-    let key;
-    let value;
 
-    const color_options = { heatmap_colors: 'Heatmap colors:' };
-
-    // TODO: hide these?
-    // const value_options = {
-    //   max_percentile: 'Max percentile value',
-    //   middle_percentile: 'Middle percentile value',
-    //   min_percentile: 'Min percentile value',
-    // };
-
-    const value_options = {};
-
-    // TODO remove this so the BG stays white?
-    // do we need metadata colours?
-    // if (self.options.metadata) {
-    //   color_options.metadata_colors = 'Metadata colors';
-    // }
-
-    const form_id = `settings_form_${self._name}`;
-    let settings_form = $(`#${form_id}`);
     const overlay = self._draw_target_overlay();
-
-    if (settings_form.length > 0) {
-      settings_form.fadeIn('fast');
-    } else {
-      settings_form = $(`<form class='settings_form' id='${form_id}'></form>`);
-      let options = '';
-      let color_1;
-      let color_2;
-      let color_3;
-
-      for (var i = 0, keys = Object.keys(color_options), len = keys.length; i < len; i++) {
-        key = keys[i];
-        color_1 = self._get_color_for_value(0, 0, 1, 0.5, self.options[key]);
-        color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, self.options[key]);
-        color_3 = self._get_color_for_value(1, 0, 1, 0.5, self.options[key]);
-
-        option = `<div><label for='${self._name}_${key}' class='form_label'>${color_options[key]}</label><input type='text' id='${self._name}_${key}' name='${key}' value='${self.options[key]}'/> <div class='color_button' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div></div>`;
-        options += option;
-      }
-
-      // for (var i = 0, keys = Object.keys(value_options), len = keys.length; i < len; i++) {
-      //   key = keys[i];
-      //   option = `<div><div class='form_label'>${value_options[key]}</div><input type='text' name='${key}' value='${self.options[key]}'/></div>`;
-      //   options += option;
-      // }
-      // option = '<div><div class=\'form_label\'>Heatmap coloring</div>\
-      //           <select name=\'independent_columns\'>';
-
-      // if (self.options.independent_columns) {
-      //   option += '<option value=\'true\' selected>By columns</option>\
-      //             <option value=\'false\'>Entire heatmap</option>';
-      // } else {
-      //   option += '<option value=\'true\'>By columns</option>\
-      //             <option value=\'false\' selected>Entire heatmap</option>';
-      // }
-      // option += '</select></div>';
-      // options += option;
-
-      options += '<button type="submit">Redraw</button>';
-      settings_form.html(options);
-
-      self.$element.append(settings_form);
-      settings_form.css({
-        'z-index': 1000,
-        position: 'absolute',
-        top: 110,
-        left: 0,
-        padding: '10px',
-        border: 'solid #D2D2D2 2px',
-        'border-radius': '5px',
-        'background-color': 'white',
-      });
-      $(`#${form_id} > div`).css({
-        'font-size': '12px',
-        'margin-bottom': '10px',
-      });
-      $(`#${form_id} input`).css(self.styles.input);
-      $(`#${form_id} .form_label`).css(self.styles.label);
-
-      const $submit_button = $(`#${form_id} button`);
-
-      $submit_button.css(self.styles.css_primary_button_off);
-
-      $submit_button.hover(
-        function () {
-          $submit_button.css(self.styles.css_button_on);
-        },
-        function () {
-          $submit_button.css(self.styles.css_primary_button_off);
-        }
-      );
-
-      overlay.click(() => {
-        settings_form.fadeOut('fast');
-        overlay.fadeOut('fast');
-      });
-
-      const color_buttons = $(`#${form_id} .color_button`);
-
-      color_buttons.css({
-        border: 'solid #D2D2D2 1px',
-        float: 'right',
-        height: '34px',
-        'margin-left': '5px',
-        width: '34px',
-      });
-
-      color_buttons.hover(
-        function () {
-          $(this).css({
-            cursor: 'pointer',
-            opacity: 0.7,
-          });
-        },
-        function () { $(this).css({ opacity: 1 }); },
-      );
-
-      color_buttons.click(function (evt) {
-        self._draw_color_scales_select(this, evt);
-      });
-
-      settings_form.submit(function (evt) {
-        const settings = {};
-        const settings_fieldset = $(this).find('input, select');
-
-        settings_fieldset.each(function () {
-          option = $(this);
-          key = option.attr('name');
-          value = option.val();
-          if (value != '') {
-            if (value === 'true') {
-              value = true;
-            } else if (value === 'false') {
-              value = false;
-            }
-            settings[key] = value;
-          }
-        });
-        self.update_settings(settings);
-        self.redraw_heatmap();
-        self._update_color_scale();
-        overlay.trigger('click');
-        evt.preventDefault();
-        evt.stopPropagation();
-      });
-    }
-  };
-
-  InCHlib.prototype._draw_color_scales_select = function (element, evt) {
-    const self = this;
-
-    self.$element.find('.color_scales').remove();
 
     let scale_divs;
     let scales_div = $('<div class=\'color_scales\'></div>');
-    let scale; let color_1; let color_2; let color_3; let
-      key;
+    let scale;
+    let color_1;
+    let color_2;
+    let color_3;
+    let key;
 
     for (let i = 0, keys = Object.keys(self.colors), len = keys.length; i < len; i++) {
       key = keys[i];
@@ -3879,18 +4264,19 @@ import Color from 'color';
       scale = `<div class='color_scale' data-scale_acronym='${key}' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div>`;
       scales_div.append(scale);
     }
+
     self.$element.append(scales_div);
     scales_div.css({
       border: 'solid #D2D2D2 2px',
       'border-radius': '5px',
       padding: '5px',
       position: 'absolute',
-      top: 110,
-      left: 250,
+      top: 100,
+      left: 14,
       width: 110,
       'max-height': 400,
       'overflow-y': 'auto',
-      'background-color': 'white',
+      'background-color': '#fff',
     });
 
     scale_divs = self.$element.find('.color_scale');
@@ -3911,17 +4297,21 @@ import Color from 'color';
       function () { $(this).css({ opacity: 1 }); },
     );
 
-    self.$element.find('.target_overlay').click(() => {
-      scales_div.fadeOut('fast');
+    overlay.click(function() {
+      scales_div.fadeOut().remove();
+      scale_divs.fadeOut().remove();
+      overlay.fadeOut().remove();
+      // self._unbind_overlay_click_out();
     });
 
     scale_divs.on('click', function () {
       const color = $(this).attr('data-scale_acronym');
-      const input = $(element).prev('input:first').val(color);
-
-      $(element).css({ background: `linear-gradient(to right, ${self._get_color_for_value(0, 0, 1, 0.5, color)},${self._get_color_for_value(0.5, 0, 1, 0.5, color)},${self._get_color_for_value(1, 0, 1, 0.5, color)})` });
-      scales_div.fadeOut('fast');
-      scale_divs.off('click');
+      const settings = { heatmap_colors: color };
+      self.update_settings(settings);
+      self.redraw_heatmap();
+      self._update_color_scale();
+      overlay.trigger('click');
+      evt.preventDefault();
     });
   };
 
@@ -3941,14 +4331,12 @@ import Color from 'color';
 
     layer.add(self.icon_tooltip);
     self.icon_tooltip.moveToTop();
-    color_scale.setOpacity(0.7);
     layer.draw();
   };
 
   InCHlib.prototype._color_scale_mouseout = function (color_scale, layer) {
     const self = this;
     self.icon_tooltip.destroy();
-    color_scale.setOpacity(1);
     layer.draw();
   };
 
@@ -3971,9 +4359,11 @@ import Color from 'color';
       const width = icon_overlay.getWidth();
       const height = icon_overlay.getHeight();
 
-      if (icon.getAttr('id') === 'export_icon') {
+      if (icon.getAttr('id') === 'export_icon' ||
+        icon.getAttr('id') === 'categories_icon' ||
+        icon.getAttr('id') === 'legend_icon') {
         x -= 100;
-        y -= 50;
+        y -= 47;
       }
 
       self.icon_tooltip = self.objects_ref.tooltip_label.clone({
@@ -3985,7 +4375,7 @@ import Color from 'color';
       self.icon_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
       layer.add(self.icon_tooltip);
     }
-    icon.setFill('#3a3a3a');
+    icon.setFill(self.hover_fill);
     layer.draw();
   };
 
@@ -4012,7 +4402,7 @@ import Color from 'color';
         'font-size': 12,
         'padding-right': 15,
         width: 200,
-        'background-color': 'white',
+        'background-color': '#fff',
         'border-radius': 5,
         border: 'solid #DEDEDE 2px',
         'z-index': 1000,
@@ -4196,11 +4586,11 @@ import Color from 'color';
         points: [
           x,
           y,
-          x + self.heatmap_width,
+          x + self.heatmap_width - (self.pixels_for_dimension * 2),
           y,
         ],
         strokeWidth: self.pixels_for_leaf,
-        stroke: '#FFFFFF',
+        stroke: '#fff',
         opacity: 0.3,
         listening: false,
       });
@@ -4222,10 +4612,11 @@ import Color from 'color';
     const self = this;
     let line;
     const { attrs } = evt.target;
-    const { points } = attrs;
+    const { column: original_column, points } = attrs;
+    const is_gene_symbol_column = original_column === 'm_1';
     const x = self._hack_round((points[0] + points[2]) / 2);
     const y = points[1] - 0.5 * self.pixels_for_leaf;
-    const column = attrs.column.split('_');
+    const column = original_column.split('_');
     const header_type2value = {
       d: self.heatmap_header[column[1]],
       m: self.metadata_header[column[1]],
@@ -4238,35 +4629,30 @@ import Color from 'color';
 
     const header_value = header_type2value[column[0]];
 
-    if (header_value !== self.last_column) {
+    if (header_value !== self.active_column) {
       self.column_overlay.destroy();
-      self.last_column = attrs.column;
+      self.active_column = attrs.column;
       self.column_overlay = self.objects_ref.heatmap_line.clone({
         points: [
           x,
           self.header_height,
           x,
-          self.header_height + self.column_metadata_height + (self.heatmap_array.length + 0.5) * self.pixels_for_leaf,
+          self.header_height + 10 + self.column_metadata_height + (self.heatmap_array.length) * self.pixels_for_leaf,
         ],
         strokeWidth: self.pixels_for_dimension,
-        stroke: '#FFFFFF',
-        opacity: 0.3,
+        stroke: '#fff',
+        opacity: 0.3 * !is_gene_symbol_column,
         listening: false,
         id: 'column_overlay',
       });
-
       self.heatmap_overlay.add(self.column_overlay);
     }
 
     const { name, value } = attrs;
 
-    const header_text = header_value === 'gene_symbol'
-      ? 'Gene'
-      : header_value === 'case_id'
-        ? 'Case'
-        : self.heatmap_header.includes(header_value)
-          ? `Case: ${header_value.split('_')[0]}, Gene: ${attrs.gene_symbol}`
-          : header_value;
+    const header_text = self.heatmap_header.includes(header_value)
+      ? `Case: ${header_value.split('_')[0]}, Gene: ${attrs.gene_symbol}`
+      : header_value;
 
     const tooltip_value = typeof value === 'undefined'
       ? name.split('_').join(' ')
@@ -4278,9 +4664,14 @@ import Color from 'color';
       x,
       y,
       id: 'col_label',
+      opacity: + !is_gene_symbol_column,
     });
 
     tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
+
+    if (is_gene_symbol_column) {
+      self._hover_cursor_on();
+    }
 
     self.heatmap_overlay.add(tooltip);
     self.heatmap_overlay.moveToTop();
@@ -4315,7 +4706,7 @@ import Color from 'color';
   InCHlib.prototype.add_color_scale = function (color_scale_name, color_scale) {
     const self = this;
     self.colors[color_scale_name] = color_scale;
-    self.$element.find('.color_scales').remove();
+    self.$element.find('.color_scales').fadeOut().remove();
   };
 
   InCHlib.prototype._get_visible_count = function () {
@@ -4365,39 +4756,46 @@ import Color from 'color';
   };
 
   /**
-    * Destroy InCHlib
+    * Hover - change to hand cursor & back again
     */
-  InCHlib.prototype.destroy = function () {
-    const self = this;
-    self._delete_all_layers();
-    // TODO: more destruction
-    // make sure to delete the whole instance
-    // in react i guess?
-  };
+  InCHlib.prototype._hover_cursor_on = function() {
+    document.body.style.cursor = 'pointer';
+  }
+
+  InCHlib.prototype._hover_cursor_off = function() {
+    document.body.style.cursor = 'default';
+  }
+
+  /**
+    * Hover - change to hand cursor & back again
+    */
+  InCHlib.prototype._hover_cursor_on = function() {
+    document.body.style.cursor = 'pointer';
+  }
+
+  InCHlib.prototype._hover_cursor_off = function() {
+    document.body.style.cursor = 'default';
+  }
 
   /**
     * Initiate InCHlib
     */
   InCHlib.prototype.init = function () {
     const self = this;
-    if (self.user_options === 'destroy') {
-      self.destroy();
-    } else {
-      // setTimeout is used to force synchronicity;
-      const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-      self.$element.after(loading_div);
-      self.$element.hide();
+    // setTimeout is used to force synchronicity in canvas
+    const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
+    self.$element.after(loading_div);
+    self.$element.hide();
 
-      setTimeout(function () {
-        self.read_data(self.options.data);
-        self.draw();
-      }, 50);
+    setTimeout(function () {
+      self.read_data(self.options.data);
+      self.draw();
+    }, 50);
 
-      setTimeout(function () {
-        loading_div.remove();
-        self.$element.show();
-      }, 50);
-    }
+    setTimeout(function () {
+      loading_div.fadeOut().remove();
+      self.$element.show();
+    }, 50);
   };
 
   $.fn[plugin_name] = function (options) {

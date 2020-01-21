@@ -30,10 +30,7 @@ const enhance = compose(
 
 class GeneExpression extends Component {
   state = {
-    // data: dataObj.data3x2, // for viz demo
-    data: showDataButtons
-      ? null
-      : dataObj.data50x50,
+    data: dataObj.data10x5, // for viz demo
   };
 
   handleClickInchlibLink = (
@@ -44,11 +41,14 @@ class GeneExpression extends Component {
       },
     },
   ) => {
-    const { history } = this.props;
     const nextPage = gene_ensembl === ''
       ? `/cases/${case_uuid}`
       : `/genes/${gene_ensembl}`;
-    history.push(nextPage);
+    // This opens the link in a new tab
+    Object.assign(document.createElement('a'), {
+      href: nextPage,
+      target: '_blank',
+    }).click();
   }
 
   handleDataButton = size => {

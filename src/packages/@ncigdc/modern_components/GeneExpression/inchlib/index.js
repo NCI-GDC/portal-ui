@@ -1223,6 +1223,12 @@ import { round } from 'lodash';
         stroke: '#D2D2D2',
         strokeWidth: 1,
       }),
+
+      font_awesome_icon: new Konva.Text({
+        fill: self.hover_fill,
+        fontFamily: 'FontAwesome',
+        fontStyle: '900',
+      }),
     };
 
     self.paths_ref = {
@@ -1231,6 +1237,23 @@ import { round } from 'lodash';
       lightbulb: 'M15.5,2.833c-3.866,0-7,3.134-7,7c0,3.859,3.945,4.937,4.223,9.499h5.553c0.278-4.562,4.224-5.639,4.224-9.499C22.5,5.968,19.366,2.833,15.5,2.833zM15.5,28.166c1.894,0,2.483-1.027,2.667-1.666h-5.334C13.017,27.139,13.606,28.166,15.5,28.166zM12.75,25.498h5.5v-5.164h-5.5V25.498z',
     };
 
+    /**
+    * Font Awesome 4 icons used in InCHlib.
+    * @name InCHlib#font_awesome_icons
+    */
+    self.font_awesome_icons = {
+      'fa-bars': String.fromCharCode('0xf0c9'),
+      'fa-caret-down': String.fromCharCode('0xf0d7'),
+      'fa-caret-up': String.fromCharCode('0xf0d8'),
+      'fa-download': String.fromCharCode('0xf019'),
+      'fa-paint-brush': String.fromCharCode('0xf1fc'),
+      'fa-undo': String.fromCharCode('0xf0e2'),
+    };
+
+    /**
+    * Creates color steps for the heatmap.
+    * @name InCHlib#color_steps
+    */
     self.color_steps = [
       0,
       self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
@@ -1239,6 +1262,11 @@ import { round } from 'lodash';
       1,
       self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
     ];
+
+    /**
+    * Gets 5 values to display next to the heatmap scale.
+    * @name InCHlib#get_scale_values
+    */
 
     self.get_scale_values = () => {
       const [min, max, mid] = self.data_descs_all;
@@ -2768,16 +2796,12 @@ import { round } from 'lodash';
       const x = self.options.width - 60;
       const y = 75;
       const scale = 0.6;
-      const legend_icon = self.objects_ref.icon.clone({
-        data: 'M18.386,16.009l0.009-0.006l-0.58-0.912c1.654-2.226,1.876-5.319,0.3-7.8c-2.043-3.213-6.303-4.161-9.516-2.118c-3.212,2.042-4.163,6.302-2.12,9.517c1.528,2.402,4.3,3.537,6.944,3.102l0.424,0.669l0.206,0.045l0.779-0.447l-0.305,1.377l2.483,0.552l-0.296,1.325l1.903,0.424l-0.68,3.06l1.406,0.313l-0.424,1.906l4.135,0.918l0.758-3.392L18.386,16.009z M10.996,8.944c-0.685,0.436-1.593,0.233-2.029-0.452C8.532,7.807,8.733,6.898,9.418,6.463s1.594-0.233,2.028,0.452C11.883,7.6,11.68,8.509,10.996,8.944z',
-        x,
-        y,
-        scale: {
-          x: scale,
-          y: scale,
-        },
+      const legend_icon = self.objects_ref.font_awesome_icon.clone({
         id: 'legend_icon',
         label: 'View legend',
+        text: self.font_awesome_icons['fa-undo'],
+        x,
+        y,
       });
       const legend_overlay = self._draw_icon_overlay(x, y);
       self.navigation_layer.add(legend_icon, legend_overlay);

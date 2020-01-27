@@ -1225,18 +1225,23 @@ import { round } from 'lodash';
       }),
 
       font_awesome_icon: new Konva.Text({
+        align: 'center',
         fill: self.hover_fill,
         fontFamily: 'FontAwesome',
+        fontSize: 14,
+        height: 28,
+        verticalAlign: 'middle',
+        width: 40,
       }),
 
       toolbar_button: new Konva.Rect({
         // TODO: HOVER IS BG #008ae0
         cornerRadius: 4,
         fill: '#fff',
-        height: 200,
+        height: 28,
         stroke: '#ccc',
         strokeWidth: 1,
-        width: 200,
+        width: 40,
         y: 10,
       }),
     };
@@ -1284,6 +1289,46 @@ import { round } from 'lodash';
       ]
       .map(x => round(x, 1).toFixed(1));
     };
+
+    /**
+    * Info for the toolbar buttons.
+    * @name InCHlib#toolbar_refs
+    */
+   self.toolbar_refs = {
+    buttons: [
+      {
+        fa_icon: 'fa-undo',
+        label: 'Reset',
+        id: 'reset',
+      },
+      {
+        fa_icon: 'fa-paint-brush',
+        label: 'Edit Heatmap Colors',
+        id: 'edit_heatmap_colors',
+      },
+      {
+        fa_icon: 'fa-bars',
+        label: 'Edit Categories',
+        id: 'edit_categories',
+      },
+      {
+        fa_icon: 'fa-download',
+        label: 'Download',
+        id: 'download',
+      },
+      {
+        fa_icon: ['fa-caret-down','fa-caret-up'],
+        label: 'Legend',
+        id: 'legend',
+      }
+    ],
+    sizes: {
+      // slightly smaller than the values in the site's CSS
+      height: 27,
+      spacing: 4,
+      width: 39,
+    },
+  };
 
     // start plugin
     self.init();
@@ -2671,36 +2716,38 @@ import { round } from 'lodash';
     const toolbar_width = 400;
     const toolbar = new Konva.Group({
       width: toolbar_width,
-      x: self.options.width -toolbar_width, 
-      y: 5,
+      x: self.options.width - toolbar_width + 0.5,
+      y: 5.5,
+      // offset by 0.5 pixels to get cleaner lines
     });
 
     // each toolbar item has a button & icon element.
     // attach tooltips, hover, etc to the BUTTON.
 
-    const button = {
-      width: 40,
-      height: 28,
-      spacing: 10,
-    };
     let y = 0;
-    let x = 0
+    let x = 0;
 
-    // DOWNLOAD BUTTON
-    const download_button = self.objects_ref.toolbar_button.clone({
-      x: 5,
-      y: 5,
-      id: 'download_button',
-      label: 'Download',
-    });
-    const download_icon = self.objects_ref.font_awesome_icon.clone({
-      text: self.font_awesome_icons['fa-download'],
-      x: 20,
-      y: 20,
-      id: 'download_icon',
-    });
-    toolbar.add(download_button, download_icon);
+    const { height, spacing, width } = self.toolbar_refs.sizes;
 
+    self.toolbar_refs.buttons.forEach(function(button) {
+      const { fa_icon, id, label } = button;
+      const button_el = self.objects_ref.toolbar_button.clone({
+        x,
+        y,
+        id: `${id}_button`,
+        label,
+        width,
+        height,
+      });
+      const icon = self.objects_ref.font_awesome_icon.clone({
+        text: self.font_awesome_icons[fa_icon],
+        x,
+        y,
+        id: `${id}_icon`,
+      });
+      toolbar.add(button_el, icon);
+      x += width + spacing + 2; // 2 is for borders
+    });
 
     // right-align the toolbar
     // toolbar.width(x);

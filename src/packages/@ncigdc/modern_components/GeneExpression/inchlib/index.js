@@ -1226,7 +1226,7 @@ import { round } from 'lodash';
 
       font_awesome_icon: new Konva.Text({
         align: 'center',
-        fill: self.hover_fill,
+        fill: '#333',
         fontFamily: 'FontAwesome',
         fontSize: 14,
         height: 28,
@@ -2716,9 +2716,7 @@ import { round } from 'lodash';
     const self = this;
     const toolbar_width = 400;
     const toolbar = new Konva.Group({
-      width: toolbar_width,
-      x: self.options.width - toolbar_width + 0.5,
-      y: 5.5,
+      y: 0.5,
       // offset by 0.5 pixels to get cleaner lines
     });
 
@@ -2728,10 +2726,38 @@ import { round } from 'lodash';
     let y = 0;
     let x = 0;
 
-    const { height, spacing, width } = self.toolbar_refs.sizes;
+    let { height, spacing, width } = self.toolbar_refs.sizes;
 
     self.toolbar_refs.buttons.forEach(function(button) {
       const { fa_icon, id, label } = button;
+      let legend_text;
+      let legend_caret;
+      let icon;
+      if (id === 'legend') {
+        width = 160;
+        // TODO: REPLACE WITH LEGEND WIDTH
+        legend_text = new Konva.Text({
+          fill: self.hover_fill,
+          fontFamily: '"Helvetica Neue"',
+          fontSize: 14,
+          lineHeight: 2,
+          text: label,
+          x: x + 13,
+          y,
+        });
+        legend_caret = self.objects_ref.font_awesome_icon.clone({
+          text: self.font_awesome_icons[fa_icon[0]],
+          x: x + width + 2 - 40,
+          y,
+        });
+      } else {
+        icon = self.objects_ref.font_awesome_icon.clone({
+          text: self.font_awesome_icons[fa_icon],
+          x,
+          y,
+          id: `${id}_icon`,
+        });
+      }
       const button_el = self.objects_ref.toolbar_button.clone({
         x,
         y,
@@ -2739,20 +2765,19 @@ import { round } from 'lodash';
         label,
         width,
         height,
-      });
-      const icon = self.objects_ref.font_awesome_icon.clone({
-        text: self.font_awesome_icons[fa_icon],
-        x,
-        y,
-        id: `${id}_icon`,
-      });
-      toolbar.add(button_el, icon);
-      x += width + spacing + 2; // 2 is for borders
+      });      
+
+      if (id === 'legend') {
+        toolbar.add(button_el, legend_text, legend_caret);
+      } else {
+        toolbar.add(button_el, icon);
+      }
+      x += width + spacing + 2;
     });
 
     // right-align the toolbar
-    // toolbar.width(x);
-    // toolbar.x(self.options.width - x);
+    toolbar.width(x);
+    toolbar.x(self.options.width - x + 0.5);
     self.navigation_layer.add(toolbar);
   }
 

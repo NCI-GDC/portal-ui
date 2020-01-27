@@ -195,7 +195,7 @@ import { round } from 'lodash';
       color_scale: true,
       // distance_scale: false,
       edit_categories: true,
-      download_button: true,
+      // download_button: true,
       filter_button: true,
       hint_button: false,
     },
@@ -1229,17 +1229,14 @@ import { round } from 'lodash';
         fontFamily: 'FontAwesome',
       }),
 
-      toolbar_button: new Konva.Text({
+      toolbar_button: new Konva.Rect({
         // TODO: HOVER IS BG #008ae0
-        background: '#fff',
-        borderColor: '#ccc',
-        borderRadius: '4px',
-        fill: self.hover_fill,
-        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-        fontSize: '14px',
-        lineHeight: '28px',
-        padding: '0 12px',
-        textAlign: 'center',
+        cornerRadius: 4,
+        fill: '#fff',
+        height: 200,
+        stroke: '#ccc',
+        strokeWidth: 1,
+        width: 200,
         y: 10,
       }),
     };
@@ -1276,7 +1273,6 @@ import { round } from 'lodash';
     * Gets 5 values to display next to the heatmap scale.
     * @name InCHlib#get_scale_values
     */
-
     self.get_scale_values = () => {
       const [min, max, mid] = self.data_descs_all;
       return [
@@ -2670,15 +2666,57 @@ import { round } from 'lodash';
   //   }
   // };
 
+  InCHlib.prototype._draw_toolbar = function () {
+    const self = this;
+    const toolbar_width = 400;
+    const toolbar = new Konva.Group({
+      width: toolbar_width,
+      x: self.options.width -toolbar_width, 
+      y: 5,
+    });
+
+    // each toolbar item has a button & icon element.
+    // attach tooltips, hover, etc to the BUTTON.
+
+    const button = {
+      width: 40,
+      height: 28,
+      spacing: 10,
+    };
+    let y = 0;
+    let x = 0
+
+    // DOWNLOAD BUTTON
+    const download_button = self.objects_ref.toolbar_button.clone({
+      x: 5,
+      y: 5,
+      id: 'download_button',
+      label: 'Download',
+    });
+    const download_icon = self.objects_ref.font_awesome_icon.clone({
+      text: self.font_awesome_icons['fa-download'],
+      x: 20,
+      y: 20,
+      id: 'download_icon',
+    });
+    toolbar.add(download_button, download_icon);
+
+
+    // right-align the toolbar
+    // toolbar.width(x);
+    // toolbar.x(self.options.width - x);
+    self.navigation_layer.add(toolbar);
+  }
+
   InCHlib.prototype._draw_navigation = function () {
     const self = this;
     self.navigation_layer = new Konva.Layer();
     let x = 0;
     let y = 10;
 
-    if (self.options.heatmap) {
-      self._draw_color_scale();
-    }
+    self._draw_color_scale();
+    self._draw_toolbar();
+    console.log(self.navigation_layer)
 
     if (self.zoomed_clusters.row.length > 0 || self.zoomed_clusters.column.length > 0) {
       const refresh_icon = self.objects_ref.font_awesome_icon.clone({
@@ -2762,31 +2800,23 @@ import { round } from 'lodash';
       });
     }
 
-    if (self.options.navigation_toggle.download_button) {
-      const download_icon = self.objects_ref.font_awesome_icon.clone({
-        text: self.font_awesome_icons['fa-download'],
-        x: self.options.width - 62,
-        id: 'download_icon',
-        label: 'Download PNG',
-      });
 
-      const download_overlay = self._draw_icon_overlay(self.options.width - 62, 10);
-      self.navigation_layer.add(download_icon, download_overlay);
+    // const download_overlay = self._draw_icon_overlay(self.options.width - 62, 10);
+    // self.navigation_layer.add(download_button, download_icon, download_overlay);
 
-      download_overlay.on('click', function () {
-        self._download_icon_click(this);
-      });
+    // download_overlay.on('click', function () {
+    //   self._download_icon_click(this);
+    // });
 
-      download_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
-        self._icon_mouseover(download_icon, download_overlay, self.navigation_layer);
-      });
+    // download_overlay.on('mouseover', () => {
+    //   self._hover_cursor_on();
+    //   self._icon_mouseover(download_icon, download_overlay, self.navigation_layer);
+    // });
 
-      download_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
-        self._icon_mouseout(download_icon, download_overlay, self.navigation_layer);
-      });
-    }
+    // download_overlay.on('mouseout', () => {
+    //   self._hover_cursor_off();
+    //   self._icon_mouseout(download_icon, download_overlay, self.navigation_layer);
+    // });
 
     if (self.options.navigation_toggle.categories_legend) {
       const x = self.options.width - 60;

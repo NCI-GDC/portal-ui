@@ -193,7 +193,7 @@ import { round } from 'lodash';
     navigation_toggle: {
       categories_legend: true,
       color_scale: true,
-      distance_scale: true,
+      distance_scale: false,
       edit_categories: true,
       export_button: true,
       filter_button: true,

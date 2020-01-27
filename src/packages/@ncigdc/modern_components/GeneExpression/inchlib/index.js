@@ -1323,7 +1323,8 @@ import { round } from 'lodash';
       }
     ],
     sizes: {
-      // slightly smaller than the values in the site's CSS
+      // buttons need to have slightly smaller measurements
+      // than the buttons in the rest of the portal
       height: 27,
       spacing: 4,
       width: 39,

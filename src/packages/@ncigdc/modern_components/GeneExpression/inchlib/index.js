@@ -137,7 +137,7 @@ import { round } from 'lodash';
   * @option {boolean} [alternative_data=false]
   *   use original data to compute heatmap but show the alternative values (alternative_data section must be present in input data)
 
-  * @option {object} [navigation_toggle={"distance_scale": false, "filter_button": false, "export_button": false, "color_scale": false, "hint_button": false}]
+  * @option {object} [navigation_toggle={"distance_scale": false, "filter_button": false, "download_button": false, "color_scale": false, "hint_button": false}]
   *   toggle "navigation" features - true/false
 
   *
@@ -193,9 +193,9 @@ import { round } from 'lodash';
     navigation_toggle: {
       categories_legend: true,
       color_scale: true,
-      distance_scale: false,
+      // distance_scale: false,
       edit_categories: true,
-      export_button: true,
+      download_button: true,
       filter_button: true,
       hint_button: false,
     },
@@ -1227,14 +1227,21 @@ import { round } from 'lodash';
       font_awesome_icon: new Konva.Text({
         fill: self.hover_fill,
         fontFamily: 'FontAwesome',
-        fontStyle: '900',
       }),
-    };
 
-    self.paths_ref = {
-      zoom_icon: 'M22.646,19.307c0.96-1.583,1.523-3.435,1.524-5.421C24.169,8.093,19.478,3.401,13.688,3.399C7.897,3.401,3.204,8.093,3.204,13.885c0,5.789,4.693,10.481,10.484,10.481c1.987,0,3.839-0.563,5.422-1.523l7.128,7.127l3.535-3.537L22.646,19.307zM13.688,20.369c-3.582-0.008-6.478-2.904-6.484-6.484c0.006-3.582,2.903-6.478,6.484-6.486c3.579,0.008,6.478,2.904,6.484,6.486C20.165,17.465,17.267,20.361,13.688,20.369zM15.687,9.051h-4v2.833H8.854v4.001h2.833v2.833h4v-2.834h2.832v-3.999h-2.833V9.051z',
-      unzoom_icon: 'M22.646,19.307c0.96-1.583,1.523-3.435,1.524-5.421C24.169,8.093,19.478,3.401,13.688,3.399C7.897,3.401,3.204,8.093,3.204,13.885c0,5.789,4.693,10.481,10.484,10.481c1.987,0,3.839-0.563,5.422-1.523l7.128,7.127l3.535-3.537L22.646,19.307zM13.688,20.369c-3.582-0.008-6.478-2.904-6.484-6.484c0.006-3.582,2.903-6.478,6.484-6.486c3.579,0.008,6.478,2.904,6.484,6.486C20.165,17.465,17.267,20.361,13.688,20.369zM8.854,11.884v4.001l9.665-0.001v-3.999L8.854,11.884z',
-      lightbulb: 'M15.5,2.833c-3.866,0-7,3.134-7,7c0,3.859,3.945,4.937,4.223,9.499h5.553c0.278-4.562,4.224-5.639,4.224-9.499C22.5,5.968,19.366,2.833,15.5,2.833zM15.5,28.166c1.894,0,2.483-1.027,2.667-1.666h-5.334C13.017,27.139,13.606,28.166,15.5,28.166zM12.75,25.498h5.5v-5.164h-5.5V25.498z',
+      toolbar_button: new Konva.Text({
+        // TODO: HOVER IS BG #008ae0
+        background: '#fff',
+        borderColor: '#ccc',
+        borderRadius: '4px',
+        fill: self.hover_fill,
+        fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+        fontSize: '14px',
+        lineHeight: '28px',
+        padding: '0 12px',
+        textAlign: 'center',
+        y: 10,
+      }),
     };
 
     /**
@@ -1247,6 +1254,8 @@ import { round } from 'lodash';
       'fa-caret-up': String.fromCharCode('0xf0d8'),
       'fa-download': String.fromCharCode('0xf019'),
       'fa-paint-brush': String.fromCharCode('0xf1fc'),
+      'fa-search-minus': String.fromCharCode('0xf010'),
+      'fa-search-plus': String.fromCharCode('0xf00e'),
       'fa-undo': String.fromCharCode('0xf0e2'),
     };
 
@@ -1790,7 +1799,7 @@ import { round } from 'lodash';
     }
     self._draw_row_dendrogram_node(node_id, node, current_left_count, current_right_count, 0, y);
     self.middle_item_count = (self.min_item_count + self.max_item_count) / 2;
-    self._draw_distance_scale(node.distance);
+    // self._draw_distance_scale(node.distance);
     self.stage.add(self.dendrogram_layer);
 
     self._bind_dendrogram_hover_events(self.dendrogram_layer);
@@ -2582,84 +2591,84 @@ import { round } from 'lodash';
     }
   };
 
-  InCHlib.prototype._draw_distance_scale = function (distance) {
-    const self = this;
-    if (!self.options.navigation_toggle.distance_scale) {
-      return;
-    }
-    const y1 = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2 - 10;
-    const y2 = y1;
-    const x1 = 0;
-    const x2 = self.distance;
-    var path = new Konva.Line({
-      points: [
-        x1,
-        y1,
-        x2,
-        y2,
-      ],
-      stroke: 'grey',
-      listening: false,
-    });
+  // InCHlib.prototype._draw_distance_scale = function (distance) {
+  //   const self = this;
+  //   if (!self.options.navigation_toggle.distance_scale) {
+  //     return;
+  //   }
+  //   const y1 = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2 - 10;
+  //   const y2 = y1;
+  //   const x1 = 0;
+  //   const x2 = self.distance;
+  //   var path = new Konva.Line({
+  //     points: [
+  //       x1,
+  //       y1,
+  //       x2,
+  //       y2,
+  //     ],
+  //     stroke: 'grey',
+  //     listening: false,
+  //   });
 
-    const circle = new Konva.Circle({
-      x: x2,
-      y: y2,
-      radius: 3,
-      fill: 'grey',
-      listening: false,
-    });
+  //   const circle = new Konva.Circle({
+  //     x: x2,
+  //     y: y2,
+  //     radius: 3,
+  //     fill: 'grey',
+  //     listening: false,
+  //   });
 
-    let number = 0;
-    const marker_tail = 3;
-    let marker_distance = x2;
-    const marker_number_distance = self._hack_round(30 / self.distance_step * 10) / 10;
-    var distance = Math.round(100 * self.distance / self.distance_step) / 100;
-    let marker_distance_step = self._hack_round(self.distance_step * marker_number_distance);
-    let marker_counter = 0;
+  //   let number = 0;
+  //   const marker_tail = 3;
+  //   let marker_distance = x2;
+  //   const marker_number_distance = self._hack_round(30 / self.distance_step * 10) / 10;
+  //   var distance = Math.round(100 * self.distance / self.distance_step) / 100;
+  //   let marker_distance_step = self._hack_round(self.distance_step * marker_number_distance);
+  //   let marker_counter = 0;
 
-    const distance_number = new Konva.Text({
-      x: 0,
-      y: y1 - 20,
-      text: distance,
-      fontSize: self.options.font.size,
-      fontFamily: self.options.font.family,
-      fontStyle: '500',
-      fill: self.hover_fill,
-      align: 'right',
-      listening: false,
-    });
-    self.dendrogram_layer.add(path, circle, distance_number);
+  //   const distance_number = new Konva.Text({
+  //     x: 0,
+  //     y: y1 - 20,
+  //     text: distance,
+  //     fontSize: self.options.font.size,
+  //     fontFamily: self.options.font.family,
+  //     fontStyle: '500',
+  //     fill: self.hover_fill,
+  //     align: 'right',
+  //     listening: false,
+  //   });
+  //   self.dendrogram_layer.add(path, circle, distance_number);
 
-    if (marker_distance_step == 0) {
-      marker_distance_step = 0.5;
-    }
+  //   if (marker_distance_step == 0) {
+  //     marker_distance_step = 0.5;
+  //   }
 
-    var path;
-    if (marker_number_distance > 0.1) {
-      while (marker_distance > 0) {
-        path = new Konva.Line({
-          points: [
-            marker_distance,
-            (y1 - marker_tail),
-            marker_distance,
-            (y2 + marker_tail),
-          ],
-          stroke: 'grey',
-          listening: false,
-        });
-        self.dendrogram_layer.add(path);
+  //   var path;
+  //   if (marker_number_distance > 0.1) {
+  //     while (marker_distance > 0) {
+  //       path = new Konva.Line({
+  //         points: [
+  //           marker_distance,
+  //           (y1 - marker_tail),
+  //           marker_distance,
+  //           (y2 + marker_tail),
+  //         ],
+  //         stroke: 'grey',
+  //         listening: false,
+  //       });
+  //       self.dendrogram_layer.add(path);
 
-        number = self._hack_round((number + marker_number_distance) * 10) / 10;
-        if (number > 10) {
-          number = self._hack_round(number);
-        }
+  //       number = self._hack_round((number + marker_number_distance) * 10) / 10;
+  //       if (number > 10) {
+  //         number = self._hack_round(number);
+  //       }
 
-        marker_distance -= marker_distance_step;
-        marker_counter++;
-      }
-    }
-  };
+  //       marker_distance -= marker_distance_step;
+  //       marker_counter++;
+  //     }
+  //   }
+  // };
 
   InCHlib.prototype._draw_navigation = function () {
     const self = this;
@@ -2672,8 +2681,8 @@ import { round } from 'lodash';
     }
 
     if (self.zoomed_clusters.row.length > 0 || self.zoomed_clusters.column.length > 0) {
-      const refresh_icon = self.objects_ref.icon.clone({
-        data: 'M24.083,15.5c-0.009,4.739-3.844,8.574-8.583,8.583c-4.741-0.009-8.577-3.844-8.585-8.583c0.008-4.741,3.844-8.577,8.585-8.585c1.913,0,3.665,0.629,5.09,1.686l-1.782,1.783l8.429,2.256l-2.26-8.427l-1.89,1.89c-2.072-1.677-4.717-2.688-7.587-2.688C8.826,3.418,3.418,8.826,3.416,15.5C3.418,22.175,8.826,27.583,15.5,27.583S27.583,22.175,27.583,15.5H24.083z',
+      const refresh_icon = self.objects_ref.font_awesome_icon.clone({
+        text: self.font_awesome_icons['fa-undo'],
         x,
         y,
         id: 'refresh_icon',
@@ -2701,14 +2710,10 @@ import { round } from 'lodash';
     if (self.zoomed_clusters.row.length > 0) {
       x = self.distance - 55;
       y = self.header_height + self.column_metadata_height - 40;
-      const unzoom_icon = self.objects_ref.icon.clone({
-        data: self.paths_ref.unzoom_icon,
+      const unzoom_icon = self.objects_ref.font_awesome_icon.clone({
+        text: self.font_awesome_icons['fa-search-minus'],
         x,
         y,
-        scale: {
-          x: 0.7,
-          y: 0.7,
-        },
         label: 'Unzoom\nrows',
       });
       const unzoom_overlay = self._draw_icon_overlay(x, y);
@@ -2732,14 +2737,10 @@ import { round } from 'lodash';
     if (self.zoomed_clusters.column.length > 0) {
       x = self.options.width - 85;
       y = self.header_height - 50;
-      const column_unzoom_icon = self.objects_ref.icon.clone({
-        data: self.paths_ref.unzoom_icon,
+      const column_unzoom_icon = self.objects_ref.font_awesome_icon.clone({
+        text: self.font_awesome_icons['fa-search-minus'],
         x,
         y: y - 5,
-        scale: {
-          x: 0.7,
-          y: 0.7,
-        },
         label: 'Unzoom\ncolumns',
       });
       const column_unzoom_overlay = self._draw_icon_overlay(x, y);
@@ -2761,41 +2762,35 @@ import { round } from 'lodash';
       });
     }
 
-    if (self.options.navigation_toggle.export_button) {
-      const export_icon = self.objects_ref.icon.clone({
-        data: 'M24.25,10.25H20.5v-1.5h-9.375v1.5h-3.75c-1.104,0-2,0.896-2,2v10.375c0,1.104,0.896,2,2,2H24.25c1.104,0,2-0.896,2-2V12.25C26.25,11.146,25.354,10.25,24.25,10.25zM15.812,23.499c-3.342,0-6.06-2.719-6.06-6.061c0-3.342,2.718-6.062,6.06-6.062s6.062,2.72,6.062,6.062C21.874,20.78,19.153,23.499,15.812,23.499zM15.812,13.375c-2.244,0-4.062,1.819-4.062,4.062c0,2.244,1.819,4.062,4.062,4.062c2.244,0,4.062-1.818,4.062-4.062C19.875,15.194,18.057,13.375,15.812,13.375z',
+    if (self.options.navigation_toggle.download_button) {
+      const download_icon = self.objects_ref.font_awesome_icon.clone({
+        text: self.font_awesome_icons['fa-download'],
         x: self.options.width - 62,
-        y: 10,
-        scale: {
-          x: 0.7,
-          y: 0.7,
-        },
-        id: 'export_icon',
+        id: 'download_icon',
         label: 'Download PNG',
       });
 
-      const export_overlay = self._draw_icon_overlay(self.options.width - 62, 10);
-      self.navigation_layer.add(export_icon, export_overlay);
+      const download_overlay = self._draw_icon_overlay(self.options.width - 62, 10);
+      self.navigation_layer.add(download_icon, download_overlay);
 
-      export_overlay.on('click', function () {
-        self._export_icon_click(this);
+      download_overlay.on('click', function () {
+        self._download_icon_click(this);
       });
 
-      export_overlay.on('mouseover', () => {
+      download_overlay.on('mouseover', () => {
         self._hover_cursor_on();
-        self._icon_mouseover(export_icon, export_overlay, self.navigation_layer);
+        self._icon_mouseover(download_icon, download_overlay, self.navigation_layer);
       });
 
-      export_overlay.on('mouseout', () => {
+      download_overlay.on('mouseout', () => {
         self._hover_cursor_off();
-        self._icon_mouseout(export_icon, export_overlay, self.navigation_layer);
+        self._icon_mouseout(download_icon, download_overlay, self.navigation_layer);
       });
     }
 
     if (self.options.navigation_toggle.categories_legend) {
       const x = self.options.width - 60;
       const y = 75;
-      const scale = 0.6;
       const legend_icon = self.objects_ref.font_awesome_icon.clone({
         id: 'legend_icon',
         label: 'View legend',
@@ -2826,14 +2821,10 @@ import { round } from 'lodash';
       const y = 45;
       const scale = 0.6;
 
-      const categories_icon = self.objects_ref.icon.clone({
-        data: 'M26.974,16.514l3.765-1.991c-0.074-0.738-0.217-1.454-0.396-2.157l-4.182-0.579c-0.362-0.872-0.84-1.681-1.402-2.423l1.594-3.921c-0.524-0.511-1.09-0.977-1.686-1.406l-3.551,2.229c-0.833-0.438-1.73-0.77-2.672-0.984l-1.283-3.976c-0.364-0.027-0.728-0.056-1.099-0.056s-0.734,0.028-1.099,0.056l-1.271,3.941c-0.967,0.207-1.884,0.543-2.738,0.986L7.458,4.037C6.863,4.466,6.297,4.932,5.773,5.443l1.55,3.812c-0.604,0.775-1.11,1.629-1.49,2.55l-4.05,0.56c-0.178,0.703-0.322,1.418-0.395,2.157l3.635,1.923c0.041,1.013,0.209,1.994,0.506,2.918l-2.742,3.032c0.319,0.661,0.674,1.303,1.085,1.905l4.037-0.867c0.662,0.72,1.416,1.351,2.248,1.873l-0.153,4.131c0.663,0.299,1.352,0.549,2.062,0.749l2.554-3.283C15.073,26.961,15.532,27,16,27c0.507,0,1.003-0.046,1.491-0.113l2.567,3.301c0.711-0.2,1.399-0.45,2.062-0.749l-0.156-4.205c0.793-0.513,1.512-1.127,2.146-1.821l4.142,0.889c0.411-0.602,0.766-1.243,1.085-1.905l-2.831-3.131C26.778,18.391,26.93,17.467,26.974,16.514zM20.717,21.297l-1.785,1.162l-1.098-1.687c-0.571,0.22-1.186,0.353-1.834,0.353c-2.831,0-5.125-2.295-5.125-5.125c0-2.831,2.294-5.125,5.125-5.125c2.83,0,5.125,2.294,5.125,5.125c0,1.414-0.573,2.693-1.499,3.621L20.717,21.297z',
+      const categories_icon = self.objects_ref.font_awesome_icon.clone({
+        text: self.font_awesome_icons['fa-bars'],
         x,
         y,
-        scale: {
-          x: scale,
-          y: scale,
-        },
         id: 'categories_icon',
         label: 'Edit categories',
       });
@@ -3197,8 +3188,8 @@ import { round } from 'lodash';
       text: count,
     });
 
-    const zoom_icon = self.objects_ref.icon.clone({
-      data: self.paths_ref.zoom_icon,
+    const zoom_icon = self.objects_ref.font_awesome_icon.clone({
+      text: self.font_awesome_icons['fa-search-plus'],
       x,
       y,
       scale: {
@@ -3284,14 +3275,10 @@ import { round } from 'lodash';
       text: count,
     });
 
-    const zoom_icon = self.objects_ref.icon.clone({
-      data: self.paths_ref.zoom_icon,
+    const zoom_icon = self.objects_ref.font_awesome_icon.clone({
+      text: self.font_awesome_icons['fa-search-plus'],
       x,
       y,
-      scale: {
-        x: 0.7,
-        y: 0.7,
-      },
       label: 'Zoom\ncolumns',
     });
 
@@ -3838,7 +3825,7 @@ import { round } from 'lodash';
     self.redraw();
   };
 
-  InCHlib.prototype._export_icon_click = function () {
+  InCHlib.prototype._download_icon_click = function () {
     const self = this;
     const overlay = self._draw_target_overlay();
     const zoom = 3;
@@ -4383,7 +4370,7 @@ import { round } from 'lodash';
       const width = icon_overlay.getWidth();
       const height = icon_overlay.getHeight();
 
-      if (icon.getAttr('id') === 'export_icon' ||
+      if (icon.getAttr('id') === 'download_icon' ||
         icon.getAttr('id') === 'categories_icon' ||
         icon.getAttr('id') === 'legend_icon') {
         x -= 100;

@@ -2733,6 +2733,7 @@ import { round } from 'lodash';
       let legend_text;
       let legend_caret;
       let icon;
+      
       if (id === 'legend') {
         width = 160;
         // TODO: REPLACE WITH LEGEND WIDTH
@@ -2758,6 +2759,7 @@ import { round } from 'lodash';
           id: `${id}_icon`,
         });
       }
+
       const button_el = self.objects_ref.toolbar_button.clone({
         x,
         y,
@@ -2765,12 +2767,13 @@ import { round } from 'lodash';
         label,
         width,
         height,
-      });      
+      });
 
+      toolbar.add(button_el);
       if (id === 'legend') {
-        toolbar.add(button_el, legend_text, legend_caret);
+        toolbar.add(legend_text, legend_caret);
       } else {
-        toolbar.add(button_el, icon);
+        toolbar.add(icon);
       }
       x += width + spacing + 2;
     });

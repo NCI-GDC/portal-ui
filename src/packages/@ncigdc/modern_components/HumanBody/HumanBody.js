@@ -94,8 +94,8 @@ export default compose(
         sapien({
           title: 'Cases by Major Primary Site',
           clickHandler: d => {
-            const key = d.key.replace(/-/g, ' ');
-            const datum = data.find(x => x.key === key);
+            const key = (d.key || d._key).replace(/-/g, ' ');
+            const datum = data.find(x => x.key.toLowerCase() === key.toLowerCase());
             if (datum) {
               const query = {
                 filters: stringifyJSONParam(

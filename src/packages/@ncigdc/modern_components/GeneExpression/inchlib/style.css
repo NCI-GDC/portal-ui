@@ -1,7 +1,16 @@
+/* TOOLBAR */
+
 .inchlib-toolbar {
+  list-style-type: none;
+  padding: 0;
   position: absolute;
   right: 0;
   top: 0;
+}
+
+.inchlib-toolbar > li {
+  display: inline-block;
+  position: relative;
 }
 
 .inchlib-toolbar_button {
@@ -13,7 +22,7 @@
   font-size: 14px;
   height: 28px;
   line-height: 20px;
-  margin: 0 4px;
+  margin: 0 2px;
   outline: none;
   padding: 0 12px;
   position: relative;
@@ -40,4 +49,35 @@
   line-height: 22px;
   position: absolute;
   right: 14px;
+}
+
+/* DOWNLOAD */
+
+.inchlib-download {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 5px 0px, rgba(0, 0, 0, 0.12) 0px 2px 10px 0px; z-index: 200;
+  list-style-type: none;
+  min-width: 165px;
+  outline: currentcolor none medium;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  top: 30px;
+}
+
+.inchlib-download_li-button {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  border: none;
+  outline: currentcolor none medium;
+  padding: 0.6rem 1rem;
+  width: 100%;
+  text-align: left;
+}
+
+.inchlib-download_li-button:hover {
+  background-color: rgb(245,245,245);
+  color: #262626;
 }

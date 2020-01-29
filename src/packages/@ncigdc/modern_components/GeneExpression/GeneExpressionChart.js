@@ -29,6 +29,10 @@ const handleOverlayClickOut = ({ target }) => {
     if (overlay !== null) {
       overlay.click();
     }
+    const download_menu = document.querySelector(`#${id} .inchlib-download`);
+    if (download_menu !== null) {
+      download_menu.remove();
+    }
   }
 };
 

@@ -226,6 +226,12 @@ import { round } from 'lodash';
       self.options.max_width < element_width
       ? self.options.max_width
       : element_width;
+    
+    self.options.legend_width = 170;
+
+    self.options.width -= self.options.legend_width;
+
+    self.options.stage_width = self.options.width + self.options.legend_width;
 
     self.$element.width(self.options.width);
 
@@ -1787,7 +1793,7 @@ import { round } from 'lodash';
 
     self.options.height = self.heatmap_array.length * self.pixels_for_leaf + self.header_height + self.footer_height;
 
-    self.stage.setWidth(self.options.width);
+    self.stage.setWidth(self.options.stage_width);
     self.stage.setHeight(self.options.height);
     self._draw_stage_layer();
 
@@ -1842,7 +1848,7 @@ import { round } from 'lodash';
     self._adjust_leaf_size(count);
     self.options.height = count * self.pixels_for_leaf + self.header_height + self.footer_height + self.column_metadata_height + self.toolbar_distance - 40;
 
-    self.stage.setWidth(self.options.width);
+    self.stage.setWidth(self.options.stage_width);
     self.stage.setHeight(self.options.height);
 
     let current_left_count = 0;
@@ -2767,7 +2773,6 @@ import { round } from 'lodash';
     let x = 0.5;
     let y = 5.5;
 
-    self._draw_color_scale();
     self._draw_toolbar();
 
     if (self.zoomed_clusters.row.length > 0) {
@@ -2902,107 +2907,6 @@ import { round } from 'lodash';
     // }
 
     self.stage.add(self.navigation_layer);
-  };
-
-  InCHlib.prototype._draw_color_scale = function () {
-    const self = this;
-    if (!self.options.navigation_toggle.color_scale) {
-      return;
-    }
-
-    const scale_height = 20;
-    const scale_width = 150;
-    const scale_x = 15;
-    const scale_y = 80;
-
-    const color_scale = new Konva.Rect({
-      label: 'Edit heatmap colors',
-      fillLinearGradientColorStops: self.color_steps,
-      id: `${self._name}_color_scale`,
-      x: scale_x,
-      y: scale_y,
-      width: scale_width,
-      height: scale_height,
-      fillLinearGradientStartPoint: {
-        x: scale_x,
-        y: scale_y,
-      },
-      fillLinearGradientEndPoint: {
-        x: scale_width,
-        y: scale_y,
-      },
-      stroke: 'grey',
-      strokeWidth: 2,
-      lineCap: 'square',
-      shadowForStrokeEnabled: false,
-    });
-
-    // add ticks to heatmap scale
-
-    const ticks_group = new Konva.Group({
-      x: scale_x,
-      y: scale_height + scale_y,
-    });
-
-    let x = 0;
-    let y = 0;
-
-    for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
-      const tick = new Konva.Rect({
-        height: 10,
-        stroke: 'grey',
-        strokeWidth: 1,
-        x: Math.round(scale_width * (0.25 * i)),
-        y: 0,
-      });
-      ticks_group.add(tick);
-    }
-
-    // add values to heatmap scale
-
-    const scale_values = self.get_scale_values();
-
-    const scale_values_group = new Konva.Group({
-      x: scale_x - 12,
-      y: scale_height + scale_y + 18,
-    });
-
-    y = 0;
-    x = 0;
-
-    const scale_x_int = (scale_width / scale_values.length) + 7.5;
-
-    for (let i = 0; i < scale_values.length; i++) {
-      const text = scale_values[i];
-      const scale_text = new Konva.Text({
-        align: 'center',
-        fill: self.hover_fill,
-        fontFamily: self.options.font.family,
-        fontStyle: '500', 
-        text,
-        width: 25,
-        x,
-        y,
-      });
-      x += scale_x_int;
-      scale_values_group.add(scale_text);
-    }
-
-    color_scale.on('mouseover', () => {
-      self._cursor_mouseover();
-      self._color_scale_mouseover(color_scale, self.navigation_layer);
-    });
-
-    color_scale.on('mouseout', () => {
-      self._cursor_mouseout();
-      self._color_scale_mouseout(color_scale, self.navigation_layer);
-    });
-
-    color_scale.on('click', () => {
-      self._color_scale_click(color_scale, self.navigation_layer);
-    });
-
-    self.navigation_layer.add(color_scale, ticks_group, scale_values_group);
   };
 
   InCHlib.prototype._update_color_scale = function () {
@@ -4011,15 +3915,14 @@ import { round } from 'lodash';
     self.legend_layer = new Konva.Layer({ y: self.toolbar_distance });
     self.stage.add(self.legend_layer);
 
-    const legend_y = 0;
-    const legend_x = self.stage.width() + 25;
-    // this is hidden in screen view by moving it off-stage
+    const legend_y = 5;
+    const legend_x = self.stage.width() - 155;
 
     // add heatmap scale to PNG
 
     const scale_group = new Konva.Group({
-      x: legend_x + 180,
-      y: legend_y + 40,
+      x: 5,
+      y: 5,
     });
 
     let scale_x = 0;
@@ -4178,18 +4081,21 @@ import { round } from 'lodash';
           });
           const legend_text = new Konva.Text({
             fill: self.hover_fill,
+            lineHeight: 1.2,
             text,
-            x: x + 20,
+            width: 100,
+            x: x + 17,
             y,
           });
           legend_group.add(legend_square, legend_text);
-          y += 20;
+          y += legend_text.height() + 5;
         }
         y += 5;
       }
     }
     const legend = self.objects_ref.popup_box.clone({
       height: y + 40,
+      width: 150,
       x: legend_x,
       y: legend_y,
     });

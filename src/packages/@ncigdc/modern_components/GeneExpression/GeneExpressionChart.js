@@ -14,7 +14,7 @@ const options = {
   categories: {
     colors: CATEGORY_COLORS,
   },
-  max_width: 800,
+  max_width: 1200,
   tooltip: {
     fill: '#fff',
     stroke: theme.greyScale5,

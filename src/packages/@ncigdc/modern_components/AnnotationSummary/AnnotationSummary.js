@@ -77,7 +77,7 @@ export default compose(
           style={{ flex: 1 }}
         />
         <Card title="NOTES">
-          <div style={{ padding: 10 }}>{node.notes}</div>
+          <div style={{ padding: 10, overflowWrap: 'break-word' }}>{node.notes}</div>
         </Card>
       </Column>
     </FullWidthLayout>

@@ -2650,11 +2650,11 @@ import { round } from 'lodash';
   InCHlib.prototype._draw_toolbar = function () {
     const self = this;
     const toolbar_id = `${self._name}-toolbar`;
-    const toolbar_div = $(`<div class='inchlib-toolbar' id='${toolbar_id}'></div>`);
+    const toolbar_ul = $(`<ul class='inchlib-toolbar' id='${toolbar_id}'></ul>`);
     const toolbar_buttons = self.toolbar_refs.buttons.map(btn => {
       const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
-      const open_button = `<button type="button" class="inchlib-toolbar_button inchlib-toolbar_button-${btn.id}" data-button-id="${btn.id}" data-tooltip="${btn.label}"${is_button_disabled ? ' disabled' : ''}>`;
-      const close_button = '</button>';
+      const open_button = `<li><button type="button" class="inchlib-toolbar_button inchlib-toolbar_button-${btn.id}" data-inchlib-id="${btn.id}" data-tooltip="${btn.label}"${is_button_disabled ? ' disabled' : ''}>`;
+      const close_button = '</button></li>';
       const contents = btn.id === 'legend'
       ? `${btn.label}<i class="fa ${btn.fa_icon[0]}"></i>`
       : `<i class="fa ${btn.fa_icon}"></i>`;
@@ -2662,19 +2662,18 @@ import { round } from 'lodash';
     })
     .join('');
 
-    toolbar_div.html(toolbar_buttons);
-    self.$element.append(self.toolbar_styles);
-    self.$element.append(toolbar_div);
+    toolbar_ul.html(toolbar_buttons);
+    self.$element.append(toolbar_ul);
 
     $('.inchlib-toolbar_button')
       .mouseover(function () {
         const $this = $(this);
-        if ($this.attr('data-button-id') !== 'legend') {
+        if ($this.attr('data-inchlib-id') !== 'legend') {
           self._toolbar_mouseover($this);
         }
       })
       .mouseout(function() {
-        if ($(this).attr('data-button-id') !== 'legend') {
+        if ($(this).attr('data-inchlib-id') !== 'legend') {
           self._toolbar_mouseout();
         }
       })
@@ -2685,7 +2684,7 @@ import { round } from 'lodash';
 
   InCHlib.prototype._toolbar_click = function (button) {
     const self = this;
-    const id = button.attr('data-button-id');
+    const id = button.attr('data-inchlib-id');
     if (id === 'reset') {
       self.redraw();
     } else if (id === 'download') {
@@ -2696,8 +2695,8 @@ import { round } from 'lodash';
   InCHlib.prototype._toolbar_mouseover = function (button) {
     const self = this;
 
-    const position = button.position();
-    const x = button.parent().position().left + position.left;
+    const position = button.parent().position();
+    const x = button.closest('ul').position().left + position.left;
     const y = position.top + 35;
 
     self.toolbar_tooltip = self.objects_ref.tooltip_label.clone({
@@ -2712,7 +2711,7 @@ import { round } from 'lodash';
 
     // center align the tooltip
     const toolbar_coords = self.toolbar_tooltip.getClientRect();
-    self.toolbar_tooltip.x(x + 24 - (toolbar_coords.width / 2));
+    self.toolbar_tooltip.x(x + 22 - (toolbar_coords.width / 2));
 
     self.navigation_layer.draw();
   };
@@ -2725,7 +2724,41 @@ import { round } from 'lodash';
 
   InCHlib.prototype._draw_download_menu = function () {
     const self = this;
-    console.log('download')
+    const overlay = self._draw_target_overlay(true);
+    const download_options = [
+      {
+        id: 'download-png',
+        label: 'PNG',
+      },
+      // {
+      //   id: 'download-json',
+      //   label: 'JSON',
+      // },
+    ];
+
+    const download_ul = $(`<ul class='inchlib-download'></ul>`);
+
+    const download_lis = download_options.map(option => {
+      const open_li = `<li class="inchlib-download_li inchlib-download_li-${option.id}"><button type="button" class="inchlib-download_li-button" data-inchlib-id="${option.id}">`;
+      const close_li = '</button></li>';
+      const contents = option.label;
+      return `${open_li}${contents}${close_li}`;
+    })
+    .join('');
+
+    download_ul.html(download_lis);
+    $('.inchlib-toolbar_button-download').parent().append(download_ul);
+
+    $('.inchlib-download_li-button').click(function() {
+      if ($(this).attr('data-inchlib-id') === 'download-png') {
+        self._download_png();
+      }
+    });
+
+    overlay.click(function() {
+      overlay.fadeOut().remove();
+      $('.inchlib-download').remove();
+    });
   };
 
   InCHlib.prototype._draw_navigation = function () {
@@ -3819,7 +3852,7 @@ import { round } from 'lodash';
     }
   };
 
-  InCHlib.prototype._draw_target_overlay = function () {
+  InCHlib.prototype._draw_target_overlay = function (invisible = false) {
     const self = this;
     let overlay = self.$element.find('.target_overlay');
 
@@ -3834,7 +3867,7 @@ import { round } from 'lodash';
         left: 0,
         right: 0,
         bottom: 0,
-        opacity: 0.5,
+        opacity: invisible ? 0 : 0.5,
       });
       self.$element.append(overlay);
     }
@@ -3842,7 +3875,7 @@ import { round } from 'lodash';
     return overlay;
   };
 
-  InCHlib.prototype._download_icon_click = function () {
+  InCHlib.prototype._download_png = function () {
     const self = this;
     const overlay = self._draw_target_overlay();
     const zoom = 3;
@@ -4329,7 +4362,6 @@ import { round } from 'lodash';
       scales_div.fadeOut().remove();
       scale_divs.fadeOut().remove();
       overlay.fadeOut().remove();
-      // self._unbind_overlay_click_out();
     });
 
     scale_divs.on('click', function () {

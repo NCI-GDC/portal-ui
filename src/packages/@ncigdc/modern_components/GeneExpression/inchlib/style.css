@@ -58,11 +58,10 @@
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 5px 0px, rgba(0, 0, 0, 0.12) 0px 2px 10px 0px; z-index: 200;
   list-style-type: none;
-  min-width: 165px;
+  min-width: 100px;
   outline: currentcolor none medium;
   padding: 0;
   position: absolute;
-  right: 0;
   top: 30px;
 }
 

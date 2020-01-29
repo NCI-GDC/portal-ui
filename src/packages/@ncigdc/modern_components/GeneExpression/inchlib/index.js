@@ -1922,10 +1922,10 @@ import { round } from 'lodash';
     // and padding in the PNG.
     const stage_rect = new Konva.Rect({
       fill: '#fff',
-      height: 700,
-      // height: height + 130 + self.toolbar_distance + (png_padding * 2) < 500 + self.toolbar_distance + (png_padding * 2)
-      //   ? 500 + self.toolbar_distance + (png_padding * 2)
-      //   : height + 250 + self.toolbar_distance + (png_padding * 2),
+      // height: 700,
+      height: (height + 130 + self.toolbar_distance + (png_padding * 2)) < (700 + self.toolbar_distance + (png_padding * 2))
+        ? 700 + self.toolbar_distance + (png_padding * 2)
+        : height + 250 + self.toolbar_distance + (png_padding * 2),
       opacity: 1,
       width: width + 300 + (png_padding * 2),
       x: (png_padding * -1),
@@ -3882,7 +3882,7 @@ import { round } from 'lodash';
     const width = self.stage.width();
     const height = self.stage.height();
     const { png_padding } = self.options;
-
+    
     overlay.click(function() {
       overlay.fadeOut().remove();
     });
@@ -3893,9 +3893,9 @@ import { round } from 'lodash';
 
     self.stage.width((width + 300 + png_padding) * zoom);
     self.stage.height((
-      height < 500 + (png_padding * 2)
-        ? 500 + (png_padding * 2)
-        : height
+      height + 50 < 600 + (png_padding * 2)
+        ? 600 + (png_padding * 2)
+        : height + 50
       ) * zoom);
     self.stage.scale({
       x: zoom,

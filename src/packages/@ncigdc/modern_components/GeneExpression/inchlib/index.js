@@ -2713,10 +2713,9 @@ import { round } from 'lodash';
         toolbar.add(legend_text);
       }
       toolbar.add(click_box)
-      x += width + spacing + 2;
 
       const click_props = {
-        button_el, icon, id, layer: self.navigation_layer, legend_text
+        button_el, icon, id, label, layer: self.navigation_layer, legend_text, toolbar, x, y,
       };
       
       // button_el.on('click', function () {
@@ -2730,6 +2729,8 @@ import { round } from 'lodash';
       click_box.on('mouseout', () => {
         self._toolbar_mouseout(click_props);
       });
+
+      x += width + spacing + 2;
     });
 
     // right-align the toolbar
@@ -2738,14 +2739,32 @@ import { round } from 'lodash';
     self.navigation_layer.add(toolbar);
   }
 
-  InCHlib.prototype._toolbar_mouseover = function ({ button_el, icon, id, layer, legend_text }) {
+  InCHlib.prototype._toolbar_mouseover = function ({ button_el, icon, id, label, layer, legend_text, toolbar, x, y }) {
     const self = this;
     self._cursor_mouseover();
-    if (id === 'legend') {
-      legend_text.setFill('#fff');
-    }
+
+    // update colors
     icon.setFill('#fff');
     button_el.setFill('#008ae0');
+    if (id === 'legend') {
+      legend_text.setFill('#fff');
+    } else {
+      // add tooltip
+      self.toolbar_tooltip = self.objects_ref.tooltip_label.clone({
+        x,
+        y: y + 35,
+      });
+      self.toolbar_tooltip.add(self.objects_ref.tooltip_tag.clone());
+      self.toolbar_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
+
+      toolbar.add(self.toolbar_tooltip);
+      self.toolbar_tooltip.moveToTop();
+
+      // center the tooltip
+      const toolbar_coords = self.toolbar_tooltip.getClientRect();
+      self.toolbar_tooltip.x(x + 20 - (toolbar_coords.width / 2));
+    }
+
     layer.draw();
   };
 
@@ -4412,22 +4431,22 @@ import { round } from 'lodash';
     const x = color_scale.getAttr('x');
     const y = color_scale.getAttr('y');
 
-    self.icon_tooltip = self.objects_ref.tooltip_label.clone({
+    self.toolbar_tooltip = self.objects_ref.tooltip_label.clone({
       x,
       y: y + 25,
     });
 
-    self.icon_tooltip.add(self.objects_ref.tooltip_tag.clone());
-    self.icon_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
+    self.toolbar_tooltip.add(self.objects_ref.tooltip_tag.clone());
+    self.toolbar_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
 
-    layer.add(self.icon_tooltip);
-    self.icon_tooltip.moveToTop();
+    layer.add(self.toolbar_tooltip);
+    self.toolbar_tooltip.moveToTop();
     layer.draw();
   };
 
   InCHlib.prototype._color_scale_mouseout = function (color_scale, layer) {
     const self = this;
-    self.icon_tooltip.destroy();
+    self.toolbar_tooltip.destroy();
     layer.draw();
   };
 
@@ -4457,14 +4476,14 @@ import { round } from 'lodash';
         y -= 47;
       }
 
-      self.icon_tooltip = self.objects_ref.tooltip_label.clone({
+      self.toolbar_tooltip = self.objects_ref.tooltip_label.clone({
         x,
         y: y + 1.3 * height,
       });
 
-      self.icon_tooltip.add(self.objects_ref.tooltip_tag.clone());
-      self.icon_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
-      layer.add(self.icon_tooltip);
+      self.toolbar_tooltip.add(self.objects_ref.tooltip_tag.clone());
+      self.toolbar_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
+      layer.add(self.toolbar_tooltip);
     }
     icon.setFill(self.hover_fill);
     layer.draw();
@@ -4473,7 +4492,7 @@ import { round } from 'lodash';
   InCHlib.prototype._icon_mouseout = function (icon, icon_overlay, layer) {
     const self = this;
     if (icon.getAttr('id') !== 'help_icon') {
-      self.icon_tooltip.destroy();
+      self.toolbar_tooltip.destroy();
     }
     icon.setFill('grey');
     layer.draw();

@@ -2771,11 +2771,16 @@ import { round } from 'lodash';
   InCHlib.prototype._toolbar_mouseout = function ({ button_el, icon, id, layer, legend_text }) {
     const self = this;
     self._cursor_mouseout();
-    if (id === 'legend') {
-      legend_text.setFill('#3a3a3a');
-    }
+
+    // update colors
     icon.setFill('#333');
     button_el.setFill('#fff');
+    if (id === 'legend') {
+      legend_text.setFill('#3a3a3a');
+    } else {
+      // remove tooltip
+      self.toolbar_tooltip.destroy();
+    }
     layer.draw();
   };
 
@@ -2806,12 +2811,12 @@ import { round } from 'lodash';
 
       refresh_overlay.on('mouseover', () => {
         self._cursor_mouseover();
-        self._icon_mouseover(refresh_icon, refresh_overlay, self.navigation_layer);
+        // self._icon_mouseover(refresh_icon, refresh_overlay, self.navigation_layer);
       });
 
       refresh_overlay.on('mouseout', () => {
         self._cursor_mouseout();
-        self._icon_mouseout(refresh_icon, refresh_overlay, self.navigation_layer);
+        // self._icon_mouseout(refresh_icon, refresh_overlay, self.navigation_layer);
       });
     }
 
@@ -2833,12 +2838,12 @@ import { round } from 'lodash';
 
       unzoom_overlay.on('mouseover', () => {
         self._cursor_mouseover();
-        self._icon_mouseover(unzoom_icon, unzoom_overlay, self.navigation_layer);
+        // self._icon_mouseover(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
 
       unzoom_overlay.on('mouseout', () => {
         self._cursor_mouseout();
-        self._icon_mouseout(unzoom_icon, unzoom_overlay, self.navigation_layer);
+        // self._icon_mouseout(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
     }
 
@@ -2861,12 +2866,12 @@ import { round } from 'lodash';
 
       column_unzoom_overlay.on('mouseover', () => {
         self._cursor_mouseover();
-        self._icon_mouseover(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
+        // self._icon_mouseover(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
 
       column_unzoom_overlay.on('mouseout', () => {
         self._cursor_mouseout();
-        self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
+        // self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
     }
 
@@ -3353,11 +3358,11 @@ import { round } from 'lodash';
 
     zoom_overlay.on('mouseout', () => {
       self._cursor_mouseout();
-      self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
+      // self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('click', () => {
-      self._zoom_cluster(self.last_highlighted_cluster);
+      // self._zoom_cluster(self.last_highlighted_cluster);
     });
   };
 
@@ -3435,11 +3440,11 @@ import { round } from 'lodash';
 
     zoom_overlay.on('mouseout', () => {
       self._cursor_mouseout();
-      self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
+      // self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('click', () => {
-      self._zoom_column_cluster(self.last_highlighted_column_cluster);
+      // self._zoom_column_cluster(self.last_highlighted_column_cluster);
     });
   };
 
@@ -4458,73 +4463,6 @@ import { round } from 'lodash';
   InCHlib.prototype._column_unzoom_icon_click = function () {
     const self = this;
     self._unzoom_column_cluster();
-  };
-
-  InCHlib.prototype._icon_mouseover = function (icon, icon_overlay, layer) {
-    const self = this;
-    if (icon.getAttr('id') !== 'help_icon') {
-      const label = icon.getAttr('label');
-      let x = icon_overlay.getAttr('x');
-      let y = icon_overlay.getAttr('y');
-      const width = icon_overlay.getWidth();
-      const height = icon_overlay.getHeight();
-
-      if (icon.getAttr('id') === 'download_icon' ||
-        icon.getAttr('id') === 'categories_icon' ||
-        icon.getAttr('id') === 'legend_icon') {
-        x -= 100;
-        y -= 47;
-      }
-
-      self.toolbar_tooltip = self.objects_ref.tooltip_label.clone({
-        x,
-        y: y + 1.3 * height,
-      });
-
-      self.toolbar_tooltip.add(self.objects_ref.tooltip_tag.clone());
-      self.toolbar_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
-      layer.add(self.toolbar_tooltip);
-    }
-    icon.setFill(self.hover_fill);
-    layer.draw();
-  };
-
-  InCHlib.prototype._icon_mouseout = function (icon, icon_overlay, layer) {
-    const self = this;
-    if (icon.getAttr('id') !== 'help_icon') {
-      self.toolbar_tooltip.destroy();
-    }
-    icon.setFill('grey');
-    layer.draw();
-  };
-
-  InCHlib.prototype._help_mouseover = function () {
-    const self = this;
-    let help_element = self.$element.find('.inchlib_help');
-    if (help_element.length) {
-      help_element.show();
-    } else {
-      help_element = $('<div class=\'inchlib_help\'><ul><li>Zoom clusters by a long click on a dendrogram node.</li></ul></div>');
-      help_element.css({
-        position: 'absolute',
-        top: 70,
-        left: self.options.width - 200,
-        'font-size': 12,
-        'padding-right': 15,
-        width: 200,
-        'background-color': '#fff',
-        'border-radius': 5,
-        border: 'solid #DEDEDE 2px',
-        'z-index': 1000,
-
-      });
-      self.$element.append(help_element);
-    }
-  };
-
-  InCHlib.prototype._help_mouseout = function () {
-    const self = this;
-    self.$element.find('.inchlib_help').hide();
   };
 
   InCHlib.prototype._dendrogram_layers_click = function (layer, evt) {

@@ -661,19 +661,19 @@ import { round } from 'lodash';
       },
 
       /**
-        * @name InCHlib#on_refresh
+        * @name InCHlib#on_reset
         * @event
         * @param {function} function() callback function for refresh icon click event
         * @eventData {object} event event object
         * @example
-        * instance.events.on_refresh = (
+        * instance.events.on_reset = (
         *    function() {
         *       alert("now");
         *    }
         * );
         *
         */
-      on_refresh() {
+      on_reset() {
 
       },
 
@@ -2701,34 +2701,40 @@ import { round } from 'lodash';
         width,
         x,
       });
-      const click_box = self.objects_ref.toolbar_click_box.clone({
-        id: `${id}_overlay`,
-        width,
-        x,
-        fill: 'magenta',
-      });
 
       toolbar.add(button_el, icon);
       if (id === 'legend') {
         toolbar.add(legend_text);
       }
-      toolbar.add(click_box)
 
-      const click_props = {
-        button_el, icon, id, label, layer: self.navigation_layer, legend_text, toolbar, x, y,
-      };
-      
-      // button_el.on('click', function () {
-      //   self._categories_icon_click(this);
-      // });
+      const is_button_disabled = id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
 
-      click_box.on('mouseover', () => {
-        self._toolbar_mouseover(click_props);
-      });
+      if (is_button_disabled) {
+        button_el.setFill('#c8c8c8');
+        button_el.setStroke('#c8c8c8');
+        icon.setFill('#fff');
+      } else {
+        const click_box = self.objects_ref.toolbar_click_box.clone({
+          id: `${id}_overlay`,
+          width,
+          x,
+        });
+        toolbar.add(click_box);
+        const click_props = {
+          button_el, icon, id, label, layer: self.navigation_layer, legend_text, toolbar, x, y,
+        };
+        click_box.on('click', () => {
+          self._toolbar_click(click_props);
+        });
 
-      click_box.on('mouseout', () => {
-        self._toolbar_mouseout(click_props);
-      });
+        click_box.on('mouseover', () => {
+          self._toolbar_mouseover(click_props);
+        });
+
+        click_box.on('mouseout', () => {
+          self._toolbar_mouseout(click_props);
+        });
+      }
 
       x += width + spacing + 2;
     });
@@ -2738,6 +2744,13 @@ import { round } from 'lodash';
     toolbar.x(self.options.width - x + 0.5);
     self.navigation_layer.add(toolbar);
   }
+
+  InCHlib.prototype._toolbar_click = function ({ button_el, icon, id, layer, toolbar, x, y }) {
+    const self = this;
+    if (id === 'reset') {
+      self.redraw();
+    }
+  };
 
   InCHlib.prototype._toolbar_mouseover = function ({ button_el, icon, id, label, layer, legend_text, toolbar, x, y }) {
     const self = this;
@@ -2792,33 +2805,6 @@ import { round } from 'lodash';
 
     self._draw_color_scale();
     self._draw_toolbar();
-
-    if (self.zoomed_clusters.row.length > 0 || self.zoomed_clusters.column.length > 0) {
-      const refresh_icon = self.objects_ref.font_awesome_icon.clone({
-        text: self.font_awesome_icons['fa-undo'],
-        x,
-        y,
-        id: 'refresh_icon',
-        label: 'Refresh',
-      });
-      const refresh_overlay = self._draw_icon_overlay(x, y);
-      self.navigation_layer.add(refresh_icon, refresh_overlay);
-
-      refresh_overlay.on('click', () => {
-        self._refresh_icon_click();
-        self.events.on_refresh();
-      });
-
-      refresh_overlay.on('mouseover', () => {
-        self._cursor_mouseover();
-        // self._icon_mouseover(refresh_icon, refresh_overlay, self.navigation_layer);
-      });
-
-      refresh_overlay.on('mouseout', () => {
-        self._cursor_mouseout();
-        // self._icon_mouseout(refresh_icon, refresh_overlay, self.navigation_layer);
-      });
-    }
 
     if (self.zoomed_clusters.row.length > 0) {
       x = self.distance - 55;
@@ -3922,11 +3908,6 @@ import { round } from 'lodash';
     }
 
     return overlay;
-  };
-
-  InCHlib.prototype._refresh_icon_click = function () {
-    const self = this;
-    self.redraw();
   };
 
   InCHlib.prototype._download_icon_click = function () {

@@ -2674,20 +2674,21 @@ import { round } from 'lodash';
         }
       })
       .mouseout(function() {
-        const $this = $(this);
-        if ($this.attr('data-button-id') !== 'legend') {
+        if ($(this).attr('data-button-id') !== 'legend') {
           self._toolbar_mouseout();
         }
-      });
-
+      })
+      .click(function() {
+        self._toolbar_click($(this));
+      })
   };
 
-  InCHlib.prototype._toolbar_click = function ({ button_el, icon, id, layer, toolbar, x, y }) {
+  InCHlib.prototype._toolbar_click = function (button) {
     const self = this;
+    const id = button.attr('data-button-id');
     if (id === 'reset') {
       self.redraw();
     } else if (id === 'download') {
-      self.toolbar_tooltip.destroy();
       self._draw_download_menu();
     }
   };

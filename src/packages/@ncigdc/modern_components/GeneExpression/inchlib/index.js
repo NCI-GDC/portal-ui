@@ -1922,7 +1922,6 @@ import { round } from 'lodash';
     // and padding in the PNG.
     const stage_rect = new Konva.Rect({
       fill: '#fff',
-      // height: 700,
       height: (height + 130 + self.toolbar_distance + (png_padding * 2)) < (700 + self.toolbar_distance + (png_padding * 2))
         ? 700 + self.toolbar_distance + (png_padding * 2)
         : height + 250 + self.toolbar_distance + (png_padding * 2),
@@ -3882,7 +3881,7 @@ import { round } from 'lodash';
     const width = self.stage.width();
     const height = self.stage.height();
     const { png_padding } = self.options;
-    
+
     overlay.click(function() {
       overlay.fadeOut().remove();
     });

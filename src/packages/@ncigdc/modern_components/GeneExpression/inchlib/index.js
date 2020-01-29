@@ -1294,45 +1294,45 @@ import { round } from 'lodash';
     * Info for the toolbar buttons.
     * @name InCHlib#toolbar_refs
     */
-   self.toolbar_refs = {
-    buttons: [
-      {
-        fa_icon: 'fa-undo',
-        label: 'Reset',
-        id: 'reset',
+    self.toolbar_refs = {
+      buttons: [
+        {
+          fa_icon: 'fa-undo',
+          label: 'Reset',
+          id: 'reset',
+        },
+        {
+          fa_icon: 'fa-paint-brush',
+          label: 'Edit Heatmap Colors',
+          id: 'edit_heatmap_colors',
+        },
+        {
+          fa_icon: 'fa-bars',
+          label: 'Edit Categories',
+          id: 'edit_categories',
+        },
+        {
+          fa_icon: 'fa-download',
+          label: 'Download',
+          id: 'download',
+        },
+        {
+          fa_icon: ['fa-caret-down','fa-caret-up'],
+          label: 'Legend',
+          id: 'legend',
+        }
+      ],
+      sizes: {
+        // buttons need to have slightly smaller measurements
+        // than the buttons in the rest of the portal
+        height: 27,
+        spacing: 4,
+        width: 39,
       },
-      {
-        fa_icon: 'fa-paint-brush',
-        label: 'Edit Heatmap Colors',
-        id: 'edit_heatmap_colors',
-      },
-      {
-        fa_icon: 'fa-bars',
-        label: 'Edit Categories',
-        id: 'edit_categories',
-      },
-      {
-        fa_icon: 'fa-download',
-        label: 'Download',
-        id: 'download',
-      },
-      {
-        fa_icon: ['fa-caret-down','fa-caret-up'],
-        label: 'Legend',
-        id: 'legend',
-      }
-    ],
-    sizes: {
-      // buttons need to have slightly smaller measurements
-      // than the buttons in the rest of the portal
-      height: 27,
-      spacing: 4,
-      width: 39,
-    },
-  };
+    };
 
-  // push the chart down to make room for the toolbar
-  self.toolbar_distance = 75;
+    // push the chart down to make room for the toolbar
+    self.toolbar_distance = 75;
 
     // start plugin
     self.init();

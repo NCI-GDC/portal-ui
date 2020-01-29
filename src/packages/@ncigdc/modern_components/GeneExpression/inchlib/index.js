@@ -2647,6 +2647,72 @@ import { round } from 'lodash';
 
   InCHlib.prototype._draw_toolbar = function () {
     const self = this;
+    const toolbar_id = `${self._name}-toolbar`;
+    const toolbar_div = $(`<div id='${toolbar_id}'></div>`);
+    const toolbar_buttons = self.toolbar_refs.buttons.map(btn => {
+      const button_id = `${self._name}-${btn.id}-btn`;
+      const open_button = `<button type="button" class="button" id="${button_id}">`;
+      const close_button = '</button>';
+      const contents = btn.id === 'legend'
+      ? `${btn.label}<i class="fa ${btn.fa_icon[0]}"></i>`
+      : `<i class="fa ${btn.fa_icon}"></i>`;
+      return `${open_button}${contents}${close_button}`;
+    })
+    .join('');
+
+    toolbar_div.html(toolbar_buttons);
+    self.$element.append(self.toolbar_styles);
+    self.$element.append(toolbar_div);
+
+    toolbar_div.css({
+      'position': 'absolute',
+      'right': 0,
+      'top': 0,
+    });
+    const btn_css_on = {
+      'background-color': 'rgb(0, 138, 224)',
+      'border': '1px solid rgb(0, 138, 224)',
+      'color': '#fff',
+    };
+    const btn_css_off = {
+      'background-color': 'transparent',
+      'border': '1px solid rgb(200,200,200)',
+      'color': '#333',
+    };
+    $(`#${toolbar_id} button`)
+      .css({
+        ...btn_css_off,
+        'border-radius': '4px',
+        'font-family': '"Helvetica Neue"',
+        'font-size': '14px',
+        'height': '28px',
+        'line-height': '20px',
+        'margin': '0 2px',
+        'outline': 'none',
+        'padding': '0 12px',
+        'position': 'relative',
+      })
+      .mouseover(function () {
+        $(this).css(btn_css_on);
+      })
+      .mouseout(function() {
+        $(this).css(btn_css_off);
+      });
+    
+    // set up legend button & caret
+    $(`#${self._name}-legend-btn`).css({
+      'text-align': 'left',
+      'width': '160px',
+    });
+    $(`#${self._name}-legend-btn .fa`).css({
+      'position': 'absolute',
+      'right': '14px',
+      'line-height': '22px',
+    });
+  };
+
+  InCHlib.prototype._draw_toolbar_canvas = function () {
+    const self = this;
     const toolbar_width = 400;
     const toolbar = new Konva.Group({
       y: 0.5,
@@ -2749,6 +2815,9 @@ import { round } from 'lodash';
     const self = this;
     if (id === 'reset') {
       self.redraw();
+    } else if (id === 'download') {
+      self.toolbar_tooltip.destroy();
+      self._draw_download_menu();
     }
   };
 
@@ -2797,11 +2866,17 @@ import { round } from 'lodash';
     layer.draw();
   };
 
+  InCHlib.prototype._draw_download_menu = function () {
+    const self = this;
+    console.log('download')
+  };
+
   InCHlib.prototype._draw_navigation = function () {
     const self = this;
     self.navigation_layer = new Konva.Layer();
-    let x = 0;
-    let y = 10;
+    // offset by 0.5 for cleaner lines
+    let x = 0.5;
+    let y = 5.5;
 
     self._draw_color_scale();
     self._draw_toolbar();

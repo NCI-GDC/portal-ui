@@ -1331,6 +1331,9 @@ import { round } from 'lodash';
     },
   };
 
+  // push the chart down to make room for the toolbar
+  self.toolbar_distance = 75;
+
     // start plugin
     self.init();
   }
@@ -1804,8 +1807,8 @@ import { round } from 'lodash';
 
   InCHlib.prototype._draw_dendrogram_layers = function () {
     const self = this;
-    self.cluster_layer = new Konva.Layer();
-    self.dendrogram_hover_layer = new Konva.Layer();
+    self.cluster_layer = new Konva.Layer({ y: self.toolbar_distance });
+    self.dendrogram_hover_layer = new Konva.Layer({ y: self.toolbar_distance });
     self.stage.add(self.cluster_layer, self.dendrogram_hover_layer);
 
     self.cluster_layer.on('click', (evt) => {
@@ -1817,7 +1820,7 @@ import { round } from 'lodash';
 
   InCHlib.prototype._draw_row_dendrogram = function (node_id) {
     const self = this;
-    self.dendrogram_layer = new Konva.Layer();
+    self.dendrogram_layer = new Konva.Layer({ y: self.toolbar_distance });
     const node = self.data.nodes[node_id];
     const { count } = node;
 
@@ -1909,9 +1912,10 @@ import { round } from 'lodash';
     // and padding in the PNG.
     const stage_rect = new Konva.Rect({
       fill: '#fff',
-      height: height + 130 + (png_padding * 2) < 500 + (png_padding * 2)
-        ? 500 + (png_padding * 2)
-        : height + 250 + (png_padding * 2),
+      height: 700,
+      // height: height + 130 + self.toolbar_distance + (png_padding * 2) < 500 + self.toolbar_distance + (png_padding * 2)
+      //   ? 500 + self.toolbar_distance + (png_padding * 2)
+      //   : height + 250 + self.toolbar_distance + (png_padding * 2),
       opacity: 1,
       width: width + 300 + (png_padding * 2),
       x: (png_padding * -1),
@@ -1930,7 +1934,7 @@ import { round } from 'lodash';
 
   InCHlib.prototype._draw_column_dendrogram = function (node_id) {
     const self = this;
-    self.column_dendrogram_layer = new Konva.Layer();
+    self.column_dendrogram_layer = new Konva.Layer({ y: self.toolbar_distance });
     self.column_x_coordinates = {};
     const node = self.column_dendrogram.nodes[node_id];
     self.current_column_count = node.count;
@@ -2254,8 +2258,8 @@ import { round } from 'lodash';
     let y;
     let key;
 
-    self.heatmap_layer = new Konva.Layer();
-    self.heatmap_overlay = new Konva.Layer();
+    self.heatmap_layer = new Konva.Layer({ y: self.toolbar_distance });
+    self.heatmap_overlay = new Konva.Layer({ y: self.toolbar_distance });
 
     self.current_draw_values = true;
     self.max_value_length = self._get_max_value_length();
@@ -2279,7 +2283,7 @@ import { round } from 'lodash';
       self._draw_column_metadata(x1);
     }
 
-    self.highlighted_rows_layer = new Konva.Layer();
+    self.highlighted_rows_layer = new Konva.Layer({ y: self.toolbar_distance });
     self.stage.add(self.heatmap_layer, self.heatmap_overlay, self.highlighted_rows_layer);
 
     self.highlighted_rows_layer.moveToTop();
@@ -2506,7 +2510,7 @@ import { round } from 'lodash';
       self.header.length > 0 &&
       self.pixels_for_dimension >= self.min_size_draw_values
     ) {
-      self.header_layer = new Konva.Layer();
+      self.header_layer = new Konva.Layer({ y: self.toolbar_distance });
       const count = self._hack_size(self.leaves_y_coordinates);
       const y = (self.options.column_dendrogram && self.heatmap_header)
         ? self.header_height + (self.pixels_for_leaf * count) + 15 + self.column_metadata_height
@@ -2792,7 +2796,6 @@ import { round } from 'lodash';
 
     self._draw_color_scale();
     self._draw_toolbar();
-    console.log(self.navigation_layer)
 
     if (self.zoomed_clusters.row.length > 0 || self.zoomed_clusters.column.length > 0) {
       const refresh_icon = self.objects_ref.font_awesome_icon.clone({
@@ -2876,7 +2879,6 @@ import { round } from 'lodash';
       });
     }
 
-
     // const download_overlay = self._draw_icon_overlay(self.options.width - 62, 10);
     // self.navigation_layer.add(download_button, download_icon, download_overlay);
 
@@ -2894,64 +2896,64 @@ import { round } from 'lodash';
     //   self._icon_mouseout(download_icon, download_overlay, self.navigation_layer);
     // });
 
-    if (self.options.navigation_toggle.categories_legend) {
-      const x = self.options.width - 60;
-      const y = 75;
-      const legend_icon = self.objects_ref.font_awesome_icon.clone({
-        id: 'legend_icon',
-        label: 'View legend',
-        text: self.font_awesome_icons['fa-undo'],
-        x,
-        y,
-      });
-      const legend_overlay = self._draw_icon_overlay(x, y);
-      self.navigation_layer.add(legend_icon, legend_overlay);
+    // if (self.options.navigation_toggle.categories_legend) {
+    //   const x = self.options.width - 60;
+    //   const y = 75;
+    //   const legend_icon = self.objects_ref.font_awesome_icon.clone({
+    //     id: 'legend_icon',
+    //     label: 'View legend',
+    //     text: self.font_awesome_icons['fa-undo'],
+    //     x,
+    //     y,
+    //   });
+    //   const legend_overlay = self._draw_icon_overlay(x, y);
+    //   self.navigation_layer.add(legend_icon, legend_overlay);
 
-      legend_overlay.on('click', function () {
-        self._legend_icon_click();
-      });
+    //   legend_overlay.on('click', function () {
+    //     self._legend_icon_click();
+    //   });
 
-      legend_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
-        self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
-      });
+    //   legend_overlay.on('mouseover', () => {
+    //     self._hover_cursor_on();
+    //     self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
+    //   });
 
-      legend_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
-        self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
-      });
-    }
+    //   legend_overlay.on('mouseout', () => {
+    //     self._hover_cursor_off();
+    //     self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
+    //   });
+    // }
 
-    if (self.options.navigation_toggle.edit_categories) {
-      const x = self.options.width - 60;
-      const y = 45;
-      const scale = 0.6;
+    // if (self.options.navigation_toggle.edit_categories) {
+    //   const x = self.options.width - 60;
+    //   const y = 45;
+    //   const scale = 0.6;
 
-      const categories_icon = self.objects_ref.font_awesome_icon.clone({
-        text: self.font_awesome_icons['fa-bars'],
-        x,
-        y,
-        id: 'categories_icon',
-        label: 'Edit categories',
-      });
+    //   const categories_icon = self.objects_ref.font_awesome_icon.clone({
+    //     text: self.font_awesome_icons['fa-bars'],
+    //     x,
+    //     y,
+    //     id: 'categories_icon',
+    //     label: 'Edit categories',
+    //   });
 
-      const categories_overlay = self._draw_icon_overlay(x, y);
-      self.navigation_layer.add(categories_icon, categories_overlay);
+    //   const categories_overlay = self._draw_icon_overlay(x, y);
+    //   self.navigation_layer.add(categories_icon, categories_overlay);
 
-      categories_overlay.on('click', function () {
-        self._categories_icon_click(this);
-      });
+    //   categories_overlay.on('click', function () {
+    //     self._categories_icon_click(this);
+    //   });
 
-      categories_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
-        self._icon_mouseover(categories_icon, categories_overlay, self.navigation_layer);
-      });
+    //   categories_overlay.on('mouseover', () => {
+    //     self._hover_cursor_on();
+    //     self._icon_mouseover(categories_icon, categories_overlay, self.navigation_layer);
+    //   });
 
-      categories_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
-        self._icon_mouseout(categories_icon, categories_overlay, self.navigation_layer);
-      });
-    }
+    //   categories_overlay.on('mouseout', () => {
+    //     self._hover_cursor_off();
+    //     self._icon_mouseout(categories_icon, categories_overlay, self.navigation_layer);
+    //   });
+    // }
 
     self.stage.add(self.navigation_layer);
   };
@@ -4065,7 +4067,7 @@ import { round } from 'lodash';
 
   InCHlib.prototype._draw_legend_for_png = function() {
     const self = this;
-    self.legend_layer = new Konva.Layer();
+    self.legend_layer = new Konva.Layer({ y: self.toolbar_distance });
     self.stage.add(self.legend_layer);
 
     const legend_y = 0;

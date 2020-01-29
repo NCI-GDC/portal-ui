@@ -1991,12 +1991,12 @@ import { round } from 'lodash';
     const self = this;
 
     layer.on('mouseover', function (evt) {
-      self._hover_cursor_on();
+      self._cursor_mouseover();
       self._dendrogram_layers_mouseover(this, evt);
     });
 
     layer.on('mouseout', function (evt) {
-      self._hover_cursor_off();
+      self._cursor_mouseout();
       self._dendrogram_layers_mouseout(this, evt);
     });
   };
@@ -2470,7 +2470,7 @@ import { round } from 'lodash';
       if (is_gene_symbol_column) {
         evt.target.opacity(1 - self.hover_opacity_on);
         self.heatmap_layer.draw();
-        self._hover_cursor_on();
+        self._cursor_mouseover();
       }
       self._draw_col_label(evt);
     });
@@ -2481,7 +2481,7 @@ import { round } from 'lodash';
       if (is_gene_symbol_column) {
         evt.target.opacity(1 - self.hover_opacity_off);
         self.heatmap_layer.draw();
-        self._hover_cursor_off();
+        self._cursor_mouseout();
       }
       self.heatmap_overlay.find('#col_label')[0].destroy();
       self.heatmap_overlay.find('#column_overlay')[0].destroy();
@@ -2576,7 +2576,7 @@ import { round } from 'lodash';
 
       self.header_layer.on('mouseover', function (evt) {
         self._draw_col_overlay_for_header(evt);
-        self._hover_cursor_on();
+        self._cursor_mouseover();
         const label = evt.target;
         label.setOpacity(1 - self.hover_opacity_on);
         this.draw();
@@ -2585,7 +2585,7 @@ import { round } from 'lodash';
       self.header_layer.on('mouseout', function (evt) {
         self.column_overlay.destroy();
         self.heatmap_overlay.draw();
-        self._hover_cursor_off();
+        self._cursor_mouseout();
         const label = evt.target;
         label.setOpacity(1 - self.hover_opacity_off);
         self.active_header_column = null;
@@ -2650,7 +2650,8 @@ import { round } from 'lodash';
     let y = 0;
     let x = 0;
 
-    let { height, spacing, width } = self.toolbar_refs.sizes;
+    const { height, spacing } = self.toolbar_refs.sizes;
+    let { width } = self.toolbar_refs.sizes;
 
     self.toolbar_refs.buttons.forEach(function(button) {
       const { fa_icon, id, label } = button;
@@ -2670,36 +2671,46 @@ import { round } from 'lodash';
           x: x + 13,
           y,
         });
-        legend_caret = self.objects_ref.font_awesome_icon.clone({
+        icon = self.objects_ref.font_awesome_icon.clone({
           text: self.font_awesome_icons[fa_icon[0]],
           x: x + width + 2 - 40,
           y,
         });
       } else {
         icon = self.objects_ref.font_awesome_icon.clone({
+          id: `${id}_icon`,
           text: self.font_awesome_icons[fa_icon],
           x,
           y,
-          id: `${id}_icon`,
         });
       }
 
       const button_el = self.objects_ref.toolbar_button.clone({
-        x,
-        y,
+        height,
         id: `${id}_button`,
         label,
         width,
-        height,
+        x,
+        y,
       });
 
-      toolbar.add(button_el);
+      toolbar.add(button_el, icon);
       if (id === 'legend') {
-        toolbar.add(legend_text, legend_caret);
-      } else {
-        toolbar.add(icon);
+        toolbar.add(legend_text);
       }
       x += width + spacing + 2;
+      
+      // button_el.on('click', function () {
+      //   self._categories_icon_click(this);
+      // });
+
+      button_el.on('mouseover', () => {
+        self._toolbar_mouseover(button_el, icon);
+      });
+
+      button_el.on('mouseout', () => {
+        self._toolbar_mouseout(button_el, icon);
+      });
     });
 
     // right-align the toolbar
@@ -2707,6 +2718,18 @@ import { round } from 'lodash';
     toolbar.x(self.options.width - x + 0.5);
     self.navigation_layer.add(toolbar);
   }
+
+  InCHlib.prototype._toolbar_mouseover = function (button, icon) {
+    const self = this;
+    self._cursor_mouseover();
+
+  };
+
+  InCHlib.prototype._toolbar_mouseout = function (button, icon) {
+    const self = this;
+    self._cursor_mouseout();
+
+  };
 
   InCHlib.prototype._draw_navigation = function () {
     const self = this;
@@ -2734,12 +2757,12 @@ import { round } from 'lodash';
       });
 
       refresh_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
+        self._cursor_mouseover();
         self._icon_mouseover(refresh_icon, refresh_overlay, self.navigation_layer);
       });
 
       refresh_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
+        self._cursor_mouseout();
         self._icon_mouseout(refresh_icon, refresh_overlay, self.navigation_layer);
       });
     }
@@ -2761,12 +2784,12 @@ import { round } from 'lodash';
       });
 
       unzoom_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
+        self._cursor_mouseover();
         self._icon_mouseover(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
 
       unzoom_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
+        self._cursor_mouseout();
         self._icon_mouseout(unzoom_icon, unzoom_overlay, self.navigation_layer);
       });
     }
@@ -2789,12 +2812,12 @@ import { round } from 'lodash';
       });
 
       column_unzoom_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
+        self._cursor_mouseover();
         self._icon_mouseover(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
 
       column_unzoom_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
+        self._cursor_mouseout();
         self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
     }
@@ -2807,12 +2830,12 @@ import { round } from 'lodash';
     // });
 
     // download_overlay.on('mouseover', () => {
-    //   self._hover_cursor_on();
+    //   self._cursor_mouseover();
     //   self._icon_mouseover(download_icon, download_overlay, self.navigation_layer);
     // });
 
     // download_overlay.on('mouseout', () => {
-    //   self._hover_cursor_off();
+    //   self._cursor_mouseout();
     //   self._icon_mouseout(download_icon, download_overlay, self.navigation_layer);
     // });
 
@@ -2834,12 +2857,12 @@ import { round } from 'lodash';
     //   });
 
     //   legend_overlay.on('mouseover', () => {
-    //     self._hover_cursor_on();
+    //     self._cursor_mouseover();
     //     self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
     //   });
 
     //   legend_overlay.on('mouseout', () => {
-    //     self._hover_cursor_off();
+    //     self._cursor_mouseout();
     //     self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
     //   });
     // }
@@ -2865,12 +2888,12 @@ import { round } from 'lodash';
     //   });
 
     //   categories_overlay.on('mouseover', () => {
-    //     self._hover_cursor_on();
+    //     self._cursor_mouseover();
     //     self._icon_mouseover(categories_icon, categories_overlay, self.navigation_layer);
     //   });
 
     //   categories_overlay.on('mouseout', () => {
-    //     self._hover_cursor_off();
+    //     self._cursor_mouseout();
     //     self._icon_mouseout(categories_icon, categories_overlay, self.navigation_layer);
     //   });
     // }
@@ -2963,12 +2986,12 @@ import { round } from 'lodash';
     }
 
     color_scale.on('mouseover', () => {
-      self._hover_cursor_on();
+      self._cursor_mouseover();
       self._color_scale_mouseover(color_scale, self.navigation_layer);
     });
 
     color_scale.on('mouseout', () => {
-      self._hover_cursor_off();
+      self._cursor_mouseout();
       self._color_scale_mouseout(color_scale, self.navigation_layer);
     });
 
@@ -3276,12 +3299,12 @@ import { round } from 'lodash';
     self.navigation_layer.moveToTop();
 
     zoom_overlay.on('mouseover', () => {
-      self._hover_cursor_on();
+      self._cursor_mouseover();
       self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('mouseout', () => {
-      self._hover_cursor_off();
+      self._cursor_mouseout();
       self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
@@ -3358,12 +3381,12 @@ import { round } from 'lodash';
     self.navigation_layer.moveToTop();
 
     zoom_overlay.on('mouseover', () => {
-      self._hover_cursor_on();
+      self._cursor_mouseover();
       self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
     zoom_overlay.on('mouseout', () => {
-      self._hover_cursor_off();
+      self._cursor_mouseout();
       self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
     });
 
@@ -4709,7 +4732,7 @@ import { round } from 'lodash';
     tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
 
     if (is_gene_symbol_column) {
-      self._hover_cursor_on();
+      self._cursor_mouseover();
     }
 
     self.heatmap_overlay.add(tooltip);
@@ -4797,22 +4820,22 @@ import { round } from 'lodash';
   /**
     * Hover - change to hand cursor & back again
     */
-  InCHlib.prototype._hover_cursor_on = function() {
+  InCHlib.prototype._cursor_mouseover = function() {
     document.body.style.cursor = 'pointer';
   }
 
-  InCHlib.prototype._hover_cursor_off = function() {
+  InCHlib.prototype._cursor_mouseout = function() {
     document.body.style.cursor = 'default';
   }
 
   /**
     * Hover - change to hand cursor & back again
     */
-  InCHlib.prototype._hover_cursor_on = function() {
+  InCHlib.prototype._cursor_mouseover = function() {
     document.body.style.cursor = 'pointer';
   }
 
-  InCHlib.prototype._hover_cursor_off = function() {
+  InCHlib.prototype._cursor_mouseout = function() {
     document.body.style.cursor = 'default';
   }
 

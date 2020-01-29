@@ -2652,7 +2652,8 @@ import { round } from 'lodash';
     const toolbar_id = `${self._name}-toolbar`;
     const toolbar_div = $(`<div class='inchlib-toolbar' id='${toolbar_id}'></div>`);
     const toolbar_buttons = self.toolbar_refs.buttons.map(btn => {
-      const open_button = `<button type="button" class="inchlib-toolbar_button inchlib-toolbar_button-${btn.id}" data-button-id="${btn.id}" data-tooltip="${btn.label}">`;
+      const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
+      const open_button = `<button type="button" class="inchlib-toolbar_button inchlib-toolbar_button-${btn.id}" data-button-id="${btn.id}" data-tooltip="${btn.label}"${is_button_disabled ? ' disabled' : ''}>`;
       const close_button = '</button>';
       const contents = btn.id === 'legend'
       ? `${btn.label}<i class="fa ${btn.fa_icon[0]}"></i>`
@@ -2680,106 +2681,6 @@ import { round } from 'lodash';
       });
 
   };
-
-  InCHlib.prototype._draw_toolbar_canvas = function () {
-    const self = this;
-    const toolbar_width = 400;
-    const toolbar = new Konva.Group({
-      y: 0.5,
-      // offset by 0.5 pixels to get cleaner lines
-    });
-
-    // each toolbar item has a button & icon element.
-    // attach tooltips, hover, etc to the BUTTON.
-
-    let y = 0;
-    let x = 0;
-
-    const { height, spacing } = self.toolbar_refs.sizes;
-    let { width } = self.toolbar_refs.sizes;
-
-    self.toolbar_refs.buttons.forEach(function(button) {
-      const { fa_icon, id, label } = button;
-      let legend_text;
-      let legend_caret;
-      let icon;
-      
-      if (id === 'legend') {
-        width = 160;
-        // TODO: REPLACE WITH LEGEND WIDTH
-        legend_text = new Konva.Text({
-          fill: self.hover_fill,
-          fontFamily: '"Helvetica Neue"',
-          fontSize: 14,
-          id: `${id}_text`,
-          lineHeight: 2,
-          text: label,
-          x: x + 13,
-          y,
-        });
-        icon = self.objects_ref.font_awesome_icon.clone({
-          text: self.font_awesome_icons[fa_icon[0]],
-          x: x + width + 2 - 40,
-          y,
-        });
-      } else {
-        icon = self.objects_ref.font_awesome_icon.clone({
-          id: `${id}_icon`,
-          text: self.font_awesome_icons[fa_icon],
-          x,
-          y,
-        });
-      }
-
-      const button_el = self.objects_ref.toolbar_button.clone({
-        id: `${id}_button`,
-        label,
-        width,
-        x,
-      });
-
-      toolbar.add(button_el, icon);
-      if (id === 'legend') {
-        toolbar.add(legend_text);
-      }
-
-      const is_button_disabled = id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
-
-      if (is_button_disabled) {
-        button_el.setFill('#c8c8c8');
-        button_el.setStroke('#c8c8c8');
-        icon.setFill('#fff');
-      } else {
-        const click_box = self.objects_ref.toolbar_click_box.clone({
-          id: `${id}_overlay`,
-          width,
-          x,
-        });
-        toolbar.add(click_box);
-        const click_props = {
-          button_el, icon, id, label, layer: self.navigation_layer, legend_text, toolbar, x, y,
-        };
-        click_box.on('click', () => {
-          self._toolbar_click(click_props);
-        });
-
-        click_box.on('mouseover', () => {
-          self._toolbar_mouseover(click_props);
-        });
-
-        click_box.on('mouseout', () => {
-          self._toolbar_mouseout(click_props);
-        });
-      }
-
-      x += width + spacing + 2;
-    });
-
-    // right-align the toolbar
-    toolbar.width(x);
-    toolbar.x(self.options.width - x + 0.5);
-    self.navigation_layer.add(toolbar);
-  }
 
   InCHlib.prototype._toolbar_click = function ({ button_el, icon, id, layer, toolbar, x, y }) {
     const self = this;

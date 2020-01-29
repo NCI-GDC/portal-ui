@@ -226,6 +226,12 @@ import { round } from 'lodash';
       self.options.max_width < element_width
       ? self.options.max_width
       : element_width;
+    
+    self.options.legend_width = 170;
+
+    self.options.width -= self.options.legend_width;
+
+    self.options.stage_width = self.options.width + self.options.legend_width;
 
     self.options.heatmap_part_width = self.options.heatmap_part_width > 0.9
       ? 0.9
@@ -1694,7 +1700,7 @@ import { round } from 'lodash';
 
     self.options.height = self.heatmap_array.length * self.pixels_for_leaf + self.header_height + self.footer_height;
 
-    self.stage.setWidth(self.options.width);
+    self.stage.setWidth(self.options.stage_width);
     self.stage.setHeight(self.options.height);
     self._draw_stage_layer();
 
@@ -1749,7 +1755,7 @@ import { round } from 'lodash';
     self._adjust_leaf_size(count);
     self.options.height = count * self.pixels_for_leaf + self.header_height + self.footer_height + self.column_metadata_height;
 
-    self.stage.setWidth(self.options.width);
+    self.stage.setWidth(self.options.stage_width);
     self.stage.setHeight(self.options.height);
 
     let current_left_count = 0;
@@ -2640,7 +2646,7 @@ import { round } from 'lodash';
     let y = 10;
 
     if (self.options.heatmap) {
-      self._draw_color_scale();
+      // self._draw_color_scale();
     }
 
     if (self.zoomed_clusters.row.length > 0 || self.zoomed_clusters.column.length > 0) {
@@ -2764,38 +2770,39 @@ import { round } from 'lodash';
       });
     }
 
-    if (self.options.navigation_toggle.categories_legend) {
-      const x = self.options.width - 60;
-      const y = 75;
-      const scale = 0.6;
-      const legend_icon = self.objects_ref.icon.clone({
-        data: 'M18.386,16.009l0.009-0.006l-0.58-0.912c1.654-2.226,1.876-5.319,0.3-7.8c-2.043-3.213-6.303-4.161-9.516-2.118c-3.212,2.042-4.163,6.302-2.12,9.517c1.528,2.402,4.3,3.537,6.944,3.102l0.424,0.669l0.206,0.045l0.779-0.447l-0.305,1.377l2.483,0.552l-0.296,1.325l1.903,0.424l-0.68,3.06l1.406,0.313l-0.424,1.906l4.135,0.918l0.758-3.392L18.386,16.009z M10.996,8.944c-0.685,0.436-1.593,0.233-2.029-0.452C8.532,7.807,8.733,6.898,9.418,6.463s1.594-0.233,2.028,0.452C11.883,7.6,11.68,8.509,10.996,8.944z',
-        x,
-        y,
-        scale: {
-          x: scale,
-          y: scale,
-        },
-        id: 'legend_icon',
-        label: 'View legend',
-      });
-      const legend_overlay = self._draw_icon_overlay(x, y);
-      self.navigation_layer.add(legend_icon, legend_overlay);
+    // if (self.options.navigation_toggle.categories_legend) {
+    //   // const x = self.options.width - 60;
+    //   const x = 10;
+    //   const y = 75;
+    //   const scale = 0.6;
+    //   const legend_icon = self.objects_ref.icon.clone({
+    //     data: 'M18.386,16.009l0.009-0.006l-0.58-0.912c1.654-2.226,1.876-5.319,0.3-7.8c-2.043-3.213-6.303-4.161-9.516-2.118c-3.212,2.042-4.163,6.302-2.12,9.517c1.528,2.402,4.3,3.537,6.944,3.102l0.424,0.669l0.206,0.045l0.779-0.447l-0.305,1.377l2.483,0.552l-0.296,1.325l1.903,0.424l-0.68,3.06l1.406,0.313l-0.424,1.906l4.135,0.918l0.758-3.392L18.386,16.009z M10.996,8.944c-0.685,0.436-1.593,0.233-2.029-0.452C8.532,7.807,8.733,6.898,9.418,6.463s1.594-0.233,2.028,0.452C11.883,7.6,11.68,8.509,10.996,8.944z',
+    //     x,
+    //     y,
+    //     scale: {
+    //       x: scale,
+    //       y: scale,
+    //     },
+    //     id: 'legend_icon',
+    //     label: 'View legend',
+    //   });
+    //   const legend_overlay = self._draw_icon_overlay(x, y);
+    //   self.navigation_layer.add(legend_icon, legend_overlay);
 
-      legend_overlay.on('click', function () {
-        self._legend_icon_click();
-      });
+    //   legend_overlay.on('click', function () {
+    //     self._legend_icon_click();
+    //   });
 
-      legend_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
-        self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
-      });
+    //   legend_overlay.on('mouseover', () => {
+    //     self._hover_cursor_on();
+    //     self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
+    //   });
 
-      legend_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
-        self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
-      });
-    }
+    //   legend_overlay.on('mouseout', () => {
+    //     self._hover_cursor_off();
+    //     self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
+    //   });
+    // }
 
     if (self.options.navigation_toggle.edit_categories) {
       const x = self.options.width - 60;
@@ -3951,15 +3958,14 @@ import { round } from 'lodash';
     self.legend_layer = new Konva.Layer();
     self.stage.add(self.legend_layer);
 
-    const legend_y = 0;
-    const legend_x = self.stage.width() + 25;
-    // this is hidden in screen view by moving it off-stage
+    const legend_y = 5;
+    const legend_x = self.stage.width() - 155;
 
     // add heatmap scale to PNG
 
     const scale_group = new Konva.Group({
-      x: legend_x + 180,
-      y: legend_y + 40,
+      x: 5,
+      y: 5,
     });
 
     let scale_x = 0;
@@ -4118,18 +4124,21 @@ import { round } from 'lodash';
           });
           const legend_text = new Konva.Text({
             fill: self.hover_fill,
+            lineHeight: 1.2,
             text,
-            x: x + 20,
+            width: 100,
+            x: x + 17,
             y,
           });
           legend_group.add(legend_square, legend_text);
-          y += 20;
+          y += legend_text.height() + 5;
         }
         y += 5;
       }
     }
     const legend = self.objects_ref.popup_box.clone({
       height: y + 40,
+      width: 150,
       x: legend_x,
       y: legend_y,
     });

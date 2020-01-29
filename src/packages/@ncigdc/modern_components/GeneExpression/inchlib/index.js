@@ -1844,7 +1844,6 @@ import { round } from 'lodash';
     }
     self._draw_row_dendrogram_node(node_id, node, current_left_count, current_right_count, 0, y);
     self.middle_item_count = (self.min_item_count + self.max_item_count) / 2;
-    // self._draw_distance_scale(node.distance);
     self.stage.add(self.dendrogram_layer);
 
     self._bind_dendrogram_hover_events(self.dendrogram_layer);
@@ -2636,85 +2635,6 @@ import { round } from 'lodash';
       }
     }
   };
-
-  // InCHlib.prototype._draw_distance_scale = function (distance) {
-  //   const self = this;
-  //   if (!self.options.navigation_toggle.distance_scale) {
-  //     return;
-  //   }
-  //   const y1 = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2 - 10;
-  //   const y2 = y1;
-  //   const x1 = 0;
-  //   const x2 = self.distance;
-  //   var path = new Konva.Line({
-  //     points: [
-  //       x1,
-  //       y1,
-  //       x2,
-  //       y2,
-  //     ],
-  //     stroke: 'grey',
-  //     listening: false,
-  //   });
-
-  //   const circle = new Konva.Circle({
-  //     x: x2,
-  //     y: y2,
-  //     radius: 3,
-  //     fill: 'grey',
-  //     listening: false,
-  //   });
-
-  //   let number = 0;
-  //   const marker_tail = 3;
-  //   let marker_distance = x2;
-  //   const marker_number_distance = self._hack_round(30 / self.distance_step * 10) / 10;
-  //   var distance = Math.round(100 * self.distance / self.distance_step) / 100;
-  //   let marker_distance_step = self._hack_round(self.distance_step * marker_number_distance);
-  //   let marker_counter = 0;
-
-  //   const distance_number = new Konva.Text({
-  //     x: 0,
-  //     y: y1 - 20,
-  //     text: distance,
-  //     fontSize: self.options.font.size,
-  //     fontFamily: self.options.font.family,
-  //     fontStyle: '500',
-  //     fill: self.hover_fill,
-  //     align: 'right',
-  //     listening: false,
-  //   });
-  //   self.dendrogram_layer.add(path, circle, distance_number);
-
-  //   if (marker_distance_step == 0) {
-  //     marker_distance_step = 0.5;
-  //   }
-
-  //   var path;
-  //   if (marker_number_distance > 0.1) {
-  //     while (marker_distance > 0) {
-  //       path = new Konva.Line({
-  //         points: [
-  //           marker_distance,
-  //           (y1 - marker_tail),
-  //           marker_distance,
-  //           (y2 + marker_tail),
-  //         ],
-  //         stroke: 'grey',
-  //         listening: false,
-  //       });
-  //       self.dendrogram_layer.add(path);
-
-  //       number = self._hack_round((number + marker_number_distance) * 10) / 10;
-  //       if (number > 10) {
-  //         number = self._hack_round(number);
-  //       }
-
-  //       marker_distance -= marker_distance_step;
-  //       marker_counter++;
-  //     }
-  //   }
-  // };
 
   InCHlib.prototype._draw_toolbar = function () {
     const self = this;

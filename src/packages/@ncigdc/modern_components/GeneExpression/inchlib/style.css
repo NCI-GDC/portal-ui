@@ -1,0 +1,37 @@
+.inchlib-toolbar {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.inchlib-toolbar_button {
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid rgb(200,200,200);
+  color: #333;
+  font-family: "Helvetica Neue";
+  font-size: 14px;
+  height: 28px;
+  line-height: 20px;
+  margin: 0 4px;
+  outline: none;
+  padding: 0 12px;
+  position: relative;
+}
+
+.inchlib-toolbar_button:hover {
+  background-color: rgb(0, 138, 224);
+  border-color: rgb(0, 138, 224);
+  color: #fff;
+}
+
+.inchlib-toolbar_button-legend {
+  text-align: left;
+  width: 160px;
+}
+
+.inchlib-toolbar_button-legend .fa {
+  line-height: 22px;
+  position: absolute;
+  right: 14px;
+}

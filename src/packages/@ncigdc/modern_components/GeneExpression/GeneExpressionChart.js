@@ -7,6 +7,8 @@ import { theme } from '@ncigdc/theme';
 import './inchlib';
 import { CATEGORY_COLORS } from '@ncigdc/utils/constants';
 
+import './inchlib/style.css';
+
 const options = {
   button_color: theme.primary,
   categories: {
@@ -73,7 +75,7 @@ class GeneExpressionChart extends Component {
 
   render() {
     return (
-      <div ref={el => this.el = el} />
+      <div className="inchlib-container" ref={el => this.el = el} />
     );
   }
 }

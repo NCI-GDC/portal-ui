@@ -1233,18 +1233,27 @@ import { round } from 'lodash';
         verticalAlign: 'middle',
         width: 40,
       }),
-
-      toolbar_button: new Konva.Rect({
-        // TODO: HOVER IS BG #008ae0
-        cornerRadius: 4,
-        fill: '#fff',
-        height: 28,
-        stroke: '#ccc',
-        strokeWidth: 1,
-        width: 40,
-        y: 10,
-      }),
     };
+
+    /**
+    * Defines the appearance of toolbar buttons.
+    * @name InCHlib#toolbar_button_properties
+    */
+    const toolbar_button_properties = {
+      cornerRadius: 4,
+      fill: '#fff',
+      height: 28,
+      stroke: '#ccc',
+      strokeWidth: 1,
+      width: 40,
+      y: 0,
+    };
+
+    self.objects_ref.toolbar_button = new Konva.Rect(toolbar_button_properties);
+    self.objects_ref.toolbar_click_box = new Konva.Rect({
+      ...toolbar_button_properties,
+      opacity: 0,
+    });
 
     /**
     * Font Awesome 4 icons used in InCHlib.
@@ -2666,6 +2675,7 @@ import { round } from 'lodash';
           fill: self.hover_fill,
           fontFamily: '"Helvetica Neue"',
           fontSize: 14,
+          id: `${id}_text`,
           lineHeight: 2,
           text: label,
           x: x + 13,
@@ -2686,30 +2696,39 @@ import { round } from 'lodash';
       }
 
       const button_el = self.objects_ref.toolbar_button.clone({
-        height,
         id: `${id}_button`,
         label,
         width,
         x,
-        y,
+      });
+      const click_box = self.objects_ref.toolbar_click_box.clone({
+        id: `${id}_overlay`,
+        width,
+        x,
+        fill: 'magenta',
       });
 
       toolbar.add(button_el, icon);
       if (id === 'legend') {
         toolbar.add(legend_text);
       }
+      toolbar.add(click_box)
       x += width + spacing + 2;
+
+      const click_props = {
+        button_el, icon, id, layer: self.navigation_layer, legend_text
+      };
       
       // button_el.on('click', function () {
       //   self._categories_icon_click(this);
       // });
 
-      button_el.on('mouseover', () => {
-        self._toolbar_mouseover(button_el, icon);
+      click_box.on('mouseover', () => {
+        self._toolbar_mouseover(click_props);
       });
 
-      button_el.on('mouseout', () => {
-        self._toolbar_mouseout(button_el, icon);
+      click_box.on('mouseout', () => {
+        self._toolbar_mouseout(click_props);
       });
     });
 
@@ -2719,16 +2738,26 @@ import { round } from 'lodash';
     self.navigation_layer.add(toolbar);
   }
 
-  InCHlib.prototype._toolbar_mouseover = function (button, icon) {
+  InCHlib.prototype._toolbar_mouseover = function ({ button_el, icon, id, layer, legend_text }) {
     const self = this;
     self._cursor_mouseover();
-
+    if (id === 'legend') {
+      legend_text.setFill('#fff');
+    }
+    icon.setFill('#fff');
+    button_el.setFill('#008ae0');
+    layer.draw();
   };
 
-  InCHlib.prototype._toolbar_mouseout = function (button, icon) {
+  InCHlib.prototype._toolbar_mouseout = function ({ button_el, icon, id, layer, legend_text }) {
     const self = this;
     self._cursor_mouseout();
-
+    if (id === 'legend') {
+      legend_text.setFill('#3a3a3a');
+    }
+    icon.setFill('#333');
+    button_el.setFill('#fff');
+    layer.draw();
   };
 
   InCHlib.prototype._draw_navigation = function () {

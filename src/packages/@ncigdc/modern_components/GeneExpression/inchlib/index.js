@@ -227,6 +227,8 @@ import { round } from 'lodash';
       ? self.options.max_width
       : element_width;
 
+    self.$element.width(self.options.width);
+
     self.options.heatmap_part_width = self.options.heatmap_part_width > 0.9
       ? 0.9
       : self.options.heatmap_part_width;
@@ -2651,7 +2653,7 @@ import { round } from 'lodash';
     const toolbar_div = $(`<div id='${toolbar_id}'></div>`);
     const toolbar_buttons = self.toolbar_refs.buttons.map(btn => {
       const button_id = `${self._name}-${btn.id}-btn`;
-      const open_button = `<button type="button" class="button" id="${button_id}">`;
+      const open_button = `<button type="button" class="button" id="${button_id}" data-tooltip="${btn.label}">`;
       const close_button = '</button>';
       const contents = btn.id === 'legend'
       ? `${btn.label}<i class="fa ${btn.fa_icon[0]}"></i>`
@@ -2693,10 +2695,20 @@ import { round } from 'lodash';
         'position': 'relative',
       })
       .mouseover(function () {
-        $(this).css(btn_css_on);
+        const $this = $(this);
+        $this.css(btn_css_on);
+        self._cursor_mouseover();
+        if ($this.attr('id') !== `${self._name}-legend-btn`) {
+          self._toolbar_mouseover($this);
+        }
       })
       .mouseout(function() {
-        $(this).css(btn_css_off);
+        const $this = $(this);
+        $this.css(btn_css_off);
+        self._cursor_mouseout();
+        if ($this.attr('id') !== `${self._name}-legend-btn`) {
+          self._toolbar_mouseout();
+        }
       });
     
     // set up legend button & caret
@@ -2821,49 +2833,34 @@ import { round } from 'lodash';
     }
   };
 
-  InCHlib.prototype._toolbar_mouseover = function ({ button_el, icon, id, label, layer, legend_text, toolbar, x, y }) {
+  InCHlib.prototype._toolbar_mouseover = function (button) {
     const self = this;
-    self._cursor_mouseover();
 
-    // update colors
-    icon.setFill('#fff');
-    button_el.setFill('#008ae0');
-    if (id === 'legend') {
-      legend_text.setFill('#fff');
-    } else {
-      // add tooltip
-      self.toolbar_tooltip = self.objects_ref.tooltip_label.clone({
-        x,
-        y: y + 35,
-      });
-      self.toolbar_tooltip.add(self.objects_ref.tooltip_tag.clone());
-      self.toolbar_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
+    const position = button.position();
+    const x = button.parent().position().left + position.left;
+    const y = position.top + 35;
 
-      toolbar.add(self.toolbar_tooltip);
-      self.toolbar_tooltip.moveToTop();
+    self.toolbar_tooltip = self.objects_ref.tooltip_label.clone({
+      x,
+      y,
+    });
+    self.toolbar_tooltip.add(self.objects_ref.tooltip_tag.clone());
+    self.toolbar_tooltip.add(self.objects_ref.tooltip_text.clone({ text: button.attr('data-tooltip') }));
 
-      // center the tooltip
-      const toolbar_coords = self.toolbar_tooltip.getClientRect();
-      self.toolbar_tooltip.x(x + 20 - (toolbar_coords.width / 2));
-    }
+    self.navigation_layer.add(self.toolbar_tooltip);
+    self.toolbar_tooltip.moveToTop();
 
-    layer.draw();
+    // center align the tooltip
+    const toolbar_coords = self.toolbar_tooltip.getClientRect();
+    self.toolbar_tooltip.x(x + 22 - (toolbar_coords.width / 2));
+
+    self.navigation_layer.draw();
   };
 
-  InCHlib.prototype._toolbar_mouseout = function ({ button_el, icon, id, layer, legend_text }) {
+  InCHlib.prototype._toolbar_mouseout = function () {
     const self = this;
-    self._cursor_mouseout();
-
-    // update colors
-    icon.setFill('#333');
-    button_el.setFill('#fff');
-    if (id === 'legend') {
-      legend_text.setFill('#3a3a3a');
-    } else {
-      // remove tooltip
-      self.toolbar_tooltip.destroy();
-    }
-    layer.draw();
+    self.toolbar_tooltip.destroy();
+    self.navigation_layer.draw();
   };
 
   InCHlib.prototype._draw_download_menu = function () {

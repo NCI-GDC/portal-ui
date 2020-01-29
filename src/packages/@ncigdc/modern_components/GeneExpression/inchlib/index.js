@@ -1829,7 +1829,7 @@ import { round } from 'lodash';
     self.objects2leaves = {};
 
     self._adjust_leaf_size(count);
-    self.options.height = count * self.pixels_for_leaf + self.header_height + self.footer_height + self.column_metadata_height;
+    self.options.height = count * self.pixels_for_leaf + self.header_height + self.footer_height + self.column_metadata_height + self.toolbar_distance - 40;
 
     self.stage.setWidth(self.options.width);
     self.stage.setHeight(self.options.height);

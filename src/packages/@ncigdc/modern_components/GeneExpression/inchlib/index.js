@@ -1355,6 +1355,20 @@ import { round } from 'lodash';
     self.init();
   }
 
+  InCHlib.prototype._draw_modal = function () {
+    const self = this;
+    const overlay = self._draw_target_overlay();
+    overlay.click(function() {
+      overlay.fadeOut().remove();
+      $('.inchlib-modal-container').remove();
+    });
+
+    const title = 'Edit Categories';
+
+    const modal = $(`<div class="inchlib-modal-container"><div class="inchlib-modal"><h2>${title}</h2></div></div>`);
+    self.$element.append(modal);
+  };
+
   InCHlib.prototype._update_user_options = function (options) {
     const self = this;
     const updated_options = {};
@@ -2774,6 +2788,7 @@ import { round } from 'lodash';
     let y = 5.5;
 
     self._draw_toolbar();
+    self._draw_modal();
 
     if (self.zoomed_clusters.row.length > 0) {
       x = self.distance - 55;

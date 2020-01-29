@@ -27,11 +27,7 @@ const handleOverlayClickOut = ({ target }) => {
   if (target.id !== id && target.closest(`#${id}`) === null) {
     const overlay = document.querySelector(`#${id} .target_overlay`);
     if (overlay !== null) {
-      overlay.click();
-    }
-    const download_menu = document.querySelector(`#${id} .inchlib-download`);
-    if (download_menu !== null) {
-      download_menu.remove();
+      overlay.trigger('click');
     }
   }
 };

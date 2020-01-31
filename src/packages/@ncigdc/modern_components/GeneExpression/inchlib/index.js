@@ -1355,18 +1355,77 @@ import { round } from 'lodash';
     self.init();
   }
 
-  InCHlib.prototype._draw_modal = function () {
+  InCHlib.prototype._draw_categories_modal = function () {
     const self = this;
     const overlay = self._draw_target_overlay();
-    overlay.click(function() {
-      overlay.fadeOut().remove();
-      $('.inchlib-modal-container').remove();
-    });
 
     const title = 'Edit Categories';
 
-    const modal = $(`<div class="inchlib-modal-container"><div class="inchlib-modal"><h2>${title}</h2></div></div>`);
+    const form_id = `${self._name}_categories_form`;
+
+    // create categories form
+    const categories_form = $(`<form id='${form_id}'></form>`);
+
+    const options = ['<ul class="inchlib-modal_categories-form_list">']
+      .concat(self.column_metadata.feature_names
+        .map((category, i) => {
+          const key = category.toLowerCase().split(' ').join('-');
+          const id = `${self._name}_${key}`;
+          const checked = self.column_metadata.visible[i]
+            ? ' checked'
+            : '';
+          return `<li class="inchlib-modal_categories-form_list-item"><input type='checkbox' id='${id}' class='inchlib-modal_categories-form_input' name='inchlib-edit-categories' value='${category}'${checked}/><label for='${id}' class='inchlib-modal_categories-form_label'>${category}</label></li>`;
+        })
+      )
+      .concat('</ul>')
+      .join('');
+
+    categories_form.html(options);
+
+    // create modal and append the form
+    // TODO move to function?
+    const cancel_id = `${form_id}_cancel`;
+    const save_id = `${form_id}_save`;
+    const modal = $('<div />', { 'class': 'inchlib-modal inchlib-modal_categories'}).append(
+      $('<div />', { 'class': 'inchlib-modal_container'}).append(
+        $('<h2 />', { text: title }),
+        $('<div />',{ 'class': 'inchlib-modal_div-border' }).append(
+          categories_form
+        ),
+        $('<div />', {'class': 'inchlib-modal_buttons-container' }).append(
+          $('<button />', { 'type': 'button', 'text': 'Cancel', 'class': 'inchlib-modal_buttons-btn', 'id': cancel_id }),
+          $('<button />', { 'type': 'button', 'text': 'Save', 'class': 'inchlib-modal_buttons-btn', 'id': save_id })
+        )
+      )
+    );
+
     self.$element.append(modal);
+
+    overlay.click(function() {
+      overlay.fadeOut().remove();
+      $('.inchlib-modal').remove();
+    });
+
+    // cancel & save
+
+    $(`#${cancel_id}`).click(function(e) {
+      e.preventDefault();
+      overlay.trigger('click');
+    });
+
+    $(`#${save_id}`).click(function(e) {
+      e.preventDefault();
+      const categories_updated = [];
+
+      $.each($(`#${form_id} input[name="inchlib-edit-categories"]`),
+        function() {
+          categories_updated.push($(this).is(':checked'));
+        }
+      );
+      self.column_metadata.visible = categories_updated;
+      overlay.trigger('click');
+      self.redraw();
+    });
   };
 
   InCHlib.prototype._update_user_options = function (options) {
@@ -2708,6 +2767,8 @@ import { round } from 'lodash';
       self.redraw();
     } else if (id === 'download') {
       self._draw_download_menu();
+    } else if (id === 'edit_categories') {
+      self._draw_categories_modal();
     }
   };
 
@@ -2788,7 +2849,6 @@ import { round } from 'lodash';
     let y = 5.5;
 
     self._draw_toolbar();
-    self._draw_modal();
 
     if (self.zoomed_clusters.row.length > 0) {
       x = self.distance - 55;
@@ -2887,37 +2947,6 @@ import { round } from 'lodash';
     //   legend_overlay.on('mouseout', () => {
     //     self._cursor_mouseout();
     //     self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
-    //   });
-    // }
-
-    // if (self.options.navigation_toggle.edit_categories) {
-    //   const x = self.options.width - 60;
-    //   const y = 45;
-    //   const scale = 0.6;
-
-    //   const categories_icon = self.objects_ref.font_awesome_icon.clone({
-    //     text: self.font_awesome_icons['fa-bars'],
-    //     x,
-    //     y,
-    //     id: 'categories_icon',
-    //     label: 'Edit categories',
-    //   });
-
-    //   const categories_overlay = self._draw_icon_overlay(x, y);
-    //   self.navigation_layer.add(categories_icon, categories_overlay);
-
-    //   categories_overlay.on('click', function () {
-    //     self._categories_icon_click(this);
-    //   });
-
-    //   categories_overlay.on('mouseover', () => {
-    //     self._cursor_mouseover();
-    //     self._icon_mouseover(categories_icon, categories_overlay, self.navigation_layer);
-    //   });
-
-    //   categories_overlay.on('mouseout', () => {
-    //     self._cursor_mouseout();
-    //     self._icon_mouseout(categories_icon, categories_overlay, self.navigation_layer);
     //   });
     // }
 
@@ -4135,93 +4164,6 @@ import { round } from 'lodash';
       $(`#${self.legend_id}`).fadeOut().remove();
       overlay.fadeOut().remove();
     });
-  }
-
-  InCHlib.prototype._categories_icon_click = function() {
-    const self = this;
-
-    const form_id = `categories_form_${self._name}`;
-    const categories_form = $(`<form class='settings_form' id='${form_id}'></form>`);
-    const overlay = self._draw_target_overlay();
-
-    const options = [`<h3>Categories</h3><ul>`]
-      .concat(self.column_metadata.feature_names
-        .map((category, i) => {
-          const key = category.toLowerCase().split(' ').join('-');
-          const id = `${self._name}_${key}`;
-          const checked = self.column_metadata.visible[i]
-            ? ' checked'
-            : '';
-          return `<li><input type='checkbox' id='${id}' name='edit-categories' value='${category}'${checked}/><label for='${id}' class='form_label'>${category}</label></li>`;
-        })
-      )
-      .concat('</ul><button type="submit">Save</button>')
-      .join('');
-
-    categories_form.html(options);
-    self.$element.append(categories_form);
-    categories_form.css({
-      'z-index': 1000,
-      position: 'absolute',
-      top: 0,
-      left: self.options.width - 210,
-      padding: '10px',
-      border: 'solid #D2D2D2 2px',
-      'border-radius': '5px',
-      'background-color': '#fff',
-      width: '180px',
-    });
-    $(`#${form_id} > ul`).css({
-      'list-style-type': 'none',
-      'font-size': '12px',
-      'margin-bottom': '10px',
-      'padding-left': '20px',
-    });
-    $(`#${form_id} li`).css({
-      'padding': '5px 0',
-    });
-    $(`#${form_id} h3`).css({
-      'margin-top': '0px'
-    });
-    $(`#${form_id} input`).css(self.styles.checkbox);
-    $(`#${form_id} .form_label`).css({
-      ...self.styles.label,
-      'line-height': '1',
-    });
-
-    const $submit_button = $(`#${form_id} button`);
-
-    $submit_button.css(self.styles.css_primary_button_off);
-
-    $submit_button.hover(
-      function () {
-        $submit_button.css(self.styles.css_button_on);
-      },
-      function () {
-        $submit_button.css(self.styles.css_primary_button_off);
-      }
-    );
-
-    overlay.click(() => {
-      $(`#${form_id}`).fadeOut().remove();
-      overlay.fadeOut().remove();
-    });
-
-    categories_form.submit(function (evt) {
-      evt.preventDefault();
-
-      const categories_updated = [];
-
-      $.each($(`#${form_id} input[name="edit-categories"]`),
-        function() {
-          categories_updated.push($(this).is(':checked'));
-        }
-      );
-      self.column_metadata.visible = categories_updated;
-      self.redraw();
-      overlay.trigger('click');
-    });
-
   }
 
   InCHlib.prototype._color_scale_click = function (icon, evt) {

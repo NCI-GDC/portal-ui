@@ -83,7 +83,7 @@
 
 /* MODALS */
 
-.inchlib-modal-container {
+.inchlib-modal {
   display: flex;
   justify-content: space-around;
   left: 0;
@@ -93,7 +93,8 @@
   width: 100%;
   z-index: 100;
 }
-.inchlib-modal {
+
+.inchlib-modal_container {
   background: #fff;
   border-radius: 4px;
   border: 1px solid rgb(204, 204, 204);
@@ -104,4 +105,72 @@
   padding: 0 2rem 2rem;
   position: relative;
   width: 90%;
+}
+
+.inchlib-modal_div-border {
+  border-bottom: 1px solid #dedede;
+  border-top: 1px solid#dedede;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem 0px 1rem;
+  outline: currentcolor none medium;
+  padding: 15px 0px;
+  position: relative;
+}
+
+.inchlib-modal_buttons-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-top: 10px;
+  position: relative; 
+}
+
+.inchlib-modal_buttons-btn {
+  background-color:#005083;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  color:#fff;
+  font-size: 14px;
+  outline: currentcolor none medium;
+  padding: 6px 12px;
+  transition: all 0.25s ease 0s;
+}
+
+.inchlib-modal_buttons-btn:first-child {
+  margin-right: 10px;
+}
+
+.inchlib-modal_buttons-btn:hover {
+  background-color: #008ae0;
+}
+
+/* MODAL - CATEGORIES */
+
+.inchlib-modal_categories-form_list {
+  font-size: 12px;
+  list-style-type: none;
+  margin-bottom: 10px;
+  padding: 5px 0 5px 20px;
+}
+
+.inchlib-modal_categories-form_list-item {
+  float: left;
+  padding: 5px 0;
+  width: 50%;
+}
+
+.inchlib-modal_categories-form_input {
+  float: left;
+  margin-left: -20px;
+  margin-right: 5px;
+}
+
+.inchlib-modal_categories-form_label {
+  color: #3a3a3a;
+  display: block;
+  font-size: 14px;
+  line-height: 1;
+  margin-bottom: 5px;
 }

@@ -87,7 +87,7 @@
   display: flex;
   justify-content: space-around;
   left: 0;
-  padding-top: 200px;
+  padding-top: 100px;
   position: absolute;
   top: 0;
   width: 100%;
@@ -101,7 +101,7 @@
   box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 8px;
   display: flex;
   flex-direction: column;
-  max-width: 400px;
+  max-width: 500px;
   padding: 0 2rem 2rem;
   position: relative;
   width: 90%;
@@ -173,4 +173,22 @@
   font-size: 14px;
   line-height: 1;
   margin-bottom: 5px;
+}
+
+/* MODAL - HEATMAP */
+
+.inchlib-heatmap-form {
+  margin: 0 -5px;
+}
+
+.color_scale {
+  border: solid #D2D2D2 1px;
+  float: left;
+  height: 20px;
+  margin: 5px;
+  width: 80px;
+}
+
+.color_scale:nth-child(5n+1) {
+  clear: both;
 }

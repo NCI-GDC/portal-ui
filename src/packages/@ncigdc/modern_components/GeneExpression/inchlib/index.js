@@ -4,7 +4,7 @@
 import $ from 'jquery';
 import Konva from 'konva';
 import Color from 'color';
-import { round } from 'lodash';
+import { each, round } from 'lodash';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -1391,6 +1391,89 @@ import { round } from 'lodash';
         $('<h2 />', { text: title }),
         $('<div />',{ 'class': 'inchlib-modal_div-border' }).append(
           categories_form
+        ),
+        $('<div />', {'class': 'inchlib-modal_buttons-container' }).append(
+          $('<button />', { 'type': 'button', 'text': 'Cancel', 'class': 'inchlib-modal_buttons-btn', 'id': cancel_id }),
+          $('<button />', { 'type': 'button', 'text': 'Save', 'class': 'inchlib-modal_buttons-btn', 'id': save_id })
+        )
+      )
+    );
+
+    self.$element.append(modal);
+
+    overlay.click(function() {
+      overlay.fadeOut().remove();
+      $('.inchlib-modal').remove();
+    });
+
+    // cancel & save
+
+    $(`#${cancel_id}`).click(function(e) {
+      e.preventDefault();
+      overlay.trigger('click');
+    });
+
+    $(`#${save_id}`).click(function(e) {
+      e.preventDefault();
+      const categories_updated = [];
+
+      $.each($(`#${form_id} input[name="inchlib-edit-categories"]`),
+        function() {
+          categories_updated.push($(this).is(':checked'));
+        }
+      );
+      self.column_metadata.visible = categories_updated;
+      overlay.trigger('click');
+      self.redraw();
+    });
+  };
+
+  InCHlib.prototype._draw_heatmap_modal = function () {
+    const self = this;
+    const overlay = self._draw_target_overlay();
+
+    const title = 'Edit Heatmap Colors';
+
+    const form_id = `${self._name}_heatmap_form`;
+
+    // create categories form
+    // const heatmap_form = $(`<form id='${form_id}'></form>`);
+
+    const color_scales = Object.keys(self.colors).map(color => {
+      const color_1 = self._get_color_for_value(0, 0, 1, 0.5, color);
+      const color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, color);
+      const color_3 = self._get_color_for_value(1, 0, 1, 0.5, color);
+      const scale = $(`<div class='color_scale' data-scale_acronym='${color}' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div>`);
+      return scale;
+    });
+
+    const heatmap_form = $(`<form id='${form_id}' class="inchlib-heatmap-form"></form>`).append(color_scales);
+  
+    // const options = ['<ul class="inchlib-modal_heatmap-form_list">']
+    //   .concat(self.column_metadata.feature_names
+    //     .map((category, i) => {
+    //       const key = category.toLowerCase().split(' ').join('-');
+    //       const id = `${self._name}_${key}`;
+    //       const checked = self.column_metadata.visible[i]
+    //         ? ' checked'
+    //         : '';
+    //       return `<li class="inchlib-modal_heatmap-form_list-item"><input type='checkbox' id='${id}' class='inchlib-modal_heatmap-form_input' name='inchlib-edit-heatmap' value='${category}'${checked}/><label for='${id}' class='inchlib-modal_heatmap-form_label'>${category}</label></li>`;
+    //     })
+    //   )
+    //   .concat('</ul>')
+    //   .join('');
+
+    // heatmap_form.html(options);
+
+    // create modal and append the form
+    // TODO move to function?
+    const cancel_id = `${form_id}_cancel`;
+    const save_id = `${form_id}_save`;
+    const modal = $('<div />', { 'class': 'inchlib-modal inchlib-modal_heatmap'}).append(
+      $('<div />', { 'class': 'inchlib-modal_container'}).append(
+        $('<h2 />', { text: title }),
+        $('<div />',{ 'class': 'inchlib-modal_div-border' }).append(
+          heatmap_form
         ),
         $('<div />', {'class': 'inchlib-modal_buttons-container' }).append(
           $('<button />', { 'type': 'button', 'text': 'Cancel', 'class': 'inchlib-modal_buttons-btn', 'id': cancel_id }),
@@ -2849,6 +2932,7 @@ import { round } from 'lodash';
     let y = 5.5;
 
     self._draw_toolbar();
+    self._draw_heatmap_modal();
 
     if (self.zoomed_clusters.row.length > 0) {
       x = self.distance - 55;

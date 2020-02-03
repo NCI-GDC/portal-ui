@@ -1906,10 +1906,8 @@ import { each, round } from 'lodash';
       self.options.column_dendrogram = false;
     }
     self._adjust_leaf_size(self.heatmap_array.length);
-
   
     self.right_margin = 100;
-    
 
     self._adjust_horizontal_sizes();
     self.top_heatmap_distance = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2;
@@ -1951,7 +1949,7 @@ import { each, round } from 'lodash';
     self._draw_heatmap_header();
     self._draw_navigation();
     self.highlight_rows(self.options.highlighted_rows);
-    // self._draw_legend_for_png();
+    self._draw_heatmap_scale();
   };
 
   InCHlib.prototype._draw_dendrogram_layers = function () {
@@ -3043,7 +3041,7 @@ import { each, round } from 'lodash';
 
     color_scale.fillLinearGradientColorStops(self.color_steps);
     self.navigation_layer.draw();
-    self.redraw_legend();
+    self._redraw_heatmap_scale();
   };
 
   InCHlib.prototype._draw_icon_overlay = function (x, y) {
@@ -3996,13 +3994,10 @@ import { each, round } from 'lodash';
     });
   };
 
-  InCHlib.prototype._draw_legend_for_png = function() {
+  InCHlib.prototype._draw_heatmap_scale = function() {
     const self = this;
-    self.legend_layer = new Konva.Layer({ y: self.toolbar_distance });
-    self.stage.add(self.legend_layer);
-
-    const legend_y = 5;
-    const legend_x = self.stage.width() - 155;
+    self.heatmap_scale_layer = new Konva.Layer({ x: 5, y: self.toolbar_distance });
+    self.stage.add(self.heatmap_scale_layer);
 
     // add heatmap scale to PNG
 
@@ -4086,6 +4081,20 @@ import { each, round } from 'lodash';
       scale_group.add(scale_text);
       scale_y += scaleY_int;
     }
+
+    self.heatmap_scale_layer.add(scale_group);
+    self.heatmap_scale_layer.draw();
+  }
+
+  InCHlib.prototype._draw_legend_for_png = function() {
+    const self = this;
+    self.legend_layer = new Konva.Layer({ y: self.toolbar_distance });
+    self.stage.add(self.legend_layer);
+
+    const legend_y = 5;
+    const legend_x = self.stage.width() - 155;
+
+    // create legend
 
     const legend_title = new Konva.Text({
       fill: self.hover_fill,
@@ -4186,16 +4195,16 @@ import { each, round } from 'lodash';
       y: legend_y,
     });
 
-    self.legend_layer.add(legend, legend_title, legend_group, scale_group);
+    self.legend_layer.add(legend, legend_title, legend_group);
     self.legend_layer.draw();
   };
 
-  InCHlib.prototype.redraw_legend = function() {
+  InCHlib.prototype._redraw_heatmap_scale = function() {
     const self = this;
     self._delete_layers([
-      self.legend_layer,
+      self.heatmap_scale_layer,
     ]);
-    self._draw_legend_for_png();
+    self._draw_heatmap_scale();
   };
 
   InCHlib.prototype._legend_icon_click = function() {
@@ -4205,6 +4214,9 @@ import { each, round } from 'lodash';
     overlay.click(() => {
       $(`#${self.legend_id}`).fadeOut().remove();
       overlay.fadeOut().remove();
+      $('.inchlib-toolbar_button-legend .fa-caret-up')
+        .removeClass('fa-caret-up')
+        .addClass('fa-caret-down');
     });
   }
 

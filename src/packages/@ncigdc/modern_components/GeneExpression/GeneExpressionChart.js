@@ -24,11 +24,10 @@ const options = {
 
 const handleOverlayClickOut = ({ target }) => {
   const id = 'InCHlib';
-  if (target.id !== id && $(target).closest(`#${id}`) === null) {
-    const overlay = document.querySelector(`#${id} .target_overlay`);
-    if (overlay !== null) {
+  if (target.id !== id && $(target).closest(`#${id}`).length === 0) {
+    const overlay = $(`#${id} .target_overlay`);
+    if (overlay.length === 1) {
       overlay.trigger('click');
-    }
   }
 };
 

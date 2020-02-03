@@ -1670,6 +1670,9 @@ import { each, round } from 'lodash';
     const data_rows = data.length;
     const data_cols = data[0].length;
 
+    // console.log('data_rows', data_rows);
+    // console.log('data_cols', data_cols);
+    
     if (axis === 'column') {
       columns = [];
 
@@ -2837,7 +2840,7 @@ import { each, round } from 'lodash';
           .addClass('fa-caret-down');
       } else {
         button.addClass('no-hover');
-        self._legend_icon_click();
+        self._toggle_legend_for_screen();
         button.find('.fa-caret-down')
           .removeClass('fa-caret-down')
           .addClass('fa-caret-up');
@@ -3009,7 +3012,7 @@ import { each, round } from 'lodash';
     //   self.navigation_layer.add(legend_icon, legend_overlay);
 
     //   legend_overlay.on('click', function () {
-    //     self._legend_icon_click();
+    //     self._toggle_legend_for_screen();
     //   });
 
     //   legend_overlay.on('mouseover', () => {
@@ -3268,20 +3271,6 @@ import { each, round } from 'lodash';
       text: count,
     });
 
-    const zoom_icon = self.objects_ref.font_awesome_icon.clone({
-      text: self.font_awesome_icons['fa-search-plus'],
-      x,
-      y,
-      scale: {
-        x: 0.7,
-        y: 0.7,
-      },
-      label: 'Zoom\nrows',
-    });
-
-
-    const zoom_overlay = self._draw_icon_overlay(x, y);
-
     x = self.distance + self.dendrogram_heatmap_distance;
     const width = visible * self.pixels_for_dimension + self.heatmap_distance;
     const upper_y = self.highlighted_rows_y[0] - self.pixels_for_leaf / 2;
@@ -3319,28 +3308,13 @@ import { each, round } from 'lodash';
       ],
     });
 
-    self.row_cluster_group.add(rows_desc, cluster_overlay_1, cluster_overlay_2, zoom_overlay, cluster_border_1, cluster_border_2);
-    // self.row_cluster_group.add(rows_desc, cluster_overlay_1, cluster_overlay_2, zoom_icon, zoom_overlay, cluster_border_1, cluster_border_2);
+    self.row_cluster_group.add(rows_desc, cluster_overlay_1, cluster_overlay_2, cluster_border_1, cluster_border_2);
     self.cluster_layer.add(self.row_cluster_group);
     self.stage.add(self.cluster_layer);
     rows_desc.moveToTop();
 
     self.cluster_layer.draw();
     self.navigation_layer.moveToTop();
-
-    zoom_overlay.on('mouseover', () => {
-      self._cursor_mouseover();
-      self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
-    });
-
-    zoom_overlay.on('mouseout', () => {
-      self._cursor_mouseout();
-      // self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
-    });
-
-    zoom_overlay.on('click', () => {
-      self._zoom_cluster(self.last_highlighted_cluster);
-    });
   };
 
   InCHlib.prototype._draw_column_cluster_layer = function (path_id) {
@@ -3355,15 +3329,6 @@ import { each, round } from 'lodash';
       y: y - 5,
       text: count,
     });
-
-    const zoom_icon = self.objects_ref.font_awesome_icon.clone({
-      text: self.font_awesome_icons['fa-search-plus'],
-      x,
-      y,
-      label: 'Zoom\ncolumns',
-    });
-
-    const zoom_overlay = self._draw_icon_overlay(x, y);
 
     const x1 = self._hack_round((self.current_column_ids[0] - self.columns_start_index) * self.pixels_for_dimension);
     const x2 = self._hack_round((self.current_column_ids[0] + self.current_column_ids.length - self.columns_start_index) * self.pixels_for_dimension);
@@ -3403,26 +3368,11 @@ import { each, round } from 'lodash';
       height,
     });
 
-
-    self.column_cluster_group.add(cluster_overlay_1, cluster_overlay_2, zoom_icon, zoom_overlay, cols_desc, cluster_border_1, cluster_border_2);
+    self.column_cluster_group.add(cluster_overlay_1, cluster_overlay_2, cols_desc, cluster_border_1, cluster_border_2);
     self.cluster_layer.add(self.column_cluster_group);
     self.stage.add(self.cluster_layer);
     self.cluster_layer.draw();
     self.navigation_layer.moveToTop();
-
-    zoom_overlay.on('mouseover', () => {
-      self._cursor_mouseover();
-      self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
-    });
-
-    zoom_overlay.on('mouseout', () => {
-      self._cursor_mouseout();
-      // self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
-    });
-
-    zoom_overlay.on('click', () => {
-      self._zoom_column_cluster(self.last_highlighted_column_cluster);
-    });
   };
 
   InCHlib.prototype._draw_column_cluster = function (node_id) {
@@ -4219,7 +4169,7 @@ import { each, round } from 'lodash';
     self._draw_heatmap_scale();
   };
 
-  InCHlib.prototype._legend_icon_click = function() {
+  InCHlib.prototype._toggle_legend_for_screen = function() {
     const self = this;
     const overlay = self._draw_target_overlay(true);
     self._draw_legend_for_screen();
@@ -4231,16 +4181,6 @@ import { each, round } from 'lodash';
         .addClass('fa-caret-down');
     });
   }
-
-  InCHlib.prototype._unzoom_icon_click = function () {
-    const self = this;
-    self._unzoom_cluster();
-  };
-
-  InCHlib.prototype._column_unzoom_icon_click = function () {
-    const self = this;
-    self._unzoom_column_cluster();
-  };
 
   InCHlib.prototype._dendrogram_layers_click = function (layer, evt) {
     const self = this;

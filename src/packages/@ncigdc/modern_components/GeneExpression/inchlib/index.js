@@ -3912,6 +3912,8 @@ import { each, round } from 'lodash';
     self.$element.after(loading_div);
     self.$element.hide();
 
+    self._draw_legend_for_png();
+
     self.stage.width((width + 300 + png_padding) * zoom);
     self.stage.height((
       height + 50 < 600 + (png_padding * 2)
@@ -3943,6 +3945,9 @@ import { each, round } from 'lodash';
         self.$element.show();
         self.navigation_layer.show();
         self.navigation_layer.draw();
+        self._delete_layers([
+          self.legend_png_layer,
+        ]);
         overlay.trigger('click');
       },
     });
@@ -4088,8 +4093,8 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_legend_for_png = function() {
     const self = this;
-    self.legend_layer = new Konva.Layer({ y: self.toolbar_distance });
-    self.stage.add(self.legend_layer);
+    self.legend_png_layer = new Konva.Layer({ y: self.toolbar_distance });
+    self.stage.add(self.legend_png_layer);
 
     const legend_y = 5;
     const legend_x = self.stage.width() - 155;
@@ -4195,8 +4200,8 @@ import { each, round } from 'lodash';
       y: legend_y,
     });
 
-    self.legend_layer.add(legend, legend_title, legend_group);
-    self.legend_layer.draw();
+    self.legend_png_layer.add(legend, legend_title, legend_group);
+    self.legend_png_layer.draw();
   };
 
   InCHlib.prototype._redraw_heatmap_scale = function() {

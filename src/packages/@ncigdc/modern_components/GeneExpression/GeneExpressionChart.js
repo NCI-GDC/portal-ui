@@ -28,6 +28,7 @@ const handleOverlayClickOut = ({ target }) => {
     const overlay = $(`#${id} .target_overlay`);
     if (overlay.length === 1) {
       overlay.trigger('click');
+    }
   }
 };
 

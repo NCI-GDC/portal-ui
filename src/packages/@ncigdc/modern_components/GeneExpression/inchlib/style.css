@@ -6,6 +6,7 @@
   position: absolute;
   right: 0;
   top: 0;
+  z-index: 99;
 }
 
 .inchlib-toolbar > li {
@@ -34,6 +35,12 @@
   color: #fff;
 }
 
+.inchlib-toolbar_button.no-hover:hover {
+  background-color: #fff;
+  border-color: rgb(200,200,200);
+  color: #333;
+}
+
 .inchlib-toolbar_button:disabled {
   background-color: #c8c8c8;
   border-color: #d8d8d8;
@@ -42,7 +49,8 @@
 
 .inchlib-toolbar_button-legend {
   text-align: left;
-  width: 160px;
+  /* width needs to be the same as legend_width */
+  width: 170px;
 }
 
 .inchlib-toolbar_button-legend .fa {
@@ -91,7 +99,7 @@
   position: absolute;
   top: 0;
   width: 100%;
-  z-index: 100;
+  z-index: 102;
 }
 
 .inchlib-modal_container {
@@ -213,4 +221,52 @@
 
 .inchlib-heatmap-form [type="radio"]:checked + .color_scale {
   border-color: #008ae0;
+}
+
+/* LEGEND - SCREEN */
+
+.inchlib-legend-screen {
+  background: #fff;
+  border-radius: 0 0 5px 5px;
+  border: 1px solid rgb(200,200,200);
+  border-top-width: 0;
+  font-size: 12px;
+  right: 2px;
+  padding: 10px 10px 0;
+  position: absolute;
+  top: 25px;
+  width: 170px;
+  z-index: 100;
+}
+
+.inchlib-legend-screen ul {
+  list-style-type: none;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+.inchlib-legend-screen ul {
+  padding-bottom: 5px;
+}
+
+.inchlib-legend-screen .legend-list li {
+  padding-left: 17px;
+  position: relative;
+}
+
+.inchlib-legend-screen span {
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+}
+
+.inchlib-legend-screen .legend-bullet {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  display: block;
+}
+
+.inchlib-legend-screen [class^="legend-gradient"] {
+  width: 70px;
 }

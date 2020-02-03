@@ -233,7 +233,7 @@ import { each, round } from 'lodash';
 
     self.options.stage_width = self.options.width + self.options.legend_width;
 
-    self.$element.width(self.options.width);
+    self.$element.width(self.options.stage_width);
 
     self.options.heatmap_part_width = self.options.heatmap_part_width > 0.9
       ? 0.9
@@ -320,11 +320,6 @@ import { each, round } from 'lodash';
       position: 'absolute',
       'z-index': 100,
       width: 230,
-    };
-
-    self.popup_list_styles = {
-      'list-style-type': 'none',
-      'padding-left': 0,
     };
 
     // proprietary styles for GDC portal
@@ -1956,7 +1951,7 @@ import { each, round } from 'lodash';
     self._draw_heatmap_header();
     self._draw_navigation();
     self.highlight_rows(self.options.highlighted_rows);
-    self._draw_legend_for_png();
+    // self._draw_legend_for_png();
   };
 
   InCHlib.prototype._draw_dendrogram_layers = function () {
@@ -2835,6 +2830,20 @@ import { each, round } from 'lodash';
       self._draw_categories_modal();
     } else if (id === 'edit_heatmap_colors') {
       self._draw_heatmap_modal();
+    } else if (id === 'legend') {
+      if ($(`#${self.legend_id}`).length === 1) {
+        button.removeClass('no-hover');
+        $(`#${self.legend_id}`).fadeOut().remove();
+        button.find('.fa-caret-up')
+          .removeClass('fa-caret-up')
+          .addClass('fa-caret-down');
+      } else {
+        button.addClass('no-hover');
+        self._legend_icon_click();
+        button.find('.fa-caret-down')
+          .removeClass('fa-caret-down')
+          .addClass('fa-caret-up');
+      }
     }
   };
 
@@ -3881,6 +3890,7 @@ import { each, round } from 'lodash';
         right: 0,
         bottom: 0,
         opacity: invisible ? 0 : 0.5,
+        'z-index': invisible ? 98 : 101,
       });
       self.$element.append(overlay);
     }
@@ -3952,8 +3962,8 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_legend_for_screen = function() {
     const self = this;
-    const legend_div = $(`<div id='${self.legend_id}'></div>`);
-    const options = [`<h3>Legend</h3><ul>`]
+    const legend_div = $(`<div class="inchlib-legend-screen" id='${self.legend_id}'></div>`);
+    const options = [`<ul>`]
       .concat(self.legend_headings
         .map(name => {
           if (self.legend_continuous_categories.includes(name)) {
@@ -3977,41 +3987,7 @@ import { each, round } from 'lodash';
 
     legend_div.html(options);
     self.$element.append(legend_div);
-    legend_div.css({
-      ...self.popup_styles,
-      left: self.options.width - 260,
-      'padding-bottom': 0,
-      top: 0,
-      width: 230,
-    });
 
-    $(`#${self.legend_id} ul`).css({
-      ...self.popup_list_styles
-    });
-    $(`#${self.legend_id} li`).css({
-      'padding-bottom': '5px',
-    });
-    $(`#${self.legend_id} .legend-list li`).css({
-      'padding-left': '17px',
-      'position': 'relative',
-    });
-    $(`#${self.legend_id} h3`).css({
-      'margin-top': '0px'
-    });
-    $(`#${self.legend_id} span`).css({
-      'display': 'inline-block',
-      'height': 12,
-      'width': 12,
-    });
-    $(`#${self.legend_id} .legend-bullet`).css({
-      'position': 'absolute',
-      'top': '2px',
-      'left': '0',
-      'display': 'block',
-    });
-    $(`#${self.legend_id} [class^="legend-gradient"]`).css({
-      width: 70,
-    });
     $(`#${self.legend_id} .legend-gradient-age`).css({
       background: `linear-gradient(90deg, ${self.legend_gradients.age.min} 0%, ${self.legend_gradients.age.max} 100%)`
     });
@@ -4224,109 +4200,13 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._legend_icon_click = function() {
     const self = this;
-    const overlay = self._draw_target_overlay();
+    const overlay = self._draw_target_overlay(true);
     self._draw_legend_for_screen();
     overlay.click(() => {
       $(`#${self.legend_id}`).fadeOut().remove();
       overlay.fadeOut().remove();
     });
   }
-
-  InCHlib.prototype._color_scale_click = function (icon, evt) {
-    const self = this;
-
-    const overlay = self._draw_target_overlay();
-
-    let scale_divs;
-    let scales_div = $('<div class=\'color_scales\'></div>');
-    let scale;
-    let color_1;
-    let color_2;
-    let color_3;
-    let key;
-
-    for (let i = 0, keys = Object.keys(self.colors), len = keys.length; i < len; i++) {
-      key = keys[i];
-      color_1 = self._get_color_for_value(0, 0, 1, 0.5, key);
-      color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, key);
-      color_3 = self._get_color_for_value(1, 0, 1, 0.5, key);
-      scale = `<div class='color_scale' data-scale_acronym='${key}' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div>`;
-      scales_div.append(scale);
-    }
-
-    self.$element.append(scales_div);
-    scales_div.css({
-      border: 'solid #D2D2D2 2px',
-      'border-radius': '5px',
-      padding: '5px',
-      position: 'absolute',
-      top: 100,
-      left: 14,
-      width: 110,
-      'max-height': 400,
-      'overflow-y': 'auto',
-      'background-color': '#fff',
-    });
-
-    scale_divs = self.$element.find('.color_scale');
-    scale_divs.css({
-      'margin-top': '3px',
-      width: '80px',
-      height: '20px',
-      border: 'solid #D2D2D2 1px',
-    });
-
-    scale_divs.hover(
-      function () {
-        $(this).css({
-          cursor: 'pointer',
-          opacity: 0.7,
-        });
-      },
-      function () { $(this).css({ opacity: 1 }); },
-    );
-
-    overlay.click(function() {
-      scales_div.fadeOut().remove();
-      scale_divs.fadeOut().remove();
-      overlay.fadeOut().remove();
-    });
-
-    scale_divs.on('click', function () {
-      const color = $(this).attr('data-scale_acronym');
-      const settings = { heatmap_colors: color };
-      self.update_settings(settings);
-      self.redraw_heatmap();
-      self._update_color_scale();
-      overlay.trigger('click');
-      evt.preventDefault();
-    });
-  };
-
-  InCHlib.prototype._color_scale_mouseover = function (color_scale, layer) {
-    const self = this;
-    const label = color_scale.getAttr('label');
-    const x = color_scale.getAttr('x');
-    const y = color_scale.getAttr('y');
-
-    self.toolbar_tooltip = self.objects_ref.tooltip_label.clone({
-      x,
-      y: y + 25,
-    });
-
-    self.toolbar_tooltip.add(self.objects_ref.tooltip_tag.clone());
-    self.toolbar_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
-
-    layer.add(self.toolbar_tooltip);
-    self.toolbar_tooltip.moveToTop();
-    layer.draw();
-  };
-
-  InCHlib.prototype._color_scale_mouseout = function (color_scale, layer) {
-    const self = this;
-    self.toolbar_tooltip.destroy();
-    layer.draw();
-  };
 
   InCHlib.prototype._unzoom_icon_click = function () {
     const self = this;

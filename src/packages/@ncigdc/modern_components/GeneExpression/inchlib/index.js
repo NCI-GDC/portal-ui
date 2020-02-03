@@ -1443,27 +1443,12 @@ import { each, round } from 'lodash';
       const color_1 = self._get_color_for_value(0, 0, 1, 0.5, color);
       const color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, color);
       const color_3 = self._get_color_for_value(1, 0, 1, 0.5, color);
-      const scale = $(`<div class='color_scale' data-scale_acronym='${color}' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div>`);
+      const checked = self.options.heatmap_colors === color;
+      const scale = $(`<label><input type="radio" name="inchlib-color-scale" value="${color}"${checked ? ' checked' : ''}><div class='color_scale' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div></label>`);
       return scale;
     });
 
     const heatmap_form = $(`<form id='${form_id}' class="inchlib-heatmap-form"></form>`).append(color_scales);
-  
-    // const options = ['<ul class="inchlib-modal_heatmap-form_list">']
-    //   .concat(self.column_metadata.feature_names
-    //     .map((category, i) => {
-    //       const key = category.toLowerCase().split(' ').join('-');
-    //       const id = `${self._name}_${key}`;
-    //       const checked = self.column_metadata.visible[i]
-    //         ? ' checked'
-    //         : '';
-    //       return `<li class="inchlib-modal_heatmap-form_list-item"><input type='checkbox' id='${id}' class='inchlib-modal_heatmap-form_input' name='inchlib-edit-heatmap' value='${category}'${checked}/><label for='${id}' class='inchlib-modal_heatmap-form_label'>${category}</label></li>`;
-    //     })
-    //   )
-    //   .concat('</ul>')
-    //   .join('');
-
-    // heatmap_form.html(options);
 
     // create modal and append the form
     // TODO move to function?
@@ -1498,16 +1483,12 @@ import { each, round } from 'lodash';
 
     $(`#${save_id}`).click(function(e) {
       e.preventDefault();
-      const categories_updated = [];
-
-      $.each($(`#${form_id} input[name="inchlib-edit-categories"]`),
-        function() {
-          categories_updated.push($(this).is(':checked'));
-        }
-      );
-      self.column_metadata.visible = categories_updated;
+      const color = $(`#${form_id} input:checked`).val();
+      const settings = { heatmap_colors: color };
+      self.update_settings(settings);
+      self.redraw_heatmap();
+      self._update_color_scale();
       overlay.trigger('click');
-      self.redraw();
     });
   };
 
@@ -2852,6 +2833,8 @@ import { each, round } from 'lodash';
       self._draw_download_menu();
     } else if (id === 'edit_categories') {
       self._draw_categories_modal();
+    } else if (id === 'edit_heatmap_colors') {
+      self._draw_heatmap_modal();
     }
   };
 
@@ -2932,7 +2915,6 @@ import { each, round } from 'lodash';
     let y = 5.5;
 
     self._draw_toolbar();
-    self._draw_heatmap_modal();
 
     if (self.zoomed_clusters.row.length > 0) {
       x = self.distance - 55;

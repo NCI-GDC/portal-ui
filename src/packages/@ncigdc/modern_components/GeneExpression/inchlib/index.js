@@ -3914,7 +3914,7 @@ import { each, round } from 'lodash';
 
     self._draw_legend_for_png();
 
-    self.stage.width((width + 300 + png_padding) * zoom);
+    self.stage.width((width + png_padding) * zoom);
     self.stage.height((
       height + 50 < 600 + (png_padding * 2)
         ? 600 + (png_padding * 2)

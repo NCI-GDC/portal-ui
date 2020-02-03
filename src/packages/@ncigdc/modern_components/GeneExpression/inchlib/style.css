@@ -152,12 +152,12 @@
   font-size: 12px;
   list-style-type: none;
   margin-bottom: 10px;
-  padding: 5px 0 5px 20px;
+  padding: 5px 0;
 }
 
 .inchlib-modal_categories-form_list-item {
   float: left;
-  padding: 5px 0;
+  padding: 5px 0 5px 20px;
   width: 50%;
 }
 
@@ -169,10 +169,12 @@
 
 .inchlib-modal_categories-form_label {
   color: #3a3a3a;
-  display: block;
+  display: inline-block;
   font-size: 14px;
   line-height: 1;
   margin-bottom: 5px;
+  margin-left: -20px;
+  padding-left: 20px;
 }
 
 /* MODAL - HEATMAP */

@@ -3760,17 +3760,6 @@ import { each, round } from 'lodash';
   }
 
   /**
-    * Hover - change to hand cursor & back again
-    */
-  InCHlib.prototype._cursor_mouseover = function() {
-    document.body.style.cursor = 'pointer';
-  }
-
-  InCHlib.prototype._cursor_mouseout = function() {
-    document.body.style.cursor = 'default';
-  }
-
-  /**
     * Initiate InCHlib
     */
   InCHlib.prototype.init = function () {

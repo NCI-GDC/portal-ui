@@ -134,9 +134,6 @@ import { each, round } from 'lodash';
   * @option {array} [columns_order=[]]
   *   the order of columns defined by their indexes startin from 0, when not provided the columns are sorted in common order 0, 1, 2... etc.
 
-  * @option {boolean} [alternative_data=false]
-  *   use original data to compute heatmap but show the alternative values (alternative_data section must be present in input data)
-
   *
   * @example
   *   const options = {
@@ -149,8 +146,6 @@ import { each, round } from 'lodash';
   const plugin_name = 'InCHlib';
 
   const defaults = {
-    alternative_data: false,
-    button_color: 'blue',
     categories: {
       colors: {},
       defaults: [],
@@ -1387,13 +1382,6 @@ import { each, round } from 'lodash';
       options.column_metadata = false;
     }
 
-    if (self.json.alternative_data !== undefined &&
-      self.options.alternative_data) {
-      self.alternative_data = self.json.alternative_data.nodes;
-    } else {
-      options.alternative_data = false;
-    }
-
     self._update_user_options(options);
     self._add_prefix();
   };
@@ -1410,15 +1398,6 @@ import { each, round } from 'lodash';
         metadata[id] = self.metadata.nodes[keys[i]];
       }
       self.metadata.nodes = metadata;
-    }
-
-    if (self.options.alternative_data) {
-      const alternative_data = {};
-      for (var i = 0, keys = Object.keys(self.alternative_data), len = keys.length; i < len; i++) {
-        id = [self._name, keys[i]].join('#');
-        alternative_data[id] = self.alternative_data[keys[i]];
-      }
-      self.alternative_data = alternative_data;
     }
 
     if (self.column_dendrogram) {
@@ -1608,32 +1587,19 @@ import { each, round } from 'lodash';
     let node_data;
     let key;
 
-    if (self.options.alternative_data) {
-      const keys = Object.keys(self.alternative_data);
-      for (var i = 0; i < keys.length; i++) {
-        key = keys[i];
-        node_data = self.alternative_data[key];
+    const keys = Object.keys(nodes);
+    for (var i = 0; i < keys.length; i++) {
+      key = keys[i];
+      if (nodes[key].count == 1) {
+        node_data = nodes[key].features;
         for (var j = 0, len_2 = node_data.length; j < len_2; j++) {
           if ((`${node_data[j]}`).length > max_length) {
             max_length = (`${node_data[j]}`).length;
           }
         }
       }
-    } else {
-      const keys = Object.keys(nodes);
-      for (var i = 0; i < keys.length; i++) {
-        key = keys[i];
-        if (nodes[key].count == 1) {
-          node_data = nodes[key].features;
-          for (var j = 0, len_2 = node_data.length; j < len_2; j++) {
-            if ((`${node_data[j]}`).length > max_length) {
-              max_length = (`${node_data[j]}`).length;
-            }
-          }
-        }
-      }
     }
-
+    
     if (self.options.metadata) {
       nodes = self.metadata.nodes;
       const keys = Object.keys(nodes);
@@ -1777,23 +1743,17 @@ import { each, round } from 'lodash';
     self.stage.setHeight(self.options.height);
     self._draw_stage_layer();
 
-    if (self.options.dendrogram) {
-      self.timer = 0;
-      self._draw_dendrogram_layers();
-      self.root_id = self._get_root_id(self.data.nodes);
-      self._draw_row_dendrogram(self.root_id);
+    self._draw_dendrogram_layers();
+    self.root_id = self._get_root_id(self.data.nodes);
+    self._draw_row_dendrogram(self.root_id);
 
-      if (self.options.column_dendrogram && self.options.dendrogram) {
-        self.column_root_id = self._get_root_id(self.column_dendrogram.nodes);
-        self.nodes2columns = false;
-        self.columns_start_index = 0;
-        self._draw_column_dendrogram(self.column_root_id);
-      }
-    } else {
-      self.options.column_dendrogram = false;
-      self._reorder_heatmap(0);
-      self.ordered_by_index = 0;
+    if (self.options.column_dendrogram && self.options.dendrogram) {
+      self.column_root_id = self._get_root_id(self.column_dendrogram.nodes);
+      self.nodes2columns = false;
+      self.columns_start_index = 0;
+      self._draw_column_dendrogram(self.column_root_id);
     }
+    
 
     self._draw_heatmap();
     self._draw_heatmap_header();
@@ -2156,9 +2116,7 @@ import { each, round } from 'lodash';
 
     self._set_color_settings();
 
-    if (self.options.alternative_data && self.json.alternative_data.feature_names !== undefined) {
-      self.heatmap_header = self.json.alternative_data.feature_names;
-    } else if (self.data.feature_names !== undefined) {
+    if (self.data.feature_names !== undefined) {
       self.heatmap_header = self.data.feature_names;
     }
 
@@ -2614,21 +2572,6 @@ import { each, round } from 'lodash';
       self.heatmap_overlay.add(self.column_overlay);
       self.heatmap_overlay.moveToTop();
       self.heatmap_overlay.draw();
-    }
-  };
-
-  InCHlib.prototype._translate_column_to_feature_index = function (column_index) {
-    const self = this;
-    let key;
-    let index = -1;
-    for (let i = 0, keys = Object.keys(self.features), len = keys.length; i < len; i++) {
-      key = keys[i];
-      if (self.features[key]) {
-        index++;
-        if (column_index === index) {
-          return key;
-        }
-      }
     }
   };
 
@@ -3230,18 +3173,6 @@ import { each, round } from 'lodash';
     }
   };
 
-  InCHlib.prototype._unzoom_column_cluster = function () {
-    const self = this;
-    const unzoomed = self.zoomed_clusters.column.pop();
-    const zoomed_count = self.zoomed_clusters.column.length;
-    const node_id = (zoomed_count > 0) ? self.zoomed_clusters.column[zoomed_count - 1] : self.column_root_id;
-    self._get_column_ids(node_id);
-    self._draw_column_cluster(node_id);
-    self.events.on_columns_unzoom(self._unprefix(unzoomed));
-    self.current_column_ids = [];
-    self._highlight_column_cluster(unzoomed);
-  };
-
   InCHlib.prototype._draw_cluster = function (node_id) {
     const self = this;
     self._delete_layers([
@@ -3273,16 +3204,6 @@ import { each, round } from 'lodash';
       self.current_object_ids = [];
       self.last_highlighted_cluster = null;
     }
-  };
-
-  InCHlib.prototype._unzoom_cluster = function () {
-    const self = this;
-    const unzoomed = self.zoomed_clusters.row.pop();
-    const zoomed_count = self.zoomed_clusters.row.length;
-    const node_id = (zoomed_count > 0) ? self.zoomed_clusters.row[zoomed_count - 1] : self.root_id;
-    self._draw_cluster(node_id);
-    self.events.on_unzoom(self._unprefix(unzoomed));
-    self._highlight_cluster(unzoomed);
   };
 
   InCHlib.prototype._get_node_neighbourhood = function (node, nodes) {
@@ -3842,26 +3763,15 @@ import { each, round } from 'lodash';
   InCHlib.prototype._dendrogram_layers_mousedown = function (layer, evt) {
     const self = this;
     const node_id = evt.target.attrs.path_id;
-    clearTimeout(self.timer);
-    self.timer = setTimeout(() => {
-      self._get_object_ids(node_id);
-      self._zoom_cluster(node_id);
-    }, 500);
   };
 
   InCHlib.prototype._column_dendrogram_layers_mousedown = function (layer, evt) {
     const self = this;
     const node_id = evt.target.attrs.path_id;
-    clearTimeout(self.timer);
-    self.timer = setTimeout(() => {
-      self._get_column_ids(node_id);
-      self._zoom_column_cluster(node_id);
-    }, 500);
   };
 
   InCHlib.prototype._dendrogram_layers_mouseup = function (layer, evt) {
     const self = this;
-    clearTimeout(self.timer);
   };
 
   InCHlib.prototype._dendrogram_layers_mouseout = function (layer, evt) {
@@ -3875,14 +3785,6 @@ import { each, round } from 'lodash';
     self.path_overlay = evt.target.attrs.path.clone({ strokeWidth: 4 });
     self.dendrogram_hover_layer.add(self.path_overlay);
     self.dendrogram_hover_layer.draw();
-  };
-
-  InCHlib.prototype._visible_features_equal_column_dendrogram_count = function () {
-    const self = this;
-    if ((self.on_features.data.length + self.on_features.metadata.length) == self.current_column_count) {
-      return true;
-    }
-    return false;
   };
 
   InCHlib.prototype._get_color_for_value = function (value, min, max, middle, color_scale) {

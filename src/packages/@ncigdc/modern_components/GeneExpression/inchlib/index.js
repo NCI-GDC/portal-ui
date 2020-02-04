@@ -86,9 +86,6 @@ import { each, round } from 'lodash';
   * @option {boolean} [independent_columns=true]
   *   determines whether the color scale is based on the values from all columns together or for each column separately
 
-  * @option {string} [label_color=grey]
-  *   color of column label
-
   * @option {number} [max_column_width=100]
   *   maximum column width in pixels
 
@@ -112,9 +109,6 @@ import { each, round } from 'lodash';
 
   * @option {string} [font.color="#3a3a3a"]
   *   the color of the text values in the heatmap
-
-  * @option {string} [count_column_colors="Reds"]
-  *   the color scale of count column
 
   * @option {boolean} [draw_row_ids=false]
   *   draws the row IDs next to the heatmap when there is enough space to visualize them
@@ -154,7 +148,6 @@ import { each, round } from 'lodash';
     column_metadata_colors: 'RdLrBu',
     column_metadata: false,
     columns_order: [],
-    count_column_colors: 'Reds',
     count_column: false,
     data: {},
     dendrogram: true,
@@ -172,7 +165,6 @@ import { each, round } from 'lodash';
     highlight_colors: 'Oranges',
     highlighted_rows: [],
     independent_columns: true,
-    label_color: '#9E9E9E',
     max_column_width: 150,
     max_height: 800,
     max_percentile: 100,
@@ -338,285 +330,6 @@ import { each, round } from 'lodash';
           },
         });
         self.element.dispatchEvent(clickInchlibLink);
-      },
-
-      /**
-        * @name InCHlib#row_onmouseover
-        * @event
-        * @param {function} function() callback function for mouse cursor over the heatmap row event
-        * @eventData {array} array array of object IDs represented by row
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.row_onmouseover = (
-        *    function(object_ids, evt) {
-        *       alert(object_ids);
-        *    }
-        * );
-        *
-        */
-      row_onmouseover(object_ids, evt) {
-
-      },
-
-      /**
-        * @name InCHlib#row_onmouseout
-        * @event
-        * @param {function} function() callback function for mouse cursor out of the heatmap row event
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.row_onmouseout = (
-        *    function(evt) {
-        *       alert("now");
-        *    }
-        * );
-        *
-        */
-      row_onmouseout(evt) {
-
-      },
-
-      /**
-        * @name InCHlib#dendrogram_node_onclick
-        * @event
-        * @param {function} function() callback function for dendrogram node click event
-        * @eventData {array} array array of object IDs represented by the node
-        * @eventData {string} node_id Id of the dendrogram node
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.dendrogram_node_onclick = (
-        *    function(object_ids, node_id, evt) {
-        *    alert(node_id + ": " + object_ids.length+" rows");
-        *    }
-        * );
-        *
-        */
-      dendrogram_node_onclick(object_ids, node_id, evt) {
-
-      },
-
-      /**
-        * @name InCHlib#column_dendrogram_node_onclick
-        * @event
-        * @param {function} function() callback function for column dendrogram click event
-        * @eventData {array} array array of column indexes
-        * @eventData {string} node_id Id of the dendrogram node
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.column_dendrogram_node_onclick = (
-        *    function(column_ids, node_id, evt) {
-        *    alert(node_id + ": " + column_ids.length+" columns");
-        *    }
-        * );
-        *
-        */
-      column_dendrogram_node_onclick(column_indexes, node_id, evt) {
-
-      },
-
-      /**
-        * @name InCHlib#dendrogram_node_highlight
-        * @event
-        * @param {function} function() callback function for the dendrogram node highlight event
-        * @eventData {array} array array of object IDs represented by row
-        * @eventData {string} node_id Id of the dendrogram node
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.dendrogram_node_highlight = (
-        *    function(object_ids, node_id, evt) {
-        *       alert(node_id + ": " + object_ids.length+" rows");
-        *    }
-        * );
-        *
-        */
-      dendrogram_node_highlight(object_ids, node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#column_dendrogram_node_highlight
-        * @event
-        * @param {function} function() callback function for the column dendrogram node highlight event
-        * @eventData {array} array array of column indexes
-        * @eventData {string} node_id Id of the dendrogram node
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.column_dendrogram_node_highlight = (
-        *    function(object_ids, node_id, evt) {
-        *       alert(node_id + ": " + object_ids.length+" columns");
-        *    }
-        * );
-        *
-        */
-      column_dendrogram_node_highlight(column_indexes, node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#dendrogram_node_unhighlight
-        * @event
-        * @param {function} function() callback function for the dendrogram node unhighlight event
-        * @eventData {string} node_id Id of the dendrogram node
-
-        * @example
-        * instance.events.dendrogram_node_unhighlight = (
-        *    function(node_id) {
-        *       alert(node_id);
-        *    }
-        * );
-        *
-        */
-      dendrogram_node_unhighlight(node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#column_dendrogram_node_unhighlight
-        * @event
-        * @param {function} function() callback function for the column dendrogram node unhighlight event
-        * @eventData {string} node_id Id of the column dendrogram node
-
-        * @example
-        * instance.events.column_dendrogram_node_unhighlight = (
-        *    function(node_id) {
-        *       alert(node_id);
-        *    }
-        * );
-        *
-        */
-      column_dendrogram_node_unhighlight(node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#heatmap_onmouseout
-        * @event
-        * @param {function} function() callback function for mouse cursor out of hte heatmap area
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.heatmap_onmouseout = (
-        *    function(evt) {
-        *       alert("now");
-        *    }
-        * );
-        *
-        */
-      heatmap_onmouseout(evt) {
-
-      },
-
-      /**
-        * @name InCHlib#on_zoom
-        * @event
-        * @param {function} function() callback function for zoom event
-        * @eventData {string} node_id Id of the dendrogram node
-
-        * @example
-        * instance.events.on_zoom = (
-        *    function(node_id) {
-        *       alert(node_id);
-        *    }
-        * );
-        *
-        */
-      on_zoom(object_ids, node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#on_unzoom
-        * @event
-        * @param {function} function() callback function for unzoom event
-        * @eventData {string} node_id Id of the dendrogram node
-
-        * @example
-        * instance.events.on_unzoom = (
-        *    function(node_id) {
-        *       alert(node_id);
-        *    }
-        * );
-        *
-        */
-      on_unzoom(node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#on_columns_zoom
-        * @event
-        * @param {function} function() callback function for columns zoom event
-        * @eventData {array} array array of column indexes
-        * @eventData {string} node_id Id of the column dendrogram node
-
-        * @example
-        * instance.events.on_columns_zoom = (
-        *    function(column_indexes, node_id) {
-        *       alert(column_indexes, node_id);
-        *    }
-        * );
-        *
-        */
-      on_columns_zoom(column_indexes, node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#on_columns_unzoom
-        * @event
-        * @param {function} function() callback function for columns unzoom event
-        * @eventData {string} node_id Id of the column dendrogram node
-
-        * @example
-        * instance.events.on_columns_unzoom = (
-        *    function(node_id) {
-        *       alert(node_id);
-        *    }
-        * );
-        *
-        */
-      on_columns_unzoom(node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#on_reset
-        * @event
-        * @param {function} function() callback function for refresh icon click event
-        * @eventData {object} event event object
-        * @example
-        * instance.events.on_reset = (
-        *    function() {
-        *       alert("now");
-        *    }
-        * );
-        *
-        */
-      on_reset() {
-
-      },
-
-      /**
-        * @name InCHlib#empty_space_onclick
-        * @event
-        * @param {function} function() callback function for click on empty(inactive) space in the visualization (e.g., around the heatmap)
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.empty_space_onclick = (
-        *    function(evt) {
-        *       alert("now");
-        *    }
-        * );
-        *
-        */
-      empty_space_onclick(evt) {
-
       },
 
     };
@@ -1754,7 +1467,6 @@ import { each, round } from 'lodash';
       self._draw_column_dendrogram(self.column_root_id);
     }
     
-
     self._draw_heatmap();
     self._draw_heatmap_header();
     self._draw_navigation();
@@ -1771,7 +1483,6 @@ import { each, round } from 'lodash';
     self.cluster_layer.on('click', (evt) => {
       self.unhighlight_cluster();
       self.unhighlight_column_cluster();
-      self.events.empty_space_onclick(evt);
     });
   };
 
@@ -1883,7 +1594,6 @@ import { each, round } from 'lodash';
     self.stage_layer.on('click', (evt) => {
       self.unhighlight_cluster();
       self.unhighlight_column_cluster();
-      self.events.empty_space_onclick(evt);
     });
   };
 
@@ -2053,6 +1763,7 @@ import { each, round } from 'lodash';
     self.data_descs_all = self._get_min_max_middle(data);
 
     if (self.options.independent_columns) {
+      console.log('test')
       self.data_descs = self._get_data_min_max_middle(data);
     } else {
       for (var i = 0; i < self.dimensions.data; i++) {
@@ -2247,7 +1958,6 @@ import { each, round } from 'lodash';
       self.last_header = null;
       self.heatmap_overlay.destroyChildren();
       self.heatmap_overlay.draw();
-      self.events.heatmap_onmouseout(evt);
     });
   };
 
@@ -2906,7 +2616,6 @@ import { each, round } from 'lodash';
       self.last_highlighted_cluster = path_id;
       self._highlight_path(path_id, '#F5273C');
       self._draw_cluster_layer(path_id);
-      self.events.dendrogram_node_highlight(self.current_object_ids, self._unprefix(path_id));
     }
     self.dendrogram_layer.draw();
   };
@@ -2925,7 +2634,6 @@ import { each, round } from 'lodash';
       self._highlight_column_path(path_id, '#F5273C');
       self.current_column_ids.sort((a, b) => { return a - b; });
       self._draw_column_cluster_layer(path_id);
-      self.events.column_dendrogram_node_highlight(self.current_column_ids, self._unprefix(path_id));
     }
     self.column_dendrogram_layer.draw();
   };
@@ -2938,7 +2646,6 @@ import { each, round } from 'lodash';
       self.column_cluster_group.destroy();
       self.cluster_layer.draw();
       self.current_column_ids = [];
-      self.events.column_dendrogram_node_unhighlight(self._unprefix(self.last_highlighted_column_cluster));
       self.last_highlighted_column_cluster = null;
     }
   };
@@ -2984,7 +2691,6 @@ import { each, round } from 'lodash';
       self.dendrogram_layer.draw();
       self.row_cluster_group.destroy();
       self.cluster_layer.draw();
-      self.events.dendrogram_node_unhighlight(self._unprefix(self.last_highlighted_cluster));
       self.highlighted_rows_y = [];
       self.current_object_ids = [];
       self.last_highlighted_cluster = null;
@@ -3167,7 +2873,6 @@ import { each, round } from 'lodash';
       self.zoomed_clusters.column.push(node_id);
       self._draw_column_cluster(node_id);
       self.highlight_rows(self.options.highlighted_rows);
-      self.events.on_columns_zoom(self.current_column_ids, self._unprefix(node_id));
       self.current_column_ids = [];
       self.last_highlighted_column_cluster = null;
     }
@@ -3199,7 +2904,6 @@ import { each, round } from 'lodash';
       self.zoomed_clusters.row.push(node_id);
       self._draw_cluster(node_id);
       self.highlight_rows(self.options.highlighted_rows);
-      self.events.on_zoom(self.current_object_ids, self._unprefix(node_id));
       self.highlighted_rows_y = [];
       self.current_object_ids = [];
       self.last_highlighted_cluster = null;
@@ -3747,7 +3451,6 @@ import { each, round } from 'lodash';
     const { path_id } = evt.target.attrs;
     layer.fire('mouseout', layer, evt);
     self._highlight_cluster(path_id);
-    self.events.dendrogram_node_onclick(self.current_object_ids, self._unprefix(path_id), evt);
     // console.log('clicked row dendro');
   };
 
@@ -3756,7 +3459,6 @@ import { each, round } from 'lodash';
     const { path_id } = evt.target.attrs;
     layer.fire('mouseout', layer, evt);
     self._highlight_column_cluster(path_id);
-    self.events.column_dendrogram_node_onclick(self.current_column_ids, self._unprefix(path_id), evt);
     // console.log('clicked column dendro');
   };
 
@@ -3905,7 +3607,6 @@ import { each, round } from 'lodash';
 
       self.heatmap_overlay.add(self.row_overlay);
       self.heatmap_overlay.draw();
-      self.events.row_onmouseover(self.data.nodes[row_id].objects, evt);
     }
   };
 
@@ -3913,7 +3614,6 @@ import { each, round } from 'lodash';
     const self = this;
     self.row_overlay.destroy();
     self.heatmap_overlay.draw();
-    self.events.row_onmouseout(evt);
   };
 
   InCHlib.prototype._draw_col_label = function (evt) {

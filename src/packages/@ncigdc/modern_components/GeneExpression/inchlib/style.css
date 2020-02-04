@@ -70,6 +70,7 @@
   outline: currentcolor none medium;
   padding: 0;
   position: absolute;
+  right: 0;
   top: 30px;
 }
 
@@ -81,7 +82,7 @@
   outline: currentcolor none medium;
   padding: 0.6rem 1rem;
   width: 100%;
-  text-align: left;
+  text-align: right;
 }
 
 .inchlib-download_li-button:hover {

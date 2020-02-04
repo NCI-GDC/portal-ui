@@ -137,9 +137,6 @@ import { each, round } from 'lodash';
   * @option {boolean} [alternative_data=false]
   *   use original data to compute heatmap but show the alternative values (alternative_data section must be present in input data)
 
-  * @option {object} [navigation_toggle={"distance_scale": false, "filter_button": false, "download_button": false, "color_scale": false, "hint_button": false}]
-  *   toggle "navigation" features - true/false
-
   *
   * @example
   *   const options = {
@@ -190,15 +187,6 @@ import { each, round } from 'lodash';
     middle_percentile: 50,
     min_percentile: 0,
     min_row_height: 1,
-    navigation_toggle: {
-      categories_legend: true,
-      color_scale: true,
-      // distance_scale: false,
-      edit_categories: true,
-      // download_button: true,
-      filter_button: true,
-      hint_button: false,
-    },
     png_padding: 20,
     tooltip: {
       fill: '#fff',
@@ -4435,13 +4423,7 @@ import { each, round } from 'lodash';
     */
   InCHlib.prototype.update_settings = function (settings_object) {
     const self = this;
-    const { navigation_toggle } = self.options;
     $.extend(self.options, settings_object);
-
-    if (settings_object.navigation_toggle !== undefined) {
-      self.options.navigation_toggle = navigation_toggle;
-      $.extend(self.options.navigation_toggle, settings_object.navigation_toggle);
-    }
   };
 
   /**

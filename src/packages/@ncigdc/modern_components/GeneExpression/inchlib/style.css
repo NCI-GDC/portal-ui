@@ -75,7 +75,7 @@
   top: 30px;
 }
 
-.inchlib-download_li-button {
+.inchlib-download_btn {
   -webkit-appearance: none;
   appearance: none;
   background-color: #fff;
@@ -86,7 +86,7 @@
   text-align: right;
 }
 
-.inchlib-download_li-button:hover {
+.inchlib-download_btn:hover {
   background-color: rgb(245,245,245);
   color: #262626;
 }
@@ -110,7 +110,7 @@
   z-index: 102;
 }
 
-.inchlib-modal_div-border {
+.inchlib-modal_content {
   border-bottom: 1px solid #dedede;
   border-top: 1px solid#dedede;
   box-sizing: border-box;
@@ -122,7 +122,7 @@
   position: relative;
 }
 
-.inchlib-modal_buttons-container {
+.inchlib-modal_actions {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -130,7 +130,7 @@
   position: relative; 
 }
 
-.inchlib-modal_buttons-btn {
+.inchlib-modal_actions-btn {
   background-color:#005083;
   border-radius: 4px;
   border: 1px solid transparent;
@@ -141,11 +141,11 @@
   transition: all 0.25s ease 0s;
 }
 
-.inchlib-modal_buttons-btn:first-child {
+.inchlib-modal_actions-btn:first-child {
   margin-right: 10px;
 }
 
-.inchlib-modal_buttons-btn:hover {
+.inchlib-modal_actions-btn:hover {
   background-color: #008ae0;
 }
 

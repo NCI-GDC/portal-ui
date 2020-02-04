@@ -1231,28 +1231,28 @@ import { each, round } from 'lodash';
     const cancel_id = 'inchlib_cancel';
     const save_id = 'inchlib_save';
 
-    const modal_button = $('<button />', {
-      'class': 'inchlib-modal_buttons-btn',
+    const modal_btn = $('<button />', {
+      'class': 'inchlib-modal_actions-btn',
       'type': 'button',
     });
 
-    const modal_buttons = [
-      modal_button.clone()
+    const modal_actions = [
+      modal_btn.clone()
         .attr('id', cancel_id)
         .text(has_close_btn 
           ? 'Close' 
           : 'Cancel'),
-      ...has_close_btn || modal_button.clone()
+      ...has_close_btn || modal_btn.clone()
         .attr('id', save_id)
         .text('Save')
     ];
 
-    const modal = $('<div />', { 'class': 'inchlib-modal inchlib-modal_categories'}).append(
+    const modal = $('<div />', { 'class': 'inchlib-modal'}).append(
       $('<h2 />', { text: modal_title }),
-      $('<div />',{ 'class': 'inchlib-modal_div-border' })
+      $('<div />',{ 'class': 'inchlib-modal_content' })
         .append(modal_content),
-      $('<div />', {'class': 'inchlib-modal_buttons-container' })
-        .append(modal_buttons)
+      $('<div />', {'class': 'inchlib-modal_actions' })
+        .append(modal_actions)
     );
 
     self.$element.append(modal);
@@ -2753,7 +2753,7 @@ import { each, round } from 'lodash';
     const download_ul = $(`<ul class='inchlib-download'></ul>`);
 
     const download_lis = download_options.map(option => {
-      const open_li = `<li class="inchlib-download_li inchlib-download_li-${option.id}"><button type="button" class="inchlib-download_li-button" data-inchlib-id="${option.id}">`;
+      const open_li = `<li class="inchlib-download_item"><button type="button" class="inchlib-download_btn" data-inchlib-id="${option.id}">`;
       const close_li = '</button></li>';
       const contents = option.label;
       return `${open_li}${contents}${close_li}`;
@@ -2763,7 +2763,7 @@ import { each, round } from 'lodash';
     download_ul.html(download_lis);
     $('.inchlib-toolbar_button-download').parent().append(download_ul);
 
-    $('.inchlib-download_li-button').click(function() {
+    $('.inchlib-download_btn').click(function() {
       if ($(this).attr('data-inchlib-id') === 'download-png') {
         self._download_png();
       }

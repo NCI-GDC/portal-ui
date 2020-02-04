@@ -1223,15 +1223,54 @@ import { each, round } from 'lodash';
     self.init();
   }
 
-  InCHlib.prototype._draw_categories_modal = function () {
+  InCHlib.prototype._draw_modal = function (modal_title, modal_content, has_close_btn = false) {
     const self = this;
     const overlay = self._draw_overlay();
+    const cancel_id = 'inchlib_cancel';
+    const save_id = 'inchlib_save';
 
-    const title = 'Edit Categories';
+    const modal_button = $('<button />', {
+      'class': 'inchlib-modal_buttons-btn',
+      'type': 'button',
+    });
 
+    const modal_buttons = [
+      modal_button.clone()
+        .attr('id', cancel_id)
+        .text(has_close_btn 
+          ? 'Close' 
+          : 'Cancel'),
+      ...has_close_btn || modal_button.clone()
+        .attr('id', save_id)
+        .text('Save')
+    ];
+
+    const modal = $('<div />', { 'class': 'inchlib-modal inchlib-modal_categories'}).append(
+      $('<h2 />', { text: modal_title }),
+      $('<div />',{ 'class': 'inchlib-modal_div-border' })
+        .append(modal_content),
+      $('<div />', {'class': 'inchlib-modal_buttons-container' })
+        .append(modal_buttons)
+    );
+
+    self.$element.append(modal);
+
+    $(`#${cancel_id}`).click(function(e) {
+      e.preventDefault();
+      overlay.trigger('click');
+    });
+
+    overlay.click(function() {
+      overlay.fadeOut().remove();
+      $('.inchlib-modal').remove();
+    });
+  };
+
+  InCHlib.prototype._draw_categories_modal = function () {
+    const self = this;
+    const modal_title = 'Edit Categories';
     const form_id = `${self._name}_categories_form`;
 
-    // create categories form
     const categories_form = $(`<form id='${form_id}'></form>`);
 
     const options = ['<ul class="inchlib-modal_categories-form_list">']
@@ -1250,36 +1289,9 @@ import { each, round } from 'lodash';
 
     categories_form.html(options);
 
-    // create modal and append the form
-    // TODO move to function?
-    const cancel_id = `${form_id}_cancel`;
-    const save_id = `${form_id}_save`;
-    const modal = $('<div />', { 'class': 'inchlib-modal inchlib-modal_categories'}).append(
-      $('<h2 />', { text: title }),
-      $('<div />',{ 'class': 'inchlib-modal_div-border' }).append(
-        categories_form
-      ),
-      $('<div />', {'class': 'inchlib-modal_buttons-container' }).append(
-        $('<button />', { 'type': 'button', 'text': 'Cancel', 'class': 'inchlib-modal_buttons-btn', 'id': cancel_id }),
-        $('<button />', { 'type': 'button', 'text': 'Save', 'class': 'inchlib-modal_buttons-btn', 'id': save_id })
-      )
-    );
+    self._draw_modal(modal_title, categories_form);
 
-    self.$element.append(modal);
-
-    overlay.click(function() {
-      overlay.fadeOut().remove();
-      $('.inchlib-modal').remove();
-    });
-
-    // cancel & save
-
-    $(`#${cancel_id}`).click(function(e) {
-      e.preventDefault();
-      overlay.trigger('click');
-    });
-
-    $(`#${save_id}`).click(function(e) {
+    $('#inchlib_save').click(function(e) {
       e.preventDefault();
       const categories_updated = [];
 
@@ -1289,7 +1301,7 @@ import { each, round } from 'lodash';
         }
       );
       self.column_metadata.visible = categories_updated;
-      overlay.trigger('click');
+      $('.inchlib_overlay').trigger('click');
       self.redraw();
     });
   };

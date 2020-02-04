@@ -1049,6 +1049,12 @@ import { each, round } from 'lodash';
     };
 
     /**
+    * Push the chart down to make room for the toolbar
+    * @name InCHlib#toolbar_distance
+    */
+    self.toolbar_distance = 75;
+
+    /**
     * Default Konvajs objects references
     * @name InCHlib#objects_ref
     */
@@ -1137,6 +1143,10 @@ import { each, round } from 'lodash';
         verticalAlign: 'middle',
         width: 40,
       }),
+
+      layer_below_toolbar: new Konva.Layer({
+        y: self.toolbar_distance,
+      })
     };
 
     /**
@@ -1179,47 +1189,35 @@ import { each, round } from 'lodash';
 
     /**
     * Info for the toolbar buttons.
-    * @name InCHlib#toolbar_refs
+    * @name InCHlib#toolbar_buttons
     */
-    self.toolbar_refs = {
-      buttons: [
-        {
-          fa_icon: 'fa-undo',
-          label: 'Reset',
-          id: 'reset',
-        },
-        {
-          fa_icon: 'fa-paint-brush',
-          label: 'Edit Heatmap Colors',
-          id: 'edit_heatmap_colors',
-        },
-        {
-          fa_icon: 'fa-bars',
-          label: 'Edit Categories',
-          id: 'edit_categories',
-        },
-        {
-          fa_icon: 'fa-download',
-          label: 'Download',
-          id: 'download',
-        },
-        {
-          fa_icon: ['fa-caret-down','fa-caret-up'],
-          label: 'Legend',
-          id: 'legend',
-        }
-      ],
-      sizes: {
-        // buttons need to have slightly smaller measurements
-        // than the buttons in the rest of the portal
-        height: 27,
-        spacing: 4,
-        width: 39,
+    self.toolbar_buttons = [
+      {
+        fa_icon: 'fa-undo',
+        label: 'Reset',
+        id: 'reset',
       },
-    };
-
-    // push the chart down to make room for the toolbar
-    self.toolbar_distance = 75;
+      {
+        fa_icon: 'fa-paint-brush',
+        label: 'Edit Heatmap Colors',
+        id: 'edit_heatmap_colors',
+      },
+      {
+        fa_icon: 'fa-bars',
+        label: 'Edit Categories',
+        id: 'edit_categories',
+      },
+      {
+        fa_icon: 'fa-download',
+        label: 'Download',
+        id: 'download',
+      },
+      {
+        fa_icon: ['fa-caret-down','fa-caret-up'],
+        label: 'Legend',
+        id: 'legend',
+      }
+    ];
 
     // start plugin
     self.init();
@@ -1540,9 +1538,6 @@ import { each, round } from 'lodash';
     let columns;
     const data_rows = data.length;
     const data_cols = data[0].length;
-
-    // console.log('data_rows', data_rows);
-    // console.log('data_cols', data_cols);
     
     if (axis === 'column') {
       columns = [];
@@ -1828,8 +1823,8 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_dendrogram_layers = function () {
     const self = this;
-    self.cluster_layer = new Konva.Layer({ y: self.toolbar_distance });
-    self.dendrogram_hover_layer = new Konva.Layer({ y: self.toolbar_distance });
+    self.cluster_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.dendrogram_hover_layer = self.objects_ref.layer_below_toolbar.clone();
     self.stage.add(self.cluster_layer, self.dendrogram_hover_layer);
 
     self.cluster_layer.on('click', (evt) => {
@@ -1841,7 +1836,7 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_row_dendrogram = function (node_id) {
     const self = this;
-    self.dendrogram_layer = new Konva.Layer({ y: self.toolbar_distance });
+    self.dendrogram_layer = self.objects_ref.layer_below_toolbar.clone();
     const node = self.data.nodes[node_id];
     const { count } = node;
 
@@ -1953,7 +1948,7 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_column_dendrogram = function (node_id) {
     const self = this;
-    self.column_dendrogram_layer = new Konva.Layer({ y: self.toolbar_distance });
+    self.column_dendrogram_layer = self.objects_ref.layer_below_toolbar.clone();
     self.column_x_coordinates = {};
     const node = self.column_dendrogram.nodes[node_id];
     self.current_column_count = node.count;
@@ -2277,8 +2272,8 @@ import { each, round } from 'lodash';
     let y;
     let key;
 
-    self.heatmap_layer = new Konva.Layer({ y: self.toolbar_distance });
-    self.heatmap_overlay = new Konva.Layer({ y: self.toolbar_distance });
+    self.heatmap_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.heatmap_overlay = self.objects_ref.layer_below_toolbar.clone();
 
     self.current_draw_values = true;
     self.max_value_length = self._get_max_value_length();
@@ -2302,7 +2297,7 @@ import { each, round } from 'lodash';
       self._draw_column_metadata(x1);
     }
 
-    self.highlighted_rows_layer = new Konva.Layer({ y: self.toolbar_distance });
+    self.highlighted_rows_layer = self.objects_ref.layer_below_toolbar.clone();
     self.stage.add(self.heatmap_layer, self.heatmap_overlay, self.highlighted_rows_layer);
 
     self.highlighted_rows_layer.moveToTop();
@@ -2529,7 +2524,7 @@ import { each, round } from 'lodash';
       self.header.length > 0 &&
       self.pixels_for_dimension >= self.min_size_draw_values
     ) {
-      self.header_layer = new Konva.Layer({ y: self.toolbar_distance });
+      self.header_layer = self.objects_ref.layer_below_toolbar.clone();
       const count = self._hack_size(self.leaves_y_coordinates);
       const y = (self.options.column_dendrogram && self.heatmap_header)
         ? self.header_height + (self.pixels_for_leaf * count) + 15 + self.column_metadata_height
@@ -2660,7 +2655,7 @@ import { each, round } from 'lodash';
     const self = this;
     const toolbar_id = `${self._name}-toolbar`;
     const toolbar_ul = $(`<ul class='inchlib-toolbar' id='${toolbar_id}'></ul>`);
-    const toolbar_buttons = self.toolbar_refs.buttons.map(btn => {
+    const toolbar_buttons = self.toolbar_buttons.map(btn => {
       const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
       const open_button = `<li><button type="button" class="inchlib-toolbar_button inchlib-toolbar_button-${btn.id}" data-inchlib-id="${btn.id}" data-tooltip="${btn.label}"${is_button_disabled ? ' disabled' : ''}>`;
       const close_button = '</button></li>';
@@ -3632,7 +3627,7 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_heatmap_scale = function() {
     const self = this;
-    self.heatmap_scale_layer = new Konva.Layer({ x: 5, y: self.toolbar_distance });
+    self.heatmap_scale_layer = self.objects_ref.layer_below_toolbar.clone({x: 5 })
     self.stage.add(self.heatmap_scale_layer);
 
     // add heatmap scale to PNG
@@ -3724,7 +3719,7 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_legend_for_png = function() {
     const self = this;
-    self.legend_png_layer = new Konva.Layer({ y: self.toolbar_distance });
+    self.legend_png_layer = self.objects_ref.layer_below_toolbar.clone();
     self.stage.add(self.legend_png_layer);
 
     const legend_y = 5;

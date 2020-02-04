@@ -1382,15 +1382,13 @@ import { each, round } from 'lodash';
     const cancel_id = `${form_id}_cancel`;
     const save_id = `${form_id}_save`;
     const modal = $('<div />', { 'class': 'inchlib-modal inchlib-modal_categories'}).append(
-      $('<div />', { 'class': 'inchlib-modal_container'}).append(
-        $('<h2 />', { text: title }),
-        $('<div />',{ 'class': 'inchlib-modal_div-border' }).append(
-          categories_form
-        ),
-        $('<div />', {'class': 'inchlib-modal_buttons-container' }).append(
-          $('<button />', { 'type': 'button', 'text': 'Cancel', 'class': 'inchlib-modal_buttons-btn', 'id': cancel_id }),
-          $('<button />', { 'type': 'button', 'text': 'Save', 'class': 'inchlib-modal_buttons-btn', 'id': save_id })
-        )
+      $('<h2 />', { text: title }),
+      $('<div />',{ 'class': 'inchlib-modal_div-border' }).append(
+        categories_form
+      ),
+      $('<div />', {'class': 'inchlib-modal_buttons-container' }).append(
+        $('<button />', { 'type': 'button', 'text': 'Cancel', 'class': 'inchlib-modal_buttons-btn', 'id': cancel_id }),
+        $('<button />', { 'type': 'button', 'text': 'Save', 'class': 'inchlib-modal_buttons-btn', 'id': save_id })
       )
     );
 
@@ -1450,15 +1448,13 @@ import { each, round } from 'lodash';
     const cancel_id = `${form_id}_cancel`;
     const save_id = `${form_id}_save`;
     const modal = $('<div />', { 'class': 'inchlib-modal inchlib-modal_heatmap'}).append(
-      $('<div />', { 'class': 'inchlib-modal_container'}).append(
-        $('<h2 />', { text: title }),
-        $('<div />',{ 'class': 'inchlib-modal_div-border' }).append(
-          heatmap_form
-        ),
-        $('<div />', {'class': 'inchlib-modal_buttons-container' }).append(
-          $('<button />', { 'type': 'button', 'text': 'Cancel', 'class': 'inchlib-modal_buttons-btn', 'id': cancel_id }),
-          $('<button />', { 'type': 'button', 'text': 'Save', 'class': 'inchlib-modal_buttons-btn', 'id': save_id })
-        )
+      $('<h2 />', { text: title }),
+      $('<div />',{ 'class': 'inchlib-modal_div-border' }).append(
+        heatmap_form
+      ),
+      $('<div />', {'class': 'inchlib-modal_buttons-container' }).append(
+        $('<button />', { 'type': 'button', 'text': 'Cancel', 'class': 'inchlib-modal_buttons-btn', 'id': cancel_id }),
+        $('<button />', { 'type': 'button', 'text': 'Save', 'class': 'inchlib-modal_buttons-btn', 'id': save_id })
       )
     );
 

@@ -3286,11 +3286,12 @@ import { each, round } from 'lodash';
     const x = self.options.width - 85;
     const y = self.header_height - 25;
 
-    const cols_desc = self.objects_ref.count.clone({
-      x: x + 15,
-      y: y - 5,
-      text: count,
-    });
+    // TODO: NUMBER OF COLUMNS THAT WILL BE ZOOMED
+    // const cols_desc = self.objects_ref.count.clone({
+    //   x: x + 15,
+    //   y: y - 5,
+    //   text: count,
+    // });
 
     const x1 = self._hack_round((self.current_column_ids[0] - self.columns_start_index) * self.pixels_for_dimension);
     const x2 = self._hack_round((self.current_column_ids[0] + self.current_column_ids.length - self.columns_start_index) * self.pixels_for_dimension);
@@ -3330,7 +3331,7 @@ import { each, round } from 'lodash';
       height,
     });
 
-    self.column_cluster_group.add(cluster_overlay_1, cluster_overlay_2, cols_desc, cluster_border_1, cluster_border_2);
+    self.column_cluster_group.add(cluster_overlay_1, cluster_overlay_2, cluster_border_1, cluster_border_2);
     self.cluster_layer.add(self.column_cluster_group);
     self.stage.add(self.cluster_layer);
     self.cluster_layer.draw();

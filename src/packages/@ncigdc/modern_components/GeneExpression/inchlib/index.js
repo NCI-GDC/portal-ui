@@ -1223,6 +1223,8 @@ import { each, round } from 'lodash';
     self.init();
   }
 
+  // MODALS
+
   InCHlib.prototype._draw_modal = function (modal_title, modal_content, has_close_btn = false) {
     const self = this;
     const overlay = self._draw_overlay();
@@ -1308,14 +1310,8 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_heatmap_modal = function () {
     const self = this;
-    const overlay = self._draw_overlay();
-
-    const title = 'Edit Heatmap Colors';
-
+    const modal_title = 'Edit Heatmap Colors';
     const form_id = `${self._name}_heatmap_form`;
-
-    // create categories form
-    // const heatmap_form = $(`<form id='${form_id}'></form>`);
 
     const color_scales = Object.keys(self.colors).map(color => {
       const color_1 = self._get_color_for_value(0, 0, 1, 0.5, color);
@@ -1328,43 +1324,16 @@ import { each, round } from 'lodash';
 
     const heatmap_form = $(`<form id='${form_id}' class="inchlib-heatmap-form"></form>`).append(color_scales);
 
-    // create modal and append the form
-    // TODO move to function?
-    const cancel_id = `${form_id}_cancel`;
-    const save_id = `${form_id}_save`;
-    const modal = $('<div />', { 'class': 'inchlib-modal inchlib-modal_heatmap'}).append(
-      $('<h2 />', { text: title }),
-      $('<div />',{ 'class': 'inchlib-modal_div-border' }).append(
-        heatmap_form
-      ),
-      $('<div />', {'class': 'inchlib-modal_buttons-container' }).append(
-        $('<button />', { 'type': 'button', 'text': 'Cancel', 'class': 'inchlib-modal_buttons-btn', 'id': cancel_id }),
-        $('<button />', { 'type': 'button', 'text': 'Save', 'class': 'inchlib-modal_buttons-btn', 'id': save_id })
-      )
-    );
+    self._draw_modal(modal_title, heatmap_form);
 
-    self.$element.append(modal);
-
-    overlay.click(function() {
-      overlay.fadeOut().remove();
-      $('.inchlib-modal').remove();
-    });
-
-    // cancel & save
-
-    $(`#${cancel_id}`).click(function(e) {
-      e.preventDefault();
-      overlay.trigger('click');
-    });
-
-    $(`#${save_id}`).click(function(e) {
+    $('#inchlib_save').click(function(e) {
       e.preventDefault();
       const color = $(`#${form_id} input:checked`).val();
       const settings = { heatmap_colors: color };
       self.update_settings(settings);
       self.redraw_heatmap();
       self._update_color_scale();
-      overlay.trigger('click');
+      $('.inchlib-overlay').trigger('click');
     });
   };
 
@@ -3524,12 +3493,10 @@ import { each, round } from 'lodash';
       overlay.trigger('click');
     }
 
-      overlay = $('<div class=\'inchlib-overlay\'></div>');
-      overlay.css({
-        opacity: invisible ? 0 : 0.5,
-        'z-index': invisible ? 98 : 101,
-      });
-      self.$element.append(overlay);
+    overlay = $(`<div class="inchlib-overlay${invisible
+      ? ' inchlib-overlay_invisible' 
+      : ''}"></div>`);
+    self.$element.append(overlay);
 
     return overlay;
   };
@@ -3603,23 +3570,23 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_legend_for_screen = function() {
     const self = this;
-    const legend_div = $(`<div class="inchlib-legend-screen" id='${self.legend_id}'></div>`);
-    const options = [`<ul>`]
+    const legend_div = $(`<div class="inchlib-legend" id='${self.legend_id}'></div>`);
+    const options = ['<ul class="inchlib-legend_list">']
       .concat(self.legend_headings
         .map(name => {
           if (self.legend_continuous_categories.includes(name)) {
-            return `<li><strong>${name}</strong>
-            <ul><li>0 <span class="legend-gradient-${name.toLowerCase().split(' ')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
+            return `<li class="inchlib-legend_list-item"><strong>${name}</strong>
+            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.toLowerCase().split(' ')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
           } else {
             const legend_list = Object.keys(self.options.categories.colors[name])
-              .map(value => `<li ${
+              .map(value => `<li class="inchlib-legend_sublist-item${
                 self.legend_horizontal_categories
                   .includes(name) 
-                    ? 'style="display: inline-block; margin-right: 10px;"' 
+                    ? ' inchlib-legend_sublist-item-horizontal'
                     : ''
-                }><span class='legend-bullet' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
+                }"><span class='inchlib-legend_square' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
               .join('');
-            return `<li><strong>${name}</strong><ul class="legend-list">${legend_list}</ul></li>`;
+            return `<li class="inchlib-legend_list-item"><strong>${name}</strong><ul class="inchlib-legend_sublist">${legend_list}</ul></li>`;
           }
         })
       )
@@ -3629,10 +3596,10 @@ import { each, round } from 'lodash';
     legend_div.html(options);
     self.$element.append(legend_div);
 
-    $(`#${self.legend_id} .legend-gradient-age`).css({
+    $(`#${self.legend_id} .inchlib-legend_gradient-age`).css({
       background: `linear-gradient(90deg, ${self.legend_gradients.age.min} 0%, ${self.legend_gradients.age.max} 100%)`
     });
-    $(`#${self.legend_id} .legend-gradient-days`).css({
+    $(`#${self.legend_id} .inchlib-legend_gradient-days`).css({
       background: `linear-gradient(90deg, ${self.legend_gradients.days.min} 0%, ${self.legend_gradients.days.max} 100%)`
     });
   };

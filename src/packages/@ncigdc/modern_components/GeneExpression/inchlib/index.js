@@ -2828,6 +2828,8 @@ import { each, round } from 'lodash';
     } else if (id === 'edit_heatmap_colors') {
       self._draw_heatmap_modal();
     } else if (id === 'legend') {
+      // legend stays visible unless you click
+      // on the legend toggle again
       if ($(`#${self.legend_id}`).length === 1) {
         button.removeClass('no-hover');
         $(`#${self.legend_id}`).fadeOut().remove();

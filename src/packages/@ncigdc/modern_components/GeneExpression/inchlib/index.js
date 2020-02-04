@@ -4106,15 +4106,6 @@ import { each, round } from 'lodash';
     return false;
   };
 
-  /**
-    * Adds a user defined color scale defined by its name start color, end color and optionaly middle color
-    */
-  InCHlib.prototype.add_color_scale = function (color_scale_name, color_scale) {
-    const self = this;
-    self.colors[color_scale_name] = color_scale;
-    self.$element.find('.color_scales').fadeOut().remove();
-  };
-
   InCHlib.prototype._get_visible_count = function () {
     const self = this;
     return self.on_features.data.length + self.on_features.metadata.length + self.on_features.count_column.length;

@@ -11,10 +11,12 @@ import withRouter from '@ncigdc/utils/withRouter';
 import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import { zDepth1 } from '@ncigdc/theme/mixins';
+import { DISPLAY_GENE_EXPRESSION } from '@ncigdc/utils/constants';
 import availableAnalysis from './availableAnalysis';
 import SelectSet from './SelectSet';
 import DemoButton from './DemoButton';
 import defaultVariables from './defaultCDAVEvariables';
+
 
 const enhance = compose(
   branch(
@@ -23,13 +25,13 @@ const enhance = compose(
       <div style={{ padding: '2rem 2.5rem' }}>
         No analysis currently available
       </div>
-    ))
+    )),
   ),
   withState('analysis', 'setAnalysis', null),
   connect(state => ({
     numAnalysis: state.analysis.saved.filter(analysis => analysis.type === 'clinical_data').length,
   })),
-  withRouter
+  withRouter,
 );
 
 const CreateAnalysis = ({
@@ -49,18 +51,16 @@ const CreateAnalysis = ({
           const id = created;
 
           dispatch(
-            addAnalysis(Object.assign(
-              {
-                created,
-                id,
-                sets,
-                type: analysis.type,
-              },
-              analysis.type === 'clinical_data' && {
+            addAnalysis({
+              created,
+              id,
+              sets,
+              type: analysis.type,
+              ...analysis.type === 'clinical_data' && {
                 displayVariables: defaultVariables,
                 name: `Custom Analysis ${numAnalysis + 1}`,
               },
-            ))
+            }),
           ).then(() => {
             push({
               query: {
@@ -99,7 +99,9 @@ const CreateAnalysis = ({
                 <h1 style={{ fontSize: '2rem' }}>{item.label}</h1>
                 <div style={{ marginBottom: 10 }}>{item.description}</div>
                 <Row spacing={5}>
-                  <Button onClick={() => setAnalysis(item)}>Select</Button>
+                  {(DISPLAY_GENE_EXPRESSION &&
+                    item.type === 'gene_expression') ||
+                      (<Button onClick={() => setAnalysis(item)}>Select</Button>)}
                   <DemoButton demoData={item.demoData} type={item.type} />
                 </Row>
               </div>

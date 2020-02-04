@@ -2,7 +2,6 @@ import React from 'react';
 import { VennSvg } from '@ncigdc/components/Charts/Venn';
 import CohortComparison from '@ncigdc/modern_components/CohortComparison';
 import CCIcon from '@ncigdc/theme/icons/CohortComparisonIcon';
-import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
 import { withTheme } from '@ncigdc/theme';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { TSetTypes } from '@ncigdc/dux/sets';
@@ -384,7 +383,7 @@ const availableAnalysis: [TAnalysis] = [
             op: 'and',
           },
         },
-        message: 'Demo showing test data',
+        message: 'Demo',
         name: 'Demo Gene Expression',
         sets: {
           case: {
@@ -393,7 +392,7 @@ const availableAnalysis: [TAnalysis] = [
         },
         type: 'gene_expression',
       },
-      description: 'Display gene expression demo. TODO: update description, icon, title, etc.',
+      description: ' ',
       Icon: withTheme(({ style }) => (
         <div
           style={{
@@ -401,9 +400,7 @@ const availableAnalysis: [TAnalysis] = [
             width: 80,
             ...style,
           }}
-          >
-          <DoubleHelix color="rgb(0, 80, 131)" />
-        </div>
+          />
       )),
       label: 'Gene Expression',
       ResultComponent: props => (

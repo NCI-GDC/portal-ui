@@ -2840,7 +2840,7 @@ import { each, round } from 'lodash';
           .addClass('fa-caret-down');
       } else {
         button.addClass('no-hover');
-        self._toggle_legend_for_screen();
+        self._draw_legend_for_screen();
         button.find('.fa-caret-down')
           .removeClass('fa-caret-down')
           .addClass('fa-caret-up');
@@ -2980,51 +2980,6 @@ import { each, round } from 'lodash';
         // self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
       });
     }
-
-    // const download_overlay = self._draw_icon_overlay(self.options.width - 62, 10);
-    // self.navigation_layer.add(download_button, download_icon, download_overlay);
-
-    // download_overlay.on('click', function () {
-    //   self._download_icon_click(this);
-    // });
-
-    // download_overlay.on('mouseover', () => {
-    //   self._cursor_mouseover();
-    //   self._icon_mouseover(download_icon, download_overlay, self.navigation_layer);
-    // });
-
-    // download_overlay.on('mouseout', () => {
-    //   self._cursor_mouseout();
-    //   self._icon_mouseout(download_icon, download_overlay, self.navigation_layer);
-    // });
-
-    // if (self.options.navigation_toggle.categories_legend) {
-    //   const x = self.options.width - 60;
-    //   const y = 75;
-    //   const legend_icon = self.objects_ref.font_awesome_icon.clone({
-    //     id: 'legend_icon',
-    //     label: 'View legend',
-    //     text: self.font_awesome_icons['fa-undo'],
-    //     x,
-    //     y,
-    //   });
-    //   const legend_overlay = self._draw_icon_overlay(x, y);
-    //   self.navigation_layer.add(legend_icon, legend_overlay);
-
-    //   legend_overlay.on('click', function () {
-    //     self._toggle_legend_for_screen();
-    //   });
-
-    //   legend_overlay.on('mouseover', () => {
-    //     self._cursor_mouseover();
-    //     self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
-    //   });
-
-    //   legend_overlay.on('mouseout', () => {
-    //     self._cursor_mouseout();
-    //     self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
-    //   });
-    // }
 
     self.stage.add(self.navigation_layer);
   };
@@ -3833,9 +3788,10 @@ import { each, round } from 'lodash';
     const self = this;
     let overlay = self.$element.find('.target_overlay');
 
-    if (overlay.length) {
-      overlay.fadeIn('fast');
-    } else {
+    if (overlay.length === 1) {
+      overlay.trigger('click');
+    }
+
       overlay = $('<div class=\'target_overlay\'></div>');
       overlay.css({
         'background-color': '#fff',
@@ -3848,7 +3804,6 @@ import { each, round } from 'lodash';
         'z-index': invisible ? 98 : 101,
       });
       self.$element.append(overlay);
-    }
 
     return overlay;
   };
@@ -3977,7 +3932,7 @@ import { each, round } from 'lodash';
       fill: self.hover_fill,
       fontFamily: self.options.font.family,
       fontStyle: '500',
-      text: 'Heatmap',
+      text: 'Expression',
       x: scale_x,
       y: scale_y,
     });
@@ -4168,19 +4123,6 @@ import { each, round } from 'lodash';
     ]);
     self._draw_heatmap_scale();
   };
-
-  InCHlib.prototype._toggle_legend_for_screen = function() {
-    const self = this;
-    const overlay = self._draw_target_overlay(true);
-    self._draw_legend_for_screen();
-    overlay.click(() => {
-      $(`#${self.legend_id}`).fadeOut().remove();
-      overlay.fadeOut().remove();
-      $('.inchlib-toolbar_button-legend .fa-caret-up')
-        .removeClass('fa-caret-up')
-        .addClass('fa-caret-down');
-    });
-  }
 
   InCHlib.prototype._dendrogram_layers_click = function (layer, evt) {
     const self = this;

@@ -12,7 +12,7 @@ const options = {
   categories: {
     colors: CATEGORY_COLORS,
   },
-  max_width: 800,
+  max_width: 1200,
   tooltip: {
     fill: '#fff',
     stroke: theme.greyScale5,
@@ -73,7 +73,10 @@ class GeneExpressionChart extends Component {
 
   render() {
     return (
-      <div ref={el => this.el = el} />
+      <div
+        ref={el => this.el = el}
+        // style={{ border: '1px solid magenta' }}
+        />
     );
   }
 }

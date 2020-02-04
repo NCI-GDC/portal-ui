@@ -9,17 +9,17 @@
   z-index: 99;
 }
 
-.inchlib-toolbar > li {
+.inchlib-toolbar_item {
   display: inline-block;
   position: relative;
 }
 
-.inchlib-toolbar_button {
+.inchlib-toolbar_btn {
   background-color: #fff;
   border-radius: 4px;
   border: 1px solid rgb(200,200,200);
   color: #333;
-  font-family: "Helvetica Neue";
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   height: 28px;
   line-height: 20px;
@@ -29,31 +29,31 @@
   position: relative;
 }
 
-.inchlib-toolbar_button:hover {
+.inchlib-toolbar_btn:hover {
   background-color: rgb(0, 138, 224);
   border-color: rgb(0, 138, 224);
   color: #fff;
 }
 
-.inchlib-toolbar_button.no-hover:hover {
+.inchlib-toolbar_btn.no-hover:hover {
   background-color: #fff;
   border-color: rgb(200,200,200);
   color: #333;
 }
 
-.inchlib-toolbar_button:disabled {
+.inchlib-toolbar_btn:disabled {
   background-color: #c8c8c8;
   border-color: #d8d8d8;
   color: #fff;
 }
 
-.inchlib-toolbar_button-legend {
+.inchlib-toolbar_btn-legend {
   text-align: left;
   /* width needs to be the same as legend_width */
   width: 170px;
 }
 
-.inchlib-toolbar_button-legend .fa {
+.inchlib-toolbar_btn-legend .fa {
   line-height: 22px;
   position: absolute;
   right: 14px;

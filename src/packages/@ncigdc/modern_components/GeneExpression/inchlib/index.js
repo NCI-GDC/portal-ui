@@ -2634,11 +2634,11 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_toolbar = function () {
     const self = this;
-    const toolbar_id = `${self._name}-toolbar`;
-    const toolbar_ul = $(`<ul class='inchlib-toolbar' id='${toolbar_id}'></ul>`);
+
+    const toolbar_ul = $(`<ul class="inchlib-toolbar"></ul>`);
     const toolbar_buttons = self.toolbar_buttons.map(btn => {
       const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
-      const open_button = `<li><button type="button" class="inchlib-toolbar_button inchlib-toolbar_button-${btn.id}" data-inchlib-id="${btn.id}" data-tooltip="${btn.label}"${is_button_disabled ? ' disabled' : ''}>`;
+      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}"${is_button_disabled ? ' disabled' : ''}>`;
       const close_button = '</button></li>';
       const contents = btn.id === 'legend'
       ? `${btn.label}<i class="fa ${btn.fa_icon[0]}"></i>`
@@ -2650,7 +2650,7 @@ import { each, round } from 'lodash';
     toolbar_ul.html(toolbar_buttons);
     self.$element.append(toolbar_ul);
 
-    $('.inchlib-toolbar_button')
+    $('.inchlib-toolbar_btn')
       .mouseover(function () {
         const $this = $(this);
         if ($this.attr('data-inchlib-id') !== 'legend') {
@@ -2718,7 +2718,7 @@ import { each, round } from 'lodash';
       y,
     });
     self.toolbar_tooltip.add(self.objects_ref.tooltip_tag.clone());
-    self.toolbar_tooltip.add(self.objects_ref.tooltip_text.clone({ text: button.attr('data-tooltip') }));
+    self.toolbar_tooltip.add(self.objects_ref.tooltip_text.clone({ text: button.attr('data-inchlib-tooltip') }));
 
     self.navigation_layer.add(self.toolbar_tooltip);
     self.toolbar_tooltip.moveToTop();
@@ -2750,7 +2750,7 @@ import { each, round } from 'lodash';
       // },
     ];
 
-    const download_ul = $(`<ul class='inchlib-download'></ul>`);
+    const download_ul = $(`<ul class="inchlib-download"></ul>`);
 
     const download_lis = download_options.map(option => {
       const open_li = `<li class="inchlib-download_item"><button type="button" class="inchlib-download_btn" data-inchlib-id="${option.id}">`;
@@ -2761,7 +2761,7 @@ import { each, round } from 'lodash';
     .join('');
 
     download_ul.html(download_lis);
-    $('.inchlib-toolbar_button-download').parent().append(download_ul);
+    $('.inchlib-toolbar_btn-download').parent().append(download_ul);
 
     $('.inchlib-download_btn').click(function() {
       if ($(this).attr('data-inchlib-id') === 'download-png') {

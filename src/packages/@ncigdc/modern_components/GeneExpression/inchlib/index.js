@@ -2821,12 +2821,21 @@ import { each, round } from 'lodash';
     const id = button.attr('data-inchlib-id');
     if (id === 'reset') {
       self.redraw();
-    } else if (id === 'download') {
-      self._draw_download_menu();
-    } else if (id === 'edit_categories') {
-      self._draw_categories_modal();
     } else if (id === 'edit_heatmap_colors') {
       self._draw_heatmap_modal();
+    } else if (id === 'edit_categories') {
+      self._draw_categories_modal();
+    } else if (id === 'download') {
+      // toggle the download menu
+      const download_menu = $('.inchlib-download');
+      if (download_menu.length === 0) {
+        self._draw_download_menu();
+      } else {
+        const overlay = self.$element.find('.target_overlay');
+        if (overlay.length === 1) {
+          overlay.trigger('click');
+        }
+      }
     } else if (id === 'legend') {
       // legend stays visible unless you click
       // on the legend toggle again

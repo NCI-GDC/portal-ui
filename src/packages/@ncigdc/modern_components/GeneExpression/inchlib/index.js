@@ -1318,11 +1318,11 @@ import { each, round } from 'lodash';
       const color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, color);
       const color_3 = self._get_color_for_value(1, 0, 1, 0.5, color);
       const checked = self.options.heatmap_colors === color;
-      const scale = $(`<label><input type="radio" name="inchlib-color-scale" value="${color}"${checked ? ' checked' : ''}><div class='color_scale' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div></label>`);
+      const scale = $(`<label class="inchlib-modal_heatmap-label"><input type="radio" class="inchlib-modal_heatmap-input" name="inchlib-color-scale" value="${color}"${checked ? ' checked' : ''}><div class="inchlib-modal_heatmap-gradient" style="background: linear-gradient(to right, ${color_1},${color_2},${color_3})"></div></label>`);
       return scale;
     });
 
-    const heatmap_form = $(`<form id='${form_id}' class="inchlib-heatmap-form"></form>`).append(color_scales);
+    const heatmap_form = $(`<form id='${form_id}' class="inchlib-modal_heatmap-form"></form>`).append(color_scales);
 
     self._draw_modal(modal_title, heatmap_form);
 

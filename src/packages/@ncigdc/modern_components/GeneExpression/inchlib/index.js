@@ -295,68 +295,6 @@ import { each, round } from 'lodash';
       ? self.MAX_AGE_AT_DIAGNOSIS
       : self.MAX_DAYS_TO_DEATH;
 
-    self.popup_styles = {
-      'border-style': 'solid',
-      'border-color': '#D2D2D2',
-      'border-width': 2,
-      background: '#fff',
-      'border-radius': 5,
-      'font-size': '12px',
-      'padding-left': '10px',
-      'padding-right': '10px',
-      'padding-top': '10px',
-      position: 'absolute',
-      'z-index': 100,
-      width: 230,
-    };
-
-    // proprietary styles for GDC portal
-    self.styles = {
-      checkbox: {
-        float: 'left',
-        'margin-left': '-20px',
-        'margin-right': '5px',
-      },
-      // @ncigdc/uikit/Input
-      input: {
-        'background-color': '#fff',
-        'border': '1px solid #ccc',
-        'border-radius': '4px',
-        'box-shadow': 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
-        'color': '#555555',
-        'font-size': '14px',
-        'height': '3.4rem',
-        'line-height': '1.42857143',
-        'min-width': 0,
-        'padding': '6px 12px',
-        'transition': 'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
-      },
-      label: {
-        'color': self.hover_fill,
-        'display': 'block',
-        'font-size': '14px',
-        'margin-bottom': '5px',
-      },
-      // @ncigdc/uikit/Button
-      css_primary_button_off: {
-        'background-color': self.options.button_color,
-        'border-radius': '4px',
-        'border': '1px solid transparent',
-        'color': '#fff',
-        'font-size': '14px',
-        'font-weight': 'normal',
-        'padding': '6px 12px',
-        'transition': '0.25s ease',
-        'width': '100%',
-      },
-      css_button_on: {
-        'background-color': Color(self.options.button_color)
-          .lighten(0.7)
-          .rgbString(),
-        'color': '#fff',
-      }
-    }
-
     /**
     * Default function definitions for the InCHlib events
     * @name InCHlib#events
@@ -1115,17 +1053,6 @@ import { each, round } from 'lodash';
     * @name InCHlib#objects_ref
     */
     self.objects_ref = {
-      popup_box: new Konva.Rect({
-        x: 0,
-        y: 0,
-        width: self.popup_styles.width + 40,
-        height: 250,
-        fill: self.popup_styles['background'],
-        stroke: self.popup_styles['border-color'],
-        strokeWidth: self.popup_styles['border-width'],
-        cornerRadius: self.popup_styles['border-radius'],
-      }),
-      
       tooltip_label: new Konva.Label({
         opacity: 1,
         listening: false,
@@ -1165,12 +1092,6 @@ import { each, round } from 'lodash';
         opacity: 0,
       }),
 
-      icon_overlay: new Konva.Rect({
-        width: 32,
-        height: 32,
-        opacity: 0,
-      }),
-
       heatmap_value: new Konva.Text({
         fontFamily: self.options.font.family,
         fill: self.hover_fill,
@@ -1206,16 +1127,8 @@ import { each, round } from 'lodash';
         dash: [6, 2],
       }),
 
-      icon: new Konva.Path({
-        fill: 'grey',
-      }),
-
-      image: new Konva.Image({
-        stroke: '#D2D2D2',
-        strokeWidth: 1,
-      }),
-
       font_awesome_icon: new Konva.Text({
+        // TODO need this for zoom tooltips
         align: 'center',
         fill: '#333',
         fontFamily: 'FontAwesome',
@@ -1227,38 +1140,12 @@ import { each, round } from 'lodash';
     };
 
     /**
-    * Defines the appearance of toolbar buttons.
-    * @name InCHlib#toolbar_button_properties
-    */
-    const toolbar_button_properties = {
-      cornerRadius: 4,
-      fill: '#fff',
-      height: 28,
-      stroke: '#ccc',
-      strokeWidth: 1,
-      width: 40,
-      y: 0,
-    };
-
-    self.objects_ref.toolbar_button = new Konva.Rect(toolbar_button_properties);
-    self.objects_ref.toolbar_click_box = new Konva.Rect({
-      ...toolbar_button_properties,
-      opacity: 0,
-    });
-
-    /**
     * Font Awesome 4 icons used in InCHlib.
     * @name InCHlib#font_awesome_icons
     */
     self.font_awesome_icons = {
-      'fa-bars': String.fromCharCode('0xf0c9'),
-      'fa-caret-down': String.fromCharCode('0xf0d7'),
-      'fa-caret-up': String.fromCharCode('0xf0d8'),
-      'fa-download': String.fromCharCode('0xf019'),
-      'fa-paint-brush': String.fromCharCode('0xf1fc'),
       'fa-search-minus': String.fromCharCode('0xf010'),
       'fa-search-plus': String.fromCharCode('0xf00e'),
-      'fa-undo': String.fromCharCode('0xf0e2'),
     };
 
     /**
@@ -1340,7 +1227,7 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_categories_modal = function () {
     const self = this;
-    const overlay = self._draw_target_overlay();
+    const overlay = self._draw_overlay();
 
     const title = 'Edit Categories';
 
@@ -1411,7 +1298,7 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_heatmap_modal = function () {
     const self = this;
-    const overlay = self._draw_target_overlay();
+    const overlay = self._draw_overlay();
 
     const title = 'Edit Heatmap Colors';
 
@@ -2819,7 +2706,7 @@ import { each, round } from 'lodash';
       if (download_menu.length === 0) {
         self._draw_download_menu();
       } else {
-        const overlay = self.$element.find('.target_overlay');
+        const overlay = self.$element.find('.inchlib-overlay');
         if (overlay.length === 1) {
           overlay.trigger('click');
         }
@@ -2875,7 +2762,7 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_download_menu = function () {
     const self = this;
-    const overlay = self._draw_target_overlay(true);
+    const overlay = self._draw_overlay(true);
     const download_options = [
       {
         id: 'download-png',
@@ -2911,7 +2798,7 @@ import { each, round } from 'lodash';
       $('.inchlib-download').remove();
     });
   };
-
+  
   InCHlib.prototype._draw_navigation = function () {
     const self = this;
     self.navigation_layer = new Konva.Layer();
@@ -2995,14 +2882,6 @@ import { each, round } from 'lodash';
     color_scale.fillLinearGradientColorStops(self.color_steps);
     self.navigation_layer.draw();
     self._redraw_heatmap_scale();
-  };
-
-  InCHlib.prototype._draw_icon_overlay = function (x, y) {
-    const self = this;
-    return self.objects_ref.icon_overlay.clone({
-      x,
-      y,
-    });
   };
 
   InCHlib.prototype._highlight_path = function (path_id, color) {
@@ -3630,171 +3509,16 @@ import { each, round } from 'lodash';
     return path_group;
   };
 
-  InCHlib.prototype._filter_icon_click = function (filter_button) {
+  InCHlib.prototype._draw_overlay = function (invisible = false) {
     const self = this;
-    let filter_features_element = self.$element.find('.filter_features');
-    let symbol = '✖';
-
-    if (filter_features_element.length) {
-      filter_features_element.fadeIn('fast');
-      var overlay = self._draw_target_overlay();
-    } else {
-      filter_list = '';
-
-      for (const attr in self.header) {
-        if (self.features[attr]) {
-          symbol = '✔';
-        }
-        if (attr < self.dimensions) {
-          let text = self.header[attr];
-          if (text == '') {
-            text = `${parseInt(attr) + 1}. column`;
-          }
-          filter_list = `${filter_list}<li class='feature_switch' data-num='${attr}'><span class='symbol'>${symbol}</span>  ${text}</li>`;
-        }
-      }
-
-      self.$element.append(`<div class='filter_features'><ul>${filter_list}</ul><hr /><div><span class='cancel_filter_list'>Cancel</span>&nbsp;&nbsp;&nbsp;<span class='update_filter_list'>Update</span></div></div>`);
-      filter_features_element = self.$element.find('.filter_features');
-
-      filter_features_element.css({
-        display: 'none',
-        top: 45,
-        left: 0,
-        'border-radius': '5px',
-        'text-align': 'center',
-        position: 'absolute',
-        'background-color': '#fff',
-        border: 'solid 2px #DEDEDE',
-        'padding-top': '5px',
-        'padding-left': '15px',
-        'padding-bottom': '10px',
-        'padding-right': '15px',
-        'font-weight': '500',
-        'font-size': '14px',
-        'z-index': 1000,
-        'font-family': self.options.font.family,
-      });
-
-      filter_features_element.find('ul').css({
-        'list-style-type': 'none',
-        'margin-left': '0',
-        'padding-left': '0',
-        'text-align': 'left',
-      });
-
-      filter_features_element.find('li').css({
-        color: 'green',
-        'margin-top': '5px',
-      });
-
-      filter_features_element.find('div').css({
-        cursor: 'pointer',
-        opacity: '0.7',
-      });
-
-      var overlay = self._draw_target_overlay();
-      filter_features_element.fadeIn('fast');
-
-      self.$element.find('.feature_switch').click(function () {
-        const num = parseInt($(this).attr('data-num'));
-        const symbol_element = $(this).find('span');
-        self.features[num] = !self.features[num];
-
-        if (self.features[num]) {
-          symbol_element.text('✔');
-          $(this).css('color', 'green');
-        } else {
-          symbol_element.text('✖');
-          $(this).css('color', 'red');
-        }
-
-        self._set_on_features();
-      });
-
-      $(() => {
-        filter_features_element.click(() => {
-          return false;
-        });
-
-        filter_features_element.mousedown(() => {
-          return false;
-        });
-
-        self.$element
-          .find('filter_features ul li, .filter_features div span')
-          .hover(
-            function () {
-              $(this).css({
-                cursor: 'pointer',
-                opacity: '0.7',
-              });
-            },
-            function () {
-              $(this).css({
-                cursor: 'default',
-                opacity: '1',
-              });
-            },
-          );
-      });
-
-      self.$element.find('.cancel_filter_list').click(() => {
-        filter_features_element.fadeOut('fast');
-        overlay.fadeOut('fast');
-      });
-
-      overlay.click(() => {
-        filter_features_element.fadeOut('fast');
-        overlay.fadeOut('fast');
-      });
-
-      self.$element.find('.update_filter_list').click(() => {
-        filter_features_element.fadeOut('slow');
-        overlay.fadeOut('slow');
-
-        const node_id = (self.zoomed_clusters.row.length > 0) ? self.zoomed_clusters.row[self.zoomed_clusters.row.length - 1] : self.root_id;
-        const highlighted_cluster = self.last_highlighted_cluster;
-        self.last_highlighted_cluster = null;
-        self._adjust_horizontal_sizes();
-        self._delete_all_layers();
-        self._draw_stage_layer();
-        if (self.options.dendrogram) {
-          self._draw_dendrogram_layers();
-          self._draw_row_dendrogram(node_id);
-          self._draw_dendrogram_layers();
-          if (self.options.column_dendrogram && self._visible_features_equal_column_dendrogram_count()) {
-            self._draw_column_dendrogram(self.column_root_id);
-          }
-        }
-
-        self._draw_navigation();
-        self._draw_heatmap();
-        self._draw_heatmap_header();
-
-        if (highlighted_cluster != null) {
-          self._highlight_cluster(highlighted_cluster);
-        }
-      });
-    }
-  };
-
-  InCHlib.prototype._draw_target_overlay = function (invisible = false) {
-    const self = this;
-    let overlay = self.$element.find('.target_overlay');
+    let overlay = self.$element.find('.inchlib-overlay');
 
     if (overlay.length === 1) {
       overlay.trigger('click');
     }
 
-      overlay = $('<div class=\'target_overlay\'></div>');
+      overlay = $('<div class=\'inchlib-overlay\'></div>');
       overlay.css({
-        'background-color': '#fff',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
         opacity: invisible ? 0 : 0.5,
         'z-index': invisible ? 98 : 101,
       });
@@ -3805,7 +3529,7 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._download_png = function () {
     const self = this;
-    const overlay = self._draw_target_overlay();
+    const overlay = self._draw_overlay();
     const zoom = 3;
     const width = self.stage.width();
     const height = self.stage.height();
@@ -4100,12 +3824,16 @@ import { each, round } from 'lodash';
         y += 5;
       }
     }
-    const legend = self.objects_ref.popup_box.clone({
+    const legend = new Konva.Rect({
+      cornerRadius: 5,
+      fill: '#fff',
       height: y + 40,
+      stroke: '#D2D2D2',
+      strokeWidth: 2,
       width: 150,
       x: legend_x,
       y: legend_y,
-    });
+    })
 
     self.legend_png_layer.add(legend, legend_title, legend_group);
     self.legend_png_layer.draw();

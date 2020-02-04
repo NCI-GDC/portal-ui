@@ -25,7 +25,7 @@ const options = {
 const handleOverlayClickOut = ({ target }) => {
   const id = 'InCHlib';
   if (target.id !== id && $(target).closest(`#${id}`).length === 0) {
-    const overlay = $(`#${id} .target_overlay`);
+    const overlay = $(`#${id} .inchlib-overlay`);
     if (overlay.length === 1) {
       overlay.trigger('click');
     }

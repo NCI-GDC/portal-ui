@@ -57,6 +57,7 @@
   line-height: 22px;
   position: absolute;
   right: 14px;
+  top: 0;
 }
 
 /* DOWNLOAD */
@@ -263,4 +264,15 @@
 
 .inchlib-legend-screen [class^="legend-gradient"] {
   width: 70px;
+}
+
+/* OVERLAY */
+
+.inchlib-overlay {
+  background-color: #fff;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
 }

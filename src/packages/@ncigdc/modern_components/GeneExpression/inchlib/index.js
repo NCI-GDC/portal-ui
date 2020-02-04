@@ -3227,11 +3227,12 @@ import { each, round } from 'lodash';
     let x = self.distance - 30;
     const y = self.header_height + self.column_metadata_height - 40;
 
-    const rows_desc = self.objects_ref.count.clone({
-      x: x + 10,
-      y: y - 10,
-      text: count,
-    });
+    // TODO: NUMBER OF ROWS THAT WILL BE ZOOMED
+    // const rows_desc = self.objects_ref.count.clone({
+    //   x: x + 10,
+    //   y: y - 10,
+    //   text: count,
+    // });
 
     x = self.distance + self.dendrogram_heatmap_distance;
     const width = visible * self.pixels_for_dimension + self.heatmap_distance;
@@ -3270,10 +3271,9 @@ import { each, round } from 'lodash';
       ],
     });
 
-    self.row_cluster_group.add(rows_desc, cluster_overlay_1, cluster_overlay_2, cluster_border_1, cluster_border_2);
+    self.row_cluster_group.add(cluster_overlay_1, cluster_overlay_2, cluster_border_1, cluster_border_2);
     self.cluster_layer.add(self.row_cluster_group);
     self.stage.add(self.cluster_layer);
-    rows_desc.moveToTop();
 
     self.cluster_layer.draw();
     self.navigation_layer.moveToTop();
@@ -3376,7 +3376,6 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._zoom_column_cluster = function (node_id) {
     const self = this;
-    console.log('node_id', node_id)
     if (node_id != self.column_root_id) {
       self.zoomed_clusters.column.push(node_id);
       self._draw_column_cluster(node_id);

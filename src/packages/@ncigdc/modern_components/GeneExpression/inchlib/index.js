@@ -1210,6 +1210,8 @@ import { each, round } from 'lodash';
     let len;
     let columns;
     const data_rows = data.length;
+    console.log('data', data)
+    console.log('data[0]', data[0])
     const data_cols = data[0].length;
     if (axis === 'column') {
       columns = [];
@@ -1910,10 +1912,15 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_column_metadata = function (x1) {
     const self = this;
+
     const visible_features = self.column_metadata.features
       .filter((x, i) => self.column_metadata.visible[i]);
+      
+    if (visible_features.length === 0) return;
+
     const visible_feature_names = self.column_metadata.feature_names
       .filter((x, i) => self.column_metadata.visible[i]);
+    console.log('is it dying here');
     self.column_metadata_descs = self._get_data_min_max_middle(visible_features, 'row');
     let y1 = self.header_height + 0.5 * self.column_metadata_row_height;
 

@@ -1575,20 +1575,35 @@ import { each, round } from 'lodash';
     const { height, png_padding, width } = self.options;
     self.stage_layer = new Konva.Layer();
     // drawing a large white background for PNG download.
-    // the extra width/height is to accommodate the legend
-    // and padding in the PNG.
-    const stage_rect = new Konva.Rect({
+
+    // PADDING
+    const padding = png_padding * 2;
+    const move_bg_to_center = png_padding * -1;
+
+    // HEIGHT
+    const min_height = 700;
+    const get_height = height < min_height
+      ? min_height
+      : height;
+    const fill_bg_gap = 130;
+    const bg_height = get_height + self.toolbar_distance + padding + fill_bg_gap;
+
+    // WIDTH
+    const legend_width = 160;
+    // the legend for PNG view is off-stage, to the right.
+    // the bg has to be extended for it.
+    const bg_width = width + legend_width + padding;
+
+    const stage_bg = new Konva.Rect({
       fill: '#fff',
-      height: (height + 130 + self.toolbar_distance + (png_padding * 2)) < (700 + self.toolbar_distance + (png_padding * 2))
-        ? 700 + self.toolbar_distance + (png_padding * 2)
-        : height + 250 + self.toolbar_distance + (png_padding * 2),
+      height: bg_height,
       opacity: 1,
-      width: width + 300 + (png_padding * 2),
-      x: (png_padding * -1),
-      y: (png_padding * -1),
+      width: bg_width,
+      x: move_bg_to_center,
+      y: move_bg_to_center,
     });
-    self.stage_layer.add(stage_rect);
-    stage_rect.moveToBottom();
+    self.stage_layer.add(stage_bg);
+    stage_bg.moveToBottom();
     self.stage.add(self.stage_layer);
 
     self.stage_layer.on('click', (evt) => {
@@ -1763,7 +1778,6 @@ import { each, round } from 'lodash';
     self.data_descs_all = self._get_min_max_middle(data);
 
     if (self.options.independent_columns) {
-      console.log('test')
       self.data_descs = self._get_data_min_max_middle(data);
     } else {
       for (var i = 0; i < self.dimensions.data; i++) {
@@ -3144,18 +3158,28 @@ import { each, round } from 'lodash';
 
     self._draw_legend_for_png();
 
-    self.stage.width((width + png_padding) * zoom);
-    self.stage.height((
-      height + 50 < 600 + (png_padding * 2)
-        ? 600 + (png_padding * 2)
-        : height + 50
-      ) * zoom);
+    // setup height
+    const min_height = 600;
+    // labels on the bottom get cut off without this
+    const bottom_padding = 50;
+    const height_full = height + bottom_padding;
+    const get_height = height_full < min_height
+      ? min_height
+      : height_full;
+
+    const padding = png_padding * 2;
+
+    const png_height = (get_height + padding) * zoom;
+    const png_width = (width + padding) * zoom;
+
+    self.stage.width(png_width);
+    self.stage.height(png_height);
     self.stage.scale({
       x: zoom,
       y: zoom,
     });
-    self.stage.x(png_padding * 2);
-    self.stage.y(png_padding * 2);
+    self.stage.x(padding);
+    self.stage.y(padding);
     self.stage.draw();
     self.navigation_layer.hide();
     self.stage.toDataURL({
@@ -3326,8 +3350,9 @@ import { each, round } from 'lodash';
     self.legend_png_layer = self.objects_ref.layer_below_toolbar.clone();
     self.stage.add(self.legend_png_layer);
 
-    const legend_y = 5;
-    const legend_x = self.stage.width() - 155;
+    const legend_width = 150;
+    const legend_y = -20;
+    const legend_x = self.stage.width() - (legend_width + 5);
 
     // create legend
 
@@ -3429,7 +3454,7 @@ import { each, round } from 'lodash';
       height: y + 40,
       stroke: '#D2D2D2',
       strokeWidth: 2,
-      width: 150,
+      width: legend_width,
       x: legend_x,
       y: legend_y,
     })

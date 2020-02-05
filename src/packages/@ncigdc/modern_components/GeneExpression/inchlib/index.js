@@ -1210,8 +1210,6 @@ import { each, round } from 'lodash';
     let len;
     let columns;
     const data_rows = data.length;
-    console.log('data', data)
-    console.log('data[0]', data[0])
     const data_cols = data[0].length;
     if (axis === 'column') {
       columns = [];
@@ -1915,7 +1913,7 @@ import { each, round } from 'lodash';
 
     const visible_features = self.column_metadata.features
       .filter((x, i) => self.column_metadata.visible[i]);
-      
+
     if (visible_features.length === 0) return;
 
     const visible_feature_names = self.column_metadata.feature_names

@@ -30,6 +30,7 @@ import Button from '@ncigdc/uikit/Button';
 import ResizeDetector from 'react-resize-detector';
 import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
+import { CaseLimitMessageContainer, CaseLimitMessage } from '@ncigdc/modern_components/CaseLimitMessage';
 
 import { DISPLAY_10K, DISPLAY_SUMMARY_PAGE, MAX_CASES_API } from '@ncigdc/utils/constants';
 
@@ -150,7 +151,10 @@ const ExplorePageComponent = ({
 
   const isCaseLimitExceeded = DISPLAY_10K && hasCaseHits > MAX_CASES_API;
 
-  console.log;
+  // TODO this needs to go somewhere else...
+  const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  const maxCasesFormatted = numberWithCommas(MAX_CASES_API);
 
   return (
     <SearchPage
@@ -283,11 +287,32 @@ const ExplorePageComponent = ({
                 text: `Cases (${hasCaseHits.toLocaleString()})`,
               },
               {
-                component: hasGeneHits ? (
-                  <GenesTab viewer={viewer} />
-                  ) : (
+                component: isCaseLimitExceeded
+                ? (
+                  <CaseLimitMessageContainer>
+                    <CaseLimitMessage
+                      icon="icon"
+                      title="This dataset is too large to visualize"
+                      >
+                      <p>
+                        Please use the
+                        {' '}
+                        <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/#facet-filters">filters/facets</a>
+                        {' '}
+                        on the left to reduce your dataset to
+                        {` ${maxCasesFormatted} `}
+                        cases or less.
+                      </p>
+                    </CaseLimitMessage>
+                  </CaseLimitMessageContainer>
+                  )
+                : hasGeneHits
+                  ? (
+                    <GenesTab viewer={viewer} />
+                    )
+                  : (
                     <NoResultsMessage>No Genes Found.</NoResultsMessage>
-                  ),
+                    ),
                 id: 'genes',
                 text: `Genes${isCaseLimitExceeded
                   ? ''

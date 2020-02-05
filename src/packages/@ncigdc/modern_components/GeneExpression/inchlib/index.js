@@ -3170,7 +3170,6 @@ import { each, round } from 'lodash';
     const padding = png_padding * 2;
 
     const png_height = (get_height + padding) * zoom;
-    // width only gets 1 padding, not 2
     const png_width = (width + png_padding) * zoom;
 
     self.stage.width(png_width);

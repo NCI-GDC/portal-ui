@@ -3509,6 +3509,7 @@ import { each, round } from 'lodash';
     const self = this;
     self.path_overlay = evt.target.attrs.path.clone({ strokeWidth: 4 });
     self.dendrogram_hover_layer.add(self.path_overlay);
+    self._draw_dendrogram_label(evt);
     self.dendrogram_hover_layer.draw();
   };
 
@@ -3637,6 +3638,28 @@ import { each, round } from 'lodash';
     const self = this;
     self.row_overlay.destroy();
     self.heatmap_overlay.draw();
+  };
+
+  InCHlib.prototype._draw_dendrogram_label = function (evt) {
+    const self = this;
+    const { attrs } = evt.target;
+    // console.log('attrs', attrs);
+
+    const x = attrs.x + (attrs.width / 2);
+    const y = attrs.y;
+
+    const tooltip = self.objects_ref.tooltip_label.clone({
+      x,
+      y,
+      id: 'dendrogram_label',
+      opacity: 1,
+    });
+
+    tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: 'BOOP' }));
+
+    // TODO: last line
+    self.dendrogram_hover_layer.moveToTop();
+    self.dendrogram_hover_layer.add(tooltip);
   };
 
   InCHlib.prototype._draw_col_label = function (evt) {

@@ -7,6 +7,8 @@ import { theme } from '@ncigdc/theme';
 import './inchlib';
 import { CATEGORY_COLORS } from '@ncigdc/utils/constants';
 
+import './inchlib/style.css';
+
 const options = {
   button_color: theme.primary,
   categories: {
@@ -22,10 +24,10 @@ const options = {
 
 const handleOverlayClickOut = ({ target }) => {
   const id = 'InCHlib';
-  if (target.id !== id && target.closest(`#${id}`) === null) {
-    const overlay = document.querySelector(`#${id} .target_overlay`);
-    if (overlay !== null) {
-      overlay.click();
+  if (target.id !== id && $(target).closest(`#${id}`).length === 0) {
+    const overlay = $(`#${id} .inchlib-overlay`);
+    if (overlay.length === 1) {
+      overlay.trigger('click');
     }
   }
 };
@@ -73,10 +75,7 @@ class GeneExpressionChart extends Component {
 
   render() {
     return (
-      <div
-        ref={el => this.el = el}
-        // style={{ border: '1px solid magenta' }}
-        />
+      <div className="inchlib-container" ref={el => this.el = el} />
     );
   }
 }

@@ -4,7 +4,7 @@
 import $ from 'jquery';
 import Konva from 'konva';
 import Color from 'color';
-import { round } from 'lodash';
+import { each, round } from 'lodash';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -86,9 +86,6 @@ import { round } from 'lodash';
   * @option {boolean} [independent_columns=true]
   *   determines whether the color scale is based on the values from all columns together or for each column separately
 
-  * @option {string} [label_color=grey]
-  *   color of column label
-
   * @option {number} [max_column_width=100]
   *   maximum column width in pixels
 
@@ -113,9 +110,6 @@ import { round } from 'lodash';
   * @option {string} [font.color="#3a3a3a"]
   *   the color of the text values in the heatmap
 
-  * @option {string} [count_column_colors="Reds"]
-  *   the color scale of count column
-
   * @option {boolean} [draw_row_ids=false]
   *   draws the row IDs next to the heatmap when there is enough space to visualize them
 
@@ -134,12 +128,6 @@ import { round } from 'lodash';
   * @option {array} [columns_order=[]]
   *   the order of columns defined by their indexes startin from 0, when not provided the columns are sorted in common order 0, 1, 2... etc.
 
-  * @option {boolean} [alternative_data=false]
-  *   use original data to compute heatmap but show the alternative values (alternative_data section must be present in input data)
-
-  * @option {object} [navigation_toggle={"distance_scale": false, "filter_button": false, "export_button": false, "color_scale": false, "hint_button": false}]
-  *   toggle "navigation" features - true/false
-
   *
   * @example
   *   const options = {
@@ -152,8 +140,6 @@ import { round } from 'lodash';
   const plugin_name = 'InCHlib';
 
   const defaults = {
-    alternative_data: false,
-    button_color: 'blue',
     categories: {
       colors: {},
       defaults: [],
@@ -162,7 +148,6 @@ import { round } from 'lodash';
     column_metadata_colors: 'RdLrBu',
     column_metadata: false,
     columns_order: [],
-    count_column_colors: 'Reds',
     count_column: false,
     data: {},
     dendrogram: true,
@@ -180,7 +165,6 @@ import { round } from 'lodash';
     highlight_colors: 'Oranges',
     highlighted_rows: [],
     independent_columns: true,
-    label_color: '#9E9E9E',
     max_column_width: 150,
     max_height: 800,
     max_percentile: 100,
@@ -190,15 +174,6 @@ import { round } from 'lodash';
     middle_percentile: 50,
     min_percentile: 0,
     min_row_height: 1,
-    navigation_toggle: {
-      categories_legend: true,
-      color_scale: true,
-      distance_scale: true,
-      edit_categories: true,
-      export_button: true,
-      filter_button: true,
-      hint_button: false,
-    },
     png_padding: 20,
     tooltip: {
       fill: '#fff',
@@ -232,6 +207,8 @@ import { round } from 'lodash';
     self.options.width -= self.options.legend_width;
 
     self.options.stage_width = self.options.width + self.options.legend_width;
+
+    self.$element.width(self.options.stage_width);
 
     self.options.heatmap_part_width = self.options.heatmap_part_width > 0.9
       ? 0.9
@@ -305,73 +282,6 @@ import { round } from 'lodash';
       ? self.MAX_AGE_AT_DIAGNOSIS
       : self.MAX_DAYS_TO_DEATH;
 
-    self.popup_styles = {
-      'border-style': 'solid',
-      'border-color': '#D2D2D2',
-      'border-width': 2,
-      background: '#fff',
-      'border-radius': 5,
-      'font-size': '12px',
-      'padding-left': '10px',
-      'padding-right': '10px',
-      'padding-top': '10px',
-      position: 'absolute',
-      'z-index': 100,
-      width: 230,
-    };
-
-    self.popup_list_styles = {
-      'list-style-type': 'none',
-      'padding-left': 0,
-    };
-
-    // proprietary styles for GDC portal
-    self.styles = {
-      checkbox: {
-        float: 'left',
-        'margin-left': '-20px',
-        'margin-right': '5px',
-      },
-      // @ncigdc/uikit/Input
-      input: {
-        'background-color': '#fff',
-        'border': '1px solid #ccc',
-        'border-radius': '4px',
-        'box-shadow': 'inset 0 1px 1px rgba(0, 0, 0, 0.075)',
-        'color': '#555555',
-        'font-size': '14px',
-        'height': '3.4rem',
-        'line-height': '1.42857143',
-        'min-width': 0,
-        'padding': '6px 12px',
-        'transition': 'border-color ease-in-out .15s, box-shadow ease-in-out .15s',
-      },
-      label: {
-        'color': self.hover_fill,
-        'display': 'block',
-        'font-size': '14px',
-        'margin-bottom': '5px',
-      },
-      // @ncigdc/uikit/Button
-      css_primary_button_off: {
-        'background-color': self.options.button_color,
-        'border-radius': '4px',
-        'border': '1px solid transparent',
-        'color': '#fff',
-        'font-size': '14px',
-        'font-weight': 'normal',
-        'padding': '6px 12px',
-        'transition': '0.25s ease',
-        'width': '100%',
-      },
-      css_button_on: {
-        'background-color': Color(self.options.button_color)
-          .lighten(0.7)
-          .rgbString(),
-        'color': '#fff',
-      }
-    }
-
     /**
     * Default function definitions for the InCHlib events
     * @name InCHlib#events
@@ -420,285 +330,6 @@ import { round } from 'lodash';
           },
         });
         self.element.dispatchEvent(clickInchlibLink);
-      },
-
-      /**
-        * @name InCHlib#row_onmouseover
-        * @event
-        * @param {function} function() callback function for mouse cursor over the heatmap row event
-        * @eventData {array} array array of object IDs represented by row
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.row_onmouseover = (
-        *    function(object_ids, evt) {
-        *       alert(object_ids);
-        *    }
-        * );
-        *
-        */
-      row_onmouseover(object_ids, evt) {
-
-      },
-
-      /**
-        * @name InCHlib#row_onmouseout
-        * @event
-        * @param {function} function() callback function for mouse cursor out of the heatmap row event
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.row_onmouseout = (
-        *    function(evt) {
-        *       alert("now");
-        *    }
-        * );
-        *
-        */
-      row_onmouseout(evt) {
-
-      },
-
-      /**
-        * @name InCHlib#dendrogram_node_onclick
-        * @event
-        * @param {function} function() callback function for dendrogram node click event
-        * @eventData {array} array array of object IDs represented by the node
-        * @eventData {string} node_id Id of the dendrogram node
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.dendrogram_node_onclick = (
-        *    function(object_ids, node_id, evt) {
-        *    alert(node_id + ": " + object_ids.length+" rows");
-        *    }
-        * );
-        *
-        */
-      dendrogram_node_onclick(object_ids, node_id, evt) {
-
-      },
-
-      /**
-        * @name InCHlib#column_dendrogram_node_onclick
-        * @event
-        * @param {function} function() callback function for column dendrogram click event
-        * @eventData {array} array array of column indexes
-        * @eventData {string} node_id Id of the dendrogram node
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.column_dendrogram_node_onclick = (
-        *    function(column_ids, node_id, evt) {
-        *    alert(node_id + ": " + column_ids.length+" columns");
-        *    }
-        * );
-        *
-        */
-      column_dendrogram_node_onclick(column_indexes, node_id, evt) {
-
-      },
-
-      /**
-        * @name InCHlib#dendrogram_node_highlight
-        * @event
-        * @param {function} function() callback function for the dendrogram node highlight event
-        * @eventData {array} array array of object IDs represented by row
-        * @eventData {string} node_id Id of the dendrogram node
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.dendrogram_node_highlight = (
-        *    function(object_ids, node_id, evt) {
-        *       alert(node_id + ": " + object_ids.length+" rows");
-        *    }
-        * );
-        *
-        */
-      dendrogram_node_highlight(object_ids, node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#column_dendrogram_node_highlight
-        * @event
-        * @param {function} function() callback function for the column dendrogram node highlight event
-        * @eventData {array} array array of column indexes
-        * @eventData {string} node_id Id of the dendrogram node
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.column_dendrogram_node_highlight = (
-        *    function(object_ids, node_id, evt) {
-        *       alert(node_id + ": " + object_ids.length+" columns");
-        *    }
-        * );
-        *
-        */
-      column_dendrogram_node_highlight(column_indexes, node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#dendrogram_node_unhighlight
-        * @event
-        * @param {function} function() callback function for the dendrogram node unhighlight event
-        * @eventData {string} node_id Id of the dendrogram node
-
-        * @example
-        * instance.events.dendrogram_node_unhighlight = (
-        *    function(node_id) {
-        *       alert(node_id);
-        *    }
-        * );
-        *
-        */
-      dendrogram_node_unhighlight(node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#column_dendrogram_node_unhighlight
-        * @event
-        * @param {function} function() callback function for the column dendrogram node unhighlight event
-        * @eventData {string} node_id Id of the column dendrogram node
-
-        * @example
-        * instance.events.column_dendrogram_node_unhighlight = (
-        *    function(node_id) {
-        *       alert(node_id);
-        *    }
-        * );
-        *
-        */
-      column_dendrogram_node_unhighlight(node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#heatmap_onmouseout
-        * @event
-        * @param {function} function() callback function for mouse cursor out of hte heatmap area
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.heatmap_onmouseout = (
-        *    function(evt) {
-        *       alert("now");
-        *    }
-        * );
-        *
-        */
-      heatmap_onmouseout(evt) {
-
-      },
-
-      /**
-        * @name InCHlib#on_zoom
-        * @event
-        * @param {function} function() callback function for zoom event
-        * @eventData {string} node_id Id of the dendrogram node
-
-        * @example
-        * instance.events.on_zoom = (
-        *    function(node_id) {
-        *       alert(node_id);
-        *    }
-        * );
-        *
-        */
-      on_zoom(object_ids, node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#on_unzoom
-        * @event
-        * @param {function} function() callback function for unzoom event
-        * @eventData {string} node_id Id of the dendrogram node
-
-        * @example
-        * instance.events.on_unzoom = (
-        *    function(node_id) {
-        *       alert(node_id);
-        *    }
-        * );
-        *
-        */
-      on_unzoom(node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#on_columns_zoom
-        * @event
-        * @param {function} function() callback function for columns zoom event
-        * @eventData {array} array array of column indexes
-        * @eventData {string} node_id Id of the column dendrogram node
-
-        * @example
-        * instance.events.on_columns_zoom = (
-        *    function(column_indexes, node_id) {
-        *       alert(column_indexes, node_id);
-        *    }
-        * );
-        *
-        */
-      on_columns_zoom(column_indexes, node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#on_columns_unzoom
-        * @event
-        * @param {function} function() callback function for columns unzoom event
-        * @eventData {string} node_id Id of the column dendrogram node
-
-        * @example
-        * instance.events.on_columns_unzoom = (
-        *    function(node_id) {
-        *       alert(node_id);
-        *    }
-        * );
-        *
-        */
-      on_columns_unzoom(node_id) {
-
-      },
-
-      /**
-        * @name InCHlib#on_refresh
-        * @event
-        * @param {function} function() callback function for refresh icon click event
-        * @eventData {object} event event object
-        * @example
-        * instance.events.on_refresh = (
-        *    function() {
-        *       alert("now");
-        *    }
-        * );
-        *
-        */
-      on_refresh() {
-
-      },
-
-      /**
-        * @name InCHlib#empty_space_onclick
-        * @event
-        * @param {function} function() callback function for click on empty(inactive) space in the visualization (e.g., around the heatmap)
-        * @eventData {object} event event object
-
-        * @example
-        * instance.events.empty_space_onclick = (
-        *    function(evt) {
-        *       alert("now");
-        *    }
-        * );
-        *
-        */
-      empty_space_onclick(evt) {
-
       },
 
     };
@@ -1126,21 +757,16 @@ import { round } from 'lodash';
     };
 
     /**
+    * Push the chart down to make room for the toolbar
+    * @name InCHlib#toolbar_distance
+    */
+    self.toolbar_distance = 75;
+
+    /**
     * Default Konvajs objects references
     * @name InCHlib#objects_ref
     */
     self.objects_ref = {
-      popup_box: new Konva.Rect({
-        x: 0,
-        y: 0,
-        width: self.popup_styles.width + 40,
-        height: 250,
-        fill: self.popup_styles['background'],
-        stroke: self.popup_styles['border-color'],
-        strokeWidth: self.popup_styles['border-width'],
-        cornerRadius: self.popup_styles['border-radius'],
-      }),
-      
       tooltip_label: new Konva.Label({
         opacity: 1,
         listening: false,
@@ -1180,12 +806,6 @@ import { round } from 'lodash';
         opacity: 0,
       }),
 
-      icon_overlay: new Konva.Rect({
-        width: 32,
-        height: 32,
-        opacity: 0,
-      }),
-
       heatmap_value: new Konva.Text({
         fontFamily: self.options.font.family,
         fill: self.hover_fill,
@@ -1221,22 +841,35 @@ import { round } from 'lodash';
         dash: [6, 2],
       }),
 
-      icon: new Konva.Path({
-        fill: 'grey',
+      font_awesome_icon: new Konva.Text({
+        // TODO need this for zoom tooltips
+        align: 'center',
+        fill: '#333',
+        fontFamily: 'FontAwesome',
+        fontSize: 14,
+        height: 28,
+        verticalAlign: 'middle',
+        width: 40,
       }),
 
-      image: new Konva.Image({
-        stroke: '#D2D2D2',
-        strokeWidth: 1,
-      }),
+      layer_below_toolbar: new Konva.Layer({
+        y: self.toolbar_distance,
+      })
     };
 
-    self.paths_ref = {
-      zoom_icon: 'M22.646,19.307c0.96-1.583,1.523-3.435,1.524-5.421C24.169,8.093,19.478,3.401,13.688,3.399C7.897,3.401,3.204,8.093,3.204,13.885c0,5.789,4.693,10.481,10.484,10.481c1.987,0,3.839-0.563,5.422-1.523l7.128,7.127l3.535-3.537L22.646,19.307zM13.688,20.369c-3.582-0.008-6.478-2.904-6.484-6.484c0.006-3.582,2.903-6.478,6.484-6.486c3.579,0.008,6.478,2.904,6.484,6.486C20.165,17.465,17.267,20.361,13.688,20.369zM15.687,9.051h-4v2.833H8.854v4.001h2.833v2.833h4v-2.834h2.832v-3.999h-2.833V9.051z',
-      unzoom_icon: 'M22.646,19.307c0.96-1.583,1.523-3.435,1.524-5.421C24.169,8.093,19.478,3.401,13.688,3.399C7.897,3.401,3.204,8.093,3.204,13.885c0,5.789,4.693,10.481,10.484,10.481c1.987,0,3.839-0.563,5.422-1.523l7.128,7.127l3.535-3.537L22.646,19.307zM13.688,20.369c-3.582-0.008-6.478-2.904-6.484-6.484c0.006-3.582,2.903-6.478,6.484-6.486c3.579,0.008,6.478,2.904,6.484,6.486C20.165,17.465,17.267,20.361,13.688,20.369zM8.854,11.884v4.001l9.665-0.001v-3.999L8.854,11.884z',
-      lightbulb: 'M15.5,2.833c-3.866,0-7,3.134-7,7c0,3.859,3.945,4.937,4.223,9.499h5.553c0.278-4.562,4.224-5.639,4.224-9.499C22.5,5.968,19.366,2.833,15.5,2.833zM15.5,28.166c1.894,0,2.483-1.027,2.667-1.666h-5.334C13.017,27.139,13.606,28.166,15.5,28.166zM12.75,25.498h5.5v-5.164h-5.5V25.498z',
+    /**
+    * Font Awesome 4 icons used in InCHlib.
+    * @name InCHlib#font_awesome_icons
+    */
+    self.font_awesome_icons = {
+      'fa-search-minus': String.fromCharCode('0xf010'),
+      'fa-search-plus': String.fromCharCode('0xf00e'),
     };
 
+    /**
+    * Creates color steps for the heatmap.
+    * @name InCHlib#color_steps
+    */
     self.color_steps = [
       0,
       self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
@@ -1246,6 +879,10 @@ import { round } from 'lodash';
       self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
     ];
 
+    /**
+    * Gets 5 values to display next to the heatmap scale.
+    * @name InCHlib#get_scale_values
+    */
     self.get_scale_values = () => {
       const [min, max, mid] = self.data_descs_all;
       return [
@@ -1258,9 +895,155 @@ import { round } from 'lodash';
       .map(x => round(x, 1).toFixed(1));
     };
 
+    /**
+    * Info for the toolbar buttons.
+    * @name InCHlib#toolbar_buttons
+    */
+    self.toolbar_buttons = [
+      {
+        fa_icon: 'fa-undo',
+        label: 'Reset',
+        id: 'reset',
+      },
+      {
+        fa_icon: 'fa-paint-brush',
+        label: 'Edit Heatmap Colors',
+        id: 'edit_heatmap_colors',
+      },
+      {
+        fa_icon: 'fa-bars',
+        label: 'Edit Categories',
+        id: 'edit_categories',
+      },
+      {
+        fa_icon: 'fa-download',
+        label: 'Download',
+        id: 'download',
+      },
+      {
+        fa_icon: ['fa-caret-down','fa-caret-up'],
+        label: 'Legend',
+        id: 'legend',
+      }
+    ];
+
     // start plugin
     self.init();
   }
+
+  // MODALS
+
+  InCHlib.prototype._draw_modal = function (modal_title, modal_content, has_close_btn = false) {
+    const self = this;
+    const overlay = self._draw_overlay();
+    const cancel_id = 'inchlib_cancel';
+    const save_id = 'inchlib_save';
+
+    const modal_btn = $('<button />', {
+      'class': 'inchlib-modal_actions-btn',
+      'type': 'button',
+    });
+
+    const modal_actions = [
+      modal_btn.clone()
+        .attr('id', cancel_id)
+        .text(has_close_btn 
+          ? 'Close' 
+          : 'Cancel'),
+      ...has_close_btn || modal_btn.clone()
+        .attr('id', save_id)
+        .text('Save')
+    ];
+
+    const modal = $('<div />', { 'class': 'inchlib-modal'}).append(
+      $('<h2 />', { text: modal_title }),
+      $('<div />',{ 'class': 'inchlib-modal_content' })
+        .append(modal_content),
+      $('<div />', {'class': 'inchlib-modal_actions' })
+        .append(modal_actions)
+    );
+
+    self.$element.append(modal);
+
+    $(`#${cancel_id}`).click(function(e) {
+      e.preventDefault();
+      overlay.trigger('click');
+    });
+
+    overlay.click(function() {
+      overlay.fadeOut().remove();
+      $('.inchlib-modal').remove();
+    });
+  };
+
+  InCHlib.prototype._draw_categories_modal = function () {
+    const self = this;
+    const modal_title = 'Edit Categories';
+    const form_id = `${self._name}_categories_form`;
+
+    const categories_form = $(`<form id='${form_id}'></form>`);
+
+    const options = ['<ul class="inchlib-modal_categories-form_list">']
+      .concat(self.column_metadata.feature_names
+        .map((category, i) => {
+          const key = category.toLowerCase().split(' ').join('-');
+          const id = `${self._name}_${key}`;
+          const checked = self.column_metadata.visible[i]
+            ? ' checked'
+            : '';
+          return `<li class="inchlib-modal_categories-form_list-item"><input type='checkbox' id='${id}' class='inchlib-modal_categories-form_input' name='inchlib-edit-categories' value='${category}'${checked}/><label for='${id}' class='inchlib-modal_categories-form_label'>${category}</label></li>`;
+        })
+      )
+      .concat('</ul>')
+      .join('');
+
+    categories_form.html(options);
+
+    self._draw_modal(modal_title, categories_form);
+
+    $('#inchlib_save').click(function(e) {
+      e.preventDefault();
+      const categories_updated = [];
+
+      $.each($(`#${form_id} input[name="inchlib-edit-categories"]`),
+        function() {
+          categories_updated.push($(this).is(':checked'));
+        }
+      );
+      self.column_metadata.visible = categories_updated;
+      $('.inchlib_overlay').trigger('click');
+      self.redraw();
+    });
+  };
+
+  InCHlib.prototype._draw_heatmap_modal = function () {
+    const self = this;
+    const modal_title = 'Edit Heatmap Colors';
+    const form_id = `${self._name}_heatmap_form`;
+
+    const color_scales = Object.keys(self.colors).map(color => {
+      const color_1 = self._get_color_for_value(0, 0, 1, 0.5, color);
+      const color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, color);
+      const color_3 = self._get_color_for_value(1, 0, 1, 0.5, color);
+      const checked = self.options.heatmap_colors === color;
+      const scale = $(`<label class="inchlib-modal_heatmap-label"><input type="radio" class="inchlib-modal_heatmap-input" name="inchlib-color-scale" value="${color}"${checked ? ' checked' : ''}><div class="inchlib-modal_heatmap-gradient" style="background: linear-gradient(to right, ${color_1},${color_2},${color_3})"></div></label>`);
+      return scale;
+    });
+
+    const heatmap_form = $(`<form id='${form_id}' class="inchlib-modal_heatmap-form"></form>`).append(color_scales);
+
+    self._draw_modal(modal_title, heatmap_form);
+
+    $('#inchlib_save').click(function(e) {
+      e.preventDefault();
+      const color = $(`#${form_id} input:checked`).val();
+      const settings = { heatmap_colors: color };
+      self.update_settings(settings);
+      self.redraw_heatmap();
+      self._update_color_scale();
+      $('.inchlib-overlay').trigger('click');
+    });
+  };
 
   InCHlib.prototype._update_user_options = function (options) {
     const self = this;
@@ -1312,13 +1095,6 @@ import { round } from 'lodash';
       options.column_metadata = false;
     }
 
-    if (self.json.alternative_data !== undefined &&
-      self.options.alternative_data) {
-      self.alternative_data = self.json.alternative_data.nodes;
-    } else {
-      options.alternative_data = false;
-    }
-
     self._update_user_options(options);
     self._add_prefix();
   };
@@ -1335,15 +1111,6 @@ import { round } from 'lodash';
         metadata[id] = self.metadata.nodes[keys[i]];
       }
       self.metadata.nodes = metadata;
-    }
-
-    if (self.options.alternative_data) {
-      const alternative_data = {};
-      for (var i = 0, keys = Object.keys(self.alternative_data), len = keys.length; i < len; i++) {
-        id = [self._name, keys[i]].join('#');
-        alternative_data[id] = self.alternative_data[keys[i]];
-      }
-      self.alternative_data = alternative_data;
     }
 
     if (self.column_dendrogram) {
@@ -1444,7 +1211,6 @@ import { round } from 'lodash';
     let columns;
     const data_rows = data.length;
     const data_cols = data[0].length;
-
     if (axis === 'column') {
       columns = [];
 
@@ -1533,32 +1299,18 @@ import { round } from 'lodash';
     let node_data;
     let key;
 
-    if (self.options.alternative_data) {
-      const keys = Object.keys(self.alternative_data);
-      for (var i = 0; i < keys.length; i++) {
-        key = keys[i];
-        node_data = self.alternative_data[key];
+    const keys = Object.keys(nodes);
+    for (var i = 0; i < keys.length; i++) {
+      key = keys[i];
+      if (nodes[key].count == 1) {
+        node_data = nodes[key].features;
         for (var j = 0, len_2 = node_data.length; j < len_2; j++) {
           if ((`${node_data[j]}`).length > max_length) {
             max_length = (`${node_data[j]}`).length;
           }
         }
       }
-    } else {
-      const keys = Object.keys(nodes);
-      for (var i = 0; i < keys.length; i++) {
-        key = keys[i];
-        if (nodes[key].count == 1) {
-          node_data = nodes[key].features;
-          for (var j = 0, len_2 = node_data.length; j < len_2; j++) {
-            if ((`${node_data[j]}`).length > max_length) {
-              max_length = (`${node_data[j]}`).length;
-            }
-          }
-        }
-      }
     }
-
     if (self.options.metadata) {
       nodes = self.metadata.nodes;
       const keys = Object.keys(nodes);
@@ -1681,10 +1433,8 @@ import { round } from 'lodash';
       self.options.column_dendrogram = false;
     }
     self._adjust_leaf_size(self.heatmap_array.length);
-
   
     self.right_margin = 100;
-    
 
     self._adjust_horizontal_sizes();
     self.top_heatmap_distance = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2;
@@ -1704,47 +1454,39 @@ import { round } from 'lodash';
     self.stage.setHeight(self.options.height);
     self._draw_stage_layer();
 
-    if (self.options.dendrogram) {
-      self.timer = 0;
-      self._draw_dendrogram_layers();
-      self.root_id = self._get_root_id(self.data.nodes);
-      self._draw_row_dendrogram(self.root_id);
+    self._draw_dendrogram_layers();
+    self.root_id = self._get_root_id(self.data.nodes);
+    self._draw_row_dendrogram(self.root_id);
 
-      if (self.options.column_dendrogram && self.options.dendrogram) {
-        self.column_root_id = self._get_root_id(self.column_dendrogram.nodes);
-        self.nodes2columns = false;
-        self.columns_start_index = 0;
-        self._draw_column_dendrogram(self.column_root_id);
-      }
-    } else {
-      self.options.column_dendrogram = false;
-      self._reorder_heatmap(0);
-      self.ordered_by_index = 0;
+    if (self.options.column_dendrogram && self.options.dendrogram) {
+      self.column_root_id = self._get_root_id(self.column_dendrogram.nodes);
+      self.nodes2columns = false;
+      self.columns_start_index = 0;
+      self._draw_column_dendrogram(self.column_root_id);
     }
-
+    
     self._draw_heatmap();
     self._draw_heatmap_header();
     self._draw_navigation();
     self.highlight_rows(self.options.highlighted_rows);
-    self._draw_legend_for_png();
+    self._draw_heatmap_scale();
   };
 
   InCHlib.prototype._draw_dendrogram_layers = function () {
     const self = this;
-    self.cluster_layer = new Konva.Layer();
-    self.dendrogram_hover_layer = new Konva.Layer();
+    self.cluster_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.dendrogram_hover_layer = self.objects_ref.layer_below_toolbar.clone();
     self.stage.add(self.cluster_layer, self.dendrogram_hover_layer);
 
     self.cluster_layer.on('click', (evt) => {
       self.unhighlight_cluster();
       self.unhighlight_column_cluster();
-      self.events.empty_space_onclick(evt);
     });
   };
 
   InCHlib.prototype._draw_row_dendrogram = function (node_id) {
     const self = this;
-    self.dendrogram_layer = new Konva.Layer();
+    self.dendrogram_layer = self.objects_ref.layer_below_toolbar.clone();
     const node = self.data.nodes[node_id];
     const { count } = node;
 
@@ -1753,7 +1495,7 @@ import { round } from 'lodash';
     self.objects2leaves = {};
 
     self._adjust_leaf_size(count);
-    self.options.height = count * self.pixels_for_leaf + self.header_height + self.footer_height + self.column_metadata_height;
+    self.options.height = count * self.pixels_for_leaf + self.header_height + self.footer_height + self.column_metadata_height + self.toolbar_distance - 40;
 
     self.stage.setWidth(self.options.stage_width);
     self.stage.setHeight(self.options.height);
@@ -1768,7 +1510,6 @@ import { round } from 'lodash';
     }
     self._draw_row_dendrogram_node(node_id, node, current_left_count, current_right_count, 0, y);
     self.middle_item_count = (self.min_item_count + self.max_item_count) / 2;
-    self._draw_distance_scale(node.distance);
     self.stage.add(self.dendrogram_layer);
 
     self._bind_dendrogram_hover_events(self.dendrogram_layer);
@@ -1832,32 +1573,46 @@ import { round } from 'lodash';
     const { height, png_padding, width } = self.options;
     self.stage_layer = new Konva.Layer();
     // drawing a large white background for PNG download.
-    // the extra width/height is to accommodate the legend
-    // and padding in the PNG.
-    const stage_rect = new Konva.Rect({
+
+    // PADDING
+    const padding = png_padding * 2;
+    const move_bg_to_center = png_padding * -1;
+
+    // HEIGHT
+    const min_height = 700;
+    const get_height = height < min_height
+      ? min_height
+      : height;
+    const fill_bg_gap = 130;
+    const bg_height = get_height + self.toolbar_distance + padding + fill_bg_gap;
+
+    // WIDTH
+    const legend_width = 160;
+    // the legend for PNG view is off-stage, to the right.
+    // the bg has to be extended for it.
+    const bg_width = width + legend_width + padding;
+
+    const stage_bg = new Konva.Rect({
       fill: '#fff',
-      height: height + 130 + (png_padding * 2) < 500 + (png_padding * 2)
-        ? 500 + (png_padding * 2)
-        : height + 250 + (png_padding * 2),
+      height: bg_height,
       opacity: 1,
-      width: width + 300 + (png_padding * 2),
-      x: (png_padding * -1),
-      y: (png_padding * -1),
+      width: bg_width,
+      x: move_bg_to_center,
+      y: move_bg_to_center,
     });
-    self.stage_layer.add(stage_rect);
-    stage_rect.moveToBottom();
+    self.stage_layer.add(stage_bg);
+    stage_bg.moveToBottom();
     self.stage.add(self.stage_layer);
 
     self.stage_layer.on('click', (evt) => {
       self.unhighlight_cluster();
       self.unhighlight_column_cluster();
-      self.events.empty_space_onclick(evt);
     });
   };
 
   InCHlib.prototype._draw_column_dendrogram = function (node_id) {
     const self = this;
-    self.column_dendrogram_layer = new Konva.Layer();
+    self.column_dendrogram_layer = self.objects_ref.layer_below_toolbar.clone();
     self.column_x_coordinates = {};
     const node = self.column_dendrogram.nodes[node_id];
     self.current_column_count = node.count;
@@ -1915,12 +1670,12 @@ import { round } from 'lodash';
     const self = this;
 
     layer.on('mouseover', function (evt) {
-      self._hover_cursor_on();
+      self._cursor_mouseover();
       self._dendrogram_layers_mouseover(this, evt);
     });
 
     layer.on('mouseout', function (evt) {
-      self._hover_cursor_off();
+      self._cursor_mouseout();
       self._dendrogram_layers_mouseout(this, evt);
     });
   };
@@ -2084,9 +1839,7 @@ import { round } from 'lodash';
 
     self._set_color_settings();
 
-    if (self.options.alternative_data && self.json.alternative_data.feature_names !== undefined) {
-      self.heatmap_header = self.json.alternative_data.feature_names;
-    } else if (self.data.feature_names !== undefined) {
+    if (self.data.feature_names !== undefined) {
       self.heatmap_header = self.data.feature_names;
     }
 
@@ -2181,8 +1934,8 @@ import { round } from 'lodash';
     let y;
     let key;
 
-    self.heatmap_layer = new Konva.Layer();
-    self.heatmap_overlay = new Konva.Layer();
+    self.heatmap_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.heatmap_overlay = self.objects_ref.layer_below_toolbar.clone();
 
     self.current_draw_values = true;
     self.max_value_length = self._get_max_value_length();
@@ -2206,7 +1959,7 @@ import { round } from 'lodash';
       self._draw_column_metadata(x1);
     }
 
-    self.highlighted_rows_layer = new Konva.Layer();
+    self.highlighted_rows_layer = self.objects_ref.layer_below_toolbar.clone();
     self.stage.add(self.heatmap_layer, self.heatmap_overlay, self.highlighted_rows_layer);
 
     self.highlighted_rows_layer.moveToTop();
@@ -2217,7 +1970,6 @@ import { round } from 'lodash';
       self.last_header = null;
       self.heatmap_overlay.destroyChildren();
       self.heatmap_overlay.draw();
-      self.events.heatmap_onmouseout(evt);
     });
   };
 
@@ -2394,7 +2146,7 @@ import { round } from 'lodash';
       if (is_gene_symbol_column) {
         evt.target.opacity(1 - self.hover_opacity_on);
         self.heatmap_layer.draw();
-        self._hover_cursor_on();
+        self._cursor_mouseover();
       }
       self._draw_col_label(evt);
     });
@@ -2405,7 +2157,7 @@ import { round } from 'lodash';
       if (is_gene_symbol_column) {
         evt.target.opacity(1 - self.hover_opacity_off);
         self.heatmap_layer.draw();
-        self._hover_cursor_off();
+        self._cursor_mouseout();
       }
       self.heatmap_overlay.find('#col_label')[0].destroy();
       self.heatmap_overlay.find('#column_overlay')[0].destroy();
@@ -2433,7 +2185,7 @@ import { round } from 'lodash';
       self.header.length > 0 &&
       self.pixels_for_dimension >= self.min_size_draw_values
     ) {
-      self.header_layer = new Konva.Layer();
+      self.header_layer = self.objects_ref.layer_below_toolbar.clone();
       const count = self._hack_size(self.leaves_y_coordinates);
       const y = (self.options.column_dendrogram && self.heatmap_header)
         ? self.header_height + (self.pixels_for_leaf * count) + 15 + self.column_metadata_height
@@ -2500,7 +2252,7 @@ import { round } from 'lodash';
 
       self.header_layer.on('mouseover', function (evt) {
         self._draw_col_overlay_for_header(evt);
-        self._hover_cursor_on();
+        self._cursor_mouseover();
         const label = evt.target;
         label.setOpacity(1 - self.hover_opacity_on);
         this.draw();
@@ -2509,7 +2261,7 @@ import { round } from 'lodash';
       self.header_layer.on('mouseout', function (evt) {
         self.column_overlay.destroy();
         self.heatmap_overlay.draw();
-        self._hover_cursor_off();
+        self._cursor_mouseout();
         const label = evt.target;
         label.setOpacity(1 - self.hover_opacity_off);
         self.active_header_column = null;
@@ -2545,402 +2297,214 @@ import { round } from 'lodash';
     }
   };
 
-  InCHlib.prototype._translate_column_to_feature_index = function (column_index) {
+  InCHlib.prototype._draw_toolbar = function () {
     const self = this;
-    let key;
-    let index = -1;
-    for (let i = 0, keys = Object.keys(self.features), len = keys.length; i < len; i++) {
-      key = keys[i];
-      if (self.features[key]) {
-        index++;
-        if (column_index === index) {
-          return key;
+
+    const toolbar_ul = $(`<ul class="inchlib-toolbar"></ul>`);
+    const toolbar_buttons = self.toolbar_buttons.map(btn => {
+      const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
+      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}"${is_button_disabled ? ' disabled' : ''}>`;
+      const close_button = '</button></li>';
+      const contents = btn.id === 'legend'
+      ? `${btn.label}<i class="fa ${btn.fa_icon[0]}"></i>`
+      : `<i class="fa ${btn.fa_icon}"></i>`;
+      return `${open_button}${contents}${close_button}`;
+    })
+    .join('');
+
+    toolbar_ul.html(toolbar_buttons);
+    self.$element.append(toolbar_ul);
+
+    $('.inchlib-toolbar_btn')
+      .mouseover(function () {
+        const $this = $(this);
+        if ($this.attr('data-inchlib-id') !== 'legend') {
+          self._toolbar_mouseover($this);
         }
+      })
+      .mouseout(function() {
+        if ($(this).attr('data-inchlib-id') !== 'legend') {
+          self._toolbar_mouseout();
+        }
+      })
+      .click(function() {
+        self._toolbar_click($(this));
+      })
+  };
+
+  InCHlib.prototype._toolbar_click = function (button) {
+    const self = this;
+    const id = button.attr('data-inchlib-id');
+    if (id === 'reset') {
+      self.redraw();
+    } else if (id === 'edit_heatmap_colors') {
+      self._draw_heatmap_modal();
+    } else if (id === 'edit_categories') {
+      self._draw_categories_modal();
+    } else if (id === 'download') {
+      // toggle the download menu
+      const download_menu = $('.inchlib-download');
+      if (download_menu.length === 0) {
+        self._draw_download_menu();
+      } else {
+        const overlay = self.$element.find('.inchlib-overlay');
+        if (overlay.length === 1) {
+          overlay.trigger('click');
+        }
+      }
+    } else if (id === 'legend') {
+      // legend stays visible unless you click
+      // on the legend toggle again
+      if ($(`#${self.legend_id}`).length === 1) {
+        button.removeClass('no-hover');
+        $(`#${self.legend_id}`).fadeOut().remove();
+        button.find('.fa-caret-up')
+          .removeClass('fa-caret-up')
+          .addClass('fa-caret-down');
+      } else {
+        button.addClass('no-hover');
+        self._draw_legend_for_screen();
+        button.find('.fa-caret-down')
+          .removeClass('fa-caret-down')
+          .addClass('fa-caret-up');
       }
     }
   };
 
-  InCHlib.prototype._draw_distance_scale = function (distance) {
+  InCHlib.prototype._toolbar_mouseover = function (button) {
     const self = this;
-    if (!self.options.navigation_toggle.distance_scale) {
-      return;
-    }
-    const y1 = self.header_height + self.column_metadata_height + self.column_metadata_row_height / 2 - 10;
-    const y2 = y1;
-    const x1 = 0;
-    const x2 = self.distance;
-    var path = new Konva.Line({
-      points: [
-        x1,
-        y1,
-        x2,
-        y2,
-      ],
-      stroke: 'grey',
-      listening: false,
+
+    const position = button.parent().position();
+    const x = button.closest('ul').position().left + position.left;
+    const y = position.top + 35;
+
+    self.toolbar_tooltip = self.objects_ref.tooltip_label.clone({
+      x,
+      y,
     });
+    self.toolbar_tooltip.add(self.objects_ref.tooltip_tag.clone());
+    self.toolbar_tooltip.add(self.objects_ref.tooltip_text.clone({ text: button.attr('data-inchlib-tooltip') }));
 
-    const circle = new Konva.Circle({
-      x: x2,
-      y: y2,
-      radius: 3,
-      fill: 'grey',
-      listening: false,
-    });
+    self.navigation_layer.add(self.toolbar_tooltip);
+    self.toolbar_tooltip.moveToTop();
 
-    let number = 0;
-    const marker_tail = 3;
-    let marker_distance = x2;
-    const marker_number_distance = self._hack_round(30 / self.distance_step * 10) / 10;
-    var distance = Math.round(100 * self.distance / self.distance_step) / 100;
-    let marker_distance_step = self._hack_round(self.distance_step * marker_number_distance);
-    let marker_counter = 0;
+    // center align the tooltip
+    const toolbar_coords = self.toolbar_tooltip.getClientRect();
+    self.toolbar_tooltip.x(x + 22 - (toolbar_coords.width / 2));
 
-    const distance_number = new Konva.Text({
-      x: 0,
-      y: y1 - 20,
-      text: distance,
-      fontSize: self.options.font.size,
-      fontFamily: self.options.font.family,
-      fontStyle: '500',
-      fill: self.hover_fill,
-      align: 'right',
-      listening: false,
-    });
-    self.dendrogram_layer.add(path, circle, distance_number);
-
-    if (marker_distance_step == 0) {
-      marker_distance_step = 0.5;
-    }
-
-    var path;
-    if (marker_number_distance > 0.1) {
-      while (marker_distance > 0) {
-        path = new Konva.Line({
-          points: [
-            marker_distance,
-            (y1 - marker_tail),
-            marker_distance,
-            (y2 + marker_tail),
-          ],
-          stroke: 'grey',
-          listening: false,
-        });
-        self.dendrogram_layer.add(path);
-
-        number = self._hack_round((number + marker_number_distance) * 10) / 10;
-        if (number > 10) {
-          number = self._hack_round(number);
-        }
-
-        marker_distance -= marker_distance_step;
-        marker_counter++;
-      }
-    }
+    self.navigation_layer.draw();
   };
 
+  InCHlib.prototype._toolbar_mouseout = function () {
+    const self = this;
+    self.toolbar_tooltip.destroy();
+    self.navigation_layer.draw();
+  };
+
+  InCHlib.prototype._draw_download_menu = function () {
+    const self = this;
+    const overlay = self._draw_overlay(true);
+    const download_options = [
+      {
+        id: 'download-png',
+        label: 'PNG',
+      },
+      // {
+      //   id: 'download-json',
+      //   label: 'JSON',
+      // },
+    ];
+
+    const download_ul = $(`<ul class="inchlib-download"></ul>`);
+
+    const download_lis = download_options.map(option => {
+      const open_li = `<li class="inchlib-download_item"><button type="button" class="inchlib-download_btn" data-inchlib-id="${option.id}">`;
+      const close_li = '</button></li>';
+      const contents = option.label;
+      return `${open_li}${contents}${close_li}`;
+    })
+    .join('');
+
+    download_ul.html(download_lis);
+    $('.inchlib-toolbar_btn-download').parent().append(download_ul);
+
+    $('.inchlib-download_btn').click(function() {
+      if ($(this).attr('data-inchlib-id') === 'download-png') {
+        self._download_png();
+      }
+    });
+
+    overlay.click(function() {
+      overlay.fadeOut().remove();
+      $('.inchlib-download').remove();
+    });
+  };
+  
   InCHlib.prototype._draw_navigation = function () {
     const self = this;
     self.navigation_layer = new Konva.Layer();
-    let x = 0;
-    let y = 10;
+    // offset by 0.5 for cleaner lines
+    let x = 0.5;
+    let y = 5.5;
 
-    if (self.options.heatmap) {
-      // self._draw_color_scale();
-    }
+    self._draw_toolbar();
 
-    if (self.zoomed_clusters.row.length > 0 || self.zoomed_clusters.column.length > 0) {
-      const refresh_icon = self.objects_ref.icon.clone({
-        data: 'M24.083,15.5c-0.009,4.739-3.844,8.574-8.583,8.583c-4.741-0.009-8.577-3.844-8.585-8.583c0.008-4.741,3.844-8.577,8.585-8.585c1.913,0,3.665,0.629,5.09,1.686l-1.782,1.783l8.429,2.256l-2.26-8.427l-1.89,1.89c-2.072-1.677-4.717-2.688-7.587-2.688C8.826,3.418,3.418,8.826,3.416,15.5C3.418,22.175,8.826,27.583,15.5,27.583S27.583,22.175,27.583,15.5H24.083z',
-        x,
-        y,
-        id: 'refresh_icon',
-        label: 'Refresh',
-      });
-      const refresh_overlay = self._draw_icon_overlay(x, y);
-      self.navigation_layer.add(refresh_icon, refresh_overlay);
-
-      refresh_overlay.on('click', () => {
-        self._refresh_icon_click();
-        self.events.on_refresh();
-      });
-
-      refresh_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
-        self._icon_mouseover(refresh_icon, refresh_overlay, self.navigation_layer);
-      });
-
-      refresh_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
-        self._icon_mouseout(refresh_icon, refresh_overlay, self.navigation_layer);
-      });
-    }
-
-    if (self.zoomed_clusters.row.length > 0) {
-      x = self.distance - 55;
-      y = self.header_height + self.column_metadata_height - 40;
-      const unzoom_icon = self.objects_ref.icon.clone({
-        data: self.paths_ref.unzoom_icon,
-        x,
-        y,
-        scale: {
-          x: 0.7,
-          y: 0.7,
-        },
-        label: 'Unzoom\nrows',
-      });
-      const unzoom_overlay = self._draw_icon_overlay(x, y);
-      self.navigation_layer.add(unzoom_icon, unzoom_overlay);
-
-      unzoom_overlay.on('click', () => {
-        self._unzoom_icon_click();
-      });
-
-      unzoom_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
-        self._icon_mouseover(unzoom_icon, unzoom_overlay, self.navigation_layer);
-      });
-
-      unzoom_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
-        self._icon_mouseout(unzoom_icon, unzoom_overlay, self.navigation_layer);
-      });
-    }
-
-    if (self.zoomed_clusters.column.length > 0) {
-      x = self.options.width - 85;
-      y = self.header_height - 50;
-      const column_unzoom_icon = self.objects_ref.icon.clone({
-        data: self.paths_ref.unzoom_icon,
-        x,
-        y: y - 5,
-        scale: {
-          x: 0.7,
-          y: 0.7,
-        },
-        label: 'Unzoom\ncolumns',
-      });
-      const column_unzoom_overlay = self._draw_icon_overlay(x, y);
-
-      self.navigation_layer.add(column_unzoom_icon, column_unzoom_overlay);
-
-      column_unzoom_overlay.on('click', function () {
-        self._column_unzoom_icon_click(this);
-      });
-
-      column_unzoom_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
-        self._icon_mouseover(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
-      });
-
-      column_unzoom_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
-        self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
-      });
-    }
-
-    if (self.options.navigation_toggle.export_button) {
-      const export_icon = self.objects_ref.icon.clone({
-        data: 'M24.25,10.25H20.5v-1.5h-9.375v1.5h-3.75c-1.104,0-2,0.896-2,2v10.375c0,1.104,0.896,2,2,2H24.25c1.104,0,2-0.896,2-2V12.25C26.25,11.146,25.354,10.25,24.25,10.25zM15.812,23.499c-3.342,0-6.06-2.719-6.06-6.061c0-3.342,2.718-6.062,6.06-6.062s6.062,2.72,6.062,6.062C21.874,20.78,19.153,23.499,15.812,23.499zM15.812,13.375c-2.244,0-4.062,1.819-4.062,4.062c0,2.244,1.819,4.062,4.062,4.062c2.244,0,4.062-1.818,4.062-4.062C19.875,15.194,18.057,13.375,15.812,13.375z',
-        x: self.options.width - 62,
-        y: 10,
-        scale: {
-          x: 0.7,
-          y: 0.7,
-        },
-        id: 'export_icon',
-        label: 'Download PNG',
-      });
-
-      const export_overlay = self._draw_icon_overlay(self.options.width - 62, 10);
-      self.navigation_layer.add(export_icon, export_overlay);
-
-      export_overlay.on('click', function () {
-        self._export_icon_click(this);
-      });
-
-      export_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
-        self._icon_mouseover(export_icon, export_overlay, self.navigation_layer);
-      });
-
-      export_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
-        self._icon_mouseout(export_icon, export_overlay, self.navigation_layer);
-      });
-    }
-
-    // if (self.options.navigation_toggle.categories_legend) {
-    //   // const x = self.options.width - 60;
-    //   const x = 10;
-    //   const y = 75;
-    //   const scale = 0.6;
-    //   const legend_icon = self.objects_ref.icon.clone({
-    //     data: 'M18.386,16.009l0.009-0.006l-0.58-0.912c1.654-2.226,1.876-5.319,0.3-7.8c-2.043-3.213-6.303-4.161-9.516-2.118c-3.212,2.042-4.163,6.302-2.12,9.517c1.528,2.402,4.3,3.537,6.944,3.102l0.424,0.669l0.206,0.045l0.779-0.447l-0.305,1.377l2.483,0.552l-0.296,1.325l1.903,0.424l-0.68,3.06l1.406,0.313l-0.424,1.906l4.135,0.918l0.758-3.392L18.386,16.009z M10.996,8.944c-0.685,0.436-1.593,0.233-2.029-0.452C8.532,7.807,8.733,6.898,9.418,6.463s1.594-0.233,2.028,0.452C11.883,7.6,11.68,8.509,10.996,8.944z',
+    // if (self.zoomed_clusters.row.length > 0) {
+    //   x = self.distance - 55;
+    //   y = self.header_height + self.column_metadata_height - 40;
+    //   const unzoom_icon = self.objects_ref.font_awesome_icon.clone({
+    //     text: self.font_awesome_icons['fa-search-minus'],
     //     x,
     //     y,
-    //     scale: {
-    //       x: scale,
-    //       y: scale,
-    //     },
-    //     id: 'legend_icon',
-    //     label: 'View legend',
+    //     label: 'Unzoom\nrows',
     //   });
-    //   const legend_overlay = self._draw_icon_overlay(x, y);
-    //   self.navigation_layer.add(legend_icon, legend_overlay);
+    //   const unzoom_overlay = self._draw_icon_overlay(x, y);
+    //   self.navigation_layer.add(unzoom_icon, unzoom_overlay);
 
-    //   legend_overlay.on('click', function () {
-    //     self._legend_icon_click();
+    //   unzoom_overlay.on('click', () => {
+    //     self._unzoom_icon_click();
     //   });
 
-    //   legend_overlay.on('mouseover', () => {
-    //     self._hover_cursor_on();
-    //     self._icon_mouseover(legend_icon, legend_overlay, self.navigation_layer);
+    //   unzoom_overlay.on('mouseover', () => {
+    //     self._cursor_mouseover();
+    //     // self._icon_mouseover(unzoom_icon, unzoom_overlay, self.navigation_layer);
     //   });
 
-    //   legend_overlay.on('mouseout', () => {
-    //     self._hover_cursor_off();
-    //     self._icon_mouseout(legend_icon, legend_overlay, self.navigation_layer);
+    //   unzoom_overlay.on('mouseout', () => {
+    //     self._cursor_mouseout();
+    //     // self._icon_mouseout(unzoom_icon, unzoom_overlay, self.navigation_layer);
     //   });
     // }
 
-    if (self.options.navigation_toggle.edit_categories) {
-      const x = self.options.width - 60;
-      const y = 45;
-      const scale = 0.6;
+    // if (self.zoomed_clusters.column.length > 0) {
+    //   x = self.options.width - 85;
+    //   y = self.header_height - 50;
+    //   const column_unzoom_icon = self.objects_ref.font_awesome_icon.clone({
+    //     text: self.font_awesome_icons['fa-search-minus'],
+    //     x,
+    //     y: y - 5,
+    //     label: 'Unzoom\ncolumns',
+    //   });
+    //   const column_unzoom_overlay = self._draw_icon_overlay(x, y);
 
-      const categories_icon = self.objects_ref.icon.clone({
-        data: 'M26.974,16.514l3.765-1.991c-0.074-0.738-0.217-1.454-0.396-2.157l-4.182-0.579c-0.362-0.872-0.84-1.681-1.402-2.423l1.594-3.921c-0.524-0.511-1.09-0.977-1.686-1.406l-3.551,2.229c-0.833-0.438-1.73-0.77-2.672-0.984l-1.283-3.976c-0.364-0.027-0.728-0.056-1.099-0.056s-0.734,0.028-1.099,0.056l-1.271,3.941c-0.967,0.207-1.884,0.543-2.738,0.986L7.458,4.037C6.863,4.466,6.297,4.932,5.773,5.443l1.55,3.812c-0.604,0.775-1.11,1.629-1.49,2.55l-4.05,0.56c-0.178,0.703-0.322,1.418-0.395,2.157l3.635,1.923c0.041,1.013,0.209,1.994,0.506,2.918l-2.742,3.032c0.319,0.661,0.674,1.303,1.085,1.905l4.037-0.867c0.662,0.72,1.416,1.351,2.248,1.873l-0.153,4.131c0.663,0.299,1.352,0.549,2.062,0.749l2.554-3.283C15.073,26.961,15.532,27,16,27c0.507,0,1.003-0.046,1.491-0.113l2.567,3.301c0.711-0.2,1.399-0.45,2.062-0.749l-0.156-4.205c0.793-0.513,1.512-1.127,2.146-1.821l4.142,0.889c0.411-0.602,0.766-1.243,1.085-1.905l-2.831-3.131C26.778,18.391,26.93,17.467,26.974,16.514zM20.717,21.297l-1.785,1.162l-1.098-1.687c-0.571,0.22-1.186,0.353-1.834,0.353c-2.831,0-5.125-2.295-5.125-5.125c0-2.831,2.294-5.125,5.125-5.125c2.83,0,5.125,2.294,5.125,5.125c0,1.414-0.573,2.693-1.499,3.621L20.717,21.297z',
-        x,
-        y,
-        scale: {
-          x: scale,
-          y: scale,
-        },
-        id: 'categories_icon',
-        label: 'Edit categories',
-      });
+    //   self.navigation_layer.add(column_unzoom_icon, column_unzoom_overlay);
 
-      const categories_overlay = self._draw_icon_overlay(x, y);
-      self.navigation_layer.add(categories_icon, categories_overlay);
+    //   column_unzoom_overlay.on('click', function () {
+    //     self._column_unzoom_icon_click(this);
+    //   });
 
-      categories_overlay.on('click', function () {
-        self._categories_icon_click(this);
-      });
+    //   column_unzoom_overlay.on('mouseover', () => {
+    //     self._cursor_mouseover();
+    //     // self._icon_mouseover(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
+    //   });
 
-      categories_overlay.on('mouseover', () => {
-        self._hover_cursor_on();
-        self._icon_mouseover(categories_icon, categories_overlay, self.navigation_layer);
-      });
-
-      categories_overlay.on('mouseout', () => {
-        self._hover_cursor_off();
-        self._icon_mouseout(categories_icon, categories_overlay, self.navigation_layer);
-      });
-    }
+    //   column_unzoom_overlay.on('mouseout', () => {
+    //     self._cursor_mouseout();
+    //     // self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
+    //   });
+    // }
 
     self.stage.add(self.navigation_layer);
-  };
-
-  InCHlib.prototype._draw_color_scale = function () {
-    const self = this;
-    if (!self.options.navigation_toggle.color_scale) {
-      return;
-    }
-
-    const scale_height = 20;
-    const scale_width = 150;
-    const scale_x = 15;
-    const scale_y = 80;
-
-    const color_scale = new Konva.Rect({
-      label: 'Edit heatmap colors',
-      fillLinearGradientColorStops: self.color_steps,
-      id: `${self._name}_color_scale`,
-      x: scale_x,
-      y: scale_y,
-      width: scale_width,
-      height: scale_height,
-      fillLinearGradientStartPoint: {
-        x: scale_x,
-        y: scale_y,
-      },
-      fillLinearGradientEndPoint: {
-        x: scale_width,
-        y: scale_y,
-      },
-      stroke: 'grey',
-      strokeWidth: 2,
-      lineCap: 'square',
-      shadowForStrokeEnabled: false,
-    });
-
-    // add ticks to heatmap scale
-
-    const ticks_group = new Konva.Group({
-      x: scale_x,
-      y: scale_height + scale_y,
-    });
-
-    let x = 0;
-    let y = 0;
-
-    for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
-      const tick = new Konva.Rect({
-        height: 10,
-        stroke: 'grey',
-        strokeWidth: 1,
-        x: Math.round(scale_width * (0.25 * i)),
-        y: 0,
-      });
-      ticks_group.add(tick);
-    }
-
-    // add values to heatmap scale
-
-    const scale_values = self.get_scale_values();
-
-    const scale_values_group = new Konva.Group({
-      x: scale_x - 12,
-      y: scale_height + scale_y + 18,
-    });
-
-    y = 0;
-    x = 0;
-
-    const scale_x_int = (scale_width / scale_values.length) + 7.5;
-
-    for (let i = 0; i < scale_values.length; i++) {
-      const text = scale_values[i];
-      const scale_text = new Konva.Text({
-        align: 'center',
-        fill: self.hover_fill,
-        fontFamily: self.options.font.family,
-        fontStyle: '500', 
-        text,
-        width: 25,
-        x,
-        y,
-      });
-      x += scale_x_int;
-      scale_values_group.add(scale_text);
-    }
-
-    color_scale.on('mouseover', () => {
-      self._hover_cursor_on();
-      self._color_scale_mouseover(color_scale, self.navigation_layer);
-    });
-
-    color_scale.on('mouseout', () => {
-      self._hover_cursor_off();
-      self._color_scale_mouseout(color_scale, self.navigation_layer);
-    });
-
-    color_scale.on('click', () => {
-      self._color_scale_click(color_scale, self.navigation_layer);
-    });
-
-    self.navigation_layer.add(color_scale, ticks_group, scale_values_group);
   };
 
   InCHlib.prototype._update_color_scale = function () {
@@ -2958,15 +2522,7 @@ import { round } from 'lodash';
 
     color_scale.fillLinearGradientColorStops(self.color_steps);
     self.navigation_layer.draw();
-    self.redraw_legend();
-  };
-
-  InCHlib.prototype._draw_icon_overlay = function (x, y) {
-    const self = this;
-    return self.objects_ref.icon_overlay.clone({
-      x,
-      y,
-    });
+    self._redraw_heatmap_scale();
   };
 
   InCHlib.prototype._highlight_path = function (path_id, color) {
@@ -3066,11 +2622,12 @@ import { round } from 'lodash';
       self.unhighlight_cluster();
     }
 
-    if (previous_cluster !== path_id) {
+    if (previous_cluster === path_id) {
+      self._zoom_cluster(path_id);
+    } else {
       self.last_highlighted_cluster = path_id;
       self._highlight_path(path_id, '#F5273C');
       self._draw_cluster_layer(path_id);
-      self.events.dendrogram_node_highlight(self.current_object_ids, self._unprefix(path_id));
     }
     self.dendrogram_layer.draw();
   };
@@ -3081,12 +2638,14 @@ import { round } from 'lodash';
     if (previous_cluster) {
       self.unhighlight_column_cluster();
     }
-    if (previous_cluster !== path_id) {
+    if (previous_cluster === path_id) {
+      self._get_column_ids(path_id);
+      self._zoom_column_cluster(path_id);
+    } else {
       self.last_highlighted_column_cluster = path_id;
       self._highlight_column_path(path_id, '#F5273C');
       self.current_column_ids.sort((a, b) => { return a - b; });
       self._draw_column_cluster_layer(path_id);
-      self.events.column_dendrogram_node_highlight(self.current_column_ids, self._unprefix(path_id));
     }
     self.column_dendrogram_layer.draw();
   };
@@ -3099,7 +2658,6 @@ import { round } from 'lodash';
       self.column_cluster_group.destroy();
       self.cluster_layer.draw();
       self.current_column_ids = [];
-      self.events.column_dendrogram_node_unhighlight(self._unprefix(self.last_highlighted_column_cluster));
       self.last_highlighted_column_cluster = null;
     }
   };
@@ -3145,7 +2703,6 @@ import { round } from 'lodash';
       self.dendrogram_layer.draw();
       self.row_cluster_group.destroy();
       self.cluster_layer.draw();
-      self.events.dendrogram_node_unhighlight(self._unprefix(self.last_highlighted_cluster));
       self.highlighted_rows_y = [];
       self.current_object_ids = [];
       self.last_highlighted_cluster = null;
@@ -3174,25 +2731,12 @@ import { round } from 'lodash';
     let x = self.distance - 30;
     const y = self.header_height + self.column_metadata_height - 40;
 
-    const rows_desc = self.objects_ref.count.clone({
-      x: x + 10,
-      y: y - 10,
-      text: count,
-    });
-
-    const zoom_icon = self.objects_ref.icon.clone({
-      data: self.paths_ref.zoom_icon,
-      x,
-      y,
-      scale: {
-        x: 0.7,
-        y: 0.7,
-      },
-      label: 'Zoom\nrows',
-    });
-
-
-    const zoom_overlay = self._draw_icon_overlay(x, y);
+    // TODO: NUMBER OF ROWS THAT WILL BE ZOOMED
+    // const rows_desc = self.objects_ref.count.clone({
+    //   x: x + 10,
+    //   y: y - 10,
+    //   text: count,
+    // });
 
     x = self.distance + self.dendrogram_heatmap_distance;
     const width = visible * self.pixels_for_dimension + self.heatmap_distance;
@@ -3231,27 +2775,12 @@ import { round } from 'lodash';
       ],
     });
 
-    self.row_cluster_group.add(rows_desc, cluster_overlay_1, cluster_overlay_2, zoom_icon, zoom_overlay, cluster_border_1, cluster_border_2);
+    self.row_cluster_group.add(cluster_overlay_1, cluster_overlay_2, cluster_border_1, cluster_border_2);
     self.cluster_layer.add(self.row_cluster_group);
     self.stage.add(self.cluster_layer);
-    rows_desc.moveToTop();
 
     self.cluster_layer.draw();
     self.navigation_layer.moveToTop();
-
-    zoom_overlay.on('mouseover', () => {
-      self._hover_cursor_on();
-      self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
-    });
-
-    zoom_overlay.on('mouseout', () => {
-      self._hover_cursor_off();
-      self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
-    });
-
-    zoom_overlay.on('click', () => {
-      self._zoom_cluster(self.last_highlighted_cluster);
-    });
   };
 
   InCHlib.prototype._draw_column_cluster_layer = function (path_id) {
@@ -3261,24 +2790,12 @@ import { round } from 'lodash';
     const x = self.options.width - 85;
     const y = self.header_height - 25;
 
-    const cols_desc = self.objects_ref.count.clone({
-      x: x + 15,
-      y: y - 5,
-      text: count,
-    });
-
-    const zoom_icon = self.objects_ref.icon.clone({
-      data: self.paths_ref.zoom_icon,
-      x,
-      y,
-      scale: {
-        x: 0.7,
-        y: 0.7,
-      },
-      label: 'Zoom\ncolumns',
-    });
-
-    const zoom_overlay = self._draw_icon_overlay(x, y);
+    // TODO: NUMBER OF COLUMNS THAT WILL BE ZOOMED
+    // const cols_desc = self.objects_ref.count.clone({
+    //   x: x + 15,
+    //   y: y - 5,
+    //   text: count,
+    // });
 
     const x1 = self._hack_round((self.current_column_ids[0] - self.columns_start_index) * self.pixels_for_dimension);
     const x2 = self._hack_round((self.current_column_ids[0] + self.current_column_ids.length - self.columns_start_index) * self.pixels_for_dimension);
@@ -3318,26 +2835,11 @@ import { round } from 'lodash';
       height,
     });
 
-
-    self.column_cluster_group.add(cluster_overlay_1, cluster_overlay_2, zoom_icon, zoom_overlay, cols_desc, cluster_border_1, cluster_border_2);
+    self.column_cluster_group.add(cluster_overlay_1, cluster_overlay_2, cluster_border_1, cluster_border_2);
     self.cluster_layer.add(self.column_cluster_group);
     self.stage.add(self.cluster_layer);
     self.cluster_layer.draw();
     self.navigation_layer.moveToTop();
-
-    zoom_overlay.on('mouseover', () => {
-      self._hover_cursor_on();
-      self._icon_mouseover(zoom_icon, zoom_overlay, self.cluster_layer);
-    });
-
-    zoom_overlay.on('mouseout', () => {
-      self._hover_cursor_off();
-      self._icon_mouseout(zoom_icon, zoom_overlay, self.cluster_layer);
-    });
-
-    zoom_overlay.on('click', () => {
-      self._zoom_column_cluster(self.last_highlighted_column_cluster);
-    });
   };
 
   InCHlib.prototype._draw_column_cluster = function (node_id) {
@@ -3383,22 +2885,9 @@ import { round } from 'lodash';
       self.zoomed_clusters.column.push(node_id);
       self._draw_column_cluster(node_id);
       self.highlight_rows(self.options.highlighted_rows);
-      self.events.on_columns_zoom(self.current_column_ids, self._unprefix(node_id));
       self.current_column_ids = [];
       self.last_highlighted_column_cluster = null;
     }
-  };
-
-  InCHlib.prototype._unzoom_column_cluster = function () {
-    const self = this;
-    const unzoomed = self.zoomed_clusters.column.pop();
-    const zoomed_count = self.zoomed_clusters.column.length;
-    const node_id = (zoomed_count > 0) ? self.zoomed_clusters.column[zoomed_count - 1] : self.column_root_id;
-    self._get_column_ids(node_id);
-    self._draw_column_cluster(node_id);
-    self.events.on_columns_unzoom(self._unprefix(unzoomed));
-    self.current_column_ids = [];
-    self._highlight_column_cluster(unzoomed);
   };
 
   InCHlib.prototype._draw_cluster = function (node_id) {
@@ -3427,21 +2916,10 @@ import { round } from 'lodash';
       self.zoomed_clusters.row.push(node_id);
       self._draw_cluster(node_id);
       self.highlight_rows(self.options.highlighted_rows);
-      self.events.on_zoom(self.current_object_ids, self._unprefix(node_id));
       self.highlighted_rows_y = [];
       self.current_object_ids = [];
       self.last_highlighted_cluster = null;
     }
-  };
-
-  InCHlib.prototype._unzoom_cluster = function () {
-    const self = this;
-    const unzoomed = self.zoomed_clusters.row.pop();
-    const zoomed_count = self.zoomed_clusters.row.length;
-    const node_id = (zoomed_count > 0) ? self.zoomed_clusters.row[zoomed_count - 1] : self.root_id;
-    self._draw_cluster(node_id);
-    self.events.on_unzoom(self._unprefix(unzoomed));
-    self._highlight_cluster(unzoomed);
   };
 
   InCHlib.prototype._get_node_neighbourhood = function (node, nodes) {
@@ -3644,186 +3122,25 @@ import { round } from 'lodash';
     return path_group;
   };
 
-  InCHlib.prototype._filter_icon_click = function (filter_button) {
+  InCHlib.prototype._draw_overlay = function (invisible = false) {
     const self = this;
-    let filter_features_element = self.$element.find('.filter_features');
-    let symbol = '✖';
+    let overlay = self.$element.find('.inchlib-overlay');
 
-    if (filter_features_element.length) {
-      filter_features_element.fadeIn('fast');
-      var overlay = self._draw_target_overlay();
-    } else {
-      filter_list = '';
-
-      for (const attr in self.header) {
-        if (self.features[attr]) {
-          symbol = '✔';
-        }
-        if (attr < self.dimensions) {
-          let text = self.header[attr];
-          if (text == '') {
-            text = `${parseInt(attr) + 1}. column`;
-          }
-          filter_list = `${filter_list}<li class='feature_switch' data-num='${attr}'><span class='symbol'>${symbol}</span>  ${text}</li>`;
-        }
-      }
-
-      self.$element.append(`<div class='filter_features'><ul>${filter_list}</ul><hr /><div><span class='cancel_filter_list'>Cancel</span>&nbsp;&nbsp;&nbsp;<span class='update_filter_list'>Update</span></div></div>`);
-      filter_features_element = self.$element.find('.filter_features');
-
-      filter_features_element.css({
-        display: 'none',
-        top: 45,
-        left: 0,
-        'border-radius': '5px',
-        'text-align': 'center',
-        position: 'absolute',
-        'background-color': '#fff',
-        border: 'solid 2px #DEDEDE',
-        'padding-top': '5px',
-        'padding-left': '15px',
-        'padding-bottom': '10px',
-        'padding-right': '15px',
-        'font-weight': '500',
-        'font-size': '14px',
-        'z-index': 1000,
-        'font-family': self.options.font.family,
-      });
-
-      filter_features_element.find('ul').css({
-        'list-style-type': 'none',
-        'margin-left': '0',
-        'padding-left': '0',
-        'text-align': 'left',
-      });
-
-      filter_features_element.find('li').css({
-        color: 'green',
-        'margin-top': '5px',
-      });
-
-      filter_features_element.find('div').css({
-        cursor: 'pointer',
-        opacity: '0.7',
-      });
-
-      var overlay = self._draw_target_overlay();
-      filter_features_element.fadeIn('fast');
-
-      self.$element.find('.feature_switch').click(function () {
-        const num = parseInt($(this).attr('data-num'));
-        const symbol_element = $(this).find('span');
-        self.features[num] = !self.features[num];
-
-        if (self.features[num]) {
-          symbol_element.text('✔');
-          $(this).css('color', 'green');
-        } else {
-          symbol_element.text('✖');
-          $(this).css('color', 'red');
-        }
-
-        self._set_on_features();
-      });
-
-      $(() => {
-        filter_features_element.click(() => {
-          return false;
-        });
-
-        filter_features_element.mousedown(() => {
-          return false;
-        });
-
-        self.$element
-          .find('filter_features ul li, .filter_features div span')
-          .hover(
-            function () {
-              $(this).css({
-                cursor: 'pointer',
-                opacity: '0.7',
-              });
-            },
-            function () {
-              $(this).css({
-                cursor: 'default',
-                opacity: '1',
-              });
-            },
-          );
-      });
-
-      self.$element.find('.cancel_filter_list').click(() => {
-        filter_features_element.fadeOut('fast');
-        overlay.fadeOut('fast');
-      });
-
-      overlay.click(() => {
-        filter_features_element.fadeOut('fast');
-        overlay.fadeOut('fast');
-      });
-
-      self.$element.find('.update_filter_list').click(() => {
-        filter_features_element.fadeOut('slow');
-        overlay.fadeOut('slow');
-
-        const node_id = (self.zoomed_clusters.row.length > 0) ? self.zoomed_clusters.row[self.zoomed_clusters.row.length - 1] : self.root_id;
-        const highlighted_cluster = self.last_highlighted_cluster;
-        self.last_highlighted_cluster = null;
-        self._adjust_horizontal_sizes();
-        self._delete_all_layers();
-        self._draw_stage_layer();
-        if (self.options.dendrogram) {
-          self._draw_dendrogram_layers();
-          self._draw_row_dendrogram(node_id);
-          self._draw_dendrogram_layers();
-          if (self.options.column_dendrogram && self._visible_features_equal_column_dendrogram_count()) {
-            self._draw_column_dendrogram(self.column_root_id);
-          }
-        }
-
-        self._draw_navigation();
-        self._draw_heatmap();
-        self._draw_heatmap_header();
-
-        if (highlighted_cluster != null) {
-          self._highlight_cluster(highlighted_cluster);
-        }
-      });
+    if (overlay.length === 1) {
+      overlay.trigger('click');
     }
-  };
 
-  InCHlib.prototype._draw_target_overlay = function () {
-    const self = this;
-    let overlay = self.$element.find('.target_overlay');
-
-    if (overlay.length) {
-      overlay.fadeIn('fast');
-    } else {
-      overlay = $('<div class=\'target_overlay\'></div>');
-      overlay.css({
-        'background-color': '#fff',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        opacity: 0.5,
-      });
-      self.$element.append(overlay);
-    }
+    overlay = $(`<div class="inchlib-overlay${invisible
+      ? ' inchlib-overlay_invisible' 
+      : ''}"></div>`);
+    self.$element.append(overlay);
 
     return overlay;
   };
 
-  InCHlib.prototype._refresh_icon_click = function () {
+  InCHlib.prototype._download_png = function () {
     const self = this;
-    self.redraw();
-  };
-
-  InCHlib.prototype._export_icon_click = function () {
-    const self = this;
-    const overlay = self._draw_target_overlay();
+    const overlay = self._draw_overlay();
     const zoom = 3;
     const width = self.stage.width();
     const height = self.stage.height();
@@ -3837,18 +3154,30 @@ import { round } from 'lodash';
     self.$element.after(loading_div);
     self.$element.hide();
 
-    self.stage.width((width + 300 + png_padding) * zoom);
-    self.stage.height((
-      height < 500 + (png_padding * 2)
-        ? 500 + (png_padding * 2)
-        : height
-      ) * zoom);
+    self._draw_legend_for_png();
+
+    // setup height
+    const min_height = 600;
+    // labels on the bottom get cut off without this
+    const bottom_padding = 50;
+    const height_full = height + bottom_padding;
+    const get_height = height_full < min_height
+      ? min_height
+      : height_full;
+
+    const padding = png_padding * 2;
+
+    const png_height = (get_height + padding) * zoom;
+    const png_width = (width + png_padding) * zoom;
+
+    self.stage.width(png_width);
+    self.stage.height(png_height);
     self.stage.scale({
       x: zoom,
       y: zoom,
     });
-    self.stage.x(png_padding * 2);
-    self.stage.y(png_padding * 2);
+    self.stage.x(padding);
+    self.stage.y(padding);
     self.stage.draw();
     self.navigation_layer.hide();
     self.stage.toDataURL({
@@ -3868,6 +3197,9 @@ import { round } from 'lodash';
         self.$element.show();
         self.navigation_layer.show();
         self.navigation_layer.draw();
+        self._delete_layers([
+          self.legend_png_layer,
+        ]);
         overlay.trigger('click');
       },
     });
@@ -3885,23 +3217,23 @@ import { round } from 'lodash';
 
   InCHlib.prototype._draw_legend_for_screen = function() {
     const self = this;
-    const legend_div = $(`<div id='${self.legend_id}'></div>`);
-    const options = [`<h3>Legend</h3><ul>`]
+    const legend_div = $(`<div class="inchlib-legend" id='${self.legend_id}'></div>`);
+    const options = ['<ul class="inchlib-legend_list">']
       .concat(self.legend_headings
         .map(name => {
           if (self.legend_continuous_categories.includes(name)) {
-            return `<li><strong>${name}</strong>
-            <ul><li>0 <span class="legend-gradient-${name.toLowerCase().split(' ')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
+            return `<li class="inchlib-legend_list-item"><strong>${name}</strong>
+            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.toLowerCase().split(' ')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
           } else {
             const legend_list = Object.keys(self.options.categories.colors[name])
-              .map(value => `<li ${
+              .map(value => `<li class="inchlib-legend_sublist-item${
                 self.legend_horizontal_categories
                   .includes(name) 
-                    ? 'style="display: inline-block; margin-right: 10px;"' 
+                    ? ' inchlib-legend_sublist-item-horizontal'
                     : ''
-                }><span class='legend-bullet' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
+                }"><span class='inchlib-legend_square' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
               .join('');
-            return `<li><strong>${name}</strong><ul class="legend-list">${legend_list}</ul></li>`;
+            return `<li class="inchlib-legend_list-item"><strong>${name}</strong><ul class="inchlib-legend_sublist">${legend_list}</ul></li>`;
           }
         })
       )
@@ -3910,56 +3242,19 @@ import { round } from 'lodash';
 
     legend_div.html(options);
     self.$element.append(legend_div);
-    legend_div.css({
-      ...self.popup_styles,
-      left: self.options.width - 260,
-      'padding-bottom': 0,
-      top: 0,
-      width: 230,
-    });
 
-    $(`#${self.legend_id} ul`).css({
-      ...self.popup_list_styles
-    });
-    $(`#${self.legend_id} li`).css({
-      'padding-bottom': '5px',
-    });
-    $(`#${self.legend_id} .legend-list li`).css({
-      'padding-left': '17px',
-      'position': 'relative',
-    });
-    $(`#${self.legend_id} h3`).css({
-      'margin-top': '0px'
-    });
-    $(`#${self.legend_id} span`).css({
-      'display': 'inline-block',
-      'height': 12,
-      'width': 12,
-    });
-    $(`#${self.legend_id} .legend-bullet`).css({
-      'position': 'absolute',
-      'top': '2px',
-      'left': '0',
-      'display': 'block',
-    });
-    $(`#${self.legend_id} [class^="legend-gradient"]`).css({
-      width: 70,
-    });
-    $(`#${self.legend_id} .legend-gradient-age`).css({
+    $(`#${self.legend_id} .inchlib-legend_gradient-age`).css({
       background: `linear-gradient(90deg, ${self.legend_gradients.age.min} 0%, ${self.legend_gradients.age.max} 100%)`
     });
-    $(`#${self.legend_id} .legend-gradient-days`).css({
+    $(`#${self.legend_id} .inchlib-legend_gradient-days`).css({
       background: `linear-gradient(90deg, ${self.legend_gradients.days.min} 0%, ${self.legend_gradients.days.max} 100%)`
     });
   };
 
-  InCHlib.prototype._draw_legend_for_png = function() {
+  InCHlib.prototype._draw_heatmap_scale = function() {
     const self = this;
-    self.legend_layer = new Konva.Layer();
-    self.stage.add(self.legend_layer);
-
-    const legend_y = 5;
-    const legend_x = self.stage.width() - 155;
+    self.heatmap_scale_layer = self.objects_ref.layer_below_toolbar.clone({x: 5 })
+    self.stage.add(self.heatmap_scale_layer);
 
     // add heatmap scale to PNG
 
@@ -3977,7 +3272,7 @@ import { round } from 'lodash';
       fill: self.hover_fill,
       fontFamily: self.options.font.family,
       fontStyle: '500',
-      text: 'Heatmap',
+      text: 'Expression',
       x: scale_x,
       y: scale_y,
     });
@@ -4043,6 +3338,21 @@ import { round } from 'lodash';
       scale_group.add(scale_text);
       scale_y += scaleY_int;
     }
+
+    self.heatmap_scale_layer.add(scale_group);
+    self.heatmap_scale_layer.draw();
+  }
+
+  InCHlib.prototype._draw_legend_for_png = function() {
+    const self = this;
+    self.legend_png_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.stage.add(self.legend_png_layer);
+
+    const legend_width = 150;
+    const legend_y = -20;
+    const legend_x = self.stage.width() - (legend_width + 5);
+
+    // create legend
 
     const legend_title = new Konva.Text({
       fill: self.hover_fill,
@@ -4136,294 +3446,27 @@ import { round } from 'lodash';
         y += 5;
       }
     }
-    const legend = self.objects_ref.popup_box.clone({
+    const legend = new Konva.Rect({
+      cornerRadius: 5,
+      fill: '#fff',
       height: y + 40,
-      width: 150,
+      stroke: '#D2D2D2',
+      strokeWidth: 2,
+      width: legend_width,
       x: legend_x,
       y: legend_y,
-    });
+    })
 
-    self.legend_layer.add(legend, legend_title, legend_group, scale_group);
-    self.legend_layer.draw();
+    self.legend_png_layer.add(legend, legend_title, legend_group);
+    self.legend_png_layer.draw();
   };
 
-  InCHlib.prototype.redraw_legend = function() {
+  InCHlib.prototype._redraw_heatmap_scale = function() {
     const self = this;
     self._delete_layers([
-      self.legend_layer,
+      self.heatmap_scale_layer,
     ]);
-    self._draw_legend_for_png();
-  };
-
-  InCHlib.prototype._legend_icon_click = function() {
-    const self = this;
-    const overlay = self._draw_target_overlay();
-    self._draw_legend_for_screen();
-    overlay.click(() => {
-      $(`#${self.legend_id}`).fadeOut().remove();
-      overlay.fadeOut().remove();
-    });
-  }
-
-  InCHlib.prototype._categories_icon_click = function() {
-    const self = this;
-
-    const form_id = `categories_form_${self._name}`;
-    const categories_form = $(`<form class='settings_form' id='${form_id}'></form>`);
-    const overlay = self._draw_target_overlay();
-
-    const options = [`<h3>Categories</h3><ul>`]
-      .concat(self.column_metadata.feature_names
-        .map((category, i) => {
-          const key = category.toLowerCase().split(' ').join('-');
-          const id = `${self._name}_${key}`;
-          const checked = self.column_metadata.visible[i]
-            ? ' checked'
-            : '';
-          return `<li><input type='checkbox' id='${id}' name='edit-categories' value='${category}'${checked}/><label for='${id}' class='form_label'>${category}</label></li>`;
-        })
-      )
-      .concat('</ul><button type="submit">Save</button>')
-      .join('');
-
-    categories_form.html(options);
-    self.$element.append(categories_form);
-    categories_form.css({
-      'z-index': 1000,
-      position: 'absolute',
-      top: 0,
-      left: self.options.width - 210,
-      padding: '10px',
-      border: 'solid #D2D2D2 2px',
-      'border-radius': '5px',
-      'background-color': '#fff',
-      width: '180px',
-    });
-    $(`#${form_id} > ul`).css({
-      'list-style-type': 'none',
-      'font-size': '12px',
-      'margin-bottom': '10px',
-      'padding-left': '20px',
-    });
-    $(`#${form_id} li`).css({
-      'padding': '5px 0',
-    });
-    $(`#${form_id} h3`).css({
-      'margin-top': '0px'
-    });
-    $(`#${form_id} input`).css(self.styles.checkbox);
-    $(`#${form_id} .form_label`).css({
-      ...self.styles.label,
-      'line-height': '1',
-    });
-
-    const $submit_button = $(`#${form_id} button`);
-
-    $submit_button.css(self.styles.css_primary_button_off);
-
-    $submit_button.hover(
-      function () {
-        $submit_button.css(self.styles.css_button_on);
-      },
-      function () {
-        $submit_button.css(self.styles.css_primary_button_off);
-      }
-    );
-
-    overlay.click(() => {
-      $(`#${form_id}`).fadeOut().remove();
-      overlay.fadeOut().remove();
-    });
-
-    categories_form.submit(function (evt) {
-      evt.preventDefault();
-
-      const categories_updated = [];
-
-      $.each($(`#${form_id} input[name="edit-categories"]`),
-        function() {
-          categories_updated.push($(this).is(':checked'));
-        }
-      );
-      self.column_metadata.visible = categories_updated;
-      self.redraw();
-      overlay.trigger('click');
-    });
-
-  }
-
-  InCHlib.prototype._color_scale_click = function (icon, evt) {
-    const self = this;
-
-    const overlay = self._draw_target_overlay();
-
-    let scale_divs;
-    let scales_div = $('<div class=\'color_scales\'></div>');
-    let scale;
-    let color_1;
-    let color_2;
-    let color_3;
-    let key;
-
-    for (let i = 0, keys = Object.keys(self.colors), len = keys.length; i < len; i++) {
-      key = keys[i];
-      color_1 = self._get_color_for_value(0, 0, 1, 0.5, key);
-      color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, key);
-      color_3 = self._get_color_for_value(1, 0, 1, 0.5, key);
-      scale = `<div class='color_scale' data-scale_acronym='${key}' style='background: linear-gradient(to right, ${color_1},${color_2},${color_3})'></div>`;
-      scales_div.append(scale);
-    }
-
-    self.$element.append(scales_div);
-    scales_div.css({
-      border: 'solid #D2D2D2 2px',
-      'border-radius': '5px',
-      padding: '5px',
-      position: 'absolute',
-      top: 100,
-      left: 14,
-      width: 110,
-      'max-height': 400,
-      'overflow-y': 'auto',
-      'background-color': '#fff',
-    });
-
-    scale_divs = self.$element.find('.color_scale');
-    scale_divs.css({
-      'margin-top': '3px',
-      width: '80px',
-      height: '20px',
-      border: 'solid #D2D2D2 1px',
-    });
-
-    scale_divs.hover(
-      function () {
-        $(this).css({
-          cursor: 'pointer',
-          opacity: 0.7,
-        });
-      },
-      function () { $(this).css({ opacity: 1 }); },
-    );
-
-    overlay.click(function() {
-      scales_div.fadeOut().remove();
-      scale_divs.fadeOut().remove();
-      overlay.fadeOut().remove();
-      // self._unbind_overlay_click_out();
-    });
-
-    scale_divs.on('click', function () {
-      const color = $(this).attr('data-scale_acronym');
-      const settings = { heatmap_colors: color };
-      self.update_settings(settings);
-      self.redraw_heatmap();
-      self._update_color_scale();
-      overlay.trigger('click');
-      evt.preventDefault();
-    });
-  };
-
-  InCHlib.prototype._color_scale_mouseover = function (color_scale, layer) {
-    const self = this;
-    const label = color_scale.getAttr('label');
-    const x = color_scale.getAttr('x');
-    const y = color_scale.getAttr('y');
-
-    self.icon_tooltip = self.objects_ref.tooltip_label.clone({
-      x,
-      y: y + 25,
-    });
-
-    self.icon_tooltip.add(self.objects_ref.tooltip_tag.clone());
-    self.icon_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
-
-    layer.add(self.icon_tooltip);
-    self.icon_tooltip.moveToTop();
-    layer.draw();
-  };
-
-  InCHlib.prototype._color_scale_mouseout = function (color_scale, layer) {
-    const self = this;
-    self.icon_tooltip.destroy();
-    layer.draw();
-  };
-
-  InCHlib.prototype._unzoom_icon_click = function () {
-    const self = this;
-    self._unzoom_cluster();
-  };
-
-  InCHlib.prototype._column_unzoom_icon_click = function () {
-    const self = this;
-    self._unzoom_column_cluster();
-  };
-
-  InCHlib.prototype._icon_mouseover = function (icon, icon_overlay, layer) {
-    const self = this;
-    if (icon.getAttr('id') !== 'help_icon') {
-      const label = icon.getAttr('label');
-      let x = icon_overlay.getAttr('x');
-      let y = icon_overlay.getAttr('y');
-      const width = icon_overlay.getWidth();
-      const height = icon_overlay.getHeight();
-
-      if (icon.getAttr('id') === 'export_icon' ||
-        icon.getAttr('id') === 'categories_icon' ||
-        icon.getAttr('id') === 'legend_icon') {
-        x -= 100;
-        y -= 47;
-      }
-
-      self.icon_tooltip = self.objects_ref.tooltip_label.clone({
-        x,
-        y: y + 1.3 * height,
-      });
-
-      self.icon_tooltip.add(self.objects_ref.tooltip_tag.clone());
-      self.icon_tooltip.add(self.objects_ref.tooltip_text.clone({ text: label }));
-      layer.add(self.icon_tooltip);
-    }
-    icon.setFill(self.hover_fill);
-    layer.draw();
-  };
-
-  InCHlib.prototype._icon_mouseout = function (icon, icon_overlay, layer) {
-    const self = this;
-    if (icon.getAttr('id') !== 'help_icon') {
-      self.icon_tooltip.destroy();
-    }
-    icon.setFill('grey');
-    layer.draw();
-  };
-
-  InCHlib.prototype._help_mouseover = function () {
-    const self = this;
-    let help_element = self.$element.find('.inchlib_help');
-    if (help_element.length) {
-      help_element.show();
-    } else {
-      help_element = $('<div class=\'inchlib_help\'><ul><li>Zoom clusters by a long click on a dendrogram node.</li></ul></div>');
-      help_element.css({
-        position: 'absolute',
-        top: 70,
-        left: self.options.width - 200,
-        'font-size': 12,
-        'padding-right': 15,
-        width: 200,
-        'background-color': '#fff',
-        'border-radius': 5,
-        border: 'solid #DEDEDE 2px',
-        'z-index': 1000,
-
-      });
-      self.$element.append(help_element);
-    }
-  };
-
-  InCHlib.prototype._help_mouseout = function () {
-    const self = this;
-    self.$element.find('.inchlib_help').hide();
+    self._draw_heatmap_scale();
   };
 
   InCHlib.prototype._dendrogram_layers_click = function (layer, evt) {
@@ -4431,7 +3474,7 @@ import { round } from 'lodash';
     const { path_id } = evt.target.attrs;
     layer.fire('mouseout', layer, evt);
     self._highlight_cluster(path_id);
-    self.events.dendrogram_node_onclick(self.current_object_ids, self._unprefix(path_id), evt);
+    // console.log('clicked row dendro');
   };
 
   InCHlib.prototype._column_dendrogram_layers_click = function (layer, evt) {
@@ -4439,32 +3482,21 @@ import { round } from 'lodash';
     const { path_id } = evt.target.attrs;
     layer.fire('mouseout', layer, evt);
     self._highlight_column_cluster(path_id);
-    self.events.column_dendrogram_node_onclick(self.current_column_ids, self._unprefix(path_id), evt);
+    // console.log('clicked column dendro');
   };
 
   InCHlib.prototype._dendrogram_layers_mousedown = function (layer, evt) {
     const self = this;
     const node_id = evt.target.attrs.path_id;
-    clearTimeout(self.timer);
-    self.timer = setTimeout(() => {
-      self._get_object_ids(node_id);
-      self._zoom_cluster(node_id);
-    }, 500);
   };
 
   InCHlib.prototype._column_dendrogram_layers_mousedown = function (layer, evt) {
     const self = this;
     const node_id = evt.target.attrs.path_id;
-    clearTimeout(self.timer);
-    self.timer = setTimeout(() => {
-      self._get_column_ids(node_id);
-      self._zoom_column_cluster(node_id);
-    }, 500);
   };
 
   InCHlib.prototype._dendrogram_layers_mouseup = function (layer, evt) {
     const self = this;
-    clearTimeout(self.timer);
   };
 
   InCHlib.prototype._dendrogram_layers_mouseout = function (layer, evt) {
@@ -4478,14 +3510,6 @@ import { round } from 'lodash';
     self.path_overlay = evt.target.attrs.path.clone({ strokeWidth: 4 });
     self.dendrogram_hover_layer.add(self.path_overlay);
     self.dendrogram_hover_layer.draw();
-  };
-
-  InCHlib.prototype._visible_features_equal_column_dendrogram_count = function () {
-    const self = this;
-    if ((self.on_features.data.length + self.on_features.metadata.length) == self.current_column_count) {
-      return true;
-    }
-    return false;
   };
 
   InCHlib.prototype._get_color_for_value = function (value, min, max, middle, color_scale) {
@@ -4606,7 +3630,6 @@ import { round } from 'lodash';
 
       self.heatmap_overlay.add(self.row_overlay);
       self.heatmap_overlay.draw();
-      self.events.row_onmouseover(self.data.nodes[row_id].objects, evt);
     }
   };
 
@@ -4614,7 +3637,6 @@ import { round } from 'lodash';
     const self = this;
     self.row_overlay.destroy();
     self.heatmap_overlay.draw();
-    self.events.row_onmouseout(evt);
   };
 
   InCHlib.prototype._draw_col_label = function (evt) {
@@ -4679,7 +3701,7 @@ import { round } from 'lodash';
     tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
 
     if (is_gene_symbol_column) {
-      self._hover_cursor_on();
+      self._cursor_mouseover();
     }
 
     self.heatmap_overlay.add(tooltip);
@@ -4709,15 +3731,6 @@ import { round } from 'lodash';
     return false;
   };
 
-  /**
-    * Adds a user defined color scale defined by its name start color, end color and optionaly middle color
-    */
-  InCHlib.prototype.add_color_scale = function (color_scale_name, color_scale) {
-    const self = this;
-    self.colors[color_scale_name] = color_scale;
-    self.$element.find('.color_scales').fadeOut().remove();
-  };
-
   InCHlib.prototype._get_visible_count = function () {
     const self = this;
     return self.on_features.data.length + self.on_features.metadata.length + self.on_features.count_column.length;
@@ -4728,13 +3741,7 @@ import { round } from 'lodash';
     */
   InCHlib.prototype.update_settings = function (settings_object) {
     const self = this;
-    const { navigation_toggle } = self.options;
     $.extend(self.options, settings_object);
-
-    if (settings_object.navigation_toggle !== undefined) {
-      self.options.navigation_toggle = navigation_toggle;
-      $.extend(self.options.navigation_toggle, settings_object.navigation_toggle);
-    }
   };
 
   /**
@@ -4767,22 +3774,11 @@ import { round } from 'lodash';
   /**
     * Hover - change to hand cursor & back again
     */
-  InCHlib.prototype._hover_cursor_on = function() {
+  InCHlib.prototype._cursor_mouseover = function() {
     document.body.style.cursor = 'pointer';
   }
 
-  InCHlib.prototype._hover_cursor_off = function() {
-    document.body.style.cursor = 'default';
-  }
-
-  /**
-    * Hover - change to hand cursor & back again
-    */
-  InCHlib.prototype._hover_cursor_on = function() {
-    document.body.style.cursor = 'pointer';
-  }
-
-  InCHlib.prototype._hover_cursor_off = function() {
+  InCHlib.prototype._cursor_mouseout = function() {
     document.body.style.cursor = 'default';
   }
 

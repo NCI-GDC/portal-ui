@@ -3476,7 +3476,6 @@ import { each, round } from 'lodash';
     const { path_id } = evt.target.attrs;
     layer.fire('mouseout', layer, evt);
     self._highlight_cluster(path_id);
-    // console.log('clicked row dendro');
   };
 
   InCHlib.prototype._column_dendrogram_layers_click = function (layer, evt) {
@@ -3484,7 +3483,6 @@ import { each, round } from 'lodash';
     const { path_id } = evt.target.attrs;
     layer.fire('mouseout', layer, evt);
     self._highlight_column_cluster(path_id);
-    // console.log('clicked column dendro');
   };
 
   InCHlib.prototype._dendrogram_layers_mousedown = function (layer, evt) {
@@ -3675,6 +3673,7 @@ import { each, round } from 'lodash';
       opacity: 1,
     });
 
+    // leave space for the zoom icon
     const tooltip_text = `        ${clicks} to zoom ${count} ${cols_or_rows}`;
 
     tooltip.add(
@@ -3682,20 +3681,21 @@ import { each, round } from 'lodash';
       self.objects_ref.tooltip_text.clone({ text: tooltip_text }),
     );
 
-    // check if row dendrogram tooltip is cut off on the left
+    // if the row dendrogram tooltip is cut off on the left
+    // move it over to the right
     const half_width = tooltip.width() / 2;
     if (!is_column) {
       const current_tooltip_x = tooltip.x();
       const half_width = tooltip.width() / 2;
       const difference = half_width - current_tooltip_x;
       if (difference) {
-        tooltip_x = tooltip_x + difference + 10;
+        tooltip_x = current_tooltip_x + difference + 5;
         tooltip.x(tooltip_x);
       }
     }
 
     const zoom_x = tooltip_x - half_width - 3;
-    const zoom_y = y - 38;
+    const zoom_y = y - 39;
 
     const zoom_icon = self.objects_ref.font_awesome_icon.clone({ 
       text: self.font_awesome_icons['fa-search-plus'],

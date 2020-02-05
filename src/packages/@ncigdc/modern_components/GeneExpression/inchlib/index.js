@@ -842,13 +842,13 @@ import { each, round } from 'lodash';
         dash: [6, 2],
       }),
 
-      font_awesome_icon: new Konva.Text({
-        // TODO need this for zoom tooltips
+      zoom_icon: new Konva.Text({
         align: 'center',
         fill: '#333',
         fontFamily: 'FontAwesome',
         fontSize: 14,
         height: 28,
+        text: String.fromCharCode('0xf00e'),
         verticalAlign: 'middle',
         width: 40,
       }),
@@ -856,14 +856,6 @@ import { each, round } from 'lodash';
       layer_below_toolbar: new Konva.Layer({
         y: self.toolbar_distance,
       })
-    };
-
-    /**
-    * Font Awesome 4 icons used in InCHlib.
-    * @name InCHlib#font_awesome_icons
-    */
-    self.font_awesome_icons = {
-      'fa-search-plus': String.fromCharCode('0xf00e'),
     };
 
     /**
@@ -2451,61 +2443,6 @@ import { each, round } from 'lodash';
 
     self._draw_toolbar();
 
-    // if (self.zoomed_clusters.row.length > 0) {
-    //   x = self.distance - 55;
-    //   y = self.header_height + self.column_metadata_height - 40;
-    //   const unzoom_icon = self.objects_ref.font_awesome_icon.clone({
-    //     text: self.font_awesome_icons['fa-search-minus'],
-    //     x,
-    //     y,
-    //     label: 'Unzoom\nrows',
-    //   });
-    //   const unzoom_overlay = self._draw_icon_overlay(x, y);
-    //   self.navigation_layer.add(unzoom_icon, unzoom_overlay);
-
-    //   unzoom_overlay.on('click', () => {
-    //     self._unzoom_icon_click();
-    //   });
-
-    //   unzoom_overlay.on('mouseover', () => {
-    //     self._cursor_mouseover();
-    //     // self._icon_mouseover(unzoom_icon, unzoom_overlay, self.navigation_layer);
-    //   });
-
-    //   unzoom_overlay.on('mouseout', () => {
-    //     self._cursor_mouseout();
-    //     // self._icon_mouseout(unzoom_icon, unzoom_overlay, self.navigation_layer);
-    //   });
-    // }
-
-    // if (self.zoomed_clusters.column.length > 0) {
-    //   x = self.options.width - 85;
-    //   y = self.header_height - 50;
-    //   const column_unzoom_icon = self.objects_ref.font_awesome_icon.clone({
-    //     text: self.font_awesome_icons['fa-search-minus'],
-    //     x,
-    //     y: y - 5,
-    //     label: 'Unzoom\ncolumns',
-    //   });
-    //   const column_unzoom_overlay = self._draw_icon_overlay(x, y);
-
-    //   self.navigation_layer.add(column_unzoom_icon, column_unzoom_overlay);
-
-    //   column_unzoom_overlay.on('click', function () {
-    //     self._column_unzoom_icon_click(this);
-    //   });
-
-    //   column_unzoom_overlay.on('mouseover', () => {
-    //     self._cursor_mouseover();
-    //     // self._icon_mouseover(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
-    //   });
-
-    //   column_unzoom_overlay.on('mouseout', () => {
-    //     self._cursor_mouseout();
-    //     // self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
-    //   });
-    // }
-
     self.stage.add(self.navigation_layer);
   };
 
@@ -3697,8 +3634,7 @@ import { each, round } from 'lodash';
     const zoom_x = tooltip_x - half_width - 3;
     const zoom_y = y - 39;
 
-    const zoom_icon = self.objects_ref.font_awesome_icon.clone({ 
-      text: self.font_awesome_icons['fa-search-plus'],
+    const zoom_icon = self.objects_ref.zoom_icon.clone({
       x: zoom_x,
       y: zoom_y,
     });

@@ -31,7 +31,7 @@ import ResizeDetector from 'react-resize-detector';
 import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
 
-import { DISPLAY_SUMMARY_PAGE } from '@ncigdc/utils/constants';
+import { DISPLAY_10K, DISPLAY_SUMMARY_PAGE, MAX_CASES_API } from '@ncigdc/utils/constants';
 
 export type TProps = {
   filters: {},
@@ -133,7 +133,7 @@ const enhance = compose(
         setVariables(nextProps);
       }
     },
-  })
+  }),
 );
 
 const ExplorePageComponent = ({
@@ -147,6 +147,10 @@ const ExplorePageComponent = ({
   const hasCaseHits = get(viewer, 'explore.cases.hits.total', 0);
   const hasGeneHits = get(viewer, 'explore.genes.hits.total', 0);
   const hasSsmsHits = get(viewer, 'explore.ssms.hits.total', 0);
+
+  const isCaseLimitExceeded = DISPLAY_10K && hasCaseHits > MAX_CASES_API;
+
+  console.log;
 
   return (
     <SearchPage
@@ -210,8 +214,7 @@ const ExplorePageComponent = ({
           <ResizeDetector
             handleHeight
             onResize={(width, height) =>
-              setMaxFacetsPanelHeight(height < 600 ? 600 : height)
-            }
+              setMaxFacetsPanelHeight(height < 600 ? 600 : height)}
             />
           <Row>
             {filters ? (
@@ -286,7 +289,9 @@ const ExplorePageComponent = ({
                     <NoResultsMessage>No Genes Found.</NoResultsMessage>
                   ),
                 id: 'genes',
-                text: `Genes (${hasGeneHits.toLocaleString()})`,
+                text: `Genes${isCaseLimitExceeded
+                  ? ''
+                  : ` (${hasGeneHits.toLocaleString()})`}`,
               },
               {
                 component: hasSsmsHits ? (
@@ -298,7 +303,9 @@ const ExplorePageComponent = ({
                     <NoResultsMessage>No Mutations Found.</NoResultsMessage>
                   ),
                 id: 'mutations',
-                text: `Mutations (${hasSsmsHits.toLocaleString()})`,
+                text: `Mutations${isCaseLimitExceeded
+                  ? ''
+                  : ` (${hasSsmsHits.toLocaleString()})`}`,
               },
               {
                 component: <OncogridTab />,

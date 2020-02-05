@@ -492,4 +492,4 @@ export const DISPLAY_10K = localStorage.REACT_APP_DISPLAY_10K ||
   process.env.REACT_APP_DISPLAY_10K ||
   true;
 
-export const MAX_CASES = 10000;
+export const MAX_CASES_API = 10000;

@@ -1211,7 +1211,6 @@ import { each, round } from 'lodash';
     let columns;
     const data_rows = data.length;
     const data_cols = data[0].length;
-    
     if (axis === 'column') {
       columns = [];
 
@@ -1312,7 +1311,6 @@ import { each, round } from 'lodash';
         }
       }
     }
-    
     if (self.options.metadata) {
       nodes = self.metadata.nodes;
       const keys = Object.keys(nodes);
@@ -1579,7 +1577,11 @@ import { each, round } from 'lodash';
     // and padding in the PNG.
     const stage_rect = new Konva.Rect({
       fill: '#fff',
-      height: (height + 130 + self.toolbar_distance + (png_padding * 2)) < (700 + self.toolbar_distance + (png_padding * 2))
+      height: (
+        height + self.toolbar_distance + (png_padding * 2) + 130
+      ) < (
+        self.toolbar_distance + (png_padding * 2) + 700
+      )
         ? 700 + self.toolbar_distance + (png_padding * 2)
         : height + 250 + self.toolbar_distance + (png_padding * 2),
       opacity: 1,
@@ -3146,7 +3148,7 @@ import { each, round } from 'lodash';
 
     self.stage.width((width + png_padding) * zoom);
     self.stage.height((
-      height + 50 < 600 + (png_padding * 2)
+      (height + 50) < (600 + (png_padding * 2))
         ? 600 + (png_padding * 2)
         : height + 50
       ) * zoom);

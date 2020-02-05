@@ -17,7 +17,6 @@ import SelectSet from './SelectSet';
 import DemoButton from './DemoButton';
 import defaultVariables from './defaultCDAVEvariables';
 
-
 const enhance = compose(
   branch(
     () => !availableAnalysis.length,

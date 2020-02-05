@@ -775,6 +775,7 @@ import { each, round } from 'lodash';
       tooltip_tag: new Konva.Tag({
         cornerRadius: 4,
         fill: self.options.tooltip.fill,
+        id: 'testing-testing',
         lineJoin: 'round',
         listening: false,
         pointerHeight: 10,
@@ -862,7 +863,6 @@ import { each, round } from 'lodash';
     * @name InCHlib#font_awesome_icons
     */
     self.font_awesome_icons = {
-      'fa-search-minus': String.fromCharCode('0xf010'),
       'fa-search-plus': String.fromCharCode('0xf00e'),
     };
 
@@ -3666,29 +3666,45 @@ import { each, round } from 'lodash';
       ? 'Click'
       : 'Double-click';
 
+    let tooltip_x = x + (width / 2);
+
     const tooltip = self.objects_ref.tooltip_label.clone({
       x: x + (width / 2),
       y,
       id: 'dendrogram_label',
       opacity: 1,
     });
-    
-    const tooltip_text = `${clicks} to zoom ${count} ${cols_or_rows}`;
 
-    tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
+    const tooltip_text = `        ${clicks} to zoom ${count} ${cols_or_rows}`;
+
+    tooltip.add(
+      self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }),
+      self.objects_ref.tooltip_text.clone({ text: tooltip_text }),
+    );
 
     // check if row dendrogram tooltip is cut off on the left
+    const half_width = tooltip.width() / 2;
     if (!is_column) {
-      const tooltip_x = tooltip.x();
+      const current_tooltip_x = tooltip.x();
       const half_width = tooltip.width() / 2;
-      const difference = half_width - tooltip_x;
+      const difference = half_width - current_tooltip_x;
       if (difference) {
-        tooltip.x(tooltip_x + difference + 10);
+        tooltip_x = tooltip_x + difference + 10;
+        tooltip.x(tooltip_x);
       }
     }
 
+    const zoom_x = tooltip_x - half_width - 3;
+    const zoom_y = y - 38;
+
+    const zoom_icon = self.objects_ref.font_awesome_icon.clone({ 
+      text: self.font_awesome_icons['fa-search-plus'],
+      x: zoom_x,
+      y: zoom_y,
+    });
+
     self.dendrogram_hover_layer.moveToTop();
-    self.dendrogram_hover_layer.add(tooltip);
+    self.dendrogram_hover_layer.add(tooltip, zoom_icon);
   };
 
   InCHlib.prototype._draw_col_label = function (evt) {

@@ -927,6 +927,8 @@ import { each, round } from 'lodash';
       }
     ];
 
+    self.dendrogram_active_color = '#F5273C';
+
     // start plugin
     self.init();
   }
@@ -2626,7 +2628,7 @@ import { each, round } from 'lodash';
       self._zoom_cluster(path_id);
     } else {
       self.last_highlighted_cluster = path_id;
-      self._highlight_path(path_id, '#F5273C');
+      self._highlight_path(path_id, self.dendrogram_active_color);
       self._draw_cluster_layer(path_id);
     }
     self.dendrogram_layer.draw();
@@ -2643,7 +2645,7 @@ import { each, round } from 'lodash';
       self._zoom_column_cluster(path_id);
     } else {
       self.last_highlighted_column_cluster = path_id;
-      self._highlight_column_path(path_id, '#F5273C');
+      self._highlight_column_path(path_id, self.dendrogram_active_color);
       self.current_column_ids.sort((a, b) => { return a - b; });
       self._draw_column_cluster_layer(path_id);
     }
@@ -2869,7 +2871,7 @@ import { each, round } from 'lodash';
       const row_node = (self.zoomed_clusters.row.length > 0) ? self.zoomed_clusters.row[self.zoomed_clusters.row.length - 1] : self.root_id;
       self._draw_row_dendrogram(row_node);
       if (self.last_highlighted_cluster !== null) {
-        self._highlight_path(self.last_highlighted_cluster, '#F5273C');
+        self._highlight_path(self.last_highlighted_cluster, self.dendrogram_active_color);
         self.dendrogram_layer.draw();
         self._draw_cluster_layer(self.last_highlighted_cluster);
       }
@@ -3502,6 +3504,8 @@ import { each, round } from 'lodash';
   InCHlib.prototype._dendrogram_layers_mouseout = function (layer, evt) {
     const self = this;
     self.path_overlay.destroy();
+    // remove tooltip
+    self.dendrogram_hover_layer.destroyChildren();
     self.dendrogram_hover_layer.draw();
   };
 
@@ -3640,24 +3644,49 @@ import { each, round } from 'lodash';
     self.heatmap_overlay.draw();
   };
 
-  InCHlib.prototype._draw_dendrogram_label = function (evt) {
+  InCHlib.prototype._draw_dendrogram_label = function ({ target: { attrs }}) {
     const self = this;
-    const { attrs } = evt.target;
-    // console.log('attrs', attrs);
+    const { id, path, path_id, width, x, y } = attrs;
 
-    const x = attrs.x + (attrs.width / 2);
-    const y = attrs.y;
+    const is_column = id.split('_')[0] === 'col';
+
+    const { count } = is_column
+      ? self.column_dendrogram.nodes[path_id]
+      : self.data.nodes[path_id];
+
+    const is_featured = is_column
+      ? path_id === self.last_highlighted_column_cluster
+      : path_id === self.last_highlighted_cluster;
+
+    const cols_or_rows = is_column
+      ? 'columns'
+      : 'rows';
+
+    const clicks = is_featured
+      ? 'Click'
+      : 'Double-click';
 
     const tooltip = self.objects_ref.tooltip_label.clone({
-      x,
+      x: x + (width / 2),
       y,
       id: 'dendrogram_label',
       opacity: 1,
     });
+    
+    const tooltip_text = `${clicks} to zoom ${count} ${cols_or_rows}`;
 
-    tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: 'BOOP' }));
+    tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
 
-    // TODO: last line
+    // check if row dendrogram tooltip is cut off on the left
+    if (!is_column) {
+      const tooltip_x = tooltip.x();
+      const half_width = tooltip.width() / 2;
+      const difference = half_width - tooltip_x;
+      if (difference) {
+        tooltip.x(tooltip_x + difference + 10);
+      }
+    }
+
     self.dendrogram_hover_layer.moveToTop();
     self.dendrogram_hover_layer.add(tooltip);
   };

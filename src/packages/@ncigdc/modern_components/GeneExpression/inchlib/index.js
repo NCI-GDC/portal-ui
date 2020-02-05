@@ -1211,7 +1211,6 @@ import { each, round } from 'lodash';
     let columns;
     const data_rows = data.length;
     const data_cols = data[0].length;
-    
     if (axis === 'column') {
       columns = [];
 
@@ -1312,7 +1311,6 @@ import { each, round } from 'lodash';
         }
       }
     }
-    
     if (self.options.metadata) {
       nodes = self.metadata.nodes;
       const keys = Object.keys(nodes);

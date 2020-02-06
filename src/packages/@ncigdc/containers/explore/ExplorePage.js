@@ -323,8 +323,12 @@ const ExplorePageComponent = ({
               },
               {
                 component: isCaseLimitExceeded
-                  ? <CaseLimitMessages />
-                  : <OncogridTab />,
+                  ? (
+                    <CaseLimitMessages />
+                  )
+                  : (
+                    <OncogridTab />
+                  ),
                 id: 'oncogrid',
                 text: 'OncoGrid',
               },

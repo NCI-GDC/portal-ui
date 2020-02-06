@@ -73,7 +73,7 @@ const RestrictionMessage = ({
             style={styles.listItem}
             >
             <i
-              ariaHidden="true"
+              aria-hidden="true"
               className="fa fa-arrow-right"
               style={styles.listItemArrow}
               />

@@ -30,10 +30,10 @@ import Button from '@ncigdc/uikit/Button';
 import ResizeDetector from 'react-resize-detector';
 import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
-import { CaseLimitMessageContainer, CaseLimitMessage } from '@ncigdc/modern_components/CaseLimitMessage';
+import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
 
 import {
-  DISPLAY_10K, DISPLAY_DAVE_CA, DISPLAY_SUMMARY_PAGE, MAX_CASES_API,
+  DISPLAY_10K, DISPLAY_SUMMARY_PAGE, MAX_CASES_API,
 } from '@ncigdc/utils/constants';
 
 export type TProps = {
@@ -152,11 +152,6 @@ const ExplorePageComponent = ({
   const hasSsmsHits = get(viewer, 'explore.ssms.hits.total', 0);
 
   const isCaseLimitExceeded = DISPLAY_10K && hasCaseHits > MAX_CASES_API;
-
-  // TODO this needs to go somewhere else...
-  const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-  const maxCasesFormatted = numberWithCommas(MAX_CASES_API);
 
   return (
     <SearchPage
@@ -291,42 +286,7 @@ const ExplorePageComponent = ({
               {
                 component: isCaseLimitExceeded
                 ? (
-                  <CaseLimitMessageContainer>
-                    {DISPLAY_DAVE_CA && (
-                      // this is a placeholder only
-                      <CaseLimitMessage
-                        icon="icon"
-                        title="This controlled dataset requires dbGaP access"
-                        >
-                        <React.Fragment>
-                          If you don&lsquo;t have access, follow the instructions for
-                          {' '}
-                          <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/#facet-filters">obtaining acess to controlled data</a>
-                          .
-                        </React.Fragment>
-                        <React.Fragment>
-                          If you have access
-                          {' '}
-                          <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/#facet-filters">log in to view controlled data</a>
-                          .
-                        </React.Fragment>
-                      </CaseLimitMessage>
-                    )}
-                    <CaseLimitMessage
-                      icon="icon"
-                      title="This dataset is too large to visualize"
-                      >
-                      <React.Fragment>
-                        Please use the
-                        {' '}
-                        <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/#facet-filters">filters/facets</a>
-                        {' '}
-                        on the left to reduce your dataset to
-                        {` ${maxCasesFormatted} `}
-                        cases or less.
-                      </React.Fragment>
-                    </CaseLimitMessage>
-                  </CaseLimitMessageContainer>
+                  <CaseLimitMessages />
                   )
                 : hasGeneHits
                   ? (

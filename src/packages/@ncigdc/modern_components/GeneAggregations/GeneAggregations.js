@@ -117,6 +117,7 @@ export const GeneAggregations = compose(
           additionalProps={facet.additionalProps}
           aggregation={aggregations[escapeForRelay(facet.field)]}
           facet={facet}
+          greyHeader
           key={facet.full}
           relay={relay}
           title={facet.title}

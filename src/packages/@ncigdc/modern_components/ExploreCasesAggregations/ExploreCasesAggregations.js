@@ -118,6 +118,7 @@ const CaseAggregations = ({
           <FacetWrapper
             aggregation={aggregations[escapeForRelay(facet.field)]}
             facet={facet}
+            greyHeader
             key={facet.full}
             relay={relay}
             title={facet.title}

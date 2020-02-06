@@ -275,7 +275,6 @@ const CaseAggregationsComponent = (props: TProps) => (
       idField="cases.case_id"
       style={{
         width: '100%',
-        borderBottom: `1px solid ${props.theme.greyScale5}`,
         padding: '0 1.2rem 1rem',
       }}
       type="case"
@@ -293,6 +292,7 @@ const CaseAggregationsComponent = (props: TProps) => (
           ]
         }
         facet={facet}
+        greyHeader
         key={facet.full}
         relay={props.relay}
         title={facet.title}

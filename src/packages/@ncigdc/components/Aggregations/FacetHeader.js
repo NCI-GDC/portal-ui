@@ -24,13 +24,19 @@ import { internalHighlight } from '@ncigdc/uikit/Highlight';
 import { IRawQuery } from '@ncigdc/utils/uri/types';
 
 const Header = styled(Row, {
-  color: ({ theme }) => theme.primary,
-  fontSize: '1.7rem',
-  cursor: 'pointer',
   alignItems: 'center',
+  color: ({ theme }) => theme.primary,
+  cursor: 'pointer',
+  fontSize: '1.7rem',
   justifyContent: 'space-between',
   padding: '1rem 1.2rem 0.5rem 1.2rem',
 });
+
+const GreyHeaderStyle = {
+  background: '#eee',
+  marginBottom: 5,
+  paddingTop: '0.3rem',
+};
 
 const IconsRow = styled(Row, {
   color: ({ theme }) => theme.greyScale7,
@@ -53,6 +59,7 @@ const RemoveIcon = styled(CloseIcon, {
 });
 
 const MagnifyingGlass = styled(SearchIcon, {
+  fontSize: '16px',
   ':hover::before': {
     textShadow: ({ theme }) => theme.textShadow,
   },
@@ -64,6 +71,7 @@ const FacetHeader = ({
   description,
   DescriptionComponent,
   field,
+  greyHeader = false,
   handleRequestRemove,
   hasValueSearch,
   isRemovable,
@@ -85,7 +93,13 @@ const FacetHeader = ({
       return (
         <Header
           className="test-facet-header"
-          style={style}
+          style={{
+            ...style,
+            ...greyHeader && GreyHeaderStyle,
+            ...greyHeader && collapsed && {
+              marginBottom: 0,
+            },
+          }}
           >
           <Row onClick={() => setCollapsed(!collapsed)} style={{ flex: 8 }}>
             <Tooltip

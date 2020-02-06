@@ -275,8 +275,9 @@ const ExplorePageComponent = ({
                 },
               ]),
               {
-                component: hasCaseHits ? (
-                  <CasesTab />
+                component: hasCaseHits
+                  ? (
+                    <CasesTab />
                   ) : (
                     <NoResultsMessage>No Cases Found.</NoResultsMessage>
                   ),
@@ -285,15 +286,15 @@ const ExplorePageComponent = ({
               },
               {
                 component: isCaseLimitExceeded
-                ? (
-                  <CaseLimitMessages />
-                  )
-                : hasGeneHits
                   ? (
-                    <GenesTab viewer={viewer} />
+                    <CaseLimitMessages />
+                  )
+                  : hasGeneHits
+                    ? (
+                      <GenesTab viewer={viewer} />
                     )
-                  : (
-                    <NoResultsMessage>No Genes Found.</NoResultsMessage>
+                    : (
+                      <NoResultsMessage>No Genes Found.</NoResultsMessage>
                     ),
                 id: 'genes',
                 text: `Genes${isCaseLimitExceeded
@@ -301,21 +302,29 @@ const ExplorePageComponent = ({
                   : ` (${hasGeneHits.toLocaleString()})`}`,
               },
               {
-                component: hasSsmsHits ? (
-                  <MutationsTab
-                    totalNumCases={hasCaseHits}
-                    viewer={viewer}
-                    />
-                  ) : (
-                    <NoResultsMessage>No Mutations Found.</NoResultsMessage>
-                  ),
+                component: isCaseLimitExceeded
+                  ? (
+                    <CaseLimitMessages />
+                  )
+                  : hasSsmsHits
+                    ? (
+                      <MutationsTab
+                        totalNumCases={hasCaseHits}
+                        viewer={viewer}
+                        />
+                    )
+                    : (
+                      <NoResultsMessage>No Mutations Found.</NoResultsMessage>
+                    ),
                 id: 'mutations',
                 text: `Mutations${isCaseLimitExceeded
                   ? ''
                   : ` (${hasSsmsHits.toLocaleString()})`}`,
               },
               {
-                component: <OncogridTab />,
+                component: isCaseLimitExceeded
+                  ? <CaseLimitMessages />
+                  : <OncogridTab />,
                 id: 'oncogrid',
                 text: 'OncoGrid',
               },

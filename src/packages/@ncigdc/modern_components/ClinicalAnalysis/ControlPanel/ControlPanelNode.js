@@ -63,7 +63,7 @@ const styles = {
 };
 
 const StyledToggleMoreLink = styled(ToggleMoreLink, {
-  margin: '10px 0 1px auto',
+  margin: '10px 0 0 auto',
 });
 
 const ClinicalGrouping = ({
@@ -143,7 +143,7 @@ const ClinicalGrouping = ({
             type,
           }) => {
             const checked = Object.keys(
-              currentAnalysis.displayVariables
+              currentAnalysis.displayVariables,
             ).includes(fieldName);
             const toggleAction = checked
               ? removeClinicalAnalysisVariable
@@ -197,7 +197,7 @@ const ClinicalGrouping = ({
                     id: analysis_id,
                     plotTypes,
                     scrollToCard: !checked,
-                  })
+                  }),
                 )}
                 />
             );
@@ -275,7 +275,7 @@ const EnhancedClinicalGrouping = compose(
   pure,
   connect(),
   withState('collapsed', 'setCollapsed', false),
-  withState('showingMore', 'setShowingMore', false)
+  withState('showingMore', 'setShowingMore', false),
 )(ClinicalGrouping);
 
 const ControlPanelNode = ({
@@ -340,7 +340,7 @@ export default compose(
       {
         clinicalAnalysisFields: nextClinicalAnalysisFields,
         usefulFacets: nextUsefulFacets,
-      }
+      },
     ) => !(
       nextClinicalAnalysisFields.length === clinicalAnalysisFields.length &&
       nextUsefulFacets.length === usefulFacets.length
@@ -351,12 +351,12 @@ export default compose(
     }) => ({
       totalClinicalAnalysisFields: clinicalAnalysisFields.length,
       totalUsefulFacets: usefulFacets.length,
-    })
+    }),
   ),
   withPropsOnChange(
     (
       { searchValue },
-      { searchValue: nextSearchValue }
+      { searchValue: nextSearchValue },
     ) => searchValue !== nextSearchValue,
     ({ clinicalAnalysisFields, searchValue }) => {
       const filteredFields = clinicalAnalysisFields
@@ -386,10 +386,10 @@ export default compose(
             return sections.includes('treatments')
               ? sections[1]
               : sections[0];
-          }
+          },
         ),
       };
-    }
+    },
   ),
   lifecycle({
     shouldComponentUpdate({

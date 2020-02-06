@@ -56,7 +56,7 @@ const BucketRow = styled(Row, {
 });
 
 export const BottomRow = styled(Row, {
-  padding: '0.5rem',
+  padding: '0 0.5rem',
 });
 
 let input;

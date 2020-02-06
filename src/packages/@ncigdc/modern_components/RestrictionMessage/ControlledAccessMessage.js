@@ -1,10 +1,10 @@
 import React from 'react';
-import filterCaseLimitImg from '@ncigdc/theme/images/icon-filter-case-limit.svg';
+import controlledAccessImg from '@ncigdc/theme/images/icon-controlled-data.svg';
 import RestrictionMessage from './RestrictionMessage';
 
 const ControlledAccessMessage = () => (
   <RestrictionMessage
-    icon={filterCaseLimitImg}
+    icon={controlledAccessImg}
     title="This controlled dataset requires dbGaP access"
     >
     <React.Fragment>

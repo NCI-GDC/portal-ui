@@ -10,7 +10,7 @@ const ControlledAccessMessage = () => (
     <React.Fragment>
       If you don&lsquo;t have access, follow the instructions for
       {' '}
-      <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/#facet-filters">obtaining acess to controlled data</a>
+      <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/#facet-filters">obtaining access to controlled data</a>
       .
     </React.Fragment>
     <React.Fragment>

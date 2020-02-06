@@ -62,7 +62,7 @@ const CaseAggregations = ({
       description="Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot"
       field="cases.case_id"
       setCollapsed={setCaseIdCollapsed}
-      title="Case"
+      title="Search Cases"
       />
 
     <SuggestionFacet

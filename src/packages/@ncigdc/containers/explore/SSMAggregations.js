@@ -134,7 +134,7 @@ export const SSMAggregationsComponent = compose(
       description="Enter Mutation UUID, DNA Change, Gene AA Change, COSMIC ID or dbSNP rs ID"
       field="ssms.ssm_id"
       setCollapsed={props.setIdCollapsed}
-      title="Mutation"
+      title="Search Mutations"
       />
     <SuggestionFacet
       collapsed={props.idCollapsed}

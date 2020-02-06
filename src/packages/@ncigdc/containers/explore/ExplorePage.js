@@ -33,7 +33,7 @@ import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspec
 import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
 
 import {
-  DISPLAY_10K, DISPLAY_SUMMARY_PAGE, MAX_CASES_API,
+  DISPLAY_10K, DISPLAY_SUMMARY_PAGE, CASE_LIMIT_API,
 } from '@ncigdc/utils/constants';
 
 export type TProps = {
@@ -151,7 +151,7 @@ const ExplorePageComponent = ({
   const hasGeneHits = get(viewer, 'explore.genes.hits.total', 0);
   const hasSsmsHits = get(viewer, 'explore.ssms.hits.total', 0);
 
-  const isCaseLimitExceeded = DISPLAY_10K && hasCaseHits > MAX_CASES_API;
+  const isCaseLimitExceeded = DISPLAY_10K && hasCaseHits > CASE_LIMIT_API;
 
   return (
     <SearchPage

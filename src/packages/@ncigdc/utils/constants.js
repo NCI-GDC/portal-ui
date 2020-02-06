@@ -492,7 +492,8 @@ export const DISPLAY_10K = localStorage.REACT_APP_DISPLAY_10K ||
   process.env.REACT_APP_DISPLAY_10K ||
   false;
 
-export const MAX_CASES_API = 10000;
+// placeholder until we have an API
+export const CASE_LIMIT_API = 10000;
 
 export const DISPLAY_DAVE_CA = localStorage.REACT_APP_DISPLAY_DAVE_CA ||
   process.env.REACT_APP_DISPLAY_DAVE_CA ||

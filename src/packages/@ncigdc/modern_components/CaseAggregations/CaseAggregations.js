@@ -241,7 +241,7 @@ const CaseAggregationsComponent = (props: TProps) => (
       description="Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot"
       field="cases.case_id"
       setCollapsed={props.setCaseIdCollapsed}
-      title="Case"
+      title="Search Cases"
       />
 
     <SuggestionFacet
@@ -290,7 +290,7 @@ const CaseAggregationsComponent = (props: TProps) => (
         aggregation={
           props.viewer.repository.cases.aggregations[
             escapeForRelay(facet.field)
-        ]
+          ]
         }
         facet={facet}
         key={facet.full}

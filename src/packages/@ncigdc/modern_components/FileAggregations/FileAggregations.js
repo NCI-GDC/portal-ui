@@ -212,7 +212,7 @@ const FileAggregations = ({
       description="Enter File UUID or name"
       field="files.file_id"
       setCollapsed={setFileIdCollapsed}
-      title="File"
+      title="Search Files"
       />
     <SuggestionFacet
       collapsed={fileIdCollapsed}

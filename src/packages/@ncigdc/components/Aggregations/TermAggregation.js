@@ -52,7 +52,7 @@ export const ToggleMoreLink = styled.div({
 });
 
 const BucketRow = styled(Row, {
-  padding: '0.3rem 0',
+  // padding: '0.3rem 0',
 });
 
 export const BottomRow = styled(Row, {
@@ -88,7 +88,7 @@ const TermAggregation = (props: TProps) => {
             className="test-term-aggregation"
             style={{
               ...props.style,
-              paddingBottom: props.collapsed ? 0 : 10,
+              paddingBottom: props.collapsed ? 0 : 5,
             }}
             >
             {props.collapsed || (
@@ -152,11 +152,11 @@ const TermAggregation = (props: TProps) => {
                             })}
                             id={`input-${props.title}-${bucket.name.replace(
                               /\s/g,
-                              '-'
+                              '-',
                             )}`}
                             name={`input-${props.title}-${bucket.name.replace(
                               /\s/g,
-                              '-'
+                              '-',
                             )}`}
                             readOnly
                             style={{
@@ -170,7 +170,7 @@ const TermAggregation = (props: TProps) => {
                           <OverflowTooltippedLabel
                             htmlFor={`input-${props.title}-${bucket.name.replace(
                               /\s/g,
-                              '-'
+                              '-',
                             )}`}
                             style={{
                               marginLeft: '0.3rem',

@@ -59,7 +59,6 @@ const RemoveIcon = styled(CloseIcon, {
 });
 
 const MagnifyingGlass = styled(SearchIcon, {
-  fontSize: '16px',
   ':hover::before': {
     textShadow: ({ theme }) => theme.textShadow,
   },

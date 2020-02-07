@@ -25,17 +25,18 @@ import { IBucket } from './types';
 
 type TProps = {
   buckets: [IBucket],
+  collapsed: boolean,
+  countLabel: string,
   field: string,
   filteredBuckets: Array<Object>,
-  style: Object,
-  title: string,
-  showingValueSearch: boolean,
-  collapsed: boolean,
-  setShowingMore: Function,
-  showingMore: boolean,
+  isMatchingSearchValue: boolean,
   maxShowing: number,
   searchValue: string,
-  isMatchingSearchValue: boolean,
+  setShowingMore: Function,
+  showingMore: boolean,
+  showingValueSearch: boolean,
+  style: Object,
+  title: string,
 };
 
 export const ToggleMoreLink = styled.div({
@@ -51,6 +52,13 @@ export const ToggleMoreLink = styled.div({
   },
 });
 
+const CountLabel = styled.div({
+  color: ({ theme }) => theme.greyScale7,
+  fontSize: '1.2rem',
+  fontWeight: 500,
+  marginLeft: 'auto',
+});
+
 const BucketRow = styled(Row, {
   padding: '0.3rem 0',
 });
@@ -61,8 +69,10 @@ export const BottomRow = styled(Row, {
 
 let input;
 const TermAggregation = (props: TProps) => {
-  const dotField = props.field.replace(/__/g, '.');
-  const { filter, filteredBuckets, maxShowing } = props;
+  const {
+    countLabel, field, filteredBuckets, maxShowing,
+  } = props;
+  const dotField = field.replace(/__/g, '.');
 
   return (
     <LocationSubscriber>
@@ -117,6 +127,11 @@ const TermAggregation = (props: TProps) => {
                 )}
 
                 <Column>
+                  {countLabel && (
+                    <CountLabel>
+                      {`# ${countLabel}`}
+                    </CountLabel>
+                  )}
                   {_.orderBy(filteredBuckets, 'doc_count', 'desc')
                     .slice(0, props.showingMore ? Infinity : maxShowing)
                     .map(b => ({
@@ -152,11 +167,11 @@ const TermAggregation = (props: TProps) => {
                             })}
                             id={`input-${props.title}-${bucket.name.replace(
                               /\s/g,
-                              '-'
+                              '-',
                             )}`}
                             name={`input-${props.title}-${bucket.name.replace(
                               /\s/g,
-                              '-'
+                              '-',
                             )}`}
                             readOnly
                             style={{
@@ -170,7 +185,7 @@ const TermAggregation = (props: TProps) => {
                           <OverflowTooltippedLabel
                             htmlFor={`input-${props.title}-${bucket.name.replace(
                               /\s/g,
-                              '-'
+                              '-',
                             )}`}
                             style={{
                               marginLeft: '0.3rem',

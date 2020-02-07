@@ -51,10 +51,6 @@ export const ToggleMoreLink = styled.div({
   },
 });
 
-const BucketRow = styled(Row, {
-  // padding: '0.3rem 0',
-});
-
 export const BottomRow = styled(Row, {
   padding: '0 0.5rem',
 });
@@ -124,7 +120,7 @@ const TermAggregation = (props: TProps) => {
                       name: b.key_as_string || b.key,
                     }))
                     .map(bucket => (
-                      <BucketRow key={bucket.name}>
+                      <Row key={bucket.name}>
                         <BucketLink
                           className="bucket-link"
                           merge="toggle"
@@ -191,7 +187,7 @@ const TermAggregation = (props: TProps) => {
                         <CountBubble className="bucket-count">
                           {bucket.doc_count.toLocaleString()}
                         </CountBubble>
-                      </BucketRow>
+                      </Row>
                     ))}
                   {filteredBuckets.length > maxShowing && (
                     <BottomRow>

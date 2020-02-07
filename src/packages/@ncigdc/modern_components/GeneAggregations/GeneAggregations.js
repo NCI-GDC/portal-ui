@@ -71,12 +71,12 @@ export const GeneAggregations = compose(
   return (
     <div className="test-gene-aggregations">
       <FacetHeader
-      collapsed={idCollapsed}
-      description="Enter Gene symbol, synonym, name or IDs for Ensembl, Entrez gene, HGNC Gene, OMIM, UniProtKB/Swiss-Prot"
-      field="genes.gene_id"
-      setCollapsed={setSsmIdCollapsed}
-      title="Gene"
-      />
+        collapsed={idCollapsed}
+        description="Enter Gene symbol, synonym, name or IDs for Ensembl, Entrez gene, HGNC Gene, OMIM, UniProtKB/Swiss-Prot"
+        field="genes.gene_id"
+        setCollapsed={setSsmIdCollapsed}
+        title="Gene"
+        />
       <SuggestionFacet
         collapsed={idCollapsed}
         doctype="genes"
@@ -114,13 +114,14 @@ export const GeneAggregations = compose(
 
       {_.reject(presetFacets, { full: 'genes.gene_id' }).map(facet => (
         <FacetWrapper
-        additionalProps={facet.additionalProps}
-        aggregation={aggregations[escapeForRelay(facet.field)]}
-        facet={facet}
-        key={facet.full}
-        relay={relay}
-        title={facet.title}
-        />
+          additionalProps={facet.additionalProps}
+          aggregation={aggregations[escapeForRelay(facet.field)]}
+          countLabel="Genes"
+          facet={facet}
+          key={facet.full}
+          relay={relay}
+          title={facet.title}
+          />
       ))}
       {/* <FacetWrapper
       key={'cnvs.cnv_change'}

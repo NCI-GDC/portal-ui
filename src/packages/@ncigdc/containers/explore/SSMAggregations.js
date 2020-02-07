@@ -188,6 +188,7 @@ export const SSMAggregationsComponent = compose(
           <FacetWrapper
             additionalProps={facet.additionalProps}
             aggregation={props.aggregations[escapeForRelay(facet.field)]}
+            countLabel="Mutations"
             facet={facet}
             key={facet.full}
             relay={props.relay}

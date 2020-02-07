@@ -227,6 +227,7 @@ const CaseAggregationsComponent = (props: TProps) => (
     {props.userSelectedFacets.map(facet => (
       <FacetWrapper
         aggregation={props.parsedFacets[facet.field]}
+        countLabel="Cases"
         facet={facet}
         isRemovable
         key={facet.full}
@@ -292,6 +293,7 @@ const CaseAggregationsComponent = (props: TProps) => (
             escapeForRelay(facet.field)
         ]
         }
+        countLabel="Cases"
         facet={facet}
         key={facet.full}
         relay={props.relay}

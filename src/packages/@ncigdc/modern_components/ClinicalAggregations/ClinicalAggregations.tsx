@@ -57,7 +57,7 @@ import {
 } from '@ncigdc/components/Aggregations/TermAggregation';
 
 import { ITheme } from '@ncigdc/theme/types';
-import { IGroupFilter } from '@ncigdc/utils/filters/types'
+import { IGroupFilter } from '@ncigdc/utils/filters/types';
 
 export interface IFacetProps {
   customSort: number,
@@ -219,7 +219,7 @@ const enhance = compose<IClinicalProps, IClinicalProps>(
           description,
           name,
           type,
-        }: IFieldProps
+        }: IFieldProps,
       ) => {
         const dottedName = name.replace(/__/g, '.');
         return ({
@@ -255,63 +255,62 @@ const enhance = compose<IClinicalProps, IClinicalProps>(
       isEqual(props.viewer.explore.cases.customCaseFacets, nextProps.viewer.explore.cases.customCaseFacets) &&
       props.shouldHideUselessFacets === nextProps.shouldHideUselessFacets &&
       props.searchValue === nextProps.searchValue),
-    ({
-      dispatch,
-      facetExclusionTest,
-      facetMapping,
-      searchValue,
-      shouldHideUselessFacets,
-      viewer: { explore: { cases: { customCaseFacets } } },
-    }) => {
-      const parsedFacets: IParsedFacetsProps | {} = isEmpty(customCaseFacets)
+                    ({
+                      dispatch,
+                      facetExclusionTest,
+                      facetMapping,
+                      searchValue,
+                      shouldHideUselessFacets,
+                      viewer: { explore: { cases: { customCaseFacets } } },
+                    }) => {
+                      const parsedFacets: IParsedFacetsProps | {} = isEmpty(customCaseFacets)
         ? {}
         : tryParseJSON(customCaseFacets, {});
 
-      const usefulFacets = omitBy(
-        parsedFacets,
-        (aggregation: IAggregationProps) => some([
-          !aggregation,
-          aggregation.buckets &&
+                      const usefulFacets = omitBy(
+                        parsedFacets,
+                        (aggregation: IAggregationProps) => some([
+                          !aggregation,
+                          aggregation.buckets &&
           aggregation.buckets.filter(
             (bucket: IBucketProps) => bucket.key !== '_missing',
           ).length === 0,
-          aggregation.count === 0,
-          aggregation.count === null,
-          aggregation.stats && aggregation.stats.count === 0,
-        ]),
-      );
+                          aggregation.count === 0,
+                          aggregation.count === null,
+                          aggregation.stats && aggregation.stats.count === 0,
+                        ]),
+                      );
 
-      const filteredFacets = clinicalFacets.reduce((acc, header) => {
-        return {
-          ...acc,
-          [header.field]: filter(facetMapping, facet => {
-            return every([
-              facetMatchesQuery(
-                facet,
-                filter(
-                  get(parsedFacets[facet.field], 'buckets', undefined),
-                  obj => obj.key !== '_missing',
-                ),
-                searchValue,
-              ),
-              !facetExclusionTest(facet),
-              !shouldHideUselessFacets ||
+                      const filteredFacets = clinicalFacets.reduce((acc, header) => {
+                        return {
+                          ...acc,
+                          [header.field]: filter(facetMapping, facet => {
+                            return every([
+                              facetMatchesQuery(
+                                facet,
+                                filter(
+                                  get(parsedFacets[facet.field], 'buckets', undefined),
+                                  obj => obj.key !== '_missing',
+                                ),
+                                searchValue,
+                              ),
+                              !facetExclusionTest(facet),
+                              !shouldHideUselessFacets ||
               Object.prototype.hasOwnProperty.call(usefulFacets, facet.field),
-              !header.excluded || facet.full.startsWith(header.full),
-              !some(
-                header.excluded.map((regex: RegExp) => regex.test(facet.full)),
-              ),
-            ]);
-          }),
-        };
-      }, {});
-      dispatch(addAllFacets(filteredFacets));
-      return {
-        filteredFacets,
-        parsedFacets,
-      };
-    },
-  ),
+                              !header.excluded || facet.full.startsWith(header.full),
+                              !some(
+                                header.excluded.map((regex: RegExp) => regex.test(facet.full)),
+                              ),
+                            ]);
+                          }),
+                        };
+                      }, {});
+                      dispatch(addAllFacets(filteredFacets));
+                      return {
+                        filteredFacets,
+                        parsedFacets,
+                      };
+                    }),
   withHandlers({
     handleQueryInputChange:
       ({ setSearchValue }) => (event: any) => setSearchValue(event.target.value),
@@ -325,8 +324,8 @@ const ClinicalAggregations = ({
   dispatch,
   facetsExpandedStatus,
   filteredFacets,
-  handleQueryInputClear,
   handleQueryInputChange,
+  handleQueryInputClear,
   isLoadingParsedFacets,
   maxFacetsPanelHeight,
   parsedFacets,
@@ -335,38 +334,38 @@ const ClinicalAggregations = ({
   shouldHideUselessFacets,
   theme,
 }: IClinicalProps) => (
-    <React.Fragment>
-      <Row
-        key="row"
+  <React.Fragment>
+    <Row
+      key="row"
+      style={{
+        margin: '2.5rem 1rem 0 0.5rem',
+      }}
+      >
+      <MagnifyingGlass />
+      <Input
+        aria-label="Search..."
+        autoFocus
+        defaultValue={searchValue}
+        handleClear={handleQueryInputClear}
+        onChange={handleQueryInputChange}
+        placeholder="Search..."
         style={{
-          margin: '2.5rem 1rem 0 0.5rem',
+          borderRadius: '0 4px 4px 0',
+          marginBottom: '6px',
         }}
-        >
-        <MagnifyingGlass />
-        <Input
-          aria-label="Search..."
-          autoFocus
-          defaultValue={searchValue}
-          handleClear={handleQueryInputClear}
-          onChange={handleQueryInputChange}
-          placeholder="Search..."
-          style={{
-            borderRadius: '0 4px 4px 0',
-            marginBottom: '6px',
-          }}
-          value={searchValue}
-          />
-      </Row>
-      <label htmlFor="clinical-agg-search" key="label">
-        <input
-          checked={shouldHideUselessFacets}
-          className="test-filter-useful-facet"
-          id="clinical-agg-search"
-          onChange={event => setUselessFacetVisibility(event.target.checked)}
-          style={{ margin: '12px' }}
-          type="checkbox"
-          />
-        {`Only show fields with values (${
+        value={searchValue}
+        />
+    </Row>
+    <label htmlFor="clinical-agg-search" key="label">
+      <input
+        checked={shouldHideUselessFacets}
+        className="test-filter-useful-facet"
+        id="clinical-agg-search"
+        onChange={event => setUselessFacetVisibility(event.target.checked)}
+        style={{ margin: '12px' }}
+        type="checkbox"
+        />
+      {`Only show fields with values (${
           isLoadingParsedFacets
             ? '...'
             : values(filteredFacets).reduce(
@@ -374,83 +373,83 @@ const ClinicalAggregations = ({
               0,
             )
         } fields shown)`}
-      </label>
-      <div
-        className="cohortBuilder"
-        key="1"
-        style={{
-          maxHeight: `${maxFacetsPanelHeight - headersHeight}px`,
-          overflowY: 'scroll',
-          paddingBottom: '20px',
-        }}
-        >
-        {clinicalFacets
-          .filter(
-            facet => !searchValue || filteredFacets[facet.field].length > 0,
+    </label>
+    <div
+      className="cohortBuilder"
+      key="1"
+      style={{
+        maxHeight: `${maxFacetsPanelHeight - headersHeight}px`,
+        overflowY: 'scroll',
+        paddingBottom: '20px',
+      }}
+      >
+      {clinicalFacets
+        .filter(
+          facet => !searchValue || filteredFacets[facet.field].length > 0,
             // If the user is searching for something, hide the presetFacet with no value.
-          )
-          .map(facet => {
-            return (
-              <div key={`${facet.title}div`}>
-                <Row
+        )
+        .map(facet => {
+          return (
+            <div key={`${facet.title}div`}>
+              <Row
+                style={{
+                  alignItems: 'center',
+                  background: '#eeeeee',
+                  cursor: 'pointer',
+                  justifyContent: 'space-between',
+                  margin: '0.5rem 1rem 0rem 0rem',
+                  padding: '1rem 1.2rem 0.5rem 1.2rem',
+                  position: 'sticky',
+                  top: 0,
+                  zIndex: 10,
+                }}
+                >
+                <div
+                  onClick={() => dispatch(changeExpandedStatus(facet.field, ''))}
                   style={{
-                    alignItems: 'center',
-                    background: '#eeeeee',
-                    cursor: 'pointer',
-                    justifyContent: 'space-between',
-                    margin: '0.5rem 1rem 0rem 0rem',
-                    padding: '1rem 1.2rem 0.5rem 1.2rem',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 10,
+                    color: theme.primary,
+                    fontSize: '1.7rem',
                   }}
                   >
-                  <div
-                    onClick={() => dispatch(changeExpandedStatus(facet.field, ''))}
+                  <AngleIcon
                     style={{
-                      color: theme.primary,
-                      fontSize: '1.7rem',
-                    }}
-                    >
-                    <AngleIcon
-                      style={{
-                        display: 'flex',
-                        padding: '0.25rem 0.25rem 0.25rem 0rem',
-                        float: 'left',
-                        transform: `rotate(${
+                      display: 'flex',
+                      padding: '0.25rem 0.25rem 0.25rem 0rem',
+                      float: 'left',
+                      transform: `rotate(${
                           facetsExpandedStatus[facet.field].expanded
                             ? 0
                             : 270}deg)`,
-                      }}
-                      />
-                    {facet.title}
-                  </div>
-                  {facetsExpandedStatus[facet.field].expanded && (
-                    <span
-                      onClick={() => {
-                        dispatch(
-                          expandOneCategory(
-                            facet.field,
-                            !allExpanded[facet.field],
-                          ),
-                        );
-                      }}
-                      style={{
-                        display: 'flex',
-                        float: 'right',
-                        fontSize: '12px',
-                      }}
-                      >
-                      {(searchValue || filteredFacets[facet.field].length === 0) ||
+                    }}
+                    />
+                  {facet.title}
+                </div>
+                {facetsExpandedStatus[facet.field].expanded && (
+                  <span
+                    onClick={() => {
+                      dispatch(
+                        expandOneCategory(
+                          facet.field,
+                          !allExpanded[facet.field],
+                        ),
+                      );
+                    }}
+                    style={{
+                      display: 'flex',
+                      float: 'right',
+                      fontSize: '12px',
+                    }}
+                    >
+                    {(searchValue || filteredFacets[facet.field].length === 0) ||
                         allExpanded[facet.field]
                           ? 'Collapse All'
                           : 'Expand All'}
-                    </span>
-                  )}
-                </Row>
-                {facetsExpandedStatus[facet.field].expanded && (
-                  <Column>
-                    {filteredFacets[facet.field].length > 0
+                  </span>
+                )}
+              </Row>
+              {facetsExpandedStatus[facet.field].expanded && (
+                <Column>
+                  {filteredFacets[facet.field].length > 0
                       ? (
                         orderBy(
                           filteredFacets[facet.field],
@@ -480,6 +479,7 @@ const ClinicalAggregations = ({
                                     ]
                                     : false
                                 }
+                                countLabel="Cases"
                                 DescriptionComponent={(
                                   <div
                                     key={componentFacet.description}
@@ -520,7 +520,7 @@ const ClinicalAggregations = ({
                                 )}
                                 style={{ paddingLeft: '10px' }}
                                 title={startCase(
-                                  termCapitaliser(fieldName)
+                                  termCapitaliser(fieldName),
                                 )}
                                 />,
                             ];
@@ -536,26 +536,26 @@ const ClinicalAggregations = ({
                         </article>
                       )}
 
-                    {filteredFacets[facet.field].length > 5 && (
-                      <BottomRow style={{ marginRight: '1rem' }}>
-                        <ToggleMoreLink
-                          onClick={() => dispatch(showingMoreByCategory(facet.field))}
+                  {filteredFacets[facet.field].length > 5 && (
+                    <BottomRow style={{ marginRight: '1rem' }}>
+                      <ToggleMoreLink
+                        onClick={() => dispatch(showingMoreByCategory(facet.field))}
                           >
-                          {facetsExpandedStatus[facet.field].showingMore
+                        {facetsExpandedStatus[facet.field].showingMore
                             ? 'Less...'
                             : filteredFacets[facet.field].length - 5 &&
                             `${filteredFacets[facet.field].length -
                             5} More...`}
-                        </ToggleMoreLink>
-                      </BottomRow>
-                    )}
-                  </Column>
-                )}
-              </div>
-            );
-          })}
-      </div>
-    </React.Fragment>
-  );
+                      </ToggleMoreLink>
+                    </BottomRow>
+                  )}
+                </Column>
+              )}
+            </div>
+          );
+        })}
+    </div>
+  </React.Fragment>
+);
 
 export default enhance(ClinicalAggregations);

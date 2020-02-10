@@ -52,7 +52,7 @@ export default compose(
     dispatch,
     downloadable,
     entityType = 'files',
-    fileSize,
+    fileSize = null,
     parentVariables,
     tableColumns,
     tableHeader,
@@ -89,11 +89,13 @@ export default compose(
               prefix={prefix}
               total={hits.total}
               />
-            <span style={{ marginLeft: 20 }}>
-              <SaveIcon style={{ marginRight: 2 }} />
-              {' '}
-              <strong>{formatFileSize(fileSize)}</strong>
-            </span>
+            {fileSize === null || (
+              <span style={{ marginLeft: 20 }}>
+                <SaveIcon style={{ marginRight: 2 }} />
+                {' '}
+                <strong>{formatFileSize(fileSize)}</strong>
+              </span>
+            )}
           </Row>
           <TableActions
             arrangeColumnKey={entityType}

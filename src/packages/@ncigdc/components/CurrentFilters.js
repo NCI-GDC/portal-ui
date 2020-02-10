@@ -34,6 +34,8 @@ import { AWG } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
+const buttonPadding = '2px 8px';
+
 const Field = styled(Button, {
   ':hover': {
     backgroundColor: ({ theme }) => Color(theme.greyScale2)
@@ -41,6 +43,7 @@ const Field = styled(Button, {
       .rgbString(),
   },
   backgroundColor: ({ theme }) => theme.greyScale2,
+  padding: buttonPadding,
 });
 
 const Value = styled(Button, {
@@ -50,12 +53,14 @@ const Value = styled(Button, {
       .rgbString(),
   },
   backgroundColor: ({ theme }) => theme.success,
+  padding: buttonPadding,
 });
 
 const Op = styled.span({
   ...buttonLike,
   backgroundColor: ({ theme }) => theme.primary,
   color: 'white',
+  padding: buttonPadding,
 });
 
 const NotUnderlinedLink = styled(Link, {
@@ -142,22 +147,19 @@ const enhance = compose(
 );
 
 const styles = {
-  button: {
-    padding: '2px 8px',
-  },
   groupPadding: {
     padding: '0.5rem 0',
   },
   leftParen: {
     alignItems: 'center',
     display: 'flex',
-    fontSize: '2rem',
+    fontSize: '1.8rem',
     marginRight: '0.3rem',
   },
   rightParen: {
     alignItems: 'center',
     display: 'flex',
-    fontSize: '2rem',
+    fontSize: '1.8rem',
     marginRight: '0.3rem',
   },
 };
@@ -211,7 +213,7 @@ const CurrentFilters = (
               >
               <Button
                 leftIcon={<Undo />}
-                style={styles.button}
+                style={{ padding: buttonPadding }}
                 >
                 Clear
               </Button>
@@ -238,11 +240,11 @@ const CurrentFilters = (
                     offset: 0,
                   }}
                   >
-                  <Field style={styles.button}>
+                  <Field>
                     {humanify({ term: facetFieldDisplayMapper(filter.content.field) })}
                   </Field>
                 </NotUnderlinedLink>
-                <Op style={styles.button}>{getDisplayOp(filter.op, value)}</Op>
+                <Op>{getDisplayOp(filter.op, value)}</Op>
                 {value.length > 1 && <span style={styles.leftParen}>(</span>}
                 {(isFilterExpanded(filter)
                   ? value
@@ -268,7 +270,7 @@ const CurrentFilters = (
                       offset: 0,
                     }}
                     >
-                    <Value style={styles.button}>
+                    <Value>
                       {getDisplayValue(filter.content.field, value)}
                     </Value>
                   </NotUnderlinedLink>
@@ -295,7 +297,7 @@ const CurrentFilters = (
                   </UnstyledButton>
                 )}
                 {value.length > 1 && <span style={styles.rightParen}>)</span>}
-                {i < currentFilters.length - 1 && <Op style={styles.button}>AND</Op>}
+                {i < currentFilters.length - 1 && <Op>AND</Op>}
               </Row>
             );
           })}
@@ -321,9 +323,8 @@ const CurrentFilters = (
                 ),
                 op: 'and',
               },
-            }
           }
-          style={styles.button}
+          }
           >
           <Cogs style={{ marginRight: 5 }} />
           {linkText}

@@ -142,6 +142,9 @@ const enhance = compose(
 );
 
 const styles = {
+  button: {
+    padding: '2px 8px',
+  },
   groupPadding: {
     padding: '0.5rem 0',
   },
@@ -157,7 +160,6 @@ const styles = {
     fontSize: '2rem',
     marginRight: '0.3rem',
   },
-
 };
 
 const CurrentFilters = (
@@ -207,7 +209,12 @@ const CurrentFilters = (
               query={omit(query, 'filters')}
               style={styles.groupPadding}
               >
-              <Button leftIcon={<Undo />}>Clear</Button>
+              <Button
+                leftIcon={<Undo />}
+                style={styles.button}
+                >
+                Clear
+              </Button>
             </NotUnderlinedLink>
           )}
 
@@ -231,11 +238,11 @@ const CurrentFilters = (
                     offset: 0,
                   }}
                   >
-                  <Field>
+                  <Field style={styles.button}>
                     {humanify({ term: facetFieldDisplayMapper(filter.content.field) })}
                   </Field>
                 </NotUnderlinedLink>
-                <Op>{getDisplayOp(filter.op, value)}</Op>
+                <Op style={styles.button}>{getDisplayOp(filter.op, value)}</Op>
                 {value.length > 1 && <span style={styles.leftParen}>(</span>}
                 {(isFilterExpanded(filter)
                   ? value
@@ -261,7 +268,7 @@ const CurrentFilters = (
                       offset: 0,
                     }}
                     >
-                    <Value>
+                    <Value style={styles.button}>
                       {getDisplayValue(filter.content.field, value)}
                     </Value>
                   </NotUnderlinedLink>
@@ -288,7 +295,7 @@ const CurrentFilters = (
                   </UnstyledButton>
                 )}
                 {value.length > 1 && <span style={styles.rightParen}>)</span>}
-                {i < currentFilters.length - 1 && <Op>AND</Op>}
+                {i < currentFilters.length - 1 && <Op style={styles.button}>AND</Op>}
               </Row>
             );
           })}
@@ -316,6 +323,7 @@ const CurrentFilters = (
               },
             }
           }
+          style={styles.button}
           >
           <Cogs style={{ marginRight: 5 }} />
           {linkText}

@@ -133,7 +133,7 @@ const enhance = compose(
         setVariables(nextProps);
       }
     },
-  })
+  }),
 );
 
 const ExplorePageComponent = ({
@@ -210,49 +210,8 @@ const ExplorePageComponent = ({
           <ResizeDetector
             handleHeight
             onResize={(width, height) =>
-              setMaxFacetsPanelHeight(height < 600 ? 600 : height)
-            }
+              setMaxFacetsPanelHeight(height < 600 ? 600 : height)}
             />
-          <Row>
-            {filters ? (
-              <CreateExploreCaseSetButton
-                disabled={!hasCaseHits}
-                filters={filters}
-                onComplete={setId => {
-                  push({
-                    pathname: '/repository',
-                    query: {
-                      filters: stringifyJSONParam({
-                        content: [
-                          {
-                            content: {
-                              field: 'cases.case_id',
-                              value: [`set_id:${setId}`],
-                            },
-                            op: 'IN',
-                          },
-                        ],
-                        op: 'AND',
-                      }),
-                    },
-                  });
-                }}
-                style={{ marginBottom: '2rem' }}
-                >
-                  View Files in Repository
-              </CreateExploreCaseSetButton>
-              ) : (
-                <Button
-                  disabled={!hasCaseHits}
-                  onClick={() => push({
-                    pathname: '/repository',
-                  })}
-                  style={{ marginBottom: '2rem' }}
-                  >
-                  View Files in Repository
-                </Button>
-              )}
-          </Row>
           <TabbedLinks
             defaultIndex={0}
             links={[
@@ -307,6 +266,46 @@ const ExplorePageComponent = ({
               },
             ]}
             queryParam="searchTableTab"
+            tabToolbar={(
+              <Row>
+                {filters ? (
+                  <CreateExploreCaseSetButton
+                    disabled={!hasCaseHits}
+                    filters={filters}
+                    onComplete={setId => {
+                      push({
+                        pathname: '/repository',
+                        query: {
+                          filters: stringifyJSONParam({
+                            content: [
+                              {
+                                content: {
+                                  field: 'cases.case_id',
+                                  value: [`set_id:${setId}`],
+                                },
+                                op: 'IN',
+                              },
+                            ],
+                            op: 'AND',
+                          }),
+                        },
+                      });
+                    }}
+                    >
+                    View Files in Repository
+                  </CreateExploreCaseSetButton>
+                ) : (
+                  <Button
+                    disabled={!hasCaseHits}
+                    onClick={() => push({
+                      pathname: '/repository',
+                    })}
+                    >
+                    View Files in Repository
+                  </Button>
+                )}
+              </Row>
+            )}
             />
         </span>
       )}

@@ -34,7 +34,9 @@ import { AWG } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
-const buttonPadding = '2px 8px';
+const buttonPadding = {
+  padding: '2px 8px !important',
+};
 
 const Field = styled(Button, {
   ':hover': {
@@ -43,7 +45,7 @@ const Field = styled(Button, {
       .rgbString(),
   },
   backgroundColor: ({ theme }) => theme.greyScale2,
-  padding: buttonPadding,
+  ...buttonPadding,
 });
 
 const Value = styled(Button, {
@@ -53,14 +55,14 @@ const Value = styled(Button, {
       .rgbString(),
   },
   backgroundColor: ({ theme }) => theme.success,
-  padding: buttonPadding,
+  ...buttonPadding,
 });
 
 const Op = styled.span({
   ...buttonLike,
   backgroundColor: ({ theme }) => theme.primary,
   color: 'white',
-  padding: buttonPadding,
+  ...buttonPadding,
 });
 
 const NotUnderlinedLink = styled(Link, {
@@ -76,6 +78,7 @@ const LinkButton = styled(Link, {
     textDecoration: 'none',
   },
   flex: 'none',
+  ...buttonPadding,
 });
 
 type TProps = {
@@ -213,7 +216,7 @@ const CurrentFilters = (
               >
               <Button
                 leftIcon={<Undo />}
-                style={{ padding: buttonPadding }}
+                style={buttonPadding}
                 >
                 Clear
               </Button>
@@ -323,7 +326,7 @@ const CurrentFilters = (
                 ),
                 op: 'and',
               },
-          }
+            }
           }
           >
           <Cogs style={{ marginRight: 5 }} />

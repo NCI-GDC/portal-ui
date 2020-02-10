@@ -54,7 +54,7 @@ export default compose(
         style={{
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 0 2rem',
+          padding: '0 0 5px',
         }}
         >
         <Row

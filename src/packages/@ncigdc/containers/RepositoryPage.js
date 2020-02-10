@@ -102,60 +102,51 @@ export const RepositoryPageComponent = (props: TProps) => {
         }}
         pageName="repository"
         results={(
-          <span>
-            <ActionsRow
-              filters={props.filters}
-              totalCases={caseCount}
-              totalFiles={fileCount}
-              />
-            <TabbedLinks
-              defaultIndex={0}
-              links={[
-                {
-                  id: 'files',
-                  text: `Files (${fileCount.toLocaleString()})`,
-                  component: props.viewer.repository.files.hits.total ? (
-                    <div>
-                      <RepoFilesPies
-                        aggregations={props.viewer.repository.files.pies}
-                        />
-                      <FilesTable fileSize={fileSize} />
-                    </div>
-                  ) : (
-                    <NoResultsMessage>
-                      No results found using those filters.
-                    </NoResultsMessage>
-                  ),
-                },
-                {
-                  id: 'cases',
-                  text: `Cases (${caseCount.toLocaleString()})`,
-                  component: props.viewer.repository.cases.hits.total ? (
-                    <div>
-                      <RepoCasesPies
-                        aggregations={props.viewer.repository.cases.pies}
-                        />
-                      <RepoCasesTable />
-                    </div>
-                  ) : (
-                    <NoResultsMessage>
-                      No results found using those filters.
-                    </NoResultsMessage>
-                  ),
-                },
-              ]}
-              queryParam="searchTableTab"
-              // tabToolbar={(
-                // <Row spacing="2rem" style={{ alignItems: 'center' }}>
-                //   <span style={{ flex: 'none' }}>
-                //     <SaveIcon style={{ marginRight: 5 }} />
-                //     {' '}
-                //     <strong>{formatFileSize(fileSize)}</strong>
-                //   </span>
-                // </Row>
-              // )}
-              />
-          </span>
+          <TabbedLinks
+            defaultIndex={0}
+            links={[
+              {
+                id: 'files',
+                text: `Files (${fileCount.toLocaleString()})`,
+                component: props.viewer.repository.files.hits.total ? (
+                  <div>
+                    <RepoFilesPies
+                      aggregations={props.viewer.repository.files.pies}
+                      />
+                    <FilesTable fileSize={fileSize} />
+                  </div>
+                ) : (
+                  <NoResultsMessage>
+                    No results found using those filters.
+                  </NoResultsMessage>
+                ),
+              },
+              {
+                id: 'cases',
+                text: `Cases (${caseCount.toLocaleString()})`,
+                component: props.viewer.repository.cases.hits.total ? (
+                  <div>
+                    <RepoCasesPies
+                      aggregations={props.viewer.repository.cases.pies}
+                      />
+                    <RepoCasesTable />
+                  </div>
+                ) : (
+                  <NoResultsMessage>
+                    No results found using those filters.
+                  </NoResultsMessage>
+                ),
+              },
+            ]}
+            queryParam="searchTableTab"
+            tabToolbar={(
+              <ActionsRow
+                filters={props.filters}
+                totalCases={caseCount}
+                totalFiles={fileCount}
+                />
+            )}
+            />
         )}
         />
     </div>

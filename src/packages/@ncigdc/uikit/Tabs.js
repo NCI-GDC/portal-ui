@@ -27,7 +27,7 @@ const Tabs = ({
 }) => (side
   ? (
     <Row className="test-tabs" style={style} {...props}>
-      <Column style={tabs.length ? {} : { display: 'none' }}>
+      <Column>
         <div
           style={{
             backgroundColor: 'white',
@@ -38,6 +38,8 @@ const Tabs = ({
             overflowX: 'hidden',
             overflowY: 'auto',
             position: 'relative',
+            ...tabs.length === 0 &&
+              { display: 'none' },
             ...tabContainerStyle,
           }}
           >

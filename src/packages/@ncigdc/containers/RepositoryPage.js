@@ -100,6 +100,7 @@ export const RepositoryPageComponent = (props: TProps) => {
           linkPathname: '/query',
           linkText: 'Advanced Search',
         }}
+        pageName="repository"
         results={(
           <span>
             <ActionsRow

@@ -13,9 +13,6 @@ import QQPlotQuery from '@ncigdc/modern_components/QQPlot/QQPlotQuery';
 
 import { CHART_HEIGHT } from '../helpers';
 
-import '../../boxplot.css';
-import '../../qq.css';
-
 const QQ_PLOT_RATIO = '70%';
 const BOX_PLOT_RATIO = '30%';
 
@@ -23,6 +20,7 @@ const ClinicalBoxPlot = ({
   boxPlotValues,
   cardFilters,
   dataBuckets,
+  downloadChartName,
   fieldName,
   qqData,
   setId,
@@ -30,7 +28,7 @@ const ClinicalBoxPlot = ({
   setQQDataIsSet,
   theme,
   totalDocs,
-  type,
+  type = '',
   wrapperId,
 }) => (
   <Column
@@ -42,8 +40,12 @@ const ClinicalBoxPlot = ({
       minWidth: 300,
     }}
     >
-    <Row style={{ width: '100%' }}>
+    <Row
+      className="print-w500"
+      style={{ width: '100%' }}
+      >
       <Row
+        className="print-fl"
         style={{
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -52,6 +54,7 @@ const ClinicalBoxPlot = ({
         }}
         >
         <span
+          className="print-mb print-mt"
           style={{
             color: theme.greyScale2,
             fontSize: '1.2rem',
@@ -61,6 +64,7 @@ const ClinicalBoxPlot = ({
         </span>
       </Row>
       <Row
+        className="print-fl"
         style={{
           alignItems: 'center',
           justifyContent: 'center',
@@ -69,6 +73,7 @@ const ClinicalBoxPlot = ({
         }}
         >
         <span
+          className="print-mb print-mt"
           style={{
             color: theme.greyScale2,
             fontSize: '1.2rem',
@@ -81,7 +86,10 @@ const ClinicalBoxPlot = ({
         <DownloadVisualizationButton
           data={qqData}
           noText
-          slug={[`qq-plot-${fieldName}`, `boxplot-${fieldName}`]}
+          slug={[
+            `${downloadChartName}-qq-plot`,
+            `${downloadChartName}-box-plot`,
+          ]}
           style={{
             float: 'right',
             marginRight: 2,
@@ -89,12 +97,12 @@ const ClinicalBoxPlot = ({
           svg={[
             () => wrapSvg({
               className: 'qq-plot',
-              selector: `#${wrapperId}-qqplot-container .qq-plot svg`,
+              selector: `#${downloadChartName}-qq-plot-container .qq-plot svg`,
               title: `${humanify({ term: fieldName })} QQ Plot`,
             }),
             () => wrapSvg({
-              className: `${type.toLowerCase()}-boxplot`,
-              selector: `#${wrapperId}-boxplot-container figure svg`,
+              className: `${type.toLowerCase()}-box-plot`,
+              selector: `#${downloadChartName}-box-plot-container figure svg`,
               title: `${humanify({ term: fieldName })} Box Plot`,
             }),
           ]}
@@ -104,13 +112,15 @@ const ClinicalBoxPlot = ({
       </Row>
     </Row>
     <Row
+      className="print-w500"
       style={{
         height: CHART_HEIGHT,
         justifyContent: 'space-between',
       }}
       >
       <Column
-        id={`${wrapperId}-boxplot-container`}
+        className="print-fl"
+        id={`${downloadChartName}-box-plot-container`}
         style={{
           height: CHART_HEIGHT + 10,
           maxHeight: CHART_HEIGHT + 10,
@@ -126,11 +136,12 @@ const ClinicalBoxPlot = ({
         </TooltipInjector>
       </Column>
       <Column
-        id={`${wrapperId}-qqplot-container`}
+        className="print-fl"
+        id={`${downloadChartName}-qq-plot-container`}
         style={{
           height: CHART_HEIGHT + 10,
           maxHeight: CHART_HEIGHT + 10,
-          width: QQ_PLOT_RATIO,
+          width: 'calc(100% - 150px)',
         }}
         >
         <QQPlotQuery

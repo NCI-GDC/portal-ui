@@ -87,9 +87,6 @@ class UploadSet extends React.Component {
             ...styles.horizontalPadding,
             borderBottom: `1px solid ${theme.greyScale5}`,
             borderTop: `1px solid ${theme.greyScale5}`,
-            // calc instead of using flex because IE11 doesn't handle flex + max-height properly
-            maxHeight: 'calc(100vh - 160px)',
-            overflow: 'auto',
             paddingBottom: 10,
             paddingTop: 10,
           }}

@@ -89,13 +89,15 @@ export default compose<IProjectProps, React.Component>(
   const dbgapAccessionNumber =
     project.program.dbgap_accession_number || project.dbgap_accession_number;
   interface IColumnsProps {
-    th: string;
+    th: string | JSX.Element;
     td: number | string | JSX.Element;
   }
   const basicColumns = [
     { th: 'Project ID', td: project.project_id },
     {
-      th: 'dbGaP Study Accession',
+      th: (
+        <span style={{ textTransform: 'none' }}>dbGaP Study Accession</span>
+      ),
       td: (
         <a
           href={

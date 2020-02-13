@@ -137,7 +137,7 @@ export default compose(
               onReset={() => setSelectedSurvivalData({})}
               plotType="mutation"
               height={240}
-              survivalPlotLoading={loading}
+              survivalDataLoading={loading}
             />
           </Column>
         </Row>

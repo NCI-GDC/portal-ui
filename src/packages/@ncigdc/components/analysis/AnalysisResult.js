@@ -69,7 +69,7 @@ function undoNotification(dispatch, analysis) {
         </Column>
       ),
       id: `${new Date().getTime()}`,
-    })
+    }),
   );
 }
 
@@ -83,11 +83,9 @@ const AnalysisResult = ({
   const analysisId = query.analysisId || '';
   const currentIndex = Math.max(
     analyses.findIndex(a => a.id === analysisId),
-    0
+    0,
   );
-  const analysisType = analyses[currentIndex].type;
-  const tabMinWidth =
-    analysisType === 'clinical_data' ? { minWidth: 1200 } : {};
+
   return (
     <TabbedLinks
       defaultIndex={currentIndex}
@@ -114,6 +112,7 @@ const AnalysisResult = ({
                         height: 25,
                         width: 25,
                       }}
+                      title={`${savedAnalysis.id}-icon`}
                       />
 
                     <Column>
@@ -154,10 +153,7 @@ const AnalysisResult = ({
       }}
       queryParam="analysisId"
       side
-      style={{
-        padding: '1rem 0.7rem',
-        ...tabMinWidth,
-      }}
+      style={{ padding: '1rem 0.7rem' }}
       tabToolbar={(
         <Button
           onClick={() => {
@@ -191,5 +187,5 @@ export default compose(
       return !isEqual(nextAnalyses, analyses);
     },
   }),
-  withRouter
+  withRouter,
 )(pure(AnalysisResult));

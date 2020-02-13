@@ -6,6 +6,8 @@ import { withTheme } from '@ncigdc/theme';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { TSetTypes } from '@ncigdc/dux/sets';
 import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
+import { DISPLAY_GENE_EXPRESSION } from '@ncigdc/utils/constants';
+import GeneExpressionContainer from '@ncigdc/modern_components/GeneExpression';
 import Demo from './Demo';
 import SetOperations from './SetOperations';
 import defaultVariables from './defaultCDAVEvariables';
@@ -171,6 +173,7 @@ const availableAnalysis: [TAnalysis] = [
         ? (
           <Demo {...props}>
             <SetOperations
+              id={props.id}
               message={props.message}
               sets={props.sets[type]}
               type={type}
@@ -179,6 +182,7 @@ const availableAnalysis: [TAnalysis] = [
         )
         : (
           <SetOperations
+            id={props.id}
             message={props.message}
             sets={props.sets[type]}
             type={type}
@@ -358,6 +362,59 @@ const availableAnalysis: [TAnalysis] = [
     validateSets: sets => sets &&
       ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
   },
+  ...DISPLAY_GENE_EXPRESSION &&
+  // copied from clinical analysis and lightly modified
+  // TODO: replace with real demoData, a real icon, etc
+  [
+    {
+      demoData: {
+        displayVariables: { ...defaultVariables },
+        filters: {
+          'demo-pancreas': {
+            content: [
+              {
+                content: {
+                  field: 'cases.primary_site',
+                  value: ['Pancreas'],
+                },
+                op: 'in',
+              },
+            ],
+            op: 'and',
+          },
+        },
+        message: 'Demo',
+        name: 'Demo Gene Expression',
+        sets: {
+          case: {
+            'demo-pancreas': 'Pancreas',
+          },
+        },
+        type: 'gene_expression',
+      },
+      description: ' ',
+      Icon: withTheme(({ style }) => (
+        <div
+          style={{
+            height: 80,
+            width: 80,
+            ...style,
+          }}
+          />
+      )),
+      label: 'Gene Expression',
+      ResultComponent: props => (
+        <GeneExpressionContainer
+          {...props}
+          />
+      ),
+      setInstructions: 'Select a case set',
+      setTypes: ['case'],
+      type: 'gene_expression',
+      validateSets: sets => sets &&
+      ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
+    },
+  ],
 ];
 
 export default availableAnalysis;

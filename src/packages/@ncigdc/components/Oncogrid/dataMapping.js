@@ -213,7 +213,7 @@ export const buildOccurrences: TBuildOccurrences = (
   const geneIdToSymbol = {};
   for (let i = 0; i < genes.length; i += 1) {
     const gene = genes[i];
-    geneIdToSymbol[gene.gene_id] = gene.symbol;
+    geneIdToSymbol[gene.gene_id.toLowerCase()] = gene.symbol;
   }
 
   let ssmObservations = [];
@@ -231,17 +231,21 @@ export const buildOccurrences: TBuildOccurrences = (
       for (let j = 0; j < consequence.length; j += 1) {
         const { transcript } = consequence[j];
         const {
-          annotation: { vep_impact } = {},
-          gene: { gene_id } = {},
-          consequence_type,
+          annotation: { vep_impact = '' } = {},
+          gene: { gene_id = '' } = {},
+          consequence_type = '',
         } = transcript;
-        const geneSymbol = geneIdToSymbol[gene_id];
+        const geneSymbol = geneIdToSymbol[gene_id.toLowerCase()];
 
         if (
           vep_impact &&
           geneSymbol &&
-          consequenceTypes.includes(consequence_type) &&
-          (!impacts.length || impacts.includes(vep_impact))
+          (consequenceTypes.length && consequenceTypes.some(
+            (type = '') => type.toLowerCase() === consequence_type.toLowerCase()
+          )) &&
+          (!impacts.length || impacts.some(
+            (impact = '') => impact.toLowerCase() === vep_impact.toLowerCase()
+          ))
         ) {
           donorIds.add(case_id);
           geneIds.add(gene_id);
@@ -249,9 +253,9 @@ export const buildOccurrences: TBuildOccurrences = (
           let match = _.findIndex(
             ssmObservations,
             o =>
-              o.donorId === case_id &&
-              o.geneId === gene_id &&
-              o.consequence === consequence_type,
+              o.donorId.toLowerCase() === case_id.toLowerCase() &&
+              o.geneId.toLowerCase() === gene_id.toLowerCase() &&
+              o.consequence.toLowerCase() === consequence_type.toLowerCase(),
           );
           if (match > -1) {
             ssmObservations[match].ids.push(ssm_id);

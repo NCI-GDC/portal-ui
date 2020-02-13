@@ -188,7 +188,7 @@ const wrapSvg = ({
       <g transform="translate(0, ${margins.top || 0})">
         <text x="${width /
     2}" y="0" text-anchor="middle" dominant-baseline="hanging">
-          <tspan style="font-size: 1.4rem; font-weight: 300; color: rgb(61,61,61);">${title}</tspan>
+          <tspan style="font-size: 1.4rem; font-weight: 400; color: rgb(61,61,61);">${title}</tspan>
         </text>
       </g>
       ${beforeObject.html}

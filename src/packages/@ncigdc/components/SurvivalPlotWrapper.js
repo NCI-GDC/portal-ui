@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import {
   compose,
@@ -7,8 +5,16 @@ import {
   setDisplayName,
   withState,
 } from 'recompose';
-import _ from 'lodash';
+import {
+  isEqual,
+  isNumber,
+  pick,
+  sum,
+  uniqueId,
+} from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
+import Color from 'color';
+
 import { renderPlot } from '@oncojs/survivalplot';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 import toMap from '@ncigdc/utils/toMap';
@@ -29,41 +35,13 @@ import './survivalPlot.css';
 
 const CLASS_NAME = 'survival-plot';
 
-type TProps = {
-  height: number,
-  legend: Array<{
-    key: string,
-    value: any,
-  }>,
-  rawData: {
-    results: Array<{
-      donors: Array<Object>,
-      meta: {
-        id: string | number,
-        label: string,
-      },
-    }>,
-    overallStats: {
-      pValue: number,
-    },
-  },
-  setXDomain: Function,
-  setSurvivalContainer: Function,
-  survivalPlotLoading: boolean,
-  xDomain: Array<number>,
-  survivalContainer: Element,
-  setTooltip: Function,
-  push: Function,
-  uniqueClass: string,
-};
-
 const TITLE = 'Overall Survival Plot';
 
 const SVG_MARGINS = {
-  top: 15,
-  right: 20,
   bottom: 40,
   left: 50,
+  right: 20,
+  top: 15,
 };
 
 const colors = scaleOrdinal(schemeCategory10);
@@ -94,26 +72,31 @@ const styles = {
 const Container = ({
   height,
   setSurvivalContainer,
-  survivalPlotLoading,
+  survivalDataLoading,
 }) => (
   <div
     className={`${CLASS_NAME} test-survival-plot-container`}
     ref={setSurvivalContainer}
     style={{
+      height: survivalDataLoading ? '0px' : height,
       overflow: 'hidden',
-      height: survivalPlotLoading ? '0px' : height,
       position: 'relative',
     }}
     />
 );
 
 const SurvivalPlotWrapper = ({
+  buttonStyle = {},
   height = 0,
   legend = [],
-  rawData,
+  rawData: {
+    overallStats: { pValue } = {},
+    results = [],
+  } = {},
   setXDomain,
   setSurvivalContainer,
-  survivalPlotLoading = false,
+  survivalDataLoading,
+  survivalPlotLoading,
   uniqueClass,
   palette = [
     textColors[0],
@@ -123,16 +106,17 @@ const SurvivalPlotWrapper = ({
     textColors[4],
   ],
   plotType,
-}: TProps) => {
-  const { results = [], overallStats = {} } = rawData || {};
-  const { pValue } = overallStats;
+  slug = '',
+}) => {
+  const plotName = slug === '' ? uniqueClass : slug;
   return (
     <Loader
-      className={uniqueClass}
+      className={plotName}
       height={height}
-      loading={survivalPlotLoading}
+      // TODO must handle if no data comes back
+      loading={survivalDataLoading || survivalPlotLoading}
       >
-      {!survivalPlotLoading && (
+      {survivalDataLoading || (
         <Column className="test-survival-plot-meta">
           <VisualizationHeader
             buttons={[
@@ -146,34 +130,33 @@ const SurvivalPlotWrapper = ({
                 }))}
                 key="download"
                 noText
-                slug="survival-plot"
+                slug={plotName}
                 stylePrefix={`.${CLASS_NAME}`}
                 svg={() => wrapSvg({
-                  selector: `.${uniqueClass} .${CLASS_NAME} svg`,
-                  title: plotType === 'mutation' ? TITLE : '',
                   className: CLASS_NAME,
                   embed: {
                     top: {
                       elements: legend
                         .map((l, i) => {
                           const legendItem = document.querySelector(
-                            `.${uniqueClass} .legend-${i}`
+                            `.${plotName} .legend-${i}`
                           ).cloneNode(true);
                           const legendTitle = legendItem.querySelector('span.print-only.inline');
                           if (legendTitle !== null) legendTitle.className = '';
                           return legendItem;
                         })
                         .concat(
-                          pValue
+                          isNumber(pValue)
                             ? document.querySelector(
-                              `.${uniqueClass} .p-value`
+                              `.${plotName} .p-value`
                             )
                             : null
                         ),
                     },
                   },
-                })
-                }
+                  selector: `.${plotName} .${CLASS_NAME} svg`,
+                  title: plotType === 'mutation' ? TITLE : '',
+                })}
                 tooltipHTML="Download SurvivalPlot data or image"
                 tsvData={results.reduce((data, set, i) => {
                   const mapData = set.donors.map(d => toMap(d));
@@ -192,27 +175,30 @@ const SurvivalPlotWrapper = ({
                 </Button>
               </Tooltip>,
             ]}
+            style={buttonStyle}
             title={plotType === 'mutation' ? TITLE : ''}
             />
+
           <div>
             <Row
               className="survival-legend-wrapper"
               style={{
-                justifyContent: 'center',
                 flexWrap: 'wrap',
+                justifyContent: 'center',
                 marginTop: '0.5rem',
               }}
               >
               {legend &&
                 legend.map((l, i) => (
                   <div
-                    className={`legend-${i}`}
+                    className={`legend-item legend-${i}`}
                     key={l.key}
                     style={l.style || {}}
                     >
                     <div
                       style={{
-                        color: palette[i],
+                        color: Color(palette[i]).darken(0.3)
+                          .rgbString(),
                         fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
                         fontSize: '1.35rem',
                         padding: '0 1rem',
@@ -225,88 +211,92 @@ const SurvivalPlotWrapper = ({
                 ))}
             </Row>
           </div>
-          {
-            <Tooltip
-              Component={
-                pValue === 0 && (
-                  <div>
-                    Value shows 0.00e+0 because the
-                    <br />
-                    P-Value is extremely low and goes beyond
-                    <br />
-                    the precision inherent in the code
-                  </div>
-                )
-              }
-              >
-              <div className="p-value">
-                <div style={styles.pValue}>
-                  {_.isNumber(pValue) &&
-                    `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
+
+          <Tooltip
+            Component={
+              pValue === 0 && (
+                <div>
+                  Value shows 0.00e+0 because the
+                  <br />
+                  P-Value is extremely low and goes beyond
+                  <br />
+                  the precision inherent in the code
                 </div>
+              )
+            }
+            >
+            <div className="p-value">
+              <div style={styles.pValue}>
+                {isNumber(pValue) &&
+                  `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
               </div>
-            </Tooltip>
-          }
+            </div>
+          </Tooltip>
+
           <div
             className="no-print"
             style={{
-              textAlign: 'right',
+              fontSize: '1.1rem',
               marginBottom: -SVG_MARGINS.top,
               marginRight: SVG_MARGINS.right,
-              fontSize: '1.1rem',
+              textAlign: 'right',
             }}
             >
             drag to zoom
           </div>
         </Column>
       )}
+
       <Container
         setSurvivalContainer={setSurvivalContainer}
-        survivalPlotLoading={survivalPlotLoading}
+        survivalDataLoading={survivalDataLoading}
         />
     </Loader>
   );
 };
 
-function renderSurvivalPlot(props: TProps): void {
-  const {
-    height = 0,
-    rawData = {},
-    xDomain,
-    survivalContainer,
-    setXDomain,
-    setTooltip,
-    push,
-    palette = [
-      colors(0),
-      colors(1),
-      colors(2),
-      colors(3),
-      colors(4),
-    ],
-  } = props;
-  const { results = [] } = rawData;
+function renderSurvivalPlot({
+  height = 0,
+  palette = [
+    colors(0),
+    colors(1),
+    colors(2),
+    colors(3),
+    colors(4),
+  ],
+  push,
+  rawData: { results = [] } = {},
+  setSurvivalPlotLoading,
+  setTooltip,
+  setXDomain,
+  survivalContainer,
+  xDomain,
+}) {
   if (survivalContainer) {
     performanceTracker.begin('survival:render');
+    setSurvivalPlotLoading(true);
     renderPlot({
       container: survivalContainer,
       dataSets: results,
-      palette,
-      xDomain,
-      xAxisLabel: 'Duration (years)',
-      yAxisLabel: 'Survival Rate',
+      getSetSymbol: (curve, curves) => (
+        curves.length === 1
+          ? ''
+          : `<tspan font-style="italic">S</tspan><tspan font-size="0.7em" baseline-shift="-15%">${
+            curves.indexOf(curve) + 1
+            }</tspan>`
+      ),
       height,
-      getSetSymbol: (curve, curves) => (curves.length === 1
-        ? ''
-        : `<tspan font-style="italic">S</tspan><tspan font-size="0.7em" baseline-shift="-15%">${curves.indexOf(
-          curve
-        ) + 1}</tspan>`),
-      onMouseEnterDonor: (
-        e,
-        {
-          censored, project_id, submitter_id, survivalEstimate, time = 0,
-        }
-      ) => {
+      margins: SVG_MARGINS,
+      minimumDonors: MINIMUM_CASES,
+      onClickDonor: (e, donor) => push({ pathname: `/cases/${donor.id}` }),
+      onDomainChange: setXDomain,
+      onMouseEnterDonor: (e, {
+        censored,
+        project_id,
+        submitter_id,
+        survivalEstimate,
+        time = 0,
+      }) => {
         setTooltip(
           <span>
             {`Case ID: ${project_id} / ${submitter_id}`}
@@ -320,48 +310,50 @@ function renderSurvivalPlot(props: TProps): void {
         );
       },
       onMouseLeaveDonor: () => setTooltip(),
-      onClickDonor: (e, donor) => push({ pathname: `/cases/${donor.id}` }),
-      onDomainChange: setXDomain,
-      margins: SVG_MARGINS,
+      palette,
       shouldShowConfidenceIntervals: false,
-      minimumDonors: MINIMUM_CASES,
+      xAxisLabel: 'Duration (years)',
+      xDomain,
+      yAxisLabel: 'Survival Rate',
     });
     const performanceContext = {
       data_sets: results.length,
-      donors: _.sum(results.map(x => x.donors.length)),
+      donors: sum(results.map(x => x.donors.length)),
     };
+    setSurvivalPlotLoading(false);
     performanceTracker.end('survival:render', performanceContext);
   }
 }
 
-const enhance = compose(
+export default compose(
   setDisplayName('EnhancedSurvivalPlotWrapper'),
   withTooltip,
   withRouter,
   withState('xDomain', 'setXDomain', undefined),
   withState('survivalContainer', 'setSurvivalContainer', null),
-  withState('uniqueClass', 'setUniqueClass', () => CLASS_NAME + _.uniqueId()),
+  withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withState('uniqueClass', 'setUniqueClass', () => CLASS_NAME + uniqueId()),
   withSize({ refreshRate: 16 }),
   lifecycle({
-    shouldComponentUpdate(nextProps: TProps): void {
+    componentDidMount() {
+      this.props.survivalDataLoading || renderSurvivalPlot(this.props);
+    },
+    componentDidUpdate() {
+      this.props.survivalDataLoading || renderSurvivalPlot(this.props);
+    },
+    shouldComponentUpdate(nextProps) {
       const props = [
         'xDomain',
         'size',
         'rawData',
+        'survivalDataLoading',
         'survivalPlotLoading',
         'survivalContainer',
       ];
-      return !_.isEqual(_.pick(this.props, props), _.pick(nextProps, props));
-    },
-
-    componentDidUpdate(): void {
-      if (!this.props.survivalPlotLoading) renderSurvivalPlot(this.props);
-    },
-
-    componentDidMount(): void {
-      if (!this.props.survivalPlotLoading) renderSurvivalPlot(this.props);
+      return !isEqual(
+        pick(this.props, props),
+        pick(nextProps, props)
+      );
     },
   })
-);
-
-export default enhance(SurvivalPlotWrapper);
+)(SurvivalPlotWrapper);

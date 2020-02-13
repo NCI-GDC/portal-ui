@@ -29,7 +29,6 @@ import Hidden from '@ncigdc/components/Hidden';
 import { withTheme } from '@ncigdc/theme';
 import { visualizingButton, iconButton } from '@ncigdc/theme/mixins';
 import Button from '@ncigdc/uikit/Button';
-import Emitter from '@ncigdc/utils/emitter';
 import ImageViewerLink from '@ncigdc/components/Links/ImageViewerLink';
 
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
@@ -165,6 +164,14 @@ const BiospecimenCard = ({
                 <Hidden>Search</Hidden>
               </label>
               <Input
+                handleClear={() => {
+                  setTreeStatusOverride('expanded');
+
+                  setState(s => ({
+                    ...s,
+                    query: '',
+                  }));
+                }}
                 id="search-biospecimen"
                 name="search-biospecimen"
                 onChange={({ target }) => {
@@ -184,10 +191,7 @@ const BiospecimenCard = ({
             </Row>
             <Button
               disabled={query.length > 0 && treeStatusOverride === 'query matches'}
-              onClick={() => {
-                Emitter.emit('expand', !allExpanded);
-                setTreeStatusOverride(allExpanded ? 'collapsed' : 'expanded');
-              }}
+              onClick={() => setTreeStatusOverride(allExpanded ? 'collapsed' : 'expanded')}
               style={{
                 paddingLeft: '10px',
               }}

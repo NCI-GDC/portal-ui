@@ -42,6 +42,9 @@ const rangeFieldsOrder = [
   'to',
 ];
 
+const testNum = input => (/^(\-?\d+\.?\d*)$/).test(input);
+const testNumPositive = input => (/^(\d+\.?\d*)$/).test(input);
+
 const defaultState = {
   binningMethod: 'interval', // interval or range
   continuousReset: false,
@@ -121,114 +124,110 @@ class ContinuousCustomBinsModal extends Component {
   validateIntervalFields = (id, value) => {
     const { intervalErrors, intervalFields } = this.state;
 
+    // SETUP
     const inputKey = id.split('-')[2];
-    const inputValue = Number(value);
-
-    let inputError = inputValue === ''
-      ? 'Required field.'
-      : isFinite(inputValue)
-        ? ''
-        : `'${value}' is not a valid number.`;
-
+    const numValue = Number(value);
     const currentMin = intervalFields.min;
     const currentMax = intervalFields.max;
-    const currentAmount = Number(intervalFields.amount);
+    const currentAmount = intervalFields.amount;
     const validAmount = currentMax - currentMin;
 
-    if (inputError !== '') {
-      // if the current value is empty or NaN,
-      // remove all errors except empty or NaN
+    // EMPTY OR NAN
+    const emptyOrNaNError = value.trim() === ''
+      ? 'Required field.'
+      : testNum(value)
+          ? ''
+          : `'${value}' is not a valid number.`;
+
+    const emptyOrNaNState = {
+      ...intervalErrors,
+      // add emptyOrNaN error, or clear this field's errors.
+      [inputKey]: emptyOrNaNError,
+      // if this field is emptyOrNaN,
+      // remove comparison errors *that depend on this field's value*.
+      // only keep emptyOrNaN errors & amount <= 0 error.
+      ...emptyOrNaNError &&
+          {
+          ...inputKey !== 'amount' &&
+            testNumPositive(currentAmount) &&
+            { amount: '' },
+          ...inputKey === 'max' &&
+            testNum(currentMin) &&
+            { min: '' },
+          ...inputKey === 'min' &&
+            testNum(currentMax) &&
+            { max: '' },
+        },
+    };
+
+    this.setState({ intervalErrors: emptyOrNaNState });
+
+    if (emptyOrNaNError) {
+      return;
+    }
+
+    // CHECK <= 2 DECIMAL PLACES
+    const decimalError = countDecimals(numValue) > 2
+      ? `Use up to 2 decimal places.`
+      : '';
+    if (decimalError) {
       this.setState({
         intervalErrors: {
           ...intervalErrors,
-          amount: isFinite(currentAmount)
-            ? ''
-            : intervalErrors.amount,
-          [inputKey]: inputError,
-          ...inputKey === 'max'
-            ? {
-              min: isFinite(Number(currentMin))
-                ? ''
-                : intervalErrors.min,
-            }
-            : {
-              max: isFinite(Number(currentMax))
-                ? ''
-                : intervalErrors.min,
-            },
+          [inputKey]: decimalError,
         },
       });
       return;
     }
 
-    const ALLOWED_DECIMAL_PLACES = 2;
+    // COMPARISON ERRORS
+    // correct values: min < max && amount < (max - min)
 
-    inputError = countDecimals(inputValue) > ALLOWED_DECIMAL_PLACES
-      ? `Use up to ${ALLOWED_DECIMAL_PLACES} decimal places.`
-      : inputError;
+    const amountErrorMsg = `Must be less than or equal to ${validAmount}.`;
 
-    if (inputError !== '') {
-      this.setState({
-        intervalErrors: {
-          ...intervalErrors,
-          [inputKey]: inputError,
-        },
-      });
-      return;
-    }
-
-    const amountError = `Must be less than or equal to ${validAmount}.`;
-
-    if (inputKey === 'amount') {
-      inputError = inputValue <= 0
+    const comparisonErrors = {
+      amount: value <= 0
         ? 'Must be greater than 0.'
-        : inputValue > validAmount &&
-          validAmount > 0
-          ? amountError
-          : '';
-    } else if (inputKey === 'max') {
-      inputError = inputValue <= currentMin
-        ? `Must be greater than ${currentMin}.`
-        : '';
-    } else if (inputKey === 'min') {
-      inputError = inputValue >= currentMax
-        ? `Must be less than ${currentMax}.`
-        : '';
-    } else {
-      inputError = '';
-    }
+        : value > validAmount && validAmount > 0
+          ? amountErrorMsg
+          : '',
+      max: testNum(currentMin) &&
+        numValue <= currentMin
+          ? `Must be greater than ${currentMin}.`
+          : '',
+      min: testNum(currentMax) &&
+        currentMax <= numValue
+          ? `Must be less than ${currentMax}.`
+          : ''
+    };
 
     this.setState({
       intervalErrors: {
         ...intervalErrors,
-        [inputKey]: inputError,
+        [inputKey]: comparisonErrors[inputKey],
+        // if min & max have valid values,
+        // and max <= min, 
+        // only show the error on the current field
         ...inputKey === 'max' &&
-          isFinite(Number(currentMin)) &&
-          isFinite(inputValue) &&
-          inputValue <= currentMin
-          ? { min: '' }
-          : {},
+          (comparisonErrors.max ||
+            testNum(currentMin)) &&
+          { min: '' },
         ...inputKey === 'min' &&
-          isFinite(inputValue) &&
-          isFinite(Number(currentMax)) &&
-          currentMax <= inputValue
-          ? { max: '' }
-          : {},
-      },
-    }, () => {
-      if ((inputKey === 'max' || inputKey === 'min') &&
-        isFinite(currentAmount)) {
-        this.setState({
-          intervalErrors: {
-            ...intervalErrors,
-            amount: inputError === '' &&
-              currentAmount > validAmount
-              ? amountError
-              : '',
+          (comparisonErrors.min ||
+            testNum(currentMax)) &&
+          { max: '' },
+        ...inputKey !== 'amount' &&
+          testNumPositive(currentAmount) &&
+          {
+            amount: currentAmount > validAmount &&
+              validAmount > 0
+              // if max <= min, clear amount error because
+              // amount cannot be accurately validated
+                ? amountErrorMsg
+                : '',
           },
-        });
-      }
-    });
+        },
+      });
   };
 
   checkSubmitDisabled = () => {

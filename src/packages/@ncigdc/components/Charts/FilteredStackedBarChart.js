@@ -28,7 +28,10 @@ type TProps = {
 const FilteredStackedBarChart = ({
   data,
   yAxis = {},
-  xAxis = {},
+  xAxis = {
+    rotate: 45,
+    xAxisTextAnchor: 'start',
+  },
   margin: m,
   displayFilters = {},
   colors,
@@ -37,6 +40,8 @@ const FilteredStackedBarChart = ({
   theme,
   setTooltip,
   xAxisLabelLength = DEFAULT_X_AXIS_LABEL_LENGTH,
+  labelX = 0.5,
+  labelY = 9,
 }: TProps) => {
   const yAxisStyle = yAxis.style || {
     textFill: theme.greyScale3,
@@ -100,14 +105,16 @@ const FilteredStackedBarChart = ({
     .call(d3.axisBottom(x));
   xG
     .selectAll('text')
-    .style('text-anchor', 'start')
+    .style('text-anchor', xAxis.xAxisTextAnchor)
     .style('fontSize', xAxisStyle.fontSize)
     .style('fontWeight', xAxisStyle.fontWeight)
     .attr('fill', xAxisStyle.textFill)
+    .attr('y', labelY)
+    .attr('x', labelX)
     .attr('dx', '.8em')
     .attr('dy', '.5em')
     .text(d => (d.length > xAxisLabelLength ? `${d.substring(0, xAxisLabelLength - 3)}...` : d))
-    .attr('transform', 'rotate(45)');
+    .attr('transform', `rotate(${xAxis.rotate})`);
   xG.selectAll('path').style('stroke', xAxisStyle.stroke);
   xG.selectAll('line').style('stroke', xAxisStyle.stroke);
 

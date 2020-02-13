@@ -43,8 +43,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
           query={query}
           push={push}
           path="doc_count"
-          height={125}
-          width={125}
+          diameter={125}
         />
       </ColumnCenter>
       <ColumnCenter className="test-project">
@@ -58,8 +57,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
           query={query}
           push={push}
           path="doc_count"
-          height={125}
-          width={125}
+          diameter={125}
         />
       </ColumnCenter>
       <ColumnCenter className="test-disease-type">
@@ -73,8 +71,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
           query={query}
           push={push}
           path="doc_count"
-          height={125}
-          width={125}
+          diameter={125}
         />
       </ColumnCenter>
       <ColumnCenter className="test-gender">
@@ -88,8 +85,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
           query={query}
           push={push}
           path="doc_count"
-          height={125}
-          width={125}
+          diameter={125}
         />
       </ColumnCenter>
       <ColumnCenter className="test-vital-status">
@@ -103,8 +99,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
           query={query}
           push={push}
           path="doc_count"
-          height={125}
-          width={125}
+          diameter={125}
         />
       </ColumnCenter>
     </RowCenter>

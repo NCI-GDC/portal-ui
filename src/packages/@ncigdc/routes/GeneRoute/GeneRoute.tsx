@@ -21,7 +21,7 @@ import { match as IMatch } from 'react-router';
 import { Location as ILocation } from 'history';
 import { isEmpty } from 'lodash';
 
-export default ({
+const GeneRoute =({
   match,
   geneId = match.params.id,
   location,
@@ -131,3 +131,5 @@ export default ({
     </Exists>
   );
 };
+
+export default GeneRoute;

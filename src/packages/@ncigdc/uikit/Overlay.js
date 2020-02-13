@@ -2,27 +2,27 @@ import React from 'react';
 
 const styles = {
   container: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    display: 'flex',
+    height: '100%',
+    justifyContent: 'center',
+    left: 0,
+    pointerEvents: 'none',
     position: 'fixed',
     top: 0,
-    left: 0,
-    height: '100%',
+    transition: 'opacity 0.35s ease',
     width: '100%',
     zIndex: 9999,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    pointerEvents: 'none',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    transition: 'opacity 0.35s ease',
-  },
-  show: {
-    opacity: 1,
-    pointerEvents: 'all',
-    cursor: 'default',
   },
   hide: {
     opacity: 0,
     pointerEvents: 'none',
+  },
+  show: {
+    cursor: 'default',
+    opacity: 1,
+    pointerEvents: 'all',
   },
 };
 

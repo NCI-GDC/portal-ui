@@ -99,7 +99,6 @@ const styles = {
   },
   scrollingTable: {
     maxHeight: '250px',
-    overflowY: 'auto',
   },
   visualizingButton: {
     backgroundColor: '#fff',

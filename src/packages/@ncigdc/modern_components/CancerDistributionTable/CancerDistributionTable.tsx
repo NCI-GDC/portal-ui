@@ -5,7 +5,12 @@ import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
 import React from 'react';
 import saveFile from '@ncigdc/utils/filesaver';
 import timestamp from '@ncigdc/utils/timestamp';
-import { compose, withPropsOnChange, withState } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withPropsOnChange,
+  withState,
+} from 'recompose';
 import { groupBy, head } from 'lodash';
 import { Row } from '@ncigdc/uikit/Flex';
 import { visualizingButton } from '@ncigdc/theme/mixins';
@@ -42,6 +47,7 @@ interface ICDTWrappedProps extends TCancerDistributionTableProps {
 }
 
 export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
+  setDisplayName('EnhancedCancerDistributionTable'),
   withPropsOnChange(
     ['viewer', 'projectsViewer'],
     ({
@@ -208,6 +214,7 @@ export default compose<ICDTWrappedProps, TCancerDistributionTableProps>(
             headings={visibleCols.map(({ id, th }, idx) => ({
               key: id,
               title: th({
+                sorted: tableSort.filter(sort => sort.field === id),
                 style:
                   idx === visibleCols.length - 1
                     ? { justifyContent: 'flex-end' }

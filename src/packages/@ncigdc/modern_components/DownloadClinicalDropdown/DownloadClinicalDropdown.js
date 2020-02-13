@@ -1,7 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import { compose, withState } from 'recompose';
+import { compose, setDisplayName, withState } from 'recompose';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
@@ -38,6 +38,7 @@ export const styles = {
 };
 
 export default compose(
+  setDisplayName('DownloadClinicalDropdown'),
   withState('activeTab', 'setTab', 0),
   withState('state', 'setState', {
     tsvDownloading: false,
@@ -119,8 +120,10 @@ export default compose(
             'demographic',
             'diagnoses',
             'diagnoses.treatments',
-            'family_histories',
             'exposures',
+            'family_histories',
+            'follow_ups',
+            'follow_ups.molecular_tests',
           ]}
           endpoint="/cases"
           fields={['case_id']}

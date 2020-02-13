@@ -1,7 +1,5 @@
 import React from 'react';
-import { compose, withPropsOnChange } from 'recompose';
 
-import { updateClinicalAnalysisVariable, } from '@ncigdc/dux/analysis';
 import {
   get,
   groupBy,
@@ -17,19 +15,17 @@ import {
   createFacetFieldString,
   humanify,
 } from '@ncigdc/utils/string';
-import { MAXIMUM_CURVES, MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import Button from '@ncigdc/uikit/Button';
-import { 
-  SpinnerIcon, 
-  CloseIcon,
-  SurvivalIcon,
-  BarChartIcon,
-  BoxPlot, 
-} from '@ncigdc/theme/icons';
-import Hidden from '@ncigdc/components/Hidden';
+import { MINIMUM_CASES } from '@ncigdc/utils/survivalplot';
 
 export const colors = scaleOrdinal(schemeCategory10);
+export const colorsArray = [
+  'rgb(31, 119, 180)',
+  'rgb(255, 127, 14)',
+  'rgb(44, 160, 44)',
+  'rgb(214, 39, 40)',
+  'rgb(148, 103, 189)',
+];
+
 export const CHART_HEIGHT = 250;
 export const QQ_PLOT_RATIO = '70%';
 export const BOX_PLOT_RATIO = '30%';
@@ -328,7 +324,7 @@ export const getBinData = (bins, dataBuckets) => ({
   ), {}),
 });
 
-export const makeDocCountInteger = bin => 
+export const makeDocCountInteger = bin =>
   Object.assign({}, bin, { doc_count: 0 });
 // doc_count can be an integer or functional component
 
@@ -349,38 +345,29 @@ export const DEFAULT_INTERVAL = {
 };
 export const DEFAULT_RANGES = [];
 
-export const dispatchUpdateClinicalVariable = compose(
-  withPropsOnChange(
-    (props, nextProps) => props.id !== nextProps.id,
-    ({
-      dispatch,
-      fieldName,
-      id,
-    }) => ({
-      dispatchUpdateClinicalVariable: ({ value, variableKey }) => {
-        dispatch(
-          updateClinicalAnalysisVariable({
-            fieldName,
-            id,
-            value,
-            variableKey,
-          })
-        );
-      },
-    }),
-  ),
-);
+export const resetVariableDefaults = {
+  continuous: {
+    continuousBinType: DEFAULT_BIN_TYPE,
+    customInterval: DEFAULT_INTERVAL,
+    customRanges: DEFAULT_RANGES,
+  },
+  survival: {
+    customSurvivalPlots: [],
+    isSurvivalCustom: false,
+    showOverallSurvival: false,
+  },
+};
 
-export const getBoxTableData = (data = {}) => 
-  sortBy(Object.keys(data), datum => boxTableAllowedStats
-    .indexOf(datum.toLowerCase()))
+export const getBoxTableData = (data = {}) =>
+  sortBy(Object.keys(data), datum =>
+    boxTableAllowedStats.indexOf(datum.toLowerCase()))
     .reduce(
       (acc, curr) => (
-        boxTableAllowedStats.includes(curr.toLowerCase())
-          ? acc.concat({
-            count: parseContinuousValue(data[curr]),
-            stat: boxTableRenamedStats[curr] || curr, // Shows the descriptive label
-          })
-          : acc
+      boxTableAllowedStats.includes(curr.toLowerCase())
+        ? acc.concat({
+          count: parseContinuousValue(data[curr]),
+          stat: boxTableRenamedStats[curr] || curr, // Shows the descriptive label
+        })
+        : acc
       ), []
     );

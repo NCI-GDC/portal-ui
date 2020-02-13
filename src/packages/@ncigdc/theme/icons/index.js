@@ -12,7 +12,7 @@ import FileIcon from './File';
 import CaseIcon from './Case';
 import SaveIcon from './Save';
 import GdcDataIcon from './GdcData';
-import GridIcon from './Grid.js';
+import GridIcon from './Grid';
 import CaretIcon from './Caret';
 import QuestionIcon from './Question';
 import ExclamationTriangleIcon from './ExclamationTriangle';
@@ -22,6 +22,8 @@ import MicroscopeIcon from './Microscope';
 import CloseIcon from './CloseIcon';
 import BarChartIcon from './BarChart';
 import BoxPlot from './BoxPlot';
+
+export { default as ArrowIcon } from './ArrowIcon';
 
 export {
   DownloadIcon,

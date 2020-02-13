@@ -40,6 +40,7 @@ export default compose(
   ),
 )(
   ({
+    id,
     sets,
     type,
     selected,
@@ -104,7 +105,8 @@ export default compose(
                   ? colors[1]
                   : selected.has(d.op) ? colors[2] : colors[0];
               }}
-            />
+              title={id}
+              />
             <div style={{ flexGrow: 1 }}>
               <SetTable
                 push={push}

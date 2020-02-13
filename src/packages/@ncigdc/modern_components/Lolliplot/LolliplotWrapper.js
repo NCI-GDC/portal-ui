@@ -148,13 +148,12 @@ export default compose(
           <LolliplotToolbar
             activeTranscript={activeTranscript}
             gene={gene}
-            transcripts={transcripts.filter(x =>
-              transcriptBuckets.find(b => b.key === x.transcript_id),
-            )}
             setState={setState}
             selector={selector}
             lolliplotData={lolliplotData}
-          />
+            transcripts={transcripts.filter(({ transcript_id = '' } = {}) =>
+              transcriptBuckets.find(({ key = '' } = {}) => key.toLowerCase() === transcript_id.toLowerCase()))}
+            />
         )}
         {notEnoughData && (
           <Column style={{ alignItems: 'center', padding: '20px' }}>

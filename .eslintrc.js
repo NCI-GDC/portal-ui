@@ -149,6 +149,7 @@ module.exports = {
       ],
     }],
     'react/jsx-first-prop-new-line': ['warn', 'multiline'],
+    'react/jsx-fragments': ['error', 'element'],
     'react/jsx-indent': ['warn', 2, {
       checkAttributes: true,
       indentLogicalExpressions: true,
@@ -187,6 +188,7 @@ module.exports = {
     'react/no-unknown-property': 'warn',
     'react/sort-comp': 'warn',
     'react/sort-prop-types': 'error',
+    'react/state-in-constructor': 'off',
     'react/prop-types': 'off', // Disable prop-types as TS is used for type checking.
     'sort-destructure-keys/sort-destructure-keys': ['warn', {
       caseSensitive: false,

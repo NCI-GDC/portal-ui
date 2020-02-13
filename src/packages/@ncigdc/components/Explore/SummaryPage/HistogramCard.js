@@ -31,7 +31,7 @@ const HistogramCard = ({
   data,
   mappingLabel,
   mappingValue,
-  xAxisTitle,
+  xAxisTitle = '',
 }) => {
   return (
     <div

@@ -12,15 +12,15 @@ import { connect } from 'react-redux';
 import {
   isEqual,
   map,
+  mapKeys,
+  maxBy,
   trim,
 } from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import {
-  PrintIcon,
-} from '@ncigdc/theme/icons';
+import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import CopyIcon from '@ncigdc/theme/icons/Copy';
 import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
@@ -38,12 +38,25 @@ import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import DeprecatedSetResult from './DeprecatedSetResult';
+import {
+  getBoxQQDownload,
+  getDownloadSlug,
+  getDownloadSlugArray,
+  getDownloadSvgInfo,
+  getHistogramDownload,
+  getSurvivalDownload,
+  OVERALL_SURVIVAL_SLUG,
+  PLOT_TYPES,
+} from './helpers';
 import './print.css';
 import './survivalPlot.css';
+import './boxplot.css';
+import './qq.css';
 
 import ControlPanel from './ControlPanel';
 import ContinuousAggregationQuery from './ContinuousAggregationQuery';
 import { CategoricalVariableCard } from './ClinicalVariableCard';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
 
 interface IAnalysisResultProps {
   sets: any;
@@ -52,15 +65,6 @@ interface IAnalysisResultProps {
   Icon: () => React.Component<any>;
   analysis: any;
 }
-
-const plotTypes = {
-  categorical: ['histogram', 'survival'],
-  continuous: [
-    'histogram',
-    'survival',
-    'box',
-  ],
-};
 
 const CopyAnalysisModal = compose(
   setDisplayName('EnhancedCopyAnalysisModal'),
@@ -120,6 +124,12 @@ const CopyAnalysisModal = compose(
   </BaseModal>
 ));
 
+const masonryBrickStyle = (num) => ({
+  flex: '1 0 354px',
+  height: 560,
+  minWidth: `${(80 - (num - 1) * 0.7) / num}%`,
+  padding: '0.5rem 1rem 1rem',
+});
 const ClinicalAnalysisResult = ({
   allSets,
   clinicalAnalysisFields,
@@ -136,8 +146,10 @@ const ClinicalAnalysisResult = ({
   push,
   setControlPanelExpanded,
   setId,
-  survivalPlotLoading,
+  setIdWithData,
+  survivalDataLoading,
 }: IAnalysisResultProps) => {
+  const downloadSvgInfo = getDownloadSvgInfo(displayVariables);
   return hits.total === 0
     ? (
       <DeprecatedSetResult
@@ -191,6 +203,7 @@ const ClinicalAnalysisResult = ({
                     text={currentAnalysis.name}
                     >
                     <h1
+                      className="print-w500"
                       style={{
                         fontSize: '2.5rem',
                         margin: 5,
@@ -201,7 +214,12 @@ const ClinicalAnalysisResult = ({
                   </EditableLabel>
                 </div>
               </Row>
-              <span style={{ margin: '0 0 5px 5px' }}>{label}</span>
+              <div
+                className="print-w500"
+                style={{ margin: '0 0 5px 5px' }}
+                >
+                {label}
+              </div>
             </Column>
           </Row>
           <Row spacing="5px">
@@ -221,20 +239,42 @@ const ClinicalAnalysisResult = ({
               >
               Copy Analysis
             </Button>
-            <Tooltip Component={<span>Print</span>}>
-              <Button
-                onClick={() => {
-                  window.print();
-                }}
-                style={{
-                  ...visualizingButton,
-                  height: '100%',
-                }}
-                >
-                <PrintIcon />
-                <Hidden>Print</Hidden>
-              </Button>
-            </Tooltip>
+            <DownloadVisualizationButton
+              buttonStyle={{
+                ...visualizingButton,
+                height: '100%',
+              }}
+              noText
+              slug={getDownloadSlugArray(downloadSvgInfo)}
+              svg={downloadSvgInfo
+                .reduce((acc, {
+                  chart, fieldName, slug, type,
+                }) => ([
+                  ...acc,
+                  ...[
+                    'box',
+                    'histogram',
+                    'survival',
+                  ].includes(chart) &&
+                    [
+                      () => wrapSvg(
+                      chart === 'box'
+                        ? getBoxQQDownload(fieldName, 'Box', type)
+                        : chart === 'histogram'
+                          ? getHistogramDownload(fieldName)
+                          : getSurvivalDownload(slug)
+                      ),
+                    ],
+                  ...chart === 'box' &&
+                    [
+                      () => wrapSvg(
+                        getBoxQQDownload(fieldName, 'QQ', type)
+                      ),
+                    ],
+                ]),
+                        [() => wrapSvg(getSurvivalDownload(OVERALL_SURVIVAL_SLUG))])}
+              tooltipHTML="Download all images"
+              />
           </Row>
         </Row>
         <Row>
@@ -250,115 +290,108 @@ const ClinicalAnalysisResult = ({
             setId={setId}
             />
 
-          <Column
+          <ul
+            className="masonry"
             style={{
-              flex: 4,
+              padding: '0 0 0 0.7%',
               minWidth: 0,
             }}
             >
-            <Column
-              className="print-grid"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: controlPanelExpanded
-                  ? '50% 50%'
-                  : '33% 33% 33%',
-                gridTemplateRows: 'repeat(auto)',
-                ...(controlPanelExpanded ? {} : { marginLeft: '1%' }),
-              }}
+            <li
+              className="masonry-brick"
+              key="overallSurvival"
+              style={masonryBrickStyle(controlPanelExpanded ? 2 : 3)}
               >
-              <Column
+              <div
                 style={{
-                  ...zDepth1,
-                  height: 560,
-                  margin: '0 1rem 1rem',
-                  padding: '0.5rem 1rem 1rem',
+                  margin: '5px 0 10px',
                 }}
                 >
-                <div
+                <h2
                   style={{
-                    margin: '5px 0 10px',
+                    fontSize: '1.8rem',
+                    marginBottom: 0,
+                    marginTop: 10,
                   }}
                   >
-                  <h2
-                    style={{
-                      fontSize: '1.8rem',
-                      marginBottom: 0,
-                      marginTop: 10,
-                    }}
-                    >
                     Overall Survival
-                  </h2>
-                </div>
-                <div
-                  style={{
-                    height: '250px',
-                    margin: '5px 2px 10px',
-                  }}
-                  >
-                  <SurvivalPlotWrapper
-                    {...overallSurvivalData}
-                    height={430}
-                    plotType="clinicalOverall"
-                    survivalPlotLoading={survivalPlotLoading}
-                    uniqueClass="clinical-survival-plot"
-                    />
-                </div>
-              </Column>
+                </h2>
+              </div>
+              <div
+                style={{
+                  height: '250px',
+                  margin: '5px 2px 10px',
+                }}
+                >
+                <SurvivalPlotWrapper
+                  {...overallSurvivalData}
+                  height={430}
+                  plotType="clinicalOverall"
+                  slug={OVERALL_SURVIVAL_SLUG}
+                  survivalDataLoading={survivalDataLoading}
+                  uniqueClass="clinical-survival-plot"
+                  />
+              </div>
+            </li>
 
-              {setId && map(displayVariables, (varProperties, varFieldName) => {
-                const filters = {
-                  content: [
-                    {
-                      content: {
-                        field: 'cases.case_id',
-                        value: [`set_id:${setId}`],
-                      },
-                      op: '=',
+            {setId && map(displayVariables, (varProperties, varFieldName) => {
+              const filters = {
+                content: [
+                  {
+                    content: {
+                      field: 'cases.case_id',
+                      value: [`set_id:${setId}`],
                     },
-                  ],
-                  op: 'and',
-                };
+                    op: '=',
+                  },
+                ],
+                op: 'and',
+              };
 
-                return varProperties.plotTypes === 'continuous'
-                  ? (
+              return (
+                <li
+                  className="masonry-brick"
+                  key={varFieldName}
+                  style={masonryBrickStyle(controlPanelExpanded ? 2 : 3)}
+                  >
+                  {varProperties.plotTypes === 'continuous' ? (
                     <ContinuousAggregationQuery
                       currentAnalysis={currentAnalysis}
                       fieldName={varFieldName}
                       filters={filters}
                       hits={hits}
                       id={id}
-                      key={varFieldName}
                       overallSurvivalData={overallSurvivalData}
-                      plots={plotTypes[varProperties.plotTypes || 'categorical']}
+                      plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
                       setId={setId}
+                      setIdWithData={setIdWithData}
                       stats={parsedFacets[varFieldName].stats}
                       style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
                       variable={varProperties}
                       />
-                  )
-                  : (
-                    <CategoricalVariableCard
-                      currentAnalysis={currentAnalysis}
-                      data={{
-                        ...parsedFacets[varFieldName],
-                        hits,
-                      }}
-                      facetField={varFieldName.replace('cases.', '')}
-                      fieldName={varFieldName}
-                      filters={filters}
-                      id={id}
-                      key={varFieldName}
-                      overallSurvivalData={overallSurvivalData}
-                      plots={plotTypes[varProperties.plotTypes || 'categorical']}
-                      setId={setId}
-                      style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
-                      variable={varProperties}
-                      />
-                  );
-              })}
-            </Column>
-          </Column>
+                      )
+                    : (
+                      <CategoricalVariableCard
+                        currentAnalysis={currentAnalysis}
+                        data={{
+                          ...parsedFacets[varFieldName],
+                          hits,
+                        }}
+                        facetField={varFieldName.replace('cases.', '')}
+                        fieldName={varFieldName}
+                        filters={filters}
+                        id={id}
+                        overallSurvivalData={overallSurvivalData}
+                        plots={PLOT_TYPES[varProperties.plotTypes || 'categorical']}
+                        setId={setId}
+                        style={{ minWidth: controlPanelExpanded ? 310 : 290 }}
+                        variable={varProperties}
+                        />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </Row>
       </div>
     );
@@ -373,11 +406,12 @@ export default compose(
   })),
   withState('controlPanelExpanded', 'setControlPanelExpanded', true),
   withState('overallSurvivalData', 'setOverallSurvivalData', {}),
-  withState('survivalPlotLoading', 'setSurvivalPlotLoading', true),
+  withState('survivalDataLoading', 'setSurvivalDataLoading', true),
   withState('setId', 'setSetId', ''),
   withPropsOnChange(
     ['viewer'],
     ({
+      setId,
       viewer: {
         explore: {
           cases: { facets, hits },
@@ -386,26 +420,27 @@ export default compose(
     }) => ({
       hits,
       parsedFacets: facets ? tryParseJSON(facets) : {},
+      setIdWithData: setId,
     })
   ),
   withPropsOnChange(
     ({ currentAnalysis }, {
       currentAnalysis: nextCurrentAnalysis,
       overallSurvivalData,
-      survivalPlotLoading,
+      survivalDataLoading,
     }) => (
       !isEqual(currentAnalysis, nextCurrentAnalysis) ||
-      (Object.keys(overallSurvivalData).length < 1 && !survivalPlotLoading)
+      (Object.keys(overallSurvivalData).length < 1 && !survivalDataLoading)
     ),
     async ({
       currentAnalysis: nextCurrentAnalysis,
       setOverallSurvivalData,
       setSetId,
-      setSurvivalPlotLoading,
+      setSurvivalDataLoading,
     }) => {
       const setId = Object.keys(nextCurrentAnalysis.sets.case)[0];
       setSetId(setId);
-      setSurvivalPlotLoading(true);
+      setSurvivalDataLoading(true);
       const nextSurvivalData = await getDefaultCurve({
         currentFilters: {
           content: [
@@ -423,7 +458,7 @@ export default compose(
       });
 
       setOverallSurvivalData(nextSurvivalData);
-      setSurvivalPlotLoading(false);
+      setSurvivalDataLoading(false);
     }
   ),
   withHandlers({
@@ -436,20 +471,20 @@ export default compose(
       controlPanelExpanded: nextControlPanelExpanded,
       loading: nextLoading,
       populateSurvivalData: nextPopulateSurvivalData,
-      survivalPlotLoading: nextSurvivalPlotLoading,
+      survivalDataLoading: nextSurvivalDataLoading,
     }) {
       const {
         controlPanelExpanded,
         loading,
         populateSurvivalData,
-        survivalPlotLoading,
+        survivalDataLoading,
       } = this.props;
 
       return !(
         nextControlPanelExpanded === controlPanelExpanded &&
         nextLoading === loading &&
         isEqual(populateSurvivalData, nextPopulateSurvivalData) &&
-        nextSurvivalPlotLoading === survivalPlotLoading
+        nextSurvivalDataLoading === survivalDataLoading
       );
     },
   }),

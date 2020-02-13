@@ -9,6 +9,7 @@ import AddCaseFilesToCartButton from '@ncigdc/components/AddCaseFilesToCartButto
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
+import ArrowIcon from '@ncigdc/theme/icons/ArrowIcon';
 import { makeFilter } from '@ncigdc/utils/filters';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -73,9 +74,10 @@ const casesTableModel = [
   {
     name: 'Cart',
     id: 'cart',
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="cart" rowSpan="2">
         Cart
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, edges, index }) => (
@@ -102,9 +104,10 @@ const casesTableModel = [
     id: 'case_id',
     hidden: true,
     downloadable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="case_id" rowSpan="2">
         Case UUID
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node }) => <Td>{node.case_id}</Td>,
@@ -113,9 +116,10 @@ const casesTableModel = [
     name: 'Case ID',
     id: 'submitter_id',
     downloadable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="submitter_id" rowSpan="2">
         Case ID
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => (
@@ -136,9 +140,10 @@ const casesTableModel = [
     id: 'project.project_id',
     downloadable: true,
     sortable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="project_id" rowSpan="2">
         Project
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node, index }) => (
@@ -155,9 +160,10 @@ const casesTableModel = [
     id: 'primary_site',
     sortable: true,
     downloadable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="primary_site" rowSpan="2">
         Primary Site
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>,
@@ -167,9 +173,10 @@ const casesTableModel = [
     id: 'demographic.gender',
     sortable: true,
     downloadable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <Th key="demographic.gender" rowSpan="2">
         Gender
+        {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
     td: ({ node }) => (
@@ -183,9 +190,10 @@ const casesTableModel = [
     id: 'summary.file_count',
     sortable: true,
     downloadable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <ThNum key="summary.file_count" rowSpan="2">
         Files
+        {sorted && <ArrowIcon sorted={sorted} />}
       </ThNum>
     ),
     td: ({ node }) => (
@@ -214,9 +222,10 @@ const casesTableModel = [
     name: 'Annotations',
     id: 'score',
     sortable: true,
-    th: () => (
+    th: ({ sorted }) => (
       <ThNum key="score" rowSpan="2">
         Annotations
+        {sorted && <ArrowIcon sorted={sorted} />}
       </ThNum>
     ),
     td: ({ node }) => (
@@ -237,7 +246,12 @@ const casesTableModel = [
       sortable: false,
       downloadable: false,
       hidden: false,
-      th: () => <Th rowSpan="2">Slides</Th>,
+      th: ({ sorted }) => (
+        <Th rowSpan="2">
+          Slides
+          {sorted && <ArrowIcon sorted={sorted} />}
+        </Th>
+      ),
       td: ({ node }) => (
         <Td style={{ textAlign: 'center' }}>
           <RepositorySlideCount
@@ -277,7 +291,12 @@ const casesTableModel = [
     sortable: false,
     downloadable: true,
     hidden: true,
-    th: () => <Th rowSpan="2">Program</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Program
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => <Td>{node.project.program.name}</Td>,
   },
   {
@@ -286,7 +305,12 @@ const casesTableModel = [
     sortable: false,
     downloadable: true,
     hidden: true,
-    th: () => <Th rowSpan="2">Disease Type</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Disease Type
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => <Td>{node.disease_type}</Td>,
   },
   {
@@ -295,7 +319,12 @@ const casesTableModel = [
     sortable: false,
     downloadable: true,
     hidden: true,
-    th: () => <Th rowSpan="2">Age at diagnosis</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Age at diagnosis
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => {
       // Use diagnosis with minimum age
       const age = node.diagnoses.hits.edges
@@ -315,7 +344,12 @@ const casesTableModel = [
     sortable: false,
     downloadable: true,
     hidden: true,
-    th: () => <Th rowSpan="2">Days to death</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Days to death
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => {
       return (
         <Td>
@@ -331,7 +365,12 @@ const casesTableModel = [
     sortable: false,
     downloadable: true,
     hidden: true,
-    th: () => <Th rowSpan="2">Vital Status</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Vital Status
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => {
       return <Td>{node.demographic && node.demographic.vital_status}</Td>;
     },
@@ -342,7 +381,12 @@ const casesTableModel = [
     sortable: false,
     downloadable: true,
     hidden: true,
-    th: () => <Th rowSpan="2">Primary Diagnosis</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Primary Diagnosis
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => {
       const primaryDiagnosis = node.diagnoses.hits.edges
         .map(x => x.node)
@@ -360,7 +404,12 @@ const casesTableModel = [
     sortable: false,
     downloadable: true,
     hidden: true,
-    th: () => <Th rowSpan="2">Ethnicity</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Ethnicity
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => (
       <Td>{(node.demographic && node.demographic.ethnicity) || '--'}</Td>
     ),
@@ -371,7 +420,12 @@ const casesTableModel = [
     sortable: false,
     downloadable: true,
     hidden: true,
-    th: () => <Th rowSpan="2">Race</Th>,
+    th: ({ sorted }) => (
+      <Th rowSpan="2">
+        Race
+        {sorted && <ArrowIcon sorted={sorted} />}
+      </Th>
+    ),
     td: ({ node }) => (
       <Td>{(node.demographic && node.demographic.race) || '--'}</Td>
     ),

@@ -36,6 +36,7 @@ jspm_packages
 .idea
 *.iml
 .vscode/chrome
+TODO
 
 # production folders
 dist

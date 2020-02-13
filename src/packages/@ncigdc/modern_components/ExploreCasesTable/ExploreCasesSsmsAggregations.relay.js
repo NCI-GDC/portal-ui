@@ -1,11 +1,16 @@
 import React from 'react';
 import { graphql } from 'react-relay';
-import { compose, withPropsOnChange } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withPropsOnChange,
+} from 'recompose';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
 export default (Component: ReactClass<*>) =>
   compose(
+    setDisplayName('EnhancedExploreCasesSSmsAggregations_relay'),
     withPropsOnChange(
       ['exploreCasesTableViewer'],
       ({ exploreCasesTableViewer, filters = null }) => {

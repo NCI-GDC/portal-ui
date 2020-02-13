@@ -2,11 +2,15 @@
 import React from 'react';
 import {
   compose,
+  lifecycle,
   pure,
   setDisplayName,
+  withHandlers,
   withState,
 } from 'recompose';
 import { connect } from 'react-redux';
+import ResizeObserver from 'resize-observer-polyfill';
+
 import HomeLink from '@ncigdc/components/Links/HomeLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
 import CartLink from '@ncigdc/components/Links/CartLink';
@@ -31,6 +35,7 @@ const styles = {
 };
 
 const Header = ({
+  headerHeight,
   isCollapsed,
   isInSearchMode,
   setIsCollapsed,
@@ -38,111 +43,124 @@ const Header = ({
   theme,
   user,
 }) => (
-  <header
-    className="navbar navbar-default navbar-static-top"
-    id="header"
-    role="banner"
-    >
-    <div className="container-fluid">
-      <div className="navbar-header">
-        <button
-          className="navbar-toggle"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          type="button"
-          >
-          <span className="sr-only test-toggle-navigation">
-            Toggle navigation
-          </span>
-          <span className="icon-bar" />
-          <span className="icon-bar" />
-          <span className="icon-bar" />
-        </button>
-        <HomeLink
-          className="navbar-brand"
-          style={{ padding: 0 }}
-          tabIndex="0"
-          >
-          <img
-            alt="gdc-logo"
-            src="https://i.imgur.com/O33FmeE.png"
-            style={{ width: 260 }}
-            />
-          <Hidden>
-            <h1>Home</h1>
-          </Hidden>
-        </HomeLink>
-      </div>
-      <nav
-        aria-label="Site Navigation"
-        className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
-        data-uib-collapse="hc.isCollapsed"
-        onClick={() => setIsCollapsed(true)}
-        style={{ outline: 'none' }}
-        tabIndex="-1"
-        >
-        <ul className="nav navbar-nav">
-          <li>
-            <ProjectsLink activeStyle={styles.activeNavLink(theme)} exact>
-              <i className="icon-gdc-projects" style={styles.iconPadding} />
-              <span className="header-hidden-sm">Projects</span>
-              <Hidden>Projects</Hidden>
-            </ProjectsLink>
-          </li>
-          <li>
-            <RepositoryLink activeStyle={styles.activeNavLink(theme)} exact>
-              <DatabaseIcon style={styles.iconPadding} />
-              <span className="header-hidden-sm">Repository</span>
-              <Hidden>Repository</Hidden>
-            </RepositoryLink>
-          </li>
-        </ul>
-        <ul className="nav navbar-nav navbar-right">
-          <li>
-            <QuickSearch
-              isInSearchMode={isInSearchMode}
-              setIsInSearchMode={setIsInSearchMode}
-              tabIndex="0"
+  <React.Fragment>
+    <header
+      className="navbar navbar-default navbar-static-top"
+      id="header"
+      role="banner"
+      >
+      <div className="container-fluid">
+        <div className="navbar-header">
+          <button
+            className="navbar-toggle"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            type="button"
+            >
+            <span className="sr-only test-toggle-navigation">
+              Toggle navigation
+            </span>
+            <span className="icon-bar" />
+            <span className="icon-bar" />
+            <span className="icon-bar" />
+          </button>
+          <HomeLink
+            className="navbar-brand"
+            style={{ padding: 0 }}
+            tabIndex="0"
+            >
+            <img
+              alt="gdc-logo"
+              src="https://i.imgur.com/O33FmeE.png"
+              style={{ width: 260 }}
               />
-          </li>
-          {!isInSearchMode && (
-            <React.Fragment>
-              {user && (
-                <li className="header-hidden-xs">
-                  <UserDropdown />
-                </li>
-              )}
+            <Hidden>
+              <h1>Home</h1>
+            </Hidden>
+          </HomeLink>
+        </div>
+        <nav
+          aria-label="Site Navigation"
+          className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
+          data-uib-collapse="hc.isCollapsed"
+          onClick={() => setIsCollapsed(true)}
+          style={{ outline: 'none' }}
+          tabIndex="-1"
+          >
+          <ul className="nav navbar-nav">
+            <li>
+              <ProjectsLink activeStyle={styles.activeNavLink(theme)} exact>
+                <i className="icon-gdc-projects" style={styles.iconPadding} />
+                <span className="header-hidden-sm">Projects</span>
+                <Hidden>Projects</Hidden>
+              </ProjectsLink>
+            </li>
+            <li>
+              <RepositoryLink activeStyle={styles.activeNavLink(theme)} exact>
+                <DatabaseIcon style={styles.iconPadding} />
+                <span className="header-hidden-sm">Repository</span>
+                <Hidden>Repository</Hidden>
+              </RepositoryLink>
+            </li>
+          </ul>
+          <ul className="nav navbar-nav navbar-right">
+            <li>
+              <QuickSearch
+                isInSearchMode={isInSearchMode}
+                setIsInSearchMode={setIsInSearchMode}
+                tabIndex="0"
+                />
+            </li>
+            {!isInSearchMode && (
+              <React.Fragment>
+                {user && (
+                  <li className="header-hidden-xs">
+                    <UserDropdown />
+                  </li>
+                )}
 
-              <li>
-                <CartLink>
-                  {count => (
-                    <span>
-                      <i
-                        className="fa fa-shopping-cart"
-                        style={styles.iconPadding}
-                        />
-                      <span
-                        className="header-hidden-sm header-hidden-md"
-                        style={styles.iconPadding}
-                        >
-                        Cart
+                <li>
+                  <CartLink>
+                    {count => (
+                      <span>
+                        <i
+                          className="fa fa-shopping-cart"
+                          style={styles.iconPadding}
+                          />
+                        <span
+                          className="header-hidden-sm header-hidden-md"
+                          style={styles.iconPadding}
+                          >
+                          Cart
+                        </span>
+                        <span className="label label-primary">
+                          {count.toLocaleString()}
+                        </span>
                       </span>
-                      <span className="label label-primary">
-                        {count.toLocaleString()}
-                      </span>
-                    </span>
-                  )}
-                </CartLink>
-              </li>
-            </React.Fragment>
-          )}
-        </ul>
-      </nav>
-    </div>
-  </header>
+                    )}
+                  </CartLink>
+                </li>
+              </React.Fragment>
+            )}
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div
+      id="headerSpacer"
+      style={{
+        border: 'none',
+        height: headerHeight,
+        transition: 'height 0.15s ease',
+        visibility: 'hidden',
+      }}
+      />
+  </React.Fragment>
 );
 
 export default compose(
   setDisplayName('EnhancedAWGHeader'),
+  withState('headerHeight', 'setHeaderHeight', 0),
   withState('isCollapsed', 'setIsCollapsed', true),
   withState('isInSearchMode', 'setIsInSearchMode', false),
   withRouter,
@@ -150,6 +168,17 @@ export default compose(
     error: state.error,
     user: state.auth.user,
   })),
+  withHandlers({
+    resizeObserver: ({ setHeaderHeight }) => () =>
+      new ResizeObserver(([{ target }]) => { // the target here will be the header itself
+        setHeaderHeight(target.offsetHeight);
+      }),
+  }),
+  lifecycle({
+    componentDidMount() {
+      this.props.resizeObserver().observe(document.querySelector('header#header'));
+    },
+  }),
   withTheme,
-  pure
+  pure,
 )(Header);

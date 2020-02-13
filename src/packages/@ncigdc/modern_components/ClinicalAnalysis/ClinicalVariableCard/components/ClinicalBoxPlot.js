@@ -137,7 +137,7 @@ const ClinicalBoxPlot = ({
         style={{
           height: CHART_HEIGHT + 10,
           maxHeight: CHART_HEIGHT + 10,
-          width: QQ_PLOT_RATIO,
+          width: 'calc(100% - 150px)',
         }}
         >
         <QQPlotQuery

@@ -9,7 +9,7 @@ import {
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
@@ -259,10 +259,8 @@ const ClinicalVariableCard = ({
       className="clinical-analysis-card"
       key={key}
       style={{
-        ...zDepth1,
         height: 560,
         justifyContent: 'space-between',
-        margin: '0 1rem 1rem',
         padding: '0.5rem 1rem 1rem',
         ...style,
       }}

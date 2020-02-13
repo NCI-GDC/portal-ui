@@ -78,7 +78,7 @@ Input.propTypes = {
   handleClear: PropTypes.func,
   onChange: PropTypes.func,
   style: PropTypes.object,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 /*----------------------------------------------------------------------------*/

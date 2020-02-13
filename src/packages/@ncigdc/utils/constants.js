@@ -46,7 +46,7 @@ export const API_OVERRIDE_KEYS = [
 ];
 
 export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
-  k => localStorage[k]
+  k => localStorage[k],
 );
 
 const DATA_CATEGORIES_COMMON = { // this object is "sorted" on purpose, do not rearrange the keys
@@ -456,6 +456,34 @@ export const capitalisedTerms = {
   msts_: 'MSTS_',
 };
 
+export const CATEGORY_COLORS = {
+  Ethnicity: {
+    hispanic_or_latino: 'rgb(255,150,148)', // pink
+    not_hispanic_or_latino: 'rgb(215,40,40)', // red
+    not_reported: 'rgb(255,189,122)', // yellow
+  },
+  Gender: {
+    female: 'rgb(220,96,156)', // pink
+    male: 'rgb(67,6,147)', // purple
+  },
+  Race: {
+    american_indian_or_alaska_native: 'rgb(153, 223, 139)', // light green
+    asian: 'rgb(30, 117, 179)', // dark blue
+    black_or_african_american: 'rgb(175, 200, 233)', // light blue
+    native_hawaiian_or_other_pacific_islander: 'rgb(44, 160, 44)', // dark green
+    not_reported: 'rgb(255, 189, 122)', // light orange
+    white: 'rgb(255, 127, 15)', // dark orange
+  },
+  'Vital Status': {
+    alive: 'rgb(22,147,192)', // blue
+    dead: 'rgb(138,0,0)', // red
+  },
+};
+
 export const DISPLAY_SUMMARY_PAGE = localStorage.REACT_APP_DISPLAY_SUMMARY_PAGE ||
   process.env.REACT_APP_DISPLAY_SUMMARY_PAGE ||
+  false;
+
+export const DISPLAY_GENE_EXPRESSION = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION ||
+  process.env.REACT_APP_DISPLAY_GENE_EXPRESSION ||
   false;

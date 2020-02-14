@@ -103,7 +103,7 @@ const styles = {
     overflow: 'scroll',
     padding: '1rem',
   },
-}
+};
 
 const CategoricalCustomBinsModal = ({
   binGrouping,
@@ -124,15 +124,15 @@ const CategoricalCustomBinsModal = ({
   setSelectedGroupBins,
   setSelectedHidingBins,
 }: ICategoricalCustomBinsModalProps) => {
-  const groupDisabled = Object.values(selectedGroupBins).filter(Boolean).length < 2
+  const groupDisabled = Object.values(selectedGroupBins).filter(Boolean).length < 2;
   const ungroupDisabled = Object.keys(selectedGroupBins)
     .filter(key => selectedGroupBins[key])
-    .every(key => currentBins[key].groupName === key)
+    .every(key => currentBins[key].groupName === key);
   const resetDisabled = Object.keys(currentBins)
     .filter(bin => currentBins[bin].key !== currentBins[bin].groupName)
-    .length === 0
-  const hideDisabled = Object.values(selectedGroupBins).every(value => !value)
-  const showDisabled = Object.values(selectedHidingBins).every(value => !value)
+    .length === 0;
+  const hideDisabled = Object.values(selectedGroupBins).every(value => !value);
+  const showDisabled = Object.values(selectedHidingBins).every(value => !value);
 
   return (
     <Column
@@ -142,7 +142,13 @@ const CategoricalCustomBinsModal = ({
         padding: '2rem 2rem 0.5rem',
       }}
       >
-      <h2 style={{ borderBottom: `1px solid ${theme.greyScale5}`, margin: '0 0 1.5rem', paddingBottom: '1rem' }}>
+      <h2
+        style={{
+          borderBottom: `1px solid ${theme.greyScale5}`,
+          margin: '0 0 1.5rem',
+          paddingBottom: '1rem',
+        }}
+        >
         {`Create Custom Bins: ${fieldName}`}
       </h2>
 
@@ -181,17 +187,17 @@ const CategoricalCustomBinsModal = ({
                 }}
                 style={{
                   ...visualizingButton,
-                  ...(resetDisabled ?
-                  styles.disabled : {}),
+                  ...(resetDisabled
+                  ? styles.disabled : {}),
                 }}
                 >
-                  <Undo />
-                  <Hidden>Reset bins</Hidden>
-                </Button>
+                <Undo />
+                <Hidden>Reset bins</Hidden>
+              </Button>
 
               <Button
-                leftIcon={<Group color={groupDisabled ? '#fff' : 'currentColor'} style={{ width: '10px' }} />}
                 disabled={groupDisabled}
+                leftIcon={<Group color={groupDisabled ? '#fff' : 'currentColor'} style={{ width: '10px' }} />}
                 onClick={() => {
                   binGrouping();
                   setSelectedGroupBins({});
@@ -200,16 +206,16 @@ const CategoricalCustomBinsModal = ({
                 }}
                 style={{
                   ...visualizingButton,
-                  ...(groupDisabled ?
-                  styles.disabled : {}),
+                  ...(groupDisabled
+                  ? styles.disabled : {}),
                 }}
                 >
                 Group
               </Button>
 
               <Button
-                leftIcon={<Ungroup color={ungroupDisabled ? '#fff' : 'currentColor'} style={{ width: '10px' }} />}
                 disabled={ungroupDisabled}
+                leftIcon={<Ungroup color={ungroupDisabled ? '#fff' : 'currentColor'} style={{ width: '10px' }} />}
                 onClick={() => {
                   setCurrentBins({
                     ...currentBins,
@@ -239,8 +245,8 @@ const CategoricalCustomBinsModal = ({
               </Button>
 
               <Button
-                leftIcon={<Hide style={hideDisabled ? styles.disabled : {}}/>}
                 disabled={hideDisabled}
+                leftIcon={<Hide style={hideDisabled ? styles.disabled : {}} />}
                 onClick={() => {
                   if (filter(selectedGroupBins, Boolean).length ===
                     Object.keys(filter(currentBins, (bin: IBinProps) => !!bin.groupName)).length) {
@@ -347,7 +353,7 @@ const CategoricalCustomBinsModal = ({
                                 });
                               } else if (
                                 some(currentBins,
-                                  (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
+                                     (bin: IBinProps) => bin.groupName.trim() === value.trim()) &&
                                 groupName.trim() !== value.trim()
                               ) {
                                 setListWarning({
@@ -400,7 +406,7 @@ const CategoricalCustomBinsModal = ({
                         </Row>
                       )))}
                   </Column>
-                )
+                );
               }
             )}
           </Column>
@@ -416,8 +422,8 @@ const CategoricalCustomBinsModal = ({
             <span style={{ fontWeight: 'bold' }}>Hidden Values</span>
 
             <Button
-              leftIcon={<Show style={showDisabled ? styles.disabled : {}} />}
               disabled={showDisabled}
+              leftIcon={<Show style={showDisabled ? styles.disabled : {}} />}
               onClick={() => {
                 setCurrentBins({
                   ...currentBins,
@@ -464,7 +470,7 @@ const CategoricalCustomBinsModal = ({
                   style={{
                     backgroundColor: selectedHidingBins[binKey] ? theme.tableHighlight : '',
                   }}
-                >
+                  >
                   {`${binKey === '_missing' ? 'missing' : binKey} (${currentBins[binKey].doc_count})`}
                 </Row>
               ))}
@@ -502,7 +508,7 @@ const CategoricalCustomBinsModal = ({
       </Row>
     </Column>
   );
-}
+};
 
 export default compose(
   setDisplayName('EnhancedCategoricalCustomBinsModal'),
@@ -533,21 +539,20 @@ export default compose(
         .filter(field => typeof groupNameMapping[field] === 'undefined')
         .reduce((acc: string[], curr: string, idx: number, src: string[]) => {
           const matchingCustomBins = Object.values(groupNameMapping)
-            .map((groups: any, groupIndex: number) => 
-              groups.indexOf(curr) >= 0 &&
-                groups.every((group: string) => src.indexOf(group) >= 0) 
+            .map((groups: any, groupIndex: number) =>
+              (groups.indexOf(curr) >= 0 &&
+                groups.every((group: string) => src.indexOf(group) >= 0)
                   ? Object.keys(groupNameMapping)[groupIndex]
-                  : ''
-            )
+                  : ''))
             .filter((group: string) => group.length > 0);
-          return matchingCustomBins.length > 0 
-            && acc.indexOf(matchingCustomBins[0]) === -1
+          return matchingCustomBins.length > 0 &&
+            acc.indexOf(matchingCustomBins[0]) === -1
               ? acc.concat(matchingCustomBins)
               : acc;
         }, []);
-      
+
       const isEditingGroupName = selectedCustomBins.length !== 1;
-      const selectedCustomBinName = isEditingGroupName 
+      const selectedCustomBinName = isEditingGroupName
         ? ''
         : selectedCustomBins[0];
 

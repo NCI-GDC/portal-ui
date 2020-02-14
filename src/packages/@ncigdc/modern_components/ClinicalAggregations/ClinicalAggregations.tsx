@@ -105,6 +105,7 @@ interface IClinicalProps {
   searchValue: string,
   setSearchValue: (searchValue: string) => void,
   handleQueryInputChange: () => void,
+  handleQueryInputClear: () => void,
   parsedFacets: IParsedFacetsProps | {},
   isLoadingParsedFacets: boolean,
   allExpanded: { [x: string]: boolean },
@@ -178,7 +179,7 @@ const MagnifyingGlass = styled(SearchIcon, {
 });
 
 const enhance = compose<IClinicalProps, IClinicalProps>(
-  setDisplayName('ClinicalAggregations'),
+  setDisplayName('EnhancedClinicalAggregations_Modern'),
   withTheme,
   connect(
     ({
@@ -314,24 +315,26 @@ const enhance = compose<IClinicalProps, IClinicalProps>(
   withHandlers({
     handleQueryInputChange:
       ({ setSearchValue }) => (event: any) => setSearchValue(event.target.value),
+    handleQueryInputClear:
+      ({ setSearchValue }) => () => setSearchValue(''),
   }),
 );
 
-const ClinicalAggregations =
-  ({
-    allExpanded,
-    dispatch,
-    facetsExpandedStatus,
-    filteredFacets,
-    handleQueryInputChange,
-    isLoadingParsedFacets,
-    maxFacetsPanelHeight,
-    parsedFacets,
-    searchValue,
-    setUselessFacetVisibility,
-    shouldHideUselessFacets,
-    theme,
-  }: IClinicalProps) => (
+const ClinicalAggregations = ({
+  allExpanded,
+  dispatch,
+  facetsExpandedStatus,
+  filteredFacets,
+  handleQueryInputClear,
+  handleQueryInputChange,
+  isLoadingParsedFacets,
+  maxFacetsPanelHeight,
+  parsedFacets,
+  searchValue,
+  setUselessFacetVisibility,
+  shouldHideUselessFacets,
+  theme,
+}: IClinicalProps) => (
     <React.Fragment>
       <Row
         key="row"
@@ -344,12 +347,14 @@ const ClinicalAggregations =
           aria-label="Search..."
           autoFocus
           defaultValue={searchValue}
+          handleClear={handleQueryInputClear}
           onChange={handleQueryInputChange}
           placeholder="Search..."
           style={{
             borderRadius: '0 4px 4px 0',
             marginBottom: '6px',
           }}
+          value={searchValue}
           />
       </Row>
       <label htmlFor="clinical-agg-search" key="label">
@@ -361,15 +366,14 @@ const ClinicalAggregations =
           style={{ margin: '12px' }}
           type="checkbox"
           />
-        Only show fields with values (
-        {isLoadingParsedFacets
-          ? '...'
-          : values(filteredFacets).reduce(
-            (acc: number, facet: IFacetProps[]) => acc + facet.length,
-            0,
-          )}
-        {' '}
-        fields shown)
+        {`Only show fields with values (${
+          isLoadingParsedFacets
+            ? '...'
+            : values(filteredFacets).reduce(
+              (acc: number, facet: IFacetProps[]) => acc + facet.length,
+              0,
+            )
+        } fields shown)`}
       </label>
       <div
         className="cohortBuilder"

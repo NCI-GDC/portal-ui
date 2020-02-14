@@ -51,7 +51,12 @@ type TProps = {
 };
 
 const CHART_HEIGHT = 295;
-const CHART_MARGINS = { top: 20, right: 50, bottom: 75, left: 55 };
+const CHART_MARGINS = {
+  bottom: 75,
+  left: 55,
+  right: 50,
+  top: 20,
+};
 
 export type TChartTitleProps = {
   cases: number,
@@ -67,24 +72,44 @@ const DefaultChartTitle = ({
   filters,
 }: TChartTitleProps) => {
   return (
-    <div style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
+    <div
+      style={{
+        textTransform: 'uppercase',
+        padding: '0 2rem',
+      }}
+      >
       {type === 'cnvs' ? (
         <span>
-          <ExploreLink query={{ searchTableTab: 'cases', filters }}>
+          <ExploreLink
+            query={{
+              searchTableTab: 'cases',
+              filters,
+            }}
+            >
             {cases.toLocaleString()}
-          </ExploreLink>{' '}
-          cases affected by {ssms.toLocaleString()} cnv events across{' '}
+          </ExploreLink>
+          {' '}
+          cases affected by
+          {' '}
+          {ssms.toLocaleString()}
+          {' '}
+cnv events across
+          {' '}
         </span>
       ) : (
         <span>
-          <ExploreSSMLink searchTableTab={'cases'} filters={filters}>
+          <ExploreSSMLink filters={filters} searchTableTab="cases">
             {cases.toLocaleString()}
-          </ExploreSSMLink>{' '}
-          cases affected by{' '}
-          <ExploreSSMLink searchTableTab={'mutations'} filters={filters}>
+          </ExploreSSMLink>
+          {' '}
+          cases affected by
+          {' '}
+          <ExploreSSMLink filters={filters} searchTableTab="mutations">
             {ssms.toLocaleString()}
-          </ExploreSSMLink>{' '}
-          mutations across{' '}
+          </ExploreSSMLink>
+          {' '}
+          mutations across
+          {' '}
         </span>
       )}
       <ProjectsLink
@@ -102,16 +127,17 @@ const DefaultChartTitle = ({
             ],
           },
         }}
-      >
+        >
         {projects.length.toLocaleString()}
-      </ProjectsLink>&nbsp; projects
+      </ProjectsLink>
+&nbsp; projects
     </div>
   );
 };
 const initalCnv = {
   gain: true,
   // amplification: true,
-  loss: true, //shallow_loss: true,
+  loss: true, // shallow_loss: true,
   // deep_loss: true,
 };
 export default compose(
@@ -128,36 +154,30 @@ export default compose(
       ChartTitle = DefaultChartTitle,
       filters,
       chartType,
-      style,
       cnv,
       setCnv,
-      collapsed,
-      setCollapsed,
       type,
     }: TProps = {},
   ) => {
     let cnvFiltered = {};
     let cnvCancerDistData = [];
     let cnvChartData = [];
-    const cnvColumns = ['gain', 'loss']; //['amplification', 'gain', 'shallowLoss', 'deepLoss'];
+    const cnvColumns = ['gain', 'loss']; // ['amplification', 'gain', 'shallowLoss', 'deepLoss'];
     if (chartType !== 'ssm') {
-      cnvColumns.map(cnvType =>
-        cases[cnvType].project__project_id.buckets.map(
-          b =>
-            (cnvFiltered = {
-              ...cnvFiltered,
-              [b.key]: {
-                ...cnvFiltered[b.key],
-                [cnvType]: b.doc_count,
-              },
-            }),
-        ),
-      );
+      cnvColumns.map(cnvType => cases[cnvType].project__project_id.buckets.map(
+        b => (cnvFiltered = {
+          ...cnvFiltered,
+          [b.key]: {
+            ...cnvFiltered[b.key],
+            [cnvType]: b.doc_count,
+          },
+        }),
+      ),);
       cnvCancerDistData = Object.keys(cnvFiltered).map(p => {
         return {
           // deep_loss: cnvFiltered[p]['deepLoss'] || 0,
-          loss: cnvFiltered[p]['loss'] || 0, //shallowLoss
-          gain: cnvFiltered[p]['gain'] || 0,
+          loss: cnvFiltered[p].loss || 0, // shallowLoss
+          gain: cnvFiltered[p].gain || 0,
           // amplification: cnvFiltered[p]['amplification'] || 0,
           project_id: p,
           num_cases_total: cases.cnvTotal.project__project_id.buckets.filter(
@@ -167,17 +187,16 @@ export default compose(
       });
       cnvChartData = sortBy(
         cnvCancerDistData,
-        d =>
-          -cnvColors.reduce(
-            (acc, f) => acc + d[f.key] / d.num_cases_total * cnv[f.key],
-            0,
-          ),
+        d => -cnvColors.reduce(
+          (acc, f) => acc + d[f.key] / d.num_cases_total * cnv[f.key],
+          0,
+        ),
       )
         .slice(0, 20)
         .map(d => ({
           symbol: d.project_id,
           // deep_loss: d.deep_loss / d.num_cases_total * 100,
-          loss: d.loss / d.num_cases_total * 100, //shallow_loss: d.shallow_loss
+          loss: d.loss / d.num_cases_total * 100, // shallow_loss: d.shallow_loss
           gain: d.gain / d.num_cases_total * 100,
           // amplification: d.amplification / d.num_cases_total * 100,
           total: d.num_cases_total,
@@ -187,13 +206,19 @@ export default compose(
               ...acc,
               [f.key]: (
                 <span>
-                  {d[f.key].toLocaleString()}&nbsp;Case
+                  {d[f.key].toLocaleString()}
+&nbsp;Case
                   {d[f.key] > 1 ? 's ' : ' '}
-                  Affected in <b>{d.project_id}</b>
+                  Affected in
+                  {' '}
+                  <b>{d.project_id}</b>
                   <br />
                   {d[f.key].toLocaleString()}
                   &nbsp;/&nbsp;
-                  {d.num_cases_total.toLocaleString()}&nbsp; ({(d[f.key] / d.num_cases_total * 100).toFixed(2)}%)
+                  {d.num_cases_total.toLocaleString()}
+&nbsp; (
+                  {(d[f.key] / d.num_cases_total * 100).toFixed(2)}
+%)
                 </span>
               ),
             }),
@@ -242,26 +267,36 @@ export default compose(
         onClick: () => push(`/projects/${d.project_id}`),
         tooltip: (
           <span>
-            {d.num_affected_cases.toLocaleString()}&nbsp;Case
+            {d.num_affected_cases.toLocaleString()}
+&nbsp;Case
             {d.num_affected_cases > 1 ? 's ' : ' '}
-            Affected in <b>{d.project_id}</b>
+            Affected in
+            {' '}
+            <b>{d.project_id}</b>
             <br />
             {d.num_affected_cases.toLocaleString()}
             &nbsp;/&nbsp;
-            {d.num_cases_total.toLocaleString()}&nbsp; ({(d.freq * 100).toFixed(2)}%)
+            {d.num_cases_total.toLocaleString()}
+&nbsp; (
+            {(d.freq * 100).toFixed(2)}
+%)
           </span>
         ),
       }));
     const Legends = () => (
-      <Row style={{ display: 'flex', justifyContent: 'center' }}>
+      <Row
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+        >
         {cnvColors.map(f => (
           <label key={f.key} style={{ paddingRight: '10px' }}>
             <span
-              onClick={() =>
-                setCnv({
-                  ...cnv,
-                  [f.key]: !cnv[f.key],
-                })}
+              onClick={() => setCnv({
+                ...cnv,
+                [f.key]: !cnv[f.key],
+              })}
               style={{
                 color: f.color,
                 textAlign: 'center',
@@ -275,7 +310,7 @@ export default compose(
                 verticalAlign: 'middle',
                 lineHeight: '16px',
               }}
-            >
+              >
               {cnv[f.key] ? '✓' : <span>&nbsp;</span>}
             </span>
             {f.name}
@@ -294,38 +329,37 @@ export default compose(
                     justifyContent: 'space-between',
                     alignItems: 'center',
                   }}
-                >
+                  >
                   <ChartTitle
                     cases={sum(
                       mutationCancerDistData.map(d => d.num_affected_cases),
                     )}
-                    ssms={get(ssms, 'hits.total', 0)}
-                    projects={mutationCancerDistData}
                     filters={filters}
-                  />
+                    projects={mutationCancerDistData}
+                    ssms={get(ssms, 'hits.total', 0)}
+                    />
                   <DownloadVisualizationButton
-                    svg={() =>
-                      wrapSvg({
-                        selector: '#cancer-distribution svg',
-                        title: 'Cancer Distribution',
-                      })}
                     data={mutationChartData.map(d => ({
                       label: d.label,
                       value: d.value,
                     }))}
-                    slug="cancer-distribution-bar-chart"
                     noText
-                    tooltipHTML="Download image or data"
+                    slug="cancer-distribution-bar-chart"
                     style={{ marginRight: '2rem' }}
-                  />
+                    svg={() => wrapSvg({
+                      selector: '#cancer-distribution svg',
+                      title: 'Cancer Distribution',
+                    })}
+                    tooltipHTML="Download image or data"
+                    />
                 </Row>
                 <BarChart
-                  margin={CHART_MARGINS}
                   data={mutationChartData}
-                  yAxis={{ title: '% of Cases Affected' }}
                   height={CHART_HEIGHT}
+                  margin={CHART_MARGINS}
                   styles={chartStyles}
-                />
+                  yAxis={{ title: '% of Cases Affected' }}
+                  />
               </Column>
             </span>
           )}
@@ -338,11 +372,9 @@ export default compose(
                       justifyContent: 'space-between',
                       alignItems: 'center',
                     }}
-                  >
+                    >
                     <ChartTitle
                       cases={cases.cnvTestedByGene.total}
-                      ssms={cases.cnvAll.total}
-                      projects={cnvCancerDistData}
                       filters={replaceFilters(
                         makeFilter([
                           {
@@ -352,47 +384,51 @@ export default compose(
                         ]),
                         filters,
                       )}
+                      projects={cnvCancerDistData}
+                      ssms={cases.cnvAll.total}
                       type="cnvs"
-                    />
+                      />
                     <DownloadVisualizationButton
-                      svg={() =>
-                        wrapSvg({
-                          selector: '.test-stacked-bar-chart svg',
-                          title: 'CNV Distribution',
-                          legends: renderToString(<Legends />),
-                        })}
                       data={cnvChartData.map(d => ({
                         symbol: d.symbol,
                         // amplification: d.amplification,
                         gain: d.gain,
-                        loss: d.loss, //shallow_loss: d.shallow_loss
+                        loss: d.loss, // shallow_loss: d.shallow_loss
                         // deep_loss: d.deep_loss,
                         total: d.total,
                       }))}
-                      slug="cancer-distribution-bar-chart"
                       noText
-                      tooltipHTML="Download image or data"
+                      slug="cancer-distribution-bar-chart"
                       style={{ marginRight: '2rem' }}
-                    />
+                      svg={() => wrapSvg({
+                        selector: '.test-stacked-bar-chart svg',
+                        title: 'CNV Distribution',
+                        legends: renderToString(<Legends />),
+                      })}
+                      tooltipHTML="Download image or data"
+                      />
                   </Row>
                   <Column>
                     <FilteredStackedBarChart
-                      margin={CHART_MARGINS}
-                      height={200}
-                      data={cnvChartData}
-                      displayFilters={cnv}
                       colors={cnvColors.reduce(
-                        (acc, f) => ({ ...acc, [f.key]: f.color }),
+                        (acc, f) => ({
+                          ...acc,
+                          [f.key]: f.color,
+                        }),
                         0,
                       )}
-                      yAxis={{ title: '% of Cases Affected' }}
+                      data={cnvChartData}
+                      displayFilters={cnv}
+                      height={200}
+                      margin={CHART_MARGINS}
                       styles={chartStyles}
-                    />
+                      yAxis={{ title: '% of Cases Affected' }}
+                      />
                     <Legends />
                   </Column>
                 </Column>
               </span>
-            )}
+          )}
         </Row>
       </div>
     );

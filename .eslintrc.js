@@ -47,6 +47,9 @@ module.exports = {
       allow: ["^UNSAFE_", "doc_count", "^active_"],
     }],
     'comma-dangle': ['warn', 'always-multiline'],
+    'consistent-return': ['warn', {
+      treatUndefinedAsUnspecified: true
+    }],
     'func-names': ['warn', 'as-needed'],
     'function-paren-newline': ['warn', 'consistent'],
     'implicit-arrow-linebreak': 'off',
@@ -185,6 +188,7 @@ module.exports = {
     'react/no-unknown-property': 'warn',
     'react/sort-comp': 'warn',
     'react/sort-prop-types': 'error',
+    'react/state-in-constructor': 'off',
     'react/prop-types': 'off', // Disable prop-types as TS is used for type checking.
     'sort-destructure-keys/sort-destructure-keys': ['warn', {
       caseSensitive: false,

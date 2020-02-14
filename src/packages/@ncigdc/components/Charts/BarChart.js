@@ -21,9 +21,11 @@ export const DEFAULT_X_AXIS_LABEL_LENGTH = 10;
 const BarChart = ({
   data,
   height: h,
-  showXAxisLabels = true,
+  mappingLabel = 'label', // name it with the key you want, e.g. if your data structure is {id: 'bla', count: 1234 } put label = 'id' and value = 'count'
+  mappingValue = 'value',
   margin: m,
   setTooltip,
+  showXAxisLabels = true,
   size: { width },
   styles,
   theme,
@@ -66,12 +68,12 @@ const BarChart = ({
 
   const x = d3
     .scaleBand()
-    .domain(data.map(d => d.label))
+    .domain(data.map(d => d[mappingLabel]))
     .rangeRound([0, chartWidth])
     .paddingInner(innerPadding)
     .paddingOuter(outerPadding);
 
-  const maxY = d3.max(data, d => d.value);
+  const maxY = d3.max(data, d => d[mappingValue]);
   const y = d3
     .scaleLinear()
     .range([height, 0])
@@ -140,6 +142,10 @@ const BarChart = ({
       .attr('dy', '.5em')
       .text(d => d)
       .attr('transform', 'rotate(45)');
+
+    hiddenXG.selectAll('path').style('stroke', xAxisStyle.stroke);
+
+    hiddenXG.selectAll('line').style('stroke', xAxisStyle.stroke);
 
     // display x axis
     const xG = svg
@@ -211,9 +217,9 @@ const BarChart = ({
       .attr('class', 'bar')
       .attr('fill', (styles.bars || { fill: 'steelblue' }).fill)
       .attr('width', x.bandwidth())
-      .attr('y', d => y(d.value))
-      .attr('x', d => x(d.label))
-      .attr('height', d => height - y(d.value))
+      .attr('y', d => y(d[mappingValue]))
+      .attr('x', d => x(d[mappingLabel]))
+      .attr('height', d => height - y(d[mappingValue]))
       .on('click', d => {
         if (d.onClick) {
           d.onClick();

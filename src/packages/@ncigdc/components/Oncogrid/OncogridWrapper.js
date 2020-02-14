@@ -102,7 +102,6 @@ const styles = {
   },
   legends: {
     width: '80%',
-    marginBottom: '30px',
     marginLeft: '100px',
     flexFlow: 'row wrap',
   },

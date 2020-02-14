@@ -194,13 +194,14 @@ const StackedBarChart: TStackedBarChart = (
     theme,
   })
 ) : (
-    <Row style={{
+  <Row
+    style={{
       color: xAxis.style.textFill,
       justifyContent: 'center',
     }}
     >
-      No data
-    </Row>
+    No data
+  </Row>
   ));
 
 export default withTheme(withTooltip(StackedBarChart));

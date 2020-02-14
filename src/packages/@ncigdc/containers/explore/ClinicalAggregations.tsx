@@ -164,7 +164,7 @@ const MagnifyingGlass = styled(SearchIcon, {
 });
 
 const enhance = compose(
-  setDisplayName('ClinicalAggregations'),
+  setDisplayName('EnhancedClinicalAggregations_Classic'),
   connect(
     ({
       bannerNotification,

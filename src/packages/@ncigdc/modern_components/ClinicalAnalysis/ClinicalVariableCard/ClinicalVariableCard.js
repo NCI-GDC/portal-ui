@@ -9,7 +9,7 @@ import {
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { visualizingButton, zDepth1 } from '@ncigdc/theme/mixins';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
@@ -229,14 +229,14 @@ const ClinicalVariableCard = ({
   const disabledCharts = plotType => isEmpty(tableData) &&
     plotType !== 'delete';
 
+  const downloadChartName = fieldName.split('.')[1];
+
   return (
     <Column
       className="clinical-analysis-card"
       style={{
-        ...zDepth1,
         height: 560,
         justifyContent: 'space-between',
-        margin: '0 1rem 1rem',
         padding: '0.5rem 1rem 1rem',
         ...style,
       }}
@@ -378,7 +378,7 @@ const ClinicalVariableCard = ({
                         onClick={(e) => {
                           e.preventDefault();
                         }}
-                        slug={`${fieldName}-bar-chart`}
+                        slug={`${downloadChartName}-bar-chart`}
                         style={{
                           float: 'right',
                           marginRight: 2,
@@ -398,6 +398,7 @@ const ClinicalVariableCard = ({
                 {variable.active_chart === 'histogram' && (
                   <ClinicalHistogram
                     active_calculation={variable.active_calculation}
+                    downloadChartName={downloadChartName}
                     histogramData={histogramData}
                     histogramStyles={styles.histogram}
                     theme={theme}
@@ -423,6 +424,7 @@ const ClinicalVariableCard = ({
                   )
                   : (
                     <ClinicalSurvivalPlot
+                      downloadChartName={downloadChartName}
                       palette={selectedSurvivalBins.length > 0
                         ? selectedSurvivalBins.map(ssBin => ssBin.color)
                       : SURVIVAL_PLOT_COLORS}
@@ -444,6 +446,7 @@ const ClinicalVariableCard = ({
                     boxPlotValues={boxPlotValues}
                     cardFilters={cardFilters}
                     dataBuckets={dataBuckets}
+                    downloadChartName={downloadChartName}
                     fieldName={fieldName}
                     qqData={qqData}
                     setId={setId}

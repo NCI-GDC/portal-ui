@@ -1,6 +1,5 @@
-// @flow
-
 import React from 'react';
+
 import ExploreCasesTable from '@ncigdc/modern_components/ExploreCasesTable';
 import ExploreCasesPies from '@ncigdc/modern_components/ExploreCasesPies/ExploreCasesPies';
 

@@ -20,11 +20,15 @@ const getSingleHeader = (headThs: Array<NodeList>) => reduce(
   []
 );
 
-export const downloadToTSV = ({ excludedColumns = [
-  'Add all files to cart',
-  'Remove all files from cart',
-  'Select column',
-], filename, selector }) => {
+export const downloadToTSV = ({
+  excludedColumns = [
+    'Add all files to cart',
+    'Remove all files from cart',
+    'Select column',
+  ],
+  filename,
+  selector,
+}) => {
   const tableEl = document.querySelector(selector);
   const headTrs = tableEl.querySelector('thead').querySelectorAll('tr');
   const headThs = map(headTrs, h => h.querySelectorAll('th'));
@@ -39,15 +43,20 @@ export const downloadToTSV = ({ excludedColumns = [
     return reduce(
       tds,
       (acc, td) => {
+        const hasDataList = td.getAttribute('data-list');
         const markedForTsv = td.querySelector('.for-tsv-export');
         const exportText = markedForTsv
           ? markedForTsv.innerText
           : td.innerText;
-        const joinedText = exportText
-          .trim()
-          .split(/\s*\n\s*/)
-          .join(',')
-          .replace(/[\s\u00A0]+/g, ' ');
+
+        const joinedText = hasDataList
+          ? JSON.parse(hasDataList).join(', ')
+          : exportText
+            .trim()
+            .split(/\s*\n\s*/)
+            .join(',')
+            .replace(/[\s\u00A0]+/g, ' ');
+
         const colspan = td.getAttribute('colspan');
         const fittedToColspan = colspan
           ? [joinedText, ...Array(colspan - 1)]

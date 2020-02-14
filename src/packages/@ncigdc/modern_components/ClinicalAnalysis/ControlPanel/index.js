@@ -57,6 +57,7 @@ const ControlPanel = ({
   currentAnalysis,
   dispatch,
   handleQueryInputChange,
+  handleQueryInputClear,
   id,
   parsedFacets,
   searchValue,
@@ -154,6 +155,8 @@ const ControlPanel = ({
           <Hidden>Search</Hidden>
         </label>
         <Input
+          data-test="clinical_analysis-search-facets"
+          handleClear={handleQueryInputClear}
           id="search-facets"
           name="search-facets"
           onChange={handleQueryInputChange}
@@ -194,6 +197,9 @@ export default compose(
     handleQueryInputChange: ({
       setSearchValue,
     }) => event => setSearchValue(event.target.value),
+    handleQueryInputClear: ({
+      setSearchValue,
+    }) => () => setSearchValue(''),
   }),
   lifecycle({
     shouldComponentUpdate({

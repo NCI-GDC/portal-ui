@@ -1,11 +1,13 @@
 /* @flow */
 
 import React from 'react';
-import { compose } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+} from 'recompose';
 import { connect } from 'react-redux';
 import { Row } from '@ncigdc/uikit/Flex';
 import Showing from '@ncigdc/components/Pagination/Showing';
-import tableModels from '@ncigdc/tableModels';
 import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
@@ -19,9 +21,11 @@ import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { withRouter } from 'react-router-dom';
+import { isSortedColumn } from '@ncigdc/utils/tables';
 import timestamp from '@ncigdc/utils/timestamp';
 
 export default compose(
+  setDisplayName('EnhancedExploreCasesTable'),
   withSelectIds,
   withRouter,
   withPropsOnChange(
@@ -152,6 +156,7 @@ export default compose(
                   nodes={cases.hits.edges.map(e => e.node)}
                   selectedIds={selectedIds}
                   setSelectedIds={setSelectedIds}
+                  sorted={isSortedColumn(sort, x.id)}
                   />
               ))}
             id="explore-case-table"

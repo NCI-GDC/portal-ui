@@ -1,6 +1,11 @@
 import React from 'react';
 import { graphql } from 'react-relay';
-import { compose, withPropsOnChange } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withPropsOnChange,
+} from 'recompose';
+import { isEqual } from 'lodash';
 import {
   parseIntParam,
   parseFilterParam,
@@ -12,14 +17,15 @@ import Query from '@ncigdc/modern_components/Query';
 
 export default (Component: ReactClass<*>) =>
   compose(
+    setDisplayName('EnhancedExploreCasesTable_Relay'),
     withRouter,
     withPropsOnChange(
-      ['location'],
-      ({ location: { search }, defaultSize = 20, defaultFilters = null }) => {
+      ({ location }, { location: previousLocation }) => !(isEqual(location, previousLocation)),
+      ({ defaultFilters = null, defaultSize = 20, location: { search } }) => {
         const q = parse(search);
         const filters = parseFilterParam(q.filters, defaultFilters);
         const score = 'gene.gene_id';
-        const sort = parseJSONParam(q.cases_sort, null);
+        const sort = parseJSONParam(q.cases_sort, []);
         return {
           filters,
           score,

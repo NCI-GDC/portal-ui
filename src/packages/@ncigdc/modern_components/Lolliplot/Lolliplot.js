@@ -322,8 +322,7 @@ export default compose(
         ).length > 1 && (
           <div style={collisionDataBoxStyle}>
             <h6 style={{ margin: '0px' }}>
-              {`Mutations at ${selectedCollisions[0].x}, ${selectedCollisions[0]
-                .y}`}
+              {`Mutations at ${selectedCollisions[0].x}`}
               <a onClick={() => selectCollisions([])}>
                 <i style={{ float: 'right' }} className="fa fa-close" />
               </a>

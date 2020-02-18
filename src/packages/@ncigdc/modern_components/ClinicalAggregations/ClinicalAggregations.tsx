@@ -345,7 +345,7 @@ const ClinicalAggregations = ({
     <FacetHeader
       collapsed={clinicalCollapsed}
       setCollapsed={setClinicalCollapsed}
-      title="Search Clinical"
+      title="Search Clinical Data"
       />
     {clinicalCollapsed || (
       <Row

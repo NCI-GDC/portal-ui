@@ -2297,7 +2297,7 @@ import { each, round } from 'lodash';
     const toolbar_ul = $(`<ul class="inchlib-toolbar"></ul>`);
     const toolbar_buttons = self.toolbar_buttons.map(btn => {
       const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
-      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}"${is_button_disabled ? ' disabled' : ''}>`;
+      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}${is_button_disabled ? ' inchlib-toolbar_btn-disabled' :''}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}">`;
       const close_button = '</button></li>';
       const contents = btn.id === 'legend'
       ? `${btn.label}<i class="fa ${btn.fa_icon[0]}"></i>`
@@ -2322,7 +2322,9 @@ import { each, round } from 'lodash';
         }
       })
       .click(function() {
-        self._toolbar_click($(this));
+        if (!$(this).hasClass('inchlib-toolbar_btn-disabled')) {
+          self._toolbar_click($(this));
+        }
       })
   };
 

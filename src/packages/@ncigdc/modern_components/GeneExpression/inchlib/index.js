@@ -775,6 +775,7 @@ import { each, round } from 'lodash';
       tooltip_tag: new Konva.Tag({
         cornerRadius: 4,
         fill: self.options.tooltip.fill,
+        id: 'testing-testing',
         lineJoin: 'round',
         listening: false,
         pointerHeight: 10,
@@ -841,13 +842,13 @@ import { each, round } from 'lodash';
         dash: [6, 2],
       }),
 
-      font_awesome_icon: new Konva.Text({
-        // TODO need this for zoom tooltips
+      zoom_icon: new Konva.Text({
         align: 'center',
         fill: '#333',
         fontFamily: 'FontAwesome',
         fontSize: 14,
         height: 28,
+        text: String.fromCharCode('0xf00e'),
         verticalAlign: 'middle',
         width: 40,
       }),
@@ -855,15 +856,6 @@ import { each, round } from 'lodash';
       layer_below_toolbar: new Konva.Layer({
         y: self.toolbar_distance,
       })
-    };
-
-    /**
-    * Font Awesome 4 icons used in InCHlib.
-    * @name InCHlib#font_awesome_icons
-    */
-    self.font_awesome_icons = {
-      'fa-search-minus': String.fromCharCode('0xf010'),
-      'fa-search-plus': String.fromCharCode('0xf00e'),
     };
 
     /**
@@ -926,6 +918,8 @@ import { each, round } from 'lodash';
         id: 'legend',
       }
     ];
+
+    self.dendrogram_active_color = '#F5273C';
 
     // start plugin
     self.init();
@@ -2451,61 +2445,6 @@ import { each, round } from 'lodash';
 
     self._draw_toolbar();
 
-    // if (self.zoomed_clusters.row.length > 0) {
-    //   x = self.distance - 55;
-    //   y = self.header_height + self.column_metadata_height - 40;
-    //   const unzoom_icon = self.objects_ref.font_awesome_icon.clone({
-    //     text: self.font_awesome_icons['fa-search-minus'],
-    //     x,
-    //     y,
-    //     label: 'Unzoom\nrows',
-    //   });
-    //   const unzoom_overlay = self._draw_icon_overlay(x, y);
-    //   self.navigation_layer.add(unzoom_icon, unzoom_overlay);
-
-    //   unzoom_overlay.on('click', () => {
-    //     self._unzoom_icon_click();
-    //   });
-
-    //   unzoom_overlay.on('mouseover', () => {
-    //     self._cursor_mouseover();
-    //     // self._icon_mouseover(unzoom_icon, unzoom_overlay, self.navigation_layer);
-    //   });
-
-    //   unzoom_overlay.on('mouseout', () => {
-    //     self._cursor_mouseout();
-    //     // self._icon_mouseout(unzoom_icon, unzoom_overlay, self.navigation_layer);
-    //   });
-    // }
-
-    // if (self.zoomed_clusters.column.length > 0) {
-    //   x = self.options.width - 85;
-    //   y = self.header_height - 50;
-    //   const column_unzoom_icon = self.objects_ref.font_awesome_icon.clone({
-    //     text: self.font_awesome_icons['fa-search-minus'],
-    //     x,
-    //     y: y - 5,
-    //     label: 'Unzoom\ncolumns',
-    //   });
-    //   const column_unzoom_overlay = self._draw_icon_overlay(x, y);
-
-    //   self.navigation_layer.add(column_unzoom_icon, column_unzoom_overlay);
-
-    //   column_unzoom_overlay.on('click', function () {
-    //     self._column_unzoom_icon_click(this);
-    //   });
-
-    //   column_unzoom_overlay.on('mouseover', () => {
-    //     self._cursor_mouseover();
-    //     // self._icon_mouseover(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
-    //   });
-
-    //   column_unzoom_overlay.on('mouseout', () => {
-    //     self._cursor_mouseout();
-    //     // self._icon_mouseout(column_unzoom_icon, column_unzoom_overlay, self.navigation_layer);
-    //   });
-    // }
-
     self.stage.add(self.navigation_layer);
   };
 
@@ -2628,7 +2567,7 @@ import { each, round } from 'lodash';
       self._zoom_cluster(path_id);
     } else {
       self.last_highlighted_cluster = path_id;
-      self._highlight_path(path_id, '#F5273C');
+      self._highlight_path(path_id, self.dendrogram_active_color);
       self._draw_cluster_layer(path_id);
     }
     self.dendrogram_layer.draw();
@@ -2645,7 +2584,7 @@ import { each, round } from 'lodash';
       self._zoom_column_cluster(path_id);
     } else {
       self.last_highlighted_column_cluster = path_id;
-      self._highlight_column_path(path_id, '#F5273C');
+      self._highlight_column_path(path_id, self.dendrogram_active_color);
       self.current_column_ids.sort((a, b) => { return a - b; });
       self._draw_column_cluster_layer(path_id);
     }
@@ -2871,7 +2810,7 @@ import { each, round } from 'lodash';
       const row_node = (self.zoomed_clusters.row.length > 0) ? self.zoomed_clusters.row[self.zoomed_clusters.row.length - 1] : self.root_id;
       self._draw_row_dendrogram(row_node);
       if (self.last_highlighted_cluster !== null) {
-        self._highlight_path(self.last_highlighted_cluster, '#F5273C');
+        self._highlight_path(self.last_highlighted_cluster, self.dendrogram_active_color);
         self.dendrogram_layer.draw();
         self._draw_cluster_layer(self.last_highlighted_cluster);
       }
@@ -3476,7 +3415,6 @@ import { each, round } from 'lodash';
     const { path_id } = evt.target.attrs;
     layer.fire('mouseout', layer, evt);
     self._highlight_cluster(path_id);
-    // console.log('clicked row dendro');
   };
 
   InCHlib.prototype._column_dendrogram_layers_click = function (layer, evt) {
@@ -3484,7 +3422,6 @@ import { each, round } from 'lodash';
     const { path_id } = evt.target.attrs;
     layer.fire('mouseout', layer, evt);
     self._highlight_column_cluster(path_id);
-    // console.log('clicked column dendro');
   };
 
   InCHlib.prototype._dendrogram_layers_mousedown = function (layer, evt) {
@@ -3504,6 +3441,8 @@ import { each, round } from 'lodash';
   InCHlib.prototype._dendrogram_layers_mouseout = function (layer, evt) {
     const self = this;
     self.path_overlay.destroy();
+    // remove tooltip
+    self.dendrogram_hover_layer.destroyChildren();
     self.dendrogram_hover_layer.draw();
   };
 
@@ -3511,6 +3450,7 @@ import { each, round } from 'lodash';
     const self = this;
     self.path_overlay = evt.target.attrs.path.clone({ strokeWidth: 4 });
     self.dendrogram_hover_layer.add(self.path_overlay);
+    self._draw_dendrogram_label(evt);
     self.dendrogram_hover_layer.draw();
   };
 
@@ -3639,6 +3579,70 @@ import { each, round } from 'lodash';
     const self = this;
     self.row_overlay.destroy();
     self.heatmap_overlay.draw();
+  };
+
+  InCHlib.prototype._draw_dendrogram_label = function ({ target: { attrs }}) {
+    const self = this;
+    const { id, path, path_id, width, x, y } = attrs;
+
+    const is_column = id.split('_')[0] === 'col';
+
+    const { count } = is_column
+      ? self.column_dendrogram.nodes[path_id]
+      : self.data.nodes[path_id];
+
+    const is_featured = is_column
+      ? path_id === self.last_highlighted_column_cluster
+      : path_id === self.last_highlighted_cluster;
+
+    const cols_or_rows = is_column
+      ? 'columns'
+      : 'rows';
+
+    const clicks = is_featured
+      ? 'Click'
+      : 'Double-click';
+
+    let tooltip_x = x + (width / 2);
+
+    const tooltip = self.objects_ref.tooltip_label.clone({
+      x: x + (width / 2),
+      y,
+      id: 'dendrogram_label',
+      opacity: 1,
+    });
+
+    // leave space for the zoom icon
+    const tooltip_text = `        ${clicks} to zoom ${count} ${cols_or_rows}`;
+
+    tooltip.add(
+      self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }),
+      self.objects_ref.tooltip_text.clone({ text: tooltip_text }),
+    );
+
+    // if the row dendrogram tooltip is cut off on the left
+    // move it over to the right
+    const half_width = tooltip.width() / 2;
+    if (!is_column) {
+      const current_tooltip_x = tooltip.x();
+      const half_width = tooltip.width() / 2;
+      const difference = half_width - current_tooltip_x;
+      if (difference) {
+        tooltip_x = current_tooltip_x + difference + 5;
+        tooltip.x(tooltip_x);
+      }
+    }
+
+    const zoom_x = tooltip_x - half_width - 3;
+    const zoom_y = y - 39;
+
+    const zoom_icon = self.objects_ref.zoom_icon.clone({
+      x: zoom_x,
+      y: zoom_y,
+    });
+
+    self.dendrogram_hover_layer.moveToTop();
+    self.dendrogram_hover_layer.add(tooltip, zoom_icon);
   };
 
   InCHlib.prototype._draw_col_label = function (evt) {

@@ -41,7 +41,13 @@
   color: #333;
 }
 
-.inchlib-toolbar_btn:disabled {
+.inchlib-toolbar_btn-disabled {
+  background-color: #c8c8c8;
+  border-color: #d8d8d8;
+  color: #fff;
+}
+
+.inchlib-toolbar_btn-disabled:hover {
   background-color: #c8c8c8;
   border-color: #d8d8d8;
   color: #fff;

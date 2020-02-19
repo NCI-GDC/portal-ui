@@ -274,50 +274,51 @@ const enhance = compose<IClinicalProps, IClinicalProps>(
         ? {}
         : tryParseJSON(customCaseFacets, {});
 
-                      const usefulFacets = omitBy(
-                        parsedFacets,
-                        (aggregation: IAggregationProps) => some([
-                          !aggregation,
-                          aggregation.buckets &&
+      const usefulFacets = omitBy(
+        parsedFacets,
+        (aggregation: IAggregationProps) => some([
+          !aggregation,
+          aggregation.buckets &&
           aggregation.buckets.filter(
             (bucket: IBucketProps) => bucket.key !== '_missing',
           ).length === 0,
-                          aggregation.count === 0,
-                          aggregation.count === null,
-                          aggregation.stats && aggregation.stats.count === 0,
-                        ]),
-                      );
+          aggregation.count === 0,
+          aggregation.count === null,
+          aggregation.stats && aggregation.stats.count === 0,
+        ]),
+      );
 
-                      const filteredFacets = clinicalFacets.reduce((acc, header) => {
-                        return {
-                          ...acc,
-                          [header.field]: filter(facetMapping, facet => {
-                            return every([
-                              facetMatchesQuery(
-                                facet,
-                                filter(
-                                  get(parsedFacets[facet.field], 'buckets', undefined),
-                                  obj => obj.key !== '_missing',
-                                ),
-                                searchValue,
-                              ),
-                              !facetExclusionTest(facet),
-                              !shouldHideUselessFacets ||
+      const filteredFacets = clinicalFacets.reduce((acc, header) => {
+        return {
+          ...acc,
+          [header.field]: filter(facetMapping, facet => {
+            return every([
+              facetMatchesQuery(
+                facet,
+                filter(
+                  get(parsedFacets[facet.field], 'buckets', undefined),
+                  obj => obj.key !== '_missing',
+                ),
+                searchValue,
+              ),
+              !facetExclusionTest(facet),
+              !shouldHideUselessFacets ||
               Object.prototype.hasOwnProperty.call(usefulFacets, facet.field),
-                              !header.excluded || facet.full.startsWith(header.full),
-                              !some(
-                                header.excluded.map((regex: RegExp) => regex.test(facet.full)),
-                              ),
-                            ]);
-                          }),
-                        };
-                      }, {});
-                      dispatch(addAllFacets(filteredFacets));
-                      return {
-                        filteredFacets,
-                        parsedFacets,
-                      };
-                    }),
+              !header.excluded || facet.full.startsWith(header.full),
+              !some(
+                header.excluded.map((regex: RegExp) => regex.test(facet.full)),
+              ),
+            ]);
+          }),
+        };
+      }, {});
+      dispatch(addAllFacets(filteredFacets));
+      return {
+        filteredFacets,
+        parsedFacets,
+      };
+    },
+  ),
   withHandlers({
     handleQueryInputChange:
       ({ setSearchValue }) => (event: any) => setSearchValue(event.target.value),

@@ -205,6 +205,7 @@ export const FileAggregationsComponent = (props: TProps) => (
     {props.userSelectedFacets.map(facet => (
       <FacetWrapper
         aggregation={props.parsedFacets[facet.field]}
+        countLabel="Files"
         facet={facet}
         isRemovable
         key={facet.full}
@@ -250,6 +251,7 @@ export const FileAggregationsComponent = (props: TProps) => (
       <FacetWrapper
         additionalProps={facet.additionalProps}
         aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        countLabel="Files"
         facet={facet}
         key={facet.full}
         relay={props.relay}

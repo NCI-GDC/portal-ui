@@ -1506,6 +1506,8 @@ import { each, round } from 'lodash';
     self.middle_item_count = (self.min_item_count + self.max_item_count) / 2;
     self.stage.add(self.dendrogram_layer);
 
+    console.log(self.dendrogram_layer);
+
     self._bind_dendrogram_hover_events(self.dendrogram_layer);
 
     self.dendrogram_layer.on('click', function (evt) {
@@ -3417,6 +3419,7 @@ import { each, round } from 'lodash';
   InCHlib.prototype._dendrogram_layers_click = function (layer, evt) {
     const self = this;
     const { path_id } = evt.target.attrs;
+    console.log('clicked on', path_id)
     layer.fire('mouseout', layer, evt);
     self._highlight_cluster(path_id);
   };
@@ -3424,6 +3427,7 @@ import { each, round } from 'lodash';
   InCHlib.prototype._column_dendrogram_layers_click = function (layer, evt) {
     const self = this;
     const { path_id } = evt.target.attrs;
+    console.log('clicked on', path_id)
     layer.fire('mouseout', layer, evt);
     self._highlight_column_cluster(path_id);
   };
@@ -3589,6 +3593,10 @@ import { each, round } from 'lodash';
     const self = this;
     const { id, path, path_id, width, x, y } = attrs;
 
+    const is_outer_line = attrs.id === self.dendrogram_layer.children[0].children[0].attrs.id;
+    console.log(attrs.id)
+    console.log('testing', self.dendrogram_layer.children[0].children[0].attrs.id)
+
     const is_column = id.split('_')[0] === 'col';
 
     const { count } = is_column
@@ -3613,7 +3621,7 @@ import { each, round } from 'lodash';
       x: x + (width / 2),
       y,
       id: 'dendrogram_label',
-      opacity: 1,
+      opacity: is_outer_line ? 0 : 1,
     });
 
     // leave space for the zoom icon

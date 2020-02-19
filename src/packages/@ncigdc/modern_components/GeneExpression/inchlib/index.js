@@ -3631,7 +3631,7 @@ import { each, round } from 'lodash';
       const current_tooltip_x = tooltip.x();
       const half_width = tooltip.width() / 2;
       const difference = half_width - current_tooltip_x;
-      if (difference) {
+      if (difference > 0) {
         tooltip_x = current_tooltip_x + difference + 5;
         tooltip.x(tooltip_x);
       }

@@ -1904,18 +1904,22 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_column_metadata = function (x1) {
     const self = this;
+
     const visible_features = self.column_metadata.features
       .filter((x, i) => self.column_metadata.visible[i]);
-    const visible_feature_names = self.column_metadata.feature_names
-      .filter((x, i) => self.column_metadata.visible[i]);
-    self.column_metadata_descs = self._get_data_min_max_middle(visible_features, 'row');
-    let y1 = self.header_height + 0.5 * self.column_metadata_row_height;
 
-    for (var i = 0; i < visible_features.length; i++) {
-      const heatmap_row = self._draw_column_metadata_row(visible_features[i], visible_feature_names[i], i, x1, y1);
-      self.heatmap_layer.add(heatmap_row);
-      self._bind_row_events(heatmap_row);
-      y1 += self.column_metadata_row_height;
+    if (visible_features.length > 0) {
+      const visible_feature_names = self.column_metadata.feature_names
+      .filter((x, i) => self.column_metadata.visible[i]);
+      self.column_metadata_descs = self._get_data_min_max_middle(visible_features, 'row');
+      let y1 = self.header_height + 0.5 * self.column_metadata_row_height;
+
+      for (var i = 0; i < visible_features.length; i++) {
+        const heatmap_row = self._draw_column_metadata_row(visible_features[i], visible_feature_names[i], i, x1, y1);
+        self.heatmap_layer.add(heatmap_row);
+        self._bind_row_events(heatmap_row);
+        y1 += self.column_metadata_row_height;
+      }
     }
   };
 

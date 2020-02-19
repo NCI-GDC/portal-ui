@@ -121,10 +121,12 @@ export const AnnotationAggregationsComponent = compose(
       <FacetWrapper
         additionalProps={facet.additionalProps}
         aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        countLabel="Annotations"
         facet={facet}
         greyHeader
         key={facet.full}
         relay={props.relay}
+        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         title={facet.title}
         />
     ))}

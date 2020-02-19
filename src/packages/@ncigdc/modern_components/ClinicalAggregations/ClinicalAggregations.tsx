@@ -496,6 +496,7 @@ const ClinicalAggregations = ({
                                     ]
                                     : false
                                 }
+                                countLabel="Cases"
                                 DescriptionComponent={(
                                   <div
                                     key={componentFacet.description}

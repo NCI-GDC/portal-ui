@@ -13,21 +13,24 @@ import { withTheme } from '../theme';
 const styles = {
   alert: {
     alignItems: 'center',
-    padding: '2rem',
+    padding: '0.7rem 1.2rem',
     fontSize: '1.5rem',
     color: 'black',
   },
 };
 
-const Info = ({ style, children, theme, ...props }) => (
+const Info = ({
+  children, style, theme, ...props
+}) => (
   <Row
     style={{
       backgroundColor: theme.alertInfo,
+      border: '1px solid #d9edf2',
       ...styles.alert,
       ...style,
     }}
     {...props}
-  >
+    >
     {children}
   </Row>
 );

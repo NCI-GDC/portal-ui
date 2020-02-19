@@ -34,6 +34,10 @@ import { AWG } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
+const buttonPadding = {
+  padding: '2px 8px !important',
+};
+
 const Field = styled(Button, {
   ':hover': {
     backgroundColor: ({ theme }) => Color(theme.greyScale2)
@@ -41,6 +45,7 @@ const Field = styled(Button, {
       .rgbString(),
   },
   backgroundColor: ({ theme }) => theme.greyScale2,
+  ...buttonPadding,
 });
 
 const Value = styled(Button, {
@@ -50,12 +55,14 @@ const Value = styled(Button, {
       .rgbString(),
   },
   backgroundColor: ({ theme }) => theme.success,
+  ...buttonPadding,
 });
 
 const Op = styled.span({
   ...buttonLike,
   backgroundColor: ({ theme }) => theme.primary,
   color: 'white',
+  ...buttonPadding,
 });
 
 const NotUnderlinedLink = styled(Link, {
@@ -71,6 +78,7 @@ const LinkButton = styled(Link, {
     textDecoration: 'none',
   },
   flex: 'none',
+  ...buttonPadding,
 });
 
 type TProps = {
@@ -148,16 +156,15 @@ const styles = {
   leftParen: {
     alignItems: 'center',
     display: 'flex',
-    fontSize: '2rem',
+    fontSize: '1.8rem',
     marginRight: '0.3rem',
   },
   rightParen: {
     alignItems: 'center',
     display: 'flex',
-    fontSize: '2rem',
+    fontSize: '1.8rem',
     marginRight: '0.3rem',
   },
-
 };
 
 const CurrentFilters = (
@@ -207,7 +214,12 @@ const CurrentFilters = (
               query={omit(query, 'filters')}
               style={styles.groupPadding}
               >
-              <Button leftIcon={<Undo />}>Clear</Button>
+              <Button
+                leftIcon={<Undo />}
+                style={buttonPadding}
+                >
+                Clear
+              </Button>
             </NotUnderlinedLink>
           )}
 

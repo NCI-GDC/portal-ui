@@ -78,7 +78,7 @@ export const ProjectAggregationsComponent = compose(
       description="Enter Project ID, Project name, Disease Type or Primary Site"
       field="projects.project_id"
       setCollapsed={props.setProjectIdCollapsed}
-      title="Project"
+      title="Search Projects"
       />
     <SuggestionFacet
       collapsed={props.projectIdCollapsed}
@@ -110,6 +110,7 @@ export const ProjectAggregationsComponent = compose(
         aggregation={props.aggregations[escapeForRelay(facet.field)]}
         countLabel="Projects"
         facet={facet}
+        greyHeader
         key={facet.full}
         relay={props.relay}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}

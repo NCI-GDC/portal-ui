@@ -64,7 +64,7 @@ const BucketRow = styled(Row, {
 });
 
 export const BottomRow = styled(Row, {
-  padding: '0.5rem',
+  padding: '0 0.5rem',
 });
 
 let input;
@@ -98,7 +98,7 @@ const TermAggregation = (props: TProps) => {
             className="test-term-aggregation"
             style={{
               ...props.style,
-              paddingBottom: props.collapsed ? 0 : 10,
+              paddingBottom: props.collapsed ? 0 : 5,
             }}
             >
             {props.collapsed || (
@@ -139,7 +139,7 @@ const TermAggregation = (props: TProps) => {
                       name: b.key_as_string || b.key,
                     }))
                     .map(bucket => (
-                      <BucketRow key={bucket.name}>
+                      <Row key={bucket.name}>
                         <BucketLink
                           className="bucket-link"
                           merge="toggle"
@@ -206,7 +206,7 @@ const TermAggregation = (props: TProps) => {
                         <CountBubble className="bucket-count">
                           {bucket.doc_count.toLocaleString()}
                         </CountBubble>
-                      </BucketRow>
+                      </Row>
                     ))}
                   {filteredBuckets.length > maxShowing && (
                     <BottomRow>

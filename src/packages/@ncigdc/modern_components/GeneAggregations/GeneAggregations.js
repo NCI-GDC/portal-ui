@@ -64,7 +64,7 @@ export const GeneAggregations = compose(
   geneSymbolFragment,
   idCollapsed,
   relay,
-  setSsmIdCollapsed,
+  setIdCollapsed,
   theme,
   viewer: { explore: { genes: { aggregations } } },
 }: TProps) => {
@@ -74,8 +74,8 @@ export const GeneAggregations = compose(
         collapsed={idCollapsed}
         description="Enter Gene symbol, synonym, name or IDs for Ensembl, Entrez gene, HGNC Gene, OMIM, UniProtKB/Swiss-Prot"
         field="genes.gene_id"
-        setCollapsed={setSsmIdCollapsed}
-        title="Gene"
+        setCollapsed={setIdCollapsed}
+        title="Search Genes"
         />
       <SuggestionFacet
         collapsed={idCollapsed}
@@ -118,6 +118,7 @@ export const GeneAggregations = compose(
           aggregation={aggregations[escapeForRelay(facet.field)]}
           countLabel="Genes"
           facet={facet}
+          greyHeader                                       
           key={facet.full}
           relay={relay}
           title={facet.title}

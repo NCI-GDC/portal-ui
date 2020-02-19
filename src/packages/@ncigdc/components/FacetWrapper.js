@@ -86,6 +86,7 @@ export const WrapperComponent = compose(withTheme)(({
   dispatch,
   expandedAll,
   facet,
+  greyHeader = false,
   handleRequestRemove,
   headerStyle,
   isMatchingSearchValue,
@@ -167,6 +168,7 @@ export const WrapperComponent = compose(withTheme)(({
           (facet.description || 'No description available')
         }
         field={facet.full}
+        greyHeader={greyHeader}
         handleRequestRemove={handleRequestRemove}
         hasValueSearch={!DescriptionComponent && hasValueSearch}
         isRemovable={isRemovable}

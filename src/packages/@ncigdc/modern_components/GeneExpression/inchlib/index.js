@@ -1904,18 +1904,22 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._draw_column_metadata = function (x1) {
     const self = this;
+
     const visible_features = self.column_metadata.features
       .filter((x, i) => self.column_metadata.visible[i]);
-    const visible_feature_names = self.column_metadata.feature_names
-      .filter((x, i) => self.column_metadata.visible[i]);
-    self.column_metadata_descs = self._get_data_min_max_middle(visible_features, 'row');
-    let y1 = self.header_height + 0.5 * self.column_metadata_row_height;
 
-    for (var i = 0; i < visible_features.length; i++) {
-      const heatmap_row = self._draw_column_metadata_row(visible_features[i], visible_feature_names[i], i, x1, y1);
-      self.heatmap_layer.add(heatmap_row);
-      self._bind_row_events(heatmap_row);
-      y1 += self.column_metadata_row_height;
+    if (visible_features.length > 0) {
+      const visible_feature_names = self.column_metadata.feature_names
+      .filter((x, i) => self.column_metadata.visible[i]);
+      self.column_metadata_descs = self._get_data_min_max_middle(visible_features, 'row');
+      let y1 = self.header_height + 0.5 * self.column_metadata_row_height;
+
+      for (var i = 0; i < visible_features.length; i++) {
+        const heatmap_row = self._draw_column_metadata_row(visible_features[i], visible_feature_names[i], i, x1, y1);
+        self.heatmap_layer.add(heatmap_row);
+        self._bind_row_events(heatmap_row);
+        y1 += self.column_metadata_row_height;
+      }
     }
   };
 
@@ -2297,7 +2301,7 @@ import { each, round } from 'lodash';
     const toolbar_ul = $(`<ul class="inchlib-toolbar"></ul>`);
     const toolbar_buttons = self.toolbar_buttons.map(btn => {
       const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
-      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}"${is_button_disabled ? ' disabled' : ''}>`;
+      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}${is_button_disabled ? ' inchlib-toolbar_btn-disabled' :''}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}">`;
       const close_button = '</button></li>';
       const contents = btn.id === 'legend'
       ? `${btn.label}<i class="fa ${btn.fa_icon[0]}"></i>`
@@ -2322,7 +2326,9 @@ import { each, round } from 'lodash';
         }
       })
       .click(function() {
-        self._toolbar_click($(this));
+        if (!$(this).hasClass('inchlib-toolbar_btn-disabled')) {
+          self._toolbar_click($(this));
+        }
       })
   };
 

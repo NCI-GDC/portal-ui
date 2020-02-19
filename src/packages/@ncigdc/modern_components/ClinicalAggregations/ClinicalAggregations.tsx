@@ -37,6 +37,7 @@ import {
 
 import { withTheme } from '@ncigdc/theme';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
+import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import styled from '@ncigdc/theme/styled';
 import termCapitaliser from '@ncigdc/utils/customisation';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
@@ -98,22 +99,25 @@ interface INotificationProps {
 }
 
 interface IClinicalProps {
+  allExpanded: { [x: string]: boolean },
+  clinicalCollapsed: boolean,
+  dispatch: (action: IExpandedStatusActionProps) => void,
+  facetsExpandedStatus: IExpandedStatusStateProps,
   filteredFacets: IFilteredFacetsProps,
-  theme: ITheme,
-  setUselessFacetVisibility: (uselessFacetVisibility: boolean) => void,
-  shouldHideUselessFacets: boolean,
-  searchValue: string,
-  setSearchValue: (searchValue: string) => void,
+  globalFilters: IGroupFilter,
   handleQueryInputChange: () => void,
   handleQueryInputClear: () => void,
-  parsedFacets: IParsedFacetsProps | {},
   isLoadingParsedFacets: boolean,
-  allExpanded: { [x: string]: boolean },
-  facetsExpandedStatus: IExpandedStatusStateProps,
-  dispatch: (action: IExpandedStatusActionProps) => void,
-  notifications: INotificationProps[],
   maxFacetsPanelHeight: number,
-  globalFilters: IGroupFilter,
+  notifications: INotificationProps[],
+  parsedFacets: IParsedFacetsProps | {},
+  searchValue: string,
+
+  setClinicalCollapsed: (clinicalCollapsed: boolean) => void,
+  setSearchValue: (searchValue: string) => void,
+  setUselessFacetVisibility: (uselessFacetVisibility: boolean) => void,
+  shouldHideUselessFacets: boolean,
+  theme: ITheme,
 }
 
 interface IFieldProps {
@@ -194,6 +198,7 @@ const enhance = compose<IClinicalProps, IClinicalProps>(
       notifications: bannerNotification,
     }),
   ),
+  withState('clinicalCollapsed', 'setClinicalCollapsed', false),
   withState('isLoadingParsedFacets', 'setIsLoadingParsedFacets', false),
   withState('shouldHideUselessFacets', 'setShouldHideUselessFacets', true),
   withState('searchValue', 'setSearchValue', ''),
@@ -250,20 +255,22 @@ const enhance = compose<IClinicalProps, IClinicalProps>(
       },
     }),
   ),
-  withPropsOnChange((props: IParsedClinicalAggs, nextProps: IParsedClinicalAggs) =>
-    !(isEqual(props.facetMapping, nextProps.facetMapping) &&
+  withPropsOnChange(
+    (props: IParsedClinicalAggs, nextProps: IParsedClinicalAggs) => !(
+      isEqual(props.facetMapping, nextProps.facetMapping) &&
       isEqual(props.viewer.explore.cases.customCaseFacets, nextProps.viewer.explore.cases.customCaseFacets) &&
       props.shouldHideUselessFacets === nextProps.shouldHideUselessFacets &&
-      props.searchValue === nextProps.searchValue),
-                    ({
-                      dispatch,
-                      facetExclusionTest,
-                      facetMapping,
-                      searchValue,
-                      shouldHideUselessFacets,
-                      viewer: { explore: { cases: { customCaseFacets } } },
-                    }) => {
-                      const parsedFacets: IParsedFacetsProps | {} = isEmpty(customCaseFacets)
+      props.searchValue === nextProps.searchValue
+    ),
+    ({
+      dispatch,
+      facetExclusionTest,
+      facetMapping,
+      searchValue,
+      shouldHideUselessFacets,
+      viewer: { explore: { cases: { customCaseFacets } } },
+    }) => {
+      const parsedFacets: IParsedFacetsProps | {} = isEmpty(customCaseFacets)
         ? {}
         : tryParseJSON(customCaseFacets, {});
 
@@ -321,6 +328,7 @@ const enhance = compose<IClinicalProps, IClinicalProps>(
 
 const ClinicalAggregations = ({
   allExpanded,
+  clinicalCollapsed,
   dispatch,
   facetsExpandedStatus,
   filteredFacets,
@@ -330,32 +338,40 @@ const ClinicalAggregations = ({
   maxFacetsPanelHeight,
   parsedFacets,
   searchValue,
+  setClinicalCollapsed,
   setUselessFacetVisibility,
   shouldHideUselessFacets,
   theme,
 }: IClinicalProps) => (
   <React.Fragment>
-    <Row
-      key="row"
-      style={{
-        margin: '2.5rem 1rem 0 0.5rem',
-      }}
-      >
-      <MagnifyingGlass />
-      <Input
-        aria-label="Search..."
-        autoFocus
-        defaultValue={searchValue}
-        handleClear={handleQueryInputClear}
-        onChange={handleQueryInputChange}
-        placeholder="Search..."
+    <FacetHeader
+      collapsed={clinicalCollapsed}
+      setCollapsed={setClinicalCollapsed}
+      title="Search Clinical Data"
+      />
+    {clinicalCollapsed || (
+      <Row
+        key="row"
         style={{
-          borderRadius: '0 4px 4px 0',
-          marginBottom: '6px',
+          margin: '0 1.2rem',
         }}
-        value={searchValue}
-        />
-    </Row>
+        >
+        <MagnifyingGlass />
+        <Input
+          aria-label="Search..."
+          autoFocus
+          defaultValue={searchValue}
+          handleClear={handleQueryInputClear}
+          onChange={handleQueryInputChange}
+          placeholder="Search..."
+          style={{
+            borderRadius: '0 4px 4px 0',
+            marginBottom: '6px',
+          }}
+          value={searchValue}
+          />
+      </Row>
+    )}
     <label htmlFor="clinical-agg-search" key="label">
       <input
         checked={shouldHideUselessFacets}
@@ -540,7 +556,7 @@ const ClinicalAggregations = ({
                     <BottomRow style={{ marginRight: '1rem' }}>
                       <ToggleMoreLink
                         onClick={() => dispatch(showingMoreByCategory(facet.field))}
-                          >
+                        >
                         {facetsExpandedStatus[facet.field].showingMore
                             ? 'Less...'
                             : filteredFacets[facet.field].length - 5 &&

@@ -99,7 +99,7 @@ export const AnnotationAggregationsComponent = compose(
       collapsed={props.annotationIdCollapsed}
       field="annotations.annotation_id"
       setCollapsed={props.setAnnotationIdCollapsed}
-      title="Annotation UUID"
+      title="Search Annotation UUIDs"
       />
     <SuggestionFacet
       collapsed={props.annotationIdCollapsed}
@@ -123,6 +123,7 @@ export const AnnotationAggregationsComponent = compose(
         aggregation={props.aggregations[escapeForRelay(facet.field)]}
         countLabel="Annotations"
         facet={facet}
+        greyHeader
         key={facet.full}
         relay={props.relay}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}

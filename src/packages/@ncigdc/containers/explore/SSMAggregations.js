@@ -134,7 +134,7 @@ export const SSMAggregationsComponent = compose(
       description="Enter Mutation UUID, DNA Change, Gene AA Change, COSMIC ID or dbSNP rs ID"
       field="ssms.ssm_id"
       setCollapsed={props.setIdCollapsed}
-      title="Mutation"
+      title="Search Mutations"
       />
     <SuggestionFacet
       collapsed={props.idCollapsed}
@@ -190,6 +190,7 @@ export const SSMAggregationsComponent = compose(
             aggregation={props.aggregations[escapeForRelay(facet.field)]}
             countLabel="Mutations"
             facet={facet}
+            greyHeader
             key={facet.full}
             relay={props.relay}
             title={facet.title}
@@ -198,6 +199,7 @@ export const SSMAggregationsComponent = compose(
       <FacetHeader
         collapsed={props.cosmicIdCollapsed}
         field="ssms.cosmic_id"
+        greyHeader
         setCollapsed={props.setCosmicIdCollapsed}
         style={{ borderTop: `1px solid ${props.theme.greyScale5}` }}
         title="COSMIC ID"
@@ -212,6 +214,7 @@ export const SSMAggregationsComponent = compose(
       <FacetHeader
         collapsed={props.dbSNPCollapsed}
         field="ssms.consequence.transcript.annotation.dbsnp_rs"
+        greyHeader
         setCollapsed={props.setDbSNPCollapsed}
         style={{ borderTop: `1px solid ${props.theme.greyScale5}` }}
         title="dbSNP rs ID"

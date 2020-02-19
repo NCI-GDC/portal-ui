@@ -3599,9 +3599,9 @@ import { each, round } from 'lodash';
       ? path_id === self.last_highlighted_column_cluster
       : path_id === self.last_highlighted_cluster;
 
-    const cols_or_rows = is_column
-      ? 'columns'
-      : 'rows';
+    const genes_or_cases = is_column
+      ? 'cases'
+      : 'genes';
 
     const clicks = is_featured
       ? 'Click'
@@ -3617,7 +3617,7 @@ import { each, round } from 'lodash';
     });
 
     // leave space for the zoom icon
-    const tooltip_text = `        ${clicks} to zoom ${count} ${cols_or_rows}`;
+    const tooltip_text = `        ${clicks} to zoom ${count} ${genes_or_cases}`;
 
     tooltip.add(
       self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }),

@@ -1,7 +1,9 @@
 // @flow
 import React from 'react';
 import { get } from 'lodash';
-import { compose, withState, withProps, withHandlers } from 'recompose';
+import {
+  compose, withState, withProps, withHandlers,
+} from 'recompose';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import withFilters from '@ncigdc/utils/withFilters';
@@ -17,6 +19,7 @@ import {
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
+import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
 import { withTheme } from '@ncigdc/theme';
 
 const styles = {
@@ -44,11 +47,11 @@ export default compose(
   withState('state', 'setState', initialState),
   withProps(
     ({
-      selectedSurvivalData,
       defaultSurvivalData,
+      filters,
+      selectedSurvivalData,
       setDefaultSurvivalData,
       setSelectedSurvivalData,
-      filters,
       setState,
     }) => ({
       survivalData: {
@@ -69,13 +72,13 @@ export default compose(
           loading: false,
         }));
       },
-    })
+    }),
   ),
   withPropsOnChange(['filters'], ({ updateData }) => {
     updateData();
   }),
   withHandlers({
-    handleClickGene: ({ push, query, filters }) => gene => {
+    handleClickGene: ({ filters, push, query }) => gene => {
       const sets = []
         .concat(
           get(
@@ -84,14 +87,19 @@ export default compose(
               dotField: 'genes.gene_id',
             }),
             'content.value',
-            []
-          )
+            [],
+          ),
         )
         .filter(v => v.includes('set_id'));
 
       const newFilters = toggleFilters(
         filters,
-        makeFilter([{ field: 'genes.gene_id', value: [gene.gene_id, ...sets] }])
+        makeFilter([
+          {
+            field: 'genes.gene_id',
+            value: [gene.gene_id, ...sets],
+          },
+        ]),
       );
       push({
         pathname: '/exploration',
@@ -101,44 +109,60 @@ export default compose(
         }),
       });
     },
-  })
+  }),
 )(
   ({
-    state: { loading },
-    survivalData,
     defaultSurvivalData,
+    filters,
+    handleClickGene,
     selectedSurvivalData,
     setSelectedSurvivalData,
-    viewer,
-    filters,
-    showingMore,
     setShowingMore,
-    handleClickGene,
+    showingMore,
+    state: { loading },
+    survivalData,
+    viewer,
   }) => (
     <Column style={styles.card}>
-      <h1 style={{ ...styles.heading, padding: '1rem' }} id="mutated-genes">
-        <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
-        Genes
+      <h1
+        id="mutated-genes"
+        style={{
+          ...styles.heading,
+          padding: '1rem',
+        }}
+        >
+        <DoubleHelix color="#3a3a3a" height={20} width={20 / 1.83} />
+        <span
+          style={{
+            display: 'inline-block',
+            paddingLeft: 10,
+          }}
+          >
+          Genes
+        </span>
       </h1>
       <Column>
         <Row
-          style={{ paddingBottom: '1.5rem', borderBottom: '1px solid #c8c8c8' }}
-        >
+          style={{
+            paddingBottom: '1.5rem',
+            borderBottom: '1px solid #c8c8c8',
+          }}
+          >
           <Column flex="none" style={{ width: '50%' }}>
             <GenesBarChart
               defaultFilters={filters}
               onClickGene={handleClickGene}
-              showingMore={false} //{showingMore} // GenesBarChart component and related are hidding for now.
-            />
+              showingMore={false}
+              />
           </Column>
           <Column flex="none" style={{ width: '50%' }}>
             <SurvivalPlotWrapper
               {...survivalData}
+              height={240}
               onReset={() => setSelectedSurvivalData({})}
               plotType="mutation"
-              height={240}
               survivalDataLoading={loading}
-            />
+              />
           </Column>
         </Row>
         {/* <Row style={{ margin: 'auto', marginTop: '-1.5rem' }}>
@@ -148,16 +172,16 @@ export default compose(
         </Row> */}
         {/* GenesBarChart component and related are hidding for now. */}
         <GenesTable
-          defaultFilters={filters}
-          survivalData={survivalData}
-          hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
-            defaultSurvivalData.rawData
-          )}
-          setSelectedSurvivalData={setSelectedSurvivalData}
-          selectedSurvivalData={selectedSurvivalData}
           context="Cohort"
-        />
+          defaultFilters={filters}
+          hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
+            defaultSurvivalData.rawData,
+          )}
+          selectedSurvivalData={selectedSurvivalData}
+          setSelectedSurvivalData={setSelectedSurvivalData}
+          survivalData={survivalData}
+          />
       </Column>
     </Column>
-  )
+  ),
 );

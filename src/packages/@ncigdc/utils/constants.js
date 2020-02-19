@@ -487,3 +487,14 @@ export const DISPLAY_SUMMARY_PAGE = localStorage.REACT_APP_DISPLAY_SUMMARY_PAGE 
 export const DISPLAY_GENE_EXPRESSION = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION ||
   process.env.REACT_APP_DISPLAY_GENE_EXPRESSION ||
   false;
+
+export const DISPLAY_10K = localStorage.REACT_APP_DISPLAY_10K ||
+  process.env.REACT_APP_DISPLAY_10K ||
+  false;
+
+// placeholder until we have an API
+export const CASE_LIMIT_API = 10000;
+
+export const DISPLAY_DAVE_CA = localStorage.REACT_APP_DISPLAY_DAVE_CA ||
+  process.env.REACT_APP_DISPLAY_DAVE_CA ||
+  false;

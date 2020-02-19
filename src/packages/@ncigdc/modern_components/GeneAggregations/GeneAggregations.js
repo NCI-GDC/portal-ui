@@ -116,6 +116,7 @@ export const GeneAggregations = compose(
         <FacetWrapper
           additionalProps={facet.additionalProps}
           aggregation={aggregations[escapeForRelay(facet.field)]}
+          countLabel="Genes"
           facet={facet}
           greyHeader
           key={facet.full}

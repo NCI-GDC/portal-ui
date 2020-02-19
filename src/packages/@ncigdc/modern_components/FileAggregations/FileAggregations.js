@@ -199,6 +199,7 @@ const FileAggregations = ({
     {userSelectedFacets.map(facet => (
       <FacetWrapper
         aggregation={parsedFacets[facet.field]}
+        countLabel="Files"
         facet={facet}
         isRemovable
         key={facet.full}
@@ -243,6 +244,7 @@ const FileAggregations = ({
         aggregation={
           aggregations[escapeForRelay(facet.field)]
         }
+        countLabel="Files"
         facet={facet}
         greyHeader
         key={facet.full}

@@ -117,6 +117,7 @@ const CaseAggregations = ({
         .map(facet => (
           <FacetWrapper
             aggregation={aggregations[escapeForRelay(facet.field)]}
+            countLabel="Cases"
             facet={facet}
             greyHeader
             key={facet.full}

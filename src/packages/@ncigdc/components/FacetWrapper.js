@@ -85,6 +85,7 @@ export const WrapperComponent = compose(withTheme)(({
   facet,
   title,
   aggregation = { buckets: [] },
+  greyHeader = false,
   handleRequestRemove,
   style,
   headerStyle,
@@ -96,7 +97,7 @@ export const WrapperComponent = compose(withTheme)(({
   dispatch,
   expandedAll,
   DescriptionComponent = null,
-  theme
+  theme,
 }: any) => {
   const facetType = getFacetType(facet);
   const displayTitle = title || fieldNameToTitle(facet.field);
@@ -150,7 +151,13 @@ export const WrapperComponent = compose(withTheme)(({
       .length >= 20;
 
   return (
-    <FacetWrapperDiv className="test-facet" style={{...style, borderTop: `1px solid ${theme.greyScale5}` }}>
+    <FacetWrapperDiv
+      className="test-facet"
+      style={{
+        ...style,
+        borderTop: `1px solid ${theme.greyScale5}`,
+      }}
+      >
       <FacetHeader
         collapsed={collapsed}
         DescriptionComponent={
@@ -159,6 +166,7 @@ export const WrapperComponent = compose(withTheme)(({
           (facet.description || 'No description available')
         }
         field={facet.full}
+        greyHeader={greyHeader}
         handleRequestRemove={handleRequestRemove}
         hasValueSearch={!DescriptionComponent && hasValueSearch}
         isRemovable={isRemovable}

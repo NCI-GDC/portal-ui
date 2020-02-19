@@ -30,8 +30,11 @@ import Button from '@ncigdc/uikit/Button';
 import ResizeDetector from 'react-resize-detector';
 import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
+import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
 
-import { DISPLAY_SUMMARY_PAGE } from '@ncigdc/utils/constants';
+import {
+  DISPLAY_10K, DISPLAY_SUMMARY_PAGE, CASE_LIMIT_API,
+} from '@ncigdc/utils/constants';
 
 export type TProps = {
   filters: {},
@@ -148,6 +151,8 @@ const ExplorePageComponent = ({
   const hasGeneHits = get(viewer, 'explore.genes.hits.total', 0);
   const hasSsmsHits = get(viewer, 'explore.ssms.hits.total', 0);
 
+  const isCaseLimitExceeded = DISPLAY_10K && hasCaseHits > CASE_LIMIT_API;
+
   return (
     <SearchPage
       className="test-explore-page"
@@ -230,8 +235,9 @@ const ExplorePageComponent = ({
                 },
               ]),
               {
-                component: hasCaseHits ? (
-                  <CasesTab />
+                component: hasCaseHits
+                  ? (
+                    <CasesTab />
                   ) : (
                     <NoResultsMessage>No Cases Found.</NoResultsMessage>
                   ),
@@ -239,28 +245,50 @@ const ExplorePageComponent = ({
                 text: `Cases (${hasCaseHits.toLocaleString()})`,
               },
               {
-                component: hasGeneHits ? (
-                  <GenesTab viewer={viewer} />
-                  ) : (
-                    <NoResultsMessage>No Genes Found.</NoResultsMessage>
-                  ),
+                component: isCaseLimitExceeded
+                  ? (
+                    <CaseLimitMessages />
+                  )
+                  : hasGeneHits
+                    ? (
+                      <GenesTab viewer={viewer} />
+                    )
+                    : (
+                      <NoResultsMessage>No Genes Found.</NoResultsMessage>
+                    ),
                 id: 'genes',
-                text: `Genes (${hasGeneHits.toLocaleString()})`,
+                text: `Genes${isCaseLimitExceeded
+                  ? ''
+                  : ` (${hasGeneHits.toLocaleString()})`}`,
               },
               {
-                component: hasSsmsHits ? (
-                  <MutationsTab
-                    totalNumCases={hasCaseHits}
-                    viewer={viewer}
-                    />
-                  ) : (
-                    <NoResultsMessage>No Mutations Found.</NoResultsMessage>
-                  ),
+                component: isCaseLimitExceeded
+                  ? (
+                    <CaseLimitMessages />
+                  )
+                  : hasSsmsHits
+                    ? (
+                      <MutationsTab
+                        totalNumCases={hasCaseHits}
+                        viewer={viewer}
+                        />
+                    )
+                    : (
+                      <NoResultsMessage>No Mutations Found.</NoResultsMessage>
+                    ),
                 id: 'mutations',
-                text: `Mutations (${hasSsmsHits.toLocaleString()})`,
+                text: `Mutations${isCaseLimitExceeded
+                  ? ''
+                  : ` (${hasSsmsHits.toLocaleString()})`}`,
               },
               {
-                component: <OncogridTab />,
+                component: isCaseLimitExceeded
+                  ? (
+                    <CaseLimitMessages />
+                  )
+                  : (
+                    <OncogridTab />
+                  ),
                 id: 'oncogrid',
                 text: 'OncoGrid',
               },

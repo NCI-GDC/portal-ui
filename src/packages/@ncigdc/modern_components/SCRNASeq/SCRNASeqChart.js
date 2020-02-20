@@ -15,7 +15,7 @@ const getLayout = dataType => {
     },
     name: 'scrna_seq',
     title: `${dataTypeCaps} Sample Data`,
-    width: 588,
+    width: 700,
     xaxis: {
       autorange: true,
       title: `${dataTypeCaps}_1`,
@@ -31,8 +31,14 @@ const getLayout = dataType => {
 
 const config = {
   displaylogo: false,
+  displayModeBar: true,
   modeBarButtonsToRemove: ['sendDataToCloud'],
   showLink: false,
+  toImageButtonOptions: {
+    filename: 'scrna_seq',
+    format: 'svg', // one of png, svg, jpeg, webp
+  },
+
 };
 
 const SCRNASeqChart = ({ data, dataType }) => (

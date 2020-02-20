@@ -1,7 +1,11 @@
 /* eslint-disable camelcase */
 
-import React from 'react';
-import Plot from 'react-plotly.js';
+import React, { Component } from 'react';
+import ModeBarButtons from 'plotly.js/src/components/modebar/buttons';
+import Plotly from 'plotly.js';
+import createPlotlyComponent from 'react-plotly.js/factory';
+
+const Plot = createPlotlyComponent(Plotly);
 
 const getLayout = dataType => {
   const dataTypeCaps = dataType.toUpperCase();
@@ -41,12 +45,49 @@ const config = {
 
 };
 
-const SCRNASeqChart = ({ data, dataType }) => (
-  <Plot
-    config={config}
-    data={data}
-    layout={getLayout(dataType)}
-    />
-);
+export default class SCRNASeqChart extends Component {
+  state = { graphDiv: '' };
 
-export default SCRNASeqChart;
+  onInitialized = (figure, graphDiv) => {
+    this.setState({ graphDiv });
+  };
+
+  render() {
+    const { data, dataType } = this.props;
+    const { graphDiv } = this.state;
+    return (
+      <React.Fragment>
+        <button
+          data-attr="zoom"
+          data-val="in"
+          onClick={(e) => {
+            console.log('onclick button ', e.target.dataset);
+            e.persist();
+            ModeBarButtons.zoomIn2d.click(graphDiv, e);
+          }}
+          type="button"
+          >
+        zoom in
+        </button>
+        <button
+          data-attr="zoom"
+          data-val="out"
+          onClick={(e) => {
+            console.log('onclick button ', e.target.dataset);
+            e.persist();
+            ModeBarButtons.zoomIn2d.click(graphDiv, e);
+          }}
+          type="button"
+          >
+        zoom out
+        </button>
+        <Plot
+          config={config}
+          data={data}
+          layout={getLayout(dataType)}
+          onInitialized={this.onInitialized}
+          />
+      </React.Fragment>
+    );
+  }
+}

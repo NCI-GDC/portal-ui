@@ -1506,8 +1506,6 @@ import { each, round } from 'lodash';
     self.middle_item_count = (self.min_item_count + self.max_item_count) / 2;
     self.stage.add(self.dendrogram_layer);
 
-    console.log(self.dendrogram_layer);
-
     self._bind_dendrogram_hover_events(self.dendrogram_layer);
 
     self.dendrogram_layer.on('click', function (evt) {
@@ -3419,7 +3417,6 @@ import { each, round } from 'lodash';
   InCHlib.prototype._dendrogram_layers_click = function (layer, evt) {
     const self = this;
     const { path_id } = evt.target.attrs;
-    console.log('clicked on', path_id)
     layer.fire('mouseout', layer, evt);
     self._highlight_cluster(path_id);
   };
@@ -3427,7 +3424,6 @@ import { each, round } from 'lodash';
   InCHlib.prototype._column_dendrogram_layers_click = function (layer, evt) {
     const self = this;
     const { path_id } = evt.target.attrs;
-    console.log('clicked on', path_id)
     layer.fire('mouseout', layer, evt);
     self._highlight_column_cluster(path_id);
   };
@@ -3593,10 +3589,6 @@ import { each, round } from 'lodash';
     const self = this;
     const { id, path, path_id, width, x, y } = attrs;
 
-    const is_outer_line = attrs.id === self.dendrogram_layer.children[0].children[0].attrs.id;
-    console.log(attrs.id)
-    console.log('testing', self.dendrogram_layer.children[0].children[0].attrs.id)
-
     const is_column = id.split('_')[0] === 'col';
 
     const { count } = is_column
@@ -3615,16 +3607,26 @@ import { each, round } from 'lodash';
       ? 'Click'
       : 'Double-click';
 
+    // center tooltip on the dendrogram line
     let tooltip_x = x + (width / 2);
+
+    // find outermost dendrogram line:
+    // check if the tooltip text matches the number of rows/cols visible
+    const gene_count = self.heatmap_layer.children
+      .filter(child => child.attrs.class !== 'column_metadata')
+      .length;
+    const case_count = self.heatmap_layer.children[0].children.length;
+
+    const is_outermost_line = count === (is_column ? case_count : gene_count);
 
     const tooltip = self.objects_ref.tooltip_label.clone({
       x: x + (width / 2),
       y,
       id: 'dendrogram_label',
-      opacity: is_outer_line ? 0 : 1,
+      opacity: is_outermost_line ? 0 : 1,
     });
 
-    // leave space for the zoom icon
+    // leave space for the zoom_icon
     const tooltip_text = `        ${clicks} to zoom ${count} ${genes_or_cases}`;
 
     tooltip.add(
@@ -3644,11 +3646,11 @@ import { each, round } from 'lodash';
         tooltip.x(tooltip_x);
       }
     }
-
     const zoom_x = tooltip_x - half_width - 3;
     const zoom_y = y - 39;
 
     const zoom_icon = self.objects_ref.zoom_icon.clone({
+      opacity: is_outermost_line ? 0 : 1,
       x: zoom_x,
       y: zoom_y,
     });

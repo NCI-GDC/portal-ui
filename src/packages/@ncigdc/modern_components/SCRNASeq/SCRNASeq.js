@@ -64,13 +64,13 @@ class SCRNASeq extends Component {
             {showDataButtons && (
               // for viz demo
               <Row>
-                {dataTypes.map(dataType => (
+                {dataTypes.map(dType => (
                   <button
-                    key={dataType}
-                    onClick={() => this.handleDataButton(dataType)}
+                    key={dType}
+                    onClick={() => this.handleDataButton(dType)}
                     type="button"
                     >
-                    {dataType}
+                    {dType}
                   </button>
                 ))}
               </Row>

@@ -7,13 +7,13 @@ import Hidden from '@ncigdc/components/Hidden';
 
 export default class ToolbarButton extends Component {
   handleClick = e => {
-    const { onToolbarClick } = this.props;
+    const { onToolbarClick = () => {} } = this.props;
     onToolbarClick(e);
   }
 
   render() {
     const {
-      attr, faClass, label, name, val,
+      attr = '', faClass, label, name, val = '',
     } = this.props;
     return (
       <Tooltip

@@ -9,6 +9,7 @@ import { Row } from '@ncigdc/uikit/Flex';
 import './style.css';
 
 import ToolbarButton from './ToolbarButton';
+import DownloadButton from './DownloadButton';
 
 const Plot = createPlotlyComponent(Plotly);
 
@@ -87,6 +88,11 @@ const toolbarButtons = [
     name: 'zoomOut2d',
     val: 'out',
   },
+  {
+    faClass: 'fa-download',
+    label: 'Download',
+    name: 'download',
+  },
 ];
 
 export default class SCRNASeqChart extends Component {
@@ -96,7 +102,7 @@ export default class SCRNASeqChart extends Component {
     this.setState({ graphDiv });
   };
 
-  handleToolbarClick = (e) => {
+  handleToolbarClick = e => {
     const { graphDiv } = this.state;
     e.persist();
     const name = e.target.getAttribute('data-name');
@@ -114,13 +120,20 @@ export default class SCRNASeqChart extends Component {
             maxWidth: 700,
           }}
           >
-          {toolbarButtons.map(btn => (
-            <ToolbarButton
-              {...btn}
-              key={btn.label}
-              onToolbarClick={this.handleToolbarClick}
-              />
-          ))}
+          {toolbarButtons.map(btn => (btn.name === 'download'
+            ? (
+              <DownloadButton
+                {...btn}
+                onToolbarClick={this.handleToolbarClick}
+                />
+            )
+            : (
+              <ToolbarButton
+                {...btn}
+                key={btn.label}
+                onToolbarClick={this.handleToolbarClick}
+                />
+            )))}
         </Row>
         <Plot
           config={config}

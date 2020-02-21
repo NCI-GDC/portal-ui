@@ -51,19 +51,41 @@ const config = {
 };
 
 const toolbarButtons = [
+  // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
   {
-    btnType: 'zoomIn2d',
-    dataAttr: 'zoom',
-    dataVal: 'in',
-    faClass: 'fa-search-plus',
-    label: 'Zoom In',
+    attr: 'zoom',
+    faClass: 'fa-undo',
+    label: 'Reset Axes',
+    name: 'resetScale2d',
+    val: 'reset',
   },
   {
-    btnType: 'zoomOut2d',
-    dataAttr: 'zoom',
-    dataVal: 'out',
+    attr: 'dragmode',
+    faClass: 'fa-arrows',
+    label: 'Pan',
+    name: 'pan2d',
+    val: 'pan',
+  },
+  {
+    attr: 'dragmode',
+    faClass: 'fa-search',
+    label: 'Zoom',
+    name: 'zoom2d',
+    val: 'zoom',
+  },
+  {
+    attr: 'zoom',
+    faClass: 'fa-search-plus',
+    label: 'Zoom In',
+    name: 'zoomIn2d',
+    val: 'in',
+  },
+  {
+    attr: 'zoom',
     faClass: 'fa-search-minus',
     label: 'Zoom Out',
+    name: 'zoomOut2d',
+    val: 'out',
   },
 ];
 
@@ -77,8 +99,8 @@ export default class SCRNASeqChart extends Component {
   handleToolbarClick = (e) => {
     const { graphDiv } = this.state;
     e.persist();
-    const btnType = e.target.getAttribute('data-btn-type');
-    ModeBarButtons[btnType].click(graphDiv, e);
+    const name = e.target.getAttribute('data-name');
+    ModeBarButtons[name].click(graphDiv, e);
   };
 
   render() {
@@ -95,7 +117,7 @@ export default class SCRNASeqChart extends Component {
           {toolbarButtons.map(btn => (
             <ToolbarButton
               {...btn}
-              key={btn.btnType}
+              key={btn.label}
               onToolbarClick={this.handleToolbarClick}
               />
           ))}

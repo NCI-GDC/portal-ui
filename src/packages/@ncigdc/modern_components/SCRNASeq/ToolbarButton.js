@@ -13,7 +13,7 @@ export default class ToolbarButton extends Component {
 
   render() {
     const {
-      btnType, dataAttr, dataVal, faClass, label,
+      attr, faClass, label, name, val,
     } = this.props;
     return (
       <Tooltip
@@ -22,9 +22,9 @@ export default class ToolbarButton extends Component {
       }
         >
         <Button
-          data-attr={dataAttr}
-          data-btn-type={btnType}
-          data-val={dataVal}
+          data-attr={attr}
+          data-name={name}
+          data-val={val}
           onClick={this.handleClick}
           style={{
             ...visualizingButton,

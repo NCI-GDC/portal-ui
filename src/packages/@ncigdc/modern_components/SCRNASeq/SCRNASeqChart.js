@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import ModeBarButtons from 'plotly.js/src/components/modebar/buttons';
-import Plotly from 'plotly.js';
+import Plotly from 'plotly.js/lib/index-basic';
 import createPlotlyComponent from 'react-plotly.js/factory';
 
 import { Row } from '@ncigdc/uikit/Flex';
@@ -41,8 +41,16 @@ const getLayout = dataType => {
 
 const config = {
   displaylogo: false,
-  displayModeBar: true,
-  modeBarButtonsToRemove: ['sendDataToCloud'],
+  displayModeBar: 'hover',
+  modeBarButtonsToRemove: [
+    'sendDataToCloud',
+    'zoom2d',
+    'pan2d',
+    'zoomIn2d',
+    'zoomOut2d',
+    'resetScale2d',
+    'toImage',
+  ],
   showLink: false,
   toImageButtonOptions: {
     filename: 'scrna_seq',

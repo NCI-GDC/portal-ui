@@ -6,12 +6,9 @@ import Plotly from 'plotly.js';
 import createPlotlyComponent from 'react-plotly.js/factory';
 
 import { Row } from '@ncigdc/uikit/Flex';
-import Button from '@ncigdc/uikit/Button';
-import { visualizingButton } from '@ncigdc/theme/mixins';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import Hidden from '@ncigdc/components/Hidden';
+import './style.css';
 
-// import ToolbarButton from './ToolbarButton';
+import ToolbarButton from './ToolbarButton';
 
 const Plot = createPlotlyComponent(Plotly);
 
@@ -77,9 +74,16 @@ export default class SCRNASeqChart extends Component {
     this.setState({ graphDiv });
   };
 
+  handleToolbarClick = (e) => {
+    const { graphDiv } = this.state;
+    e.persist();
+    const btnType = e.target.getAttribute('data-btn-type');
+    ModeBarButtons[btnType].click(graphDiv, e);
+  };
+
   render() {
     const { data, dataType } = this.props;
-    const { graphDiv } = this.state;
+
     return (
       <React.Fragment>
         <Row
@@ -89,42 +93,11 @@ export default class SCRNASeqChart extends Component {
           }}
           >
           {toolbarButtons.map(btn => (
-            <Tooltip
-              Component={
-                <div>{btn.label}</div>
-              }
+            <ToolbarButton
+              {...btn}
               key={btn.btnType}
-              >
-              <Button
-                data-attr={btn.dataAttr}
-                data-val={btn.dataVal}
-                onClick={(e) => {
-                  e.persist();
-                  ModeBarButtons[btn.btnType].click(graphDiv, e);
-                }}
-                style={{
-                  ...visualizingButton,
-                  marginLeft: 6,
-                }}
-                >
-                <i aria-hidden="true" className={`fa ${btn.faClass}`} />
-                <Hidden>{btn.label}</Hidden>
-              </Button>
-            </Tooltip>
-            // <ToolbarButton
-            //   btnType={btn.btnType}
-            //   data-attr={btn.dataAttr}
-            //   data-val={btn.dataVal}
-            //   faClass={btn.faClass}
-            //   graphDiv={graphDiv}
-            //   key={btn.btnType}
-            //   label={btn.label}
-            //   ModeBarButtons={ModeBarButtons}
-            //   onClick={(e) => {
-            //     e.persist();
-            //     ModeBarButtons[btn.btnType].click(graphDiv, e);
-            //   }}
-            //   />
+              onToolbarClick={this.handleToolbarClick}
+              />
           ))}
         </Row>
         <Plot

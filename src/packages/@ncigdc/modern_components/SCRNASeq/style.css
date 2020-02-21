@@ -1,0 +1,5 @@
+button * {
+  /* firefox event delegation issues
+  in this component */
+  pointer-events: none;
+}

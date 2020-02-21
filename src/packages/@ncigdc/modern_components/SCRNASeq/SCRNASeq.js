@@ -23,6 +23,14 @@ const dataTypes = Object.keys(dataObj);
 const showDataButtons = true;
 // end - for viz demo
 
+const styleData = input => input.map(row => ({
+  ...row,
+  marker: {
+    opacity: 0.75,
+    size: 10,
+  },
+}));
+
 const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
   withRouter,
@@ -31,13 +39,13 @@ const enhance = compose(
 
 class SCRNASeq extends Component {
   state = {
-    data: dataObj.umap, // for viz demo
+    data: styleData(dataObj.umap), // for viz demo
     dataType: 'umap',
   };
 
   handleDataButton = dataType => {
     // for viz demo
-    const data = dataObj[dataType];
+    const data = styleData(dataObj[dataType]);
     this.setState({
       data,
       dataType,

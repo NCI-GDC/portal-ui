@@ -6,6 +6,7 @@ import Plotly from 'plotly.js/lib/index-basic';
 import createPlotlyComponent from 'react-plotly.js/factory';
 
 import { Row } from '@ncigdc/uikit/Flex';
+import { theme } from '@ncigdc/theme';
 import './style.css';
 
 import ToolbarButton from './ToolbarButton';
@@ -15,26 +16,47 @@ const Plot = createPlotlyComponent(Plotly);
 
 const getLayout = dataType => {
   const dataTypeCaps = dataType.toUpperCase();
+  const axisStyles = {
+    autorange: true,
+    gridcolor: theme.greyScale6,
+    gridwidth: 2,
+    linecolor: theme.greyScale2,
+    linewidth: 1,
+    titlefont: {
+      color: theme.greyScale2,
+      family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+      size: 14,
+      weight: 500,
+    },
+    type: 'linear',
+    zerolinecolor: theme.greyScale4,
+    zerolinewidth: 2,
+  };
   return {
-    height: 400,
+    height: 500,
+    hovermode: 'closest',
     margin: {
       b: 70,
       l: 70,
       r: 0,
-      t: 30,
+      t: 60,
     },
     name: 'scrna_seq',
-    title: `${dataTypeCaps} Sample Data`,
+    title: {
+      font: {
+        color: theme.greyScale2,
+        family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+      },
+      text: `${dataTypeCaps} Sample Data`,
+    },
     width: 700,
     xaxis: {
-      autorange: true,
+      ...axisStyles,
       title: `${dataTypeCaps}_1`,
-      type: 'linear',
     },
     yaxis: {
-      autorange: true,
+      ...axisStyles,
       title: `${dataTypeCaps}_2`,
-      type: 'linear',
     },
   };
 };

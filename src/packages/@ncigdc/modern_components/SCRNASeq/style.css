@@ -6,11 +6,7 @@ button * {
 
 .plotly-notifier {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  position: absolute !important;
-  top: 50px;
   right: calc(50% - 250px);
-  z-index: 10000;
-  max-width: 250px;
 }
 
 .plotly-notifier p {
@@ -18,31 +14,13 @@ button * {
 }
 
 .plotly-notifier .notifier-note {
-  min-width: 180px;
-  max-width: 250px;
   border: 2px solid rgb(222,222,222);
-  z-index: 3000;
   margin: 10px 0;
   background-color: #fff;;
   color: #3a3a3a;
-  padding: 10px;
   border-radius: 5px;
 }
 
 .plotly-notifier .notifier-close {
   color: gray;
-  opacity: 0.8;
-  float: right;
-  padding: 0 5px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  font-weight: bold;
-  line-height: 20px;
-}
-
-.plotly-notifier .notifier-close:hover {
-  color: #444;
-  text-decoration: none;
-  cursor: pointer;
 }

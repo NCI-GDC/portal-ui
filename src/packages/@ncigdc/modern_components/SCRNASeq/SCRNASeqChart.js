@@ -16,18 +16,22 @@ const Plot = createPlotlyComponent(Plotly);
 
 const getLayout = dataType => {
   const dataTypeCaps = dataType.toUpperCase();
+  const font = {
+    color: theme.greyScale2,
+    family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+  };
+  const axisFont = {
+    ...font,
+    color: '#767676',
+  };
   const axisStyles = {
     autorange: true,
     gridcolor: theme.greyScale6,
     gridwidth: 2,
-    linecolor: theme.greyScale2,
-    linewidth: 1,
-    titlefont: {
-      color: theme.greyScale2,
-      family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-      size: 14,
-      weight: 500,
-    },
+    linecolor: 'gray',
+    linewidth: 2,
+    tickfont: axisFont,
+    titlefont: axisFont,
     type: 'linear',
     zerolinecolor: theme.greyScale4,
     zerolinewidth: 2,
@@ -35,6 +39,7 @@ const getLayout = dataType => {
   return {
     height: 500,
     hovermode: 'closest',
+    legend: { axisFont },
     margin: {
       b: 70,
       l: 70,
@@ -43,10 +48,7 @@ const getLayout = dataType => {
     },
     name: 'scrna_seq',
     title: {
-      font: {
-        color: theme.greyScale2,
-        family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-      },
+      font,
       text: `${dataTypeCaps} Sample Data`,
     },
     width: 700,
@@ -147,6 +149,7 @@ export default class SCRNASeqChart extends Component {
         <Row
           style={{
             justifyContent: 'flex-end',
+            position: 'relative',
             maxWidth: 700,
           }}
           >

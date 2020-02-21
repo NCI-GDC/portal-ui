@@ -55,6 +55,7 @@
     "filesaver.js": "0.2.0",
     "filesize": "3.3.0",
     "glamor": "2.20.25",
+    "ify-loader": "1.1.0",
     "import-inspector": "2.0.0",
     "innersvg-polyfill": "0.0.2",
     "jquery": "3.4.1",

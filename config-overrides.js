@@ -10,7 +10,7 @@ module.exports = function override(config, env) {
         webpackRequireWeakId: true,
       },
     ],
-    config
+    config,
   );
 
   config = injectBabelPlugin(
@@ -21,8 +21,15 @@ module.exports = function override(config, env) {
         schema: 'data/schema.graphql',
       },
     ],
-    config
+    config,
   );
+
+  // PLOTLY 3D
+  // config.module.rules = config.module.rules.concat({
+  //   enforce: 'post',
+  //   loader: ['ify-loader', 'transform-loader?plotly.js/tasks/compress_attributes.js'],
+  //   test: /\.js$/,
+  // });
 
   env === 'development' && (config.devtool = 'eval-source-map');
   config = rewireReactHotLoader(config, env);

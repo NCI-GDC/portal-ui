@@ -152,7 +152,6 @@ export default class SCRNASeqChart extends Component {
     } else {
       ModeBarButtons[name].click(graphDiv, e);
     }
-    ModeBarButtons[name].click(graphDiv, e);
   };
 
   render() {

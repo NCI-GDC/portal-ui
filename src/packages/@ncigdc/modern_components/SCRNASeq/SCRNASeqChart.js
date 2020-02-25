@@ -128,16 +128,30 @@ const toolbarButtons = [
 ];
 
 export default class SCRNASeqChart extends Component {
-  state = { graphDiv: '' };
+  state = {
+    graphDiv: '',
+  };
 
   onInitialized = (figure, graphDiv) => {
-    this.setState({ graphDiv });
+    this.setState({
+      graphDiv,
+    });
   };
 
   handleToolbarClick = e => {
     const { graphDiv } = this.state;
     e.persist();
     const name = e.target.getAttribute('data-name');
+    if (name === 'downloadImage') {
+      const format = e.target.getAttribute('data-format');
+      const scale = e.target.getAttribute('data-scale');
+      Plotly.downloadImage(graphDiv, {
+        format,
+        scale,
+      });
+    } else {
+      ModeBarButtons[name].click(graphDiv, e);
+    }
     ModeBarButtons[name].click(graphDiv, e);
   };
 
@@ -149,21 +163,22 @@ export default class SCRNASeqChart extends Component {
         <Row
           style={{
             justifyContent: 'flex-end',
-            position: 'relative',
             maxWidth: 700,
+            position: 'relative',
           }}
           >
           {toolbarButtons.map(btn => (btn.name === 'download'
             ? (
               <DownloadButton
                 {...btn}
+                key="download"
                 onToolbarClick={this.handleToolbarClick}
                 />
             )
             : (
               <ToolbarButton
                 {...btn}
-                key={btn.label}
+                key={btn.name}
                 onToolbarClick={this.handleToolbarClick}
                 />
             )))}

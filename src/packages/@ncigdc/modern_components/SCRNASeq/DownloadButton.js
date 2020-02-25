@@ -8,8 +8,16 @@ import ToolbarButton from './ToolbarButton';
 const downloadOptions = [
   // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
   {
+    format: 'svg',
     label: 'SVG',
-    name: 'toImage',
+    name: 'downloadImage',
+    scale: 1,
+  },
+  {
+    format: 'png',
+    label: 'PNG',
+    name: 'downloadImage',
+    scale: 3,
   },
 ];
 
@@ -35,7 +43,9 @@ export default class DownloadButton extends Component {
         >
         {downloadOptions.map(dlOpt => (
           <DropdownItem
+            data-format={dlOpt.format}
             data-name={dlOpt.name}
+            data-scale={dlOpt.scale}
             key={dlOpt.name}
             onClick={this.handleClick}
             style={{ cursor: 'pointer' }}

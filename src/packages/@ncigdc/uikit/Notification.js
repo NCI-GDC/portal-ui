@@ -59,6 +59,7 @@ const styles = {
     width: '40rem',
     borderRadius: '10px',
     pointerEvents: 'all',
+    wordWrap: 'break-word',
     ...zDepth1,
   },
   closeIcon: {

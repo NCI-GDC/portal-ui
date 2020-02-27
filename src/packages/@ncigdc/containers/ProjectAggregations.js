@@ -108,10 +108,12 @@ export const ProjectAggregationsComponent = compose(
       <FacetWrapper
         additionalProps={facet.additionalProps}
         aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        countLabel="Projects"
         facet={facet}
         greyHeader
         key={facet.full}
         relay={props.relay}
+        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         title={facet.title}
         />
     ))}

@@ -8,6 +8,7 @@ import { get, isEqual } from 'lodash';
 import Query from '@ncigdc/modern_components/Query';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseJSONParam } from '@ncigdc/utils/uri';
+import { DAYS_IN_YEAR } from '@ncigdc/utils/ageDisplay';
 
 export default (Component: React$Element<*>) =>
   compose(
@@ -63,6 +64,7 @@ export default (Component: React$Element<*>) =>
                 },
               ],
             },
+            interval: 10 * DAYS_IN_YEAR,
           },
         };
       },
@@ -78,6 +80,7 @@ export default (Component: React$Element<*>) =>
             $filter1: FiltersArgument
             $filter2: FiltersArgument
             $facets: [String]!
+            $interval: Float
           ) {
             viewer {
               repository {
@@ -92,7 +95,7 @@ export default (Component: React$Element<*>) =>
                         min
                         max
                       }
-                      histogram(interval: 3652.4444444444) {
+                      histogram(interval: $interval) {
                         buckets {
                           doc_count
                           key
@@ -112,7 +115,7 @@ export default (Component: React$Element<*>) =>
                         min
                         max
                       }
-                      histogram(interval: 3652.4444444444) {
+                      histogram(interval: $interval) {
                         buckets {
                           doc_count
                           key

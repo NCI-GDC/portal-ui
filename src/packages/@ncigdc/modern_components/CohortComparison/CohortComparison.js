@@ -236,7 +236,6 @@ export default compose(
                           .histogram.buckets,
                         result2.aggregations.diagnoses__age_at_diagnosis
                           .histogram.buckets,
-                        result1.hits.total,
                       ),
                     },
                     data2: {
@@ -246,7 +245,6 @@ export default compose(
                           .histogram.buckets,
                         result1.aggregations.diagnoses__age_at_diagnosis
                           .histogram.buckets,
-                        result2.hits.total,
                       ),
                     },
                     result1,

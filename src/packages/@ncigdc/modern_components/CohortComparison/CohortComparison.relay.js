@@ -17,7 +17,7 @@ export default (Component: React$Element<*>) =>
         ['sets', 'query.activeFacets'].some(
           k => !isEqual(get(props, k), get(nextProps, k)),
         ),
-      ({ sets, query }) => {
+      ({ query, sets }) => {
         const [[setId1, setName1], [setId2, setName2]] = Object.entries(
           sets.case,
         );
@@ -26,17 +26,17 @@ export default (Component: React$Element<*>) =>
           typeof query.activeFacets !== 'undefined'
             ? parseJSONParam(query.activeFacets)
             : [
-                'demographic.gender',
-                'diagnoses.age_at_diagnosis',
-                'demographic.vital_status',
-              ];
+              'demographic.gender',
+              'diagnoses.age_at_diagnosis',
+              'demographic.vital_status',
+            ];
 
         return {
+          activeFacets,
           setId1,
           setId2,
           setName1,
           setName2,
-          activeFacets,
           variables: {
             facets: activeFacets,
             filter1: {
@@ -70,10 +70,9 @@ export default (Component: React$Element<*>) =>
   )((props: Object) => {
     return (
       <Query
+        Component={Component}
         minHeight={500}
         parentProps={props}
-        variables={props.variables}
-        Component={Component}
         query={graphql`
           query CohortComparison_relayQuery(
             $filter1: FiltersArgument
@@ -126,6 +125,7 @@ export default (Component: React$Element<*>) =>
             }
           }
         `}
-      />
+        variables={props.variables}
+        />
     );
   });

@@ -43,7 +43,7 @@ const getLayout = dataType => {
     margin: {
       b: 70,
       l: 70,
-      r: 0,
+      r: 20,
       t: 60,
     },
     name: 'scrna_seq',
@@ -146,6 +146,7 @@ export default class SCRNASeqChart extends Component {
       const format = e.target.getAttribute('data-format');
       const scale = e.target.getAttribute('data-scale');
       Plotly.downloadImage(graphDiv, {
+        filename: 'scrnaseq',
         format,
         scale,
       });

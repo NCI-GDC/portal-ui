@@ -8,7 +8,6 @@ import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import withRouter from '@ncigdc/utils/withRouter';
-import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
 import { fetchFilesAndAdd } from '@ncigdc/dux/cart';
 import { ShoppingCartIcon } from '@ncigdc/theme/icons';
@@ -55,7 +54,7 @@ export default compose(
         style={{
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 0 2rem',
+          padding: '0 0 5px',
         }}
         >
         <Row
@@ -154,11 +153,6 @@ export default compose(
             </div>
           )}
         </Row>
-        <AnnotationsLink>
-          <i className="fa fa-edit" />
-          {' '}
-Browse Annotations
-        </AnnotationsLink>
       </Row>
     );
   },

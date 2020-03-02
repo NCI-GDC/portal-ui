@@ -21,6 +21,8 @@ import { toggleFilesInCart } from '@ncigdc/dux/cart';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { isSortedColumn } from '@ncigdc/utils/tables';
 import timestamp from '@ncigdc/utils/timestamp';
+import { SaveIcon } from '@ncigdc/theme/icons';
+import formatFileSize from '@ncigdc/utils/formatFileSize';
 
 const RemoveButton = styled(Button, {
   backgroundColor: '#FFF',
@@ -42,18 +44,19 @@ export default compose(
     ({ viewer }) =>
       !viewer.repository.files.hits ||
       !viewer.repository.files.hits.edges.length,
-    renderComponent(() => <div>No results found</div>)
-  )
+    renderComponent(() => <div>No results found</div>),
+  ),
 )(
   ({
-    downloadable,
-    viewer: { repository: { files: { hits } } },
-    entityType = 'files',
-    tableColumns,
     canAddToCart = true,
-    tableHeader,
     dispatch,
+    downloadable,
+    entityType = 'files',
+    fileSize = null,
     parentVariables,
+    tableColumns,
+    tableHeader,
+    viewer: { repository: { files: { hits } } },
   }) => {
     const tableInfo = tableColumns.slice().filter(x => !x.hidden);
 
@@ -64,45 +67,57 @@ export default compose(
         {tableHeader && (
           <h1
             className="panel-title"
-            style={{ padding: '1rem', marginTop: '-6rem' }}
-          >
+            style={{
+              padding: '1rem',
+              marginTop: '-6rem',
+            }}
+            >
             {tableHeader}
           </h1>
         )}
         <Row
           style={{
             backgroundColor: 'white',
-            padding: '1rem',
             justifyContent: 'space-between',
+            padding: '1rem',
           }}
-        >
-          <Showing
-            docType="files"
-            prefix={prefix}
-            params={parentVariables}
-            total={hits.total}
-          />
+          >
+          <Row>
+            <Showing
+              docType="files"
+              params={parentVariables}
+              prefix={prefix}
+              total={hits.total}
+              />
+            {fileSize === null || (
+              <span style={{ marginLeft: 20 }}>
+                <SaveIcon style={{ marginRight: 2 }} />
+                {' '}
+                <strong>{formatFileSize(fileSize)}</strong>
+              </span>
+            )}
+          </Row>
           <TableActions
-            type="file"
-            scope="repository"
-            total={hits.total}
-            endpoint="files"
-            downloadable={downloadable}
             arrangeColumnKey={entityType}
+            downloadable={downloadable}
             downloadFields={tableInfo
               .filter(x => x.downloadable)
               .map(x => x.field || x.id)}
+            endpoint="files"
+            scope="repository"
             sortOptions={tableInfo.filter(x => x.sortable)}
-            tsvSelector="#repository-files-table"
+            total={hits.total}
             tsvFilename={`repository-files-table.${timestamp()}.tsv`}
-          />
+            tsvSelector="#repository-files-table"
+            type="file"
+            />
         </Row>
         <div style={{ overflowX: 'auto' }}>
           <Table
             body={(
               <tbody>
                 {hits.edges.map((e, i) => (
-                  <Tr key={e.node.id} index={i}>
+                  <Tr index={i} key={e.node.id}>
                     {[
                       <Td key="add_to_cart">
                         {canAddToCart && (
@@ -110,8 +125,8 @@ export default compose(
                         )}
                         {!canAddToCart && (
                           <RemoveButton
-                            onClick={() => dispatch(toggleFilesInCart(e.node))}
                             aria-label="Remove"
+                            onClick={() => dispatch(toggleFilesInCart(e.node))}
                             >
                             <Tooltip Component="Remove">
                               <i className="fa fa-trash-o" />
@@ -123,11 +138,11 @@ export default compose(
                         .filter(x => x.td)
                         .map(x => (
                           <x.td
+                            index={i}
                             key={x.id}
                             node={e.node}
-                            index={i}
                             total={hits.total}
-                          />
+                            />
                         )),
                     ]}
                   </Tr>
@@ -160,11 +175,11 @@ export default compose(
             />
         </div>
         <Pagination
-          prefix={prefix}
           params={parentVariables}
+          prefix={prefix}
           total={hits.total}
-        />
+          />
       </div>
     );
-  }
+  },
 );

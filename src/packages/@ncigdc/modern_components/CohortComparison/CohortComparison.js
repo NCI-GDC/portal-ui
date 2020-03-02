@@ -38,16 +38,13 @@ const transformAgeAtDiagnosis = (buckets, compareBuckets) => {
         key,
         doc_count: 0,
       };
-    })
-    .map(({ doc_count, key }) => ({
-      doc_count,
-      key: parseInt(key, 10),
-    }));
+    });
 
   const buildDisplayKeyAndFilters = (acc, { doc_count, key }) => {
     const displayRange = `${getLowerAgeYears(key)}${acc.nextAge === 0
       ? '+'
-      : ` - ${getUpperAgeYears(acc.nextAge - 1)}`}`;
+      : ` - ${getUpperAgeYears(acc.nextAge - 0.1)}`}`;
+
     return {
       nextAge: key,
       data: [
@@ -68,7 +65,7 @@ const transformAgeAtDiagnosis = (buckets, compareBuckets) => {
                 op: '<=',
                 content: {
                   field: 'cases.diagnoses.age_at_diagnosis',
-                  value: [acc.nextAge - 1],
+                  value: [acc.nextAge - 0.1],
                 },
               },
             ]),
@@ -236,7 +233,6 @@ export default compose(
                           .histogram.buckets,
                         result2.aggregations.diagnoses__age_at_diagnosis
                           .histogram.buckets,
-                        result1.hits.total,
                       ),
                     },
                     data2: {
@@ -246,7 +242,6 @@ export default compose(
                           .histogram.buckets,
                         result1.aggregations.diagnoses__age_at_diagnosis
                           .histogram.buckets,
-                        result2.hits.total,
                       ),
                     },
                     result1,

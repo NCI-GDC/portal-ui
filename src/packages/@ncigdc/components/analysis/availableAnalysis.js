@@ -8,6 +8,7 @@ import { TSetTypes } from '@ncigdc/dux/sets';
 import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
 import { DISPLAY_GENE_EXPRESSION } from '@ncigdc/utils/constants';
 import GeneExpressionContainer from '@ncigdc/modern_components/GeneExpression';
+import SCRNASeq from '@ncigdc/theme/icons/SCRNASeq';
 import Demo from './Demo';
 import SetOperations from './SetOperations';
 import defaultVariables from './defaultCDAVEvariables';

@@ -3599,25 +3599,35 @@ import { each, round } from 'lodash';
       ? path_id === self.last_highlighted_column_cluster
       : path_id === self.last_highlighted_cluster;
 
-    const cols_or_rows = is_column
-      ? 'columns'
-      : 'rows';
+    const genes_or_cases = is_column
+      ? 'cases'
+      : 'genes';
 
     const clicks = is_featured
       ? 'Click'
       : 'Double-click';
 
+    // center tooltip on the dendrogram line
     let tooltip_x = x + (width / 2);
+
+    // find outermost dendrogram line:
+    // check if the tooltip text matches the number of rows/cols visible
+    const gene_count = self.heatmap_layer.children
+      .filter(child => child.attrs.class !== 'column_metadata')
+      .length;
+    const case_count = self.heatmap_layer.children[0].children.length;
+
+    const is_outermost_line = count === (is_column ? case_count : gene_count);
 
     const tooltip = self.objects_ref.tooltip_label.clone({
       x: x + (width / 2),
       y,
       id: 'dendrogram_label',
-      opacity: 1,
+      opacity: is_outermost_line ? 0 : 1,
     });
 
-    // leave space for the zoom icon
-    const tooltip_text = `        ${clicks} to zoom ${count} ${cols_or_rows}`;
+    // leave space for the zoom_icon
+    const tooltip_text = `        ${clicks} to zoom ${count} ${genes_or_cases}`;
 
     tooltip.add(
       self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }),
@@ -3631,16 +3641,16 @@ import { each, round } from 'lodash';
       const current_tooltip_x = tooltip.x();
       const half_width = tooltip.width() / 2;
       const difference = half_width - current_tooltip_x;
-      if (difference) {
+      if (difference > 0) {
         tooltip_x = current_tooltip_x + difference + 5;
         tooltip.x(tooltip_x);
       }
     }
-
     const zoom_x = tooltip_x - half_width - 3;
     const zoom_y = y - 39;
 
     const zoom_icon = self.objects_ref.zoom_icon.clone({
+      opacity: +(!is_outermost_line), // integer value of boolean's opposite
       x: zoom_x,
       y: zoom_y,
     });

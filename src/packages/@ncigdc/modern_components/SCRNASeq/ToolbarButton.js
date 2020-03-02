@@ -13,7 +13,11 @@ export default class ToolbarButton extends Component {
 
   render() {
     const {
-      attr = '', faClass, label, name, val = '',
+      attr = '',
+      faClass,
+      label,
+      name,
+      val = '',
     } = this.props;
     return (
       <Tooltip

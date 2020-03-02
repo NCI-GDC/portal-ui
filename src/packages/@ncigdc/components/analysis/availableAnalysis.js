@@ -8,6 +8,7 @@ import { TSetTypes } from '@ncigdc/dux/sets';
 import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
 import { DISPLAY_GENE_EXPRESSION } from '@ncigdc/utils/constants';
 import GeneExpressionContainer from '@ncigdc/modern_components/GeneExpression';
+import GeneExpression from '@ncigdc/theme/icons/GeneExpression';
 import Demo from './Demo';
 import SetOperations from './SetOperations';
 import defaultVariables from './defaultCDAVEvariables';
@@ -392,15 +393,17 @@ const availableAnalysis: [TAnalysis] = [
         },
         type: 'gene_expression',
       },
-      description: ' ',
+      description: 'Display the gene expression heatmap for your selected set of cases and genes.',
       Icon: withTheme(({ style }) => (
-        <div
-          style={{
-            height: 80,
-            width: 80,
-            ...style,
-          }}
-          />
+        <div>
+          <GeneExpression
+            style={{
+              width: 80,
+              height: 80,
+              ...style,
+            }}
+            />
+        </div>
       )),
       label: 'Gene Expression',
       ResultComponent: props => (

@@ -23,7 +23,7 @@ const dataTypes = Object.keys(dataObj);
 const showDataButtons = true;
 // end - for viz demo
 
-const styleData = input => input.map(row => ({
+const styleData = (input = []) => input.map(row => ({
   ...row,
   marker: {
     opacity: 0.75,

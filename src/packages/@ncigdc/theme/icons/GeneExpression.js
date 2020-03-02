@@ -79,13 +79,7 @@ export default ({ style, ...props }) => (
     >
     <defs>
       <clipPath id="clip-path">
-        <rect
-          style={styles.cls_1}
-          height="99.98"
-          rx="10"
-          ry="10"
-          width="99.98"
-          />
+        <rect style={styles.cls_1} height="99.98" rx="10" ry="10" width="99.98" />
       </clipPath>
     </defs>
     <g style={styles.cls_2}>
@@ -102,5 +96,29 @@ export default ({ style, ...props }) => (
       <rect style={styles.cls_6} x="68" y="17" width="14.98" height="14.98"/>
       <rect style={styles.cls_7} x="85" y="17" width="14.98" height="14.98"/>
       <rect style={styles.cls_9} y="34" width="14.98" height="14.98"/>
-      <rect style={styles.cls_10} x="17" y="34" width="14.98" height="14.98"/><rect style={styles.cls_9} x="34" y="34" width="14.98" height="14.98"/><rect style={styles.cls_10} x="51" y="34" width="14.98" height="14.98"/><rect style={styles.cls_9} x="68" y="34" width="14.98" height="14.98"/><rect style={styles.cls_10} x="85" y="34" width="14.98" height="14.98"/><rect style={styles.cls_11} y="51" width="14.98" height="14.98"/><rect style={styles.cls_12} x="17" y="51" width="14.98" height="14.98"/><rect style={styles.cls_13} x="34" y="51" width="14.98" height="14.98"/><rect style={styles.cls_12} x="51" y="51" width="14.98" height="14.98"/><rect style={styles.cls_11} x="68" y="51" width="14.98" height="14.98"/><rect style={styles.cls_12} x="85" y="51" width="14.98" height="14.98"/><rect style={styles.cls_14} y="68" width="14.98" height="14.98"/><rect style={styles.cls_15} x="17" y="68" width="14.98" height="14.98"/><rect style={styles.cls_16} x="34" y="68" width="14.98" height="14.98"/><rect style={styles.cls_15} x="51" y="68" width="14.98" height="14.98"/><rect style={styles.cls_14} x="68" y="68" width="14.98" height="14.98"/><rect style={styles.cls_15} x="85" y="68" width="14.98" height="14.98"/><rect style={styles.cls_17} y="85" width="14.98" height="14.98"/><rect style={styles.cls_18} x="17" y="85" width="14.98" height="14.98"/><rect style={styles.cls_19} x="34" y="85" width="14.98" height="14.98"/><rect style={styles.cls_18} x="51" y="85" width="14.98" height="14.98"/><rect style={styles.cls_17} x="68" y="85" width="14.98" height="14.98"/><rect style={styles.cls_18} x="85" y="85" width="14.98" height="14.98"/></g></svg>
+      <rect style={styles.cls_10} x="17" y="34" width="14.98" height="14.98"/>
+      <rect style={styles.cls_9} x="34" y="34" width="14.98" height="14.98"/>
+      <rect style={styles.cls_10} x="51" y="34" width="14.98" height="14.98"/>
+      <rect style={styles.cls_9} x="68" y="34" width="14.98" height="14.98"/>
+      <rect style={styles.cls_10} x="85" y="34" width="14.98" height="14.98"/>
+      <rect style={styles.cls_11} y="51" width="14.98" height="14.98"/>
+      <rect style={styles.cls_12} x="17" y="51" width="14.98" height="14.98"/>
+      <rect style={styles.cls_13} x="34" y="51" width="14.98" height="14.98"/>
+      <rect style={styles.cls_12} x="51" y="51" width="14.98" height="14.98"/>
+      <rect style={styles.cls_11} x="68" y="51" width="14.98" height="14.98"/>
+      <rect style={styles.cls_12} x="85" y="51" width="14.98" height="14.98"/>
+      <rect style={styles.cls_14} y="68" width="14.98" height="14.98"/>
+      <rect style={styles.cls_15} x="17" y="68" width="14.98" height="14.98"/>
+      <rect style={styles.cls_16} x="34" y="68" width="14.98" height="14.98"/>
+      <rect style={styles.cls_15} x="51" y="68" width="14.98" height="14.98"/>
+      <rect style={styles.cls_14} x="68" y="68" width="14.98" height="14.98"/>
+      <rect style={styles.cls_15} x="85" y="68" width="14.98" height="14.98"/>
+      <rect style={styles.cls_17} y="85" width="14.98" height="14.98"/>
+      <rect style={styles.cls_18} x="17" y="85" width="14.98" height="14.98"/>
+      <rect style={styles.cls_19} x="34" y="85" width="14.98" height="14.98"/>
+      <rect style={styles.cls_18} x="51" y="85" width="14.98" height="14.98"/>
+      <rect style={styles.cls_17} x="68" y="85" width="14.98" height="14.98"/>
+      <rect style={styles.cls_18} x="85" y="85" width="14.98" height="14.98"/>
+    </g>
+  </svg>
 );

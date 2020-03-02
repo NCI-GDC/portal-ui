@@ -6,8 +6,9 @@ import { withTheme } from '@ncigdc/theme';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { TSetTypes } from '@ncigdc/dux/sets';
 import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
-import { DISPLAY_GENE_EXPRESSION } from '@ncigdc/utils/constants';
+import { DISPLAY_GENE_EXPRESSION, DISPLAY_SCRNA_SEQ } from '@ncigdc/utils/constants';
 import GeneExpressionContainer from '@ncigdc/modern_components/GeneExpression';
+import SCRNASeqContainer from '@ncigdc/modern_components/SCRNASeq';
 import GeneExpression from '@ncigdc/theme/icons/GeneExpression';
 import Demo from './Demo';
 import SetOperations from './SetOperations';
@@ -414,6 +415,59 @@ const availableAnalysis: [TAnalysis] = [
       setInstructions: 'Select a case set',
       setTypes: ['case'],
       type: 'gene_expression',
+      validateSets: sets => sets &&
+      ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
+    },
+  ],
+  ...DISPLAY_SCRNA_SEQ &&
+  // copied from clinical analysis and lightly modified
+  // TODO: replace with real demoData, a real icon, etc
+  [
+    {
+      demoData: {
+        displayVariables: { ...defaultVariables },
+        filters: {
+          'demo-pancreas': {
+            content: [
+              {
+                content: {
+                  field: 'cases.primary_site',
+                  value: ['Pancreas'],
+                },
+                op: 'in',
+              },
+            ],
+            op: 'and',
+          },
+        },
+        message: 'Demo',
+        name: 'Demo SCRNA-SEQ',
+        sets: {
+          case: {
+            'demo-pancreas': 'Pancreas',
+          },
+        },
+        type: 'scrna_seq',
+      },
+      description: ' ',
+      Icon: withTheme(({ style }) => (
+        <div
+          style={{
+            height: 80,
+            width: 80,
+            ...style,
+          }}
+          />
+      )),
+      label: 'SCRNA-SEQ',
+      ResultComponent: props => (
+        <SCRNASeqContainer
+          {...props}
+          />
+      ),
+      setInstructions: 'Select a case set',
+      setTypes: ['case'],
+      type: 'scrna_seq',
       validateSets: sets => sets &&
       ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
     },

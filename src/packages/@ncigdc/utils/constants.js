@@ -498,3 +498,7 @@ export const CASE_LIMIT_API = 10000;
 export const DISPLAY_DAVE_CA = localStorage.REACT_APP_DISPLAY_DAVE_CA ||
   process.env.REACT_APP_DISPLAY_DAVE_CA ||
   false;
+
+export const DISPLAY_SCRNA_SEQ = localStorage.REACT_APP_DISPLAY_SCRNA_SEQ ||
+  process.env.REACT_APP_DISPLAY_SCRNA_SEQ ||
+  false;

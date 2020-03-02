@@ -452,13 +452,15 @@ const availableAnalysis: [TAnalysis] = [
       },
       description: ' ',
       Icon: withTheme(({ style }) => (
-        <div
-          style={{
-            height: 80,
-            width: 80,
-            ...style,
-          }}
-          />
+        <div>
+          <SCRNASeq
+            style={{
+              width: 80,
+              height: 80,
+              ...style,
+            }}
+            />
+        </div>
       )),
       label: 'SCRNA-SEQ',
       ResultComponent: props => (

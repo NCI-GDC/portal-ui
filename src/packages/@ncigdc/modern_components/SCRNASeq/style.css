@@ -4,23 +4,45 @@ button * {
   pointer-events: none;
 }
 
+/* notifier style is based on our Notification.js  */
+
 .plotly-notifier {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  right: calc(50% - 250px);
+  left: 0;
+  max-width: 100%;
+  top: 1rem;
+  width: 100%;
 }
 
 .plotly-notifier p {
   margin: 0;
+  font-size: 14px;
 }
 
 .plotly-notifier .notifier-note {
-  border: 2px solid rgb(222,222,222);
-  margin: 10px 0;
-  background-color: #fff;;
-  color: #3a3a3a;
-  border-radius: 5px;
+  background-color: #EDF8FB;
+  border-radius: 10px;
+  border: 1px solid #B4CCD4;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 5px 0px, rgba(0, 0, 0, 0.12) 0px 2px 10px 0px;
+  color: #5C5151;
+  margin: 0 auto;
+  max-width: 40rem;
+  padding: 1.5rem;
+  position: relative;
+  text-align: center;
+  width: 40rem;
 }
 
 .plotly-notifier .notifier-close {
-  color: gray;
+  color: #5C5151;
+  font-size: 18px;
+  font-weight: 300;
+  height: 1em;
+  line-height: 1;
+  position: absolute;
+  right: 5px;
+  text-transform: lowercase;
+  top: 2px;
+  transform: scaleY(80%);
+  width: 1em;
 }

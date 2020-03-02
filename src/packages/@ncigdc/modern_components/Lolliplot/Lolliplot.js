@@ -187,6 +187,7 @@ export default compose(
                 if (lolliplotCollisions[`${d.x},${d.y}`]) {
                   selectCollisions(lolliplotCollisions[`${d.x},${d.y}`]);
                 } else {
+                  selectCollisions([]);
                   push(`/ssms/${d.id}`);
                 }
               }}

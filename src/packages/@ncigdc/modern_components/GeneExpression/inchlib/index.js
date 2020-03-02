@@ -3650,7 +3650,7 @@ import { each, round } from 'lodash';
     const zoom_y = y - 39;
 
     const zoom_icon = self.objects_ref.zoom_icon.clone({
-      opacity: is_outermost_line ? 0 : 1,
+      opacity: +(!is_outermost_line), // integer value of boolean's opposite
       x: zoom_x,
       y: zoom_y,
     });

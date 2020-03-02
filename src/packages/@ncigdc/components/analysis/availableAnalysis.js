@@ -9,6 +9,7 @@ import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveTy
 import { DISPLAY_GENE_EXPRESSION, DISPLAY_SCRNA_SEQ } from '@ncigdc/utils/constants';
 import GeneExpressionContainer from '@ncigdc/modern_components/GeneExpression';
 import SCRNASeqContainer from '@ncigdc/modern_components/SCRNASeq';
+import GeneExpression from '@ncigdc/theme/icons/GeneExpression';
 import Demo from './Demo';
 import SetOperations from './SetOperations';
 import defaultVariables from './defaultCDAVEvariables';
@@ -393,15 +394,17 @@ const availableAnalysis: [TAnalysis] = [
         },
         type: 'gene_expression',
       },
-      description: ' ',
+      description: 'Display the gene expression heatmap for your selected set of cases and genes.',
       Icon: withTheme(({ style }) => (
-        <div
-          style={{
-            height: 80,
-            width: 80,
-            ...style,
-          }}
-          />
+        <div>
+          <GeneExpression
+            style={{
+              width: 80,
+              height: 80,
+              ...style,
+            }}
+            />
+        </div>
       )),
       label: 'Gene Expression',
       ResultComponent: props => (

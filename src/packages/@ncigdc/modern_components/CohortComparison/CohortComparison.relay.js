@@ -8,6 +8,7 @@ import { get, isEqual } from 'lodash';
 import Query from '@ncigdc/modern_components/Query';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseJSONParam } from '@ncigdc/utils/uri';
+import { DAYS_IN_YEAR } from '@ncigdc/utils/ageDisplay';
 
 export default (Component: React$Element<*>) =>
   compose(
@@ -17,7 +18,7 @@ export default (Component: React$Element<*>) =>
         ['sets', 'query.activeFacets'].some(
           k => !isEqual(get(props, k), get(nextProps, k)),
         ),
-      ({ sets, query }) => {
+      ({ query, sets }) => {
         const [[setId1, setName1], [setId2, setName2]] = Object.entries(
           sets.case,
         );
@@ -26,17 +27,17 @@ export default (Component: React$Element<*>) =>
           typeof query.activeFacets !== 'undefined'
             ? parseJSONParam(query.activeFacets)
             : [
-                'demographic.gender',
-                'diagnoses.age_at_diagnosis',
-                'demographic.vital_status',
-              ];
+              'demographic.gender',
+              'diagnoses.age_at_diagnosis',
+              'demographic.vital_status',
+            ];
 
         return {
+          activeFacets,
           setId1,
           setId2,
           setName1,
           setName2,
-          activeFacets,
           variables: {
             facets: activeFacets,
             filter1: {
@@ -63,6 +64,7 @@ export default (Component: React$Element<*>) =>
                 },
               ],
             },
+            interval: 10 * DAYS_IN_YEAR,
           },
         };
       },
@@ -70,15 +72,15 @@ export default (Component: React$Element<*>) =>
   )((props: Object) => {
     return (
       <Query
+        Component={Component}
         minHeight={500}
         parentProps={props}
-        variables={props.variables}
-        Component={Component}
         query={graphql`
           query CohortComparison_relayQuery(
             $filter1: FiltersArgument
             $filter2: FiltersArgument
             $facets: [String]!
+            $interval: Float
           ) {
             viewer {
               repository {
@@ -93,7 +95,7 @@ export default (Component: React$Element<*>) =>
                         min
                         max
                       }
-                      histogram(interval: 3652.4444444444) {
+                      histogram(interval: $interval) {
                         buckets {
                           doc_count
                           key
@@ -113,7 +115,7 @@ export default (Component: React$Element<*>) =>
                         min
                         max
                       }
-                      histogram(interval: 3652.4444444444) {
+                      histogram(interval: $interval) {
                         buckets {
                           doc_count
                           key
@@ -126,6 +128,7 @@ export default (Component: React$Element<*>) =>
             }
           }
         `}
-      />
+        variables={props.variables}
+        />
     );
   });

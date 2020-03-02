@@ -23,7 +23,7 @@ export default class ToolbarButton extends Component {
       <Tooltip
         Component={
           <div>{label}</div>
-      }
+        }
         >
         <Button
           data-attr={attr}

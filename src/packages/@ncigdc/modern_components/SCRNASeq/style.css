@@ -6,20 +6,22 @@ button * {
 
 /* notifier style is based on our Notification.js  */
 
-.plotly-notifier {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+/* #root sibling selector helps override the plotly.js stylesheet */
+
+#root ~ .plotly-notifier {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   left: 0;
   max-width: 100%;
   top: 1rem;
   width: 100%;
 }
 
-.plotly-notifier p {
+#root ~ .plotly-notifier p {
   margin: 0;
   font-size: 14px;
 }
 
-.plotly-notifier .notifier-note {
+#root ~ .plotly-notifier .notifier-note {
   background-color: #EDF8FB;
   border-radius: 10px;
   border: 1px solid #B4CCD4;
@@ -33,7 +35,7 @@ button * {
   width: 40rem;
 }
 
-.plotly-notifier .notifier-close {
+#root ~ .plotly-notifier .notifier-close {
   color: #5C5151;
   font-size: 18px;
   font-weight: 300;
@@ -43,6 +45,6 @@ button * {
   right: 5px;
   text-transform: lowercase;
   top: 2px;
-  transform: scaleY(80%);
+  transform: scaleY(95%);
   width: 1em;
 }

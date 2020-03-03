@@ -53,7 +53,7 @@ class SCRNASeq extends Component {
   };
 
   render() {
-    const { data = [], dataType = ''} = this.state;
+    const { data = [], dataType = '' } = this.state;
 
     return (
       <Column style={{ marginBottom: '1rem' }}>
@@ -68,8 +68,8 @@ class SCRNASeq extends Component {
               flex: '1 0 auto',
             }}
             >
-            <h1 style={{ margin: '0 0 20px' }}>SCRNA-Seq</h1>
-            {showDataButtons && dataTypes.length > 0 (
+            <h1 style={{ margin: '0 0 20px' }}>Single Cell RNA Sequencing</h1>
+            {showDataButtons && dataTypes.length > 0 && (
               // for viz demo
               <Row>
                 {dataTypes.map(dType => (

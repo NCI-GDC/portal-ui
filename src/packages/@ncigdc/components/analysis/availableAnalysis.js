@@ -8,6 +8,7 @@ import { TSetTypes } from '@ncigdc/dux/sets';
 import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
 import { DISPLAY_GENE_EXPRESSION, DISPLAY_SCRNA_SEQ } from '@ncigdc/utils/constants';
 import GeneExpressionContainer from '@ncigdc/modern_components/GeneExpression';
+import SCRNASeq from '@ncigdc/theme/icons/SCRNASeq';
 import SCRNASeqContainer from '@ncigdc/modern_components/SCRNASeq';
 import GeneExpression from '@ncigdc/theme/icons/GeneExpression';
 import Demo from './Demo';
@@ -449,17 +450,19 @@ const availableAnalysis: [TAnalysis] = [
         },
         type: 'scrna_seq',
       },
-      description: ' ',
+      description: 'Display different types of clustering visualizations for your selected single-cell RNA sequencing experiment.',
       Icon: withTheme(({ style }) => (
-        <div
-          style={{
-            height: 80,
-            width: 80,
-            ...style,
-          }}
-          />
+        <div>
+          <SCRNASeq
+            style={{
+              width: 80,
+              height: 80,
+              ...style,
+            }}
+            />
+        </div>
       )),
-      label: 'SCRNA-SEQ',
+      label: 'Single Cell RNA Sequencing',
       ResultComponent: props => (
         <SCRNASeqContainer
           {...props}

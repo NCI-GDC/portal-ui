@@ -43,7 +43,7 @@ const transformAgeAtDiagnosis = (buckets, compareBuckets) => {
   const buildDisplayKeyAndFilters = (acc, { doc_count, key }) => {
     const displayRange = `${getLowerAgeYears(key)}${acc.nextAge === 0
       ? '+'
-      : ` - ${getUpperAgeYears(acc.nextAge - 0.1)}`}`;
+      : ` to <${getUpperAgeYears(acc.nextAge - 0.1)}`}`;
 
     return {
       nextAge: key,
@@ -92,7 +92,7 @@ export default compose(
   withState('state', 'setState', initialState),
   withProps({
     updateData: async ({
-      setId1, setId2, setSurvivalData, setState,
+      setId1, setId2, setState, setSurvivalData,
     }) => {
       const survivalData = await getDefaultCurve({
         currentFilters: [
@@ -133,35 +133,37 @@ export default compose(
 )(
   ({
     activeFacets,
-    sets,
+    message,
     setId1,
     setId2,
     setName1,
     setName2,
-    theme,
-    survivalData,
-    viewer: { repository: { result1, result2 } },
-    message,
+    sets,
     showSurvival,
-    toggleSurvival,
     state: { loadingSurvival, survivalHasData },
+    survivalData,
+    theme,
+    toggleSurvival,
+    viewer: { repository: { result1, result2 } },
   }) => {
     const Set1 = (
-      <span style={{
-        color: SET1_COLOUR,
-        fontWeight: 'bold',
-      }}
-            >
+      <span
+        style={{
+          color: SET1_COLOUR,
+          fontWeight: 'bold',
+        }}
+        >
         {truncate(setName1, { length: 50 })}
       </span>
     );
 
     const Set2 = (
-      <span style={{
-        color: SET2_COLOUR,
-        fontWeight: 'bold',
-      }}
-            >
+      <span
+        style={{
+          color: SET2_COLOUR,
+          fontWeight: 'bold',
+        }}
+        >
         {truncate(setName2, { length: 50 })}
       </span>
     );

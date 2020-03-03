@@ -31,9 +31,10 @@ import ResizeDetector from 'react-resize-detector';
 import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
 import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
+import { setModal } from '@ncigdc/dux/modal';
 
 import {
-  DISPLAY_10K, DISPLAY_SUMMARY_PAGE, CASE_LIMIT_API,
+  DISPLAY_10K, DISPLAY_DAVE_CA, DISPLAY_SUMMARY_PAGE, CASE_LIMIT_API,
 } from '@ncigdc/utils/constants';
 
 export type TProps = {
@@ -296,6 +297,17 @@ const ExplorePageComponent = ({
             queryParam="searchTableTab"
             tabToolbar={(
               <Row>
+                {DISPLAY_DAVE_CA && (
+                  <Button
+                    onClick={() => setModal(null)}
+                    style={{
+                      backgroundColor: 'rebeccapurple',
+                      marginRight: 5,
+                    }}
+                    >
+                    DEV - DAVE-CA
+                  </Button>
+                )}
                 {filters ? (
                   <CreateExploreCaseSetButton
                     disabled={!hasCaseHits}

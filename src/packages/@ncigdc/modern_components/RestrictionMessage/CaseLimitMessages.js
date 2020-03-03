@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  DISPLAY_10K,
   DISPLAY_DAVE_CA,
 } from '@ncigdc/utils/constants';
 import RestrictionMessagesContainer from './RestrictionMessagesContainer';
@@ -11,7 +12,9 @@ const CaseLimitMessages = () => (
     {DISPLAY_DAVE_CA && (
       <ControlledAccessMessage />
     )}
-    <Filter10kMessage />
+    {DISPLAY_10K && (
+      <Filter10kMessage />
+    )}
   </RestrictionMessagesContainer>
 );
 

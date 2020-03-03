@@ -11,7 +11,6 @@ import withRouter from '@ncigdc/utils/withRouter';
 import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import { zDepth1 } from '@ncigdc/theme/mixins';
-import { DISPLAY_GENE_EXPRESSION } from '@ncigdc/utils/constants';
 import availableAnalysis from './availableAnalysis';
 import SelectSet from './SelectSet';
 import DemoButton from './DemoButton';
@@ -81,6 +80,8 @@ const CreateAnalysis = ({
         }}
         >
         {availableAnalysis.map(item => {
+          const isGeneExpression = item.type === 'gene_expression';
+          const isSCRNASeq = item.type === 'scrna_seq';
           return (
             <Row
               key={item.type}
@@ -98,9 +99,8 @@ const CreateAnalysis = ({
                 <h1 style={{ fontSize: '2rem' }}>{item.label}</h1>
                 <div style={{ marginBottom: 10 }}>{item.description}</div>
                 <Row spacing={5}>
-                  {(DISPLAY_GENE_EXPRESSION &&
-                    item.type === 'gene_expression') ||
-                      (<Button onClick={() => setAnalysis(item)}>Select</Button>)}
+                  {(isGeneExpression || isSCRNASeq) ||
+                    (<Button onClick={() => setAnalysis(item)}>Select</Button>)}
                   <DemoButton demoData={item.demoData} type={item.type} />
                 </Row>
               </div>

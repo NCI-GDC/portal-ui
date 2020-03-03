@@ -68,7 +68,7 @@ class SCRNASeq extends Component {
               flex: '1 0 auto',
             }}
             >
-            <h1 style={{ margin: '0 0 20px' }}>SCRNA-Seq</h1>
+            <h1 style={{ margin: '0 0 20px' }}>Single Cell RNA Sequencing</h1>
             {showDataButtons && dataTypes.length > 0 && (
               // for viz demo
               <Row>

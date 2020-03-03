@@ -450,7 +450,7 @@ const availableAnalysis: [TAnalysis] = [
         },
         type: 'scrna_seq',
       },
-      description: ' ',
+      description: 'Display different types of clustering visualizations for your selected single-cell RNA sequencing experiment.',
       Icon: withTheme(({ style }) => (
         <div>
           <SCRNASeq
@@ -462,7 +462,7 @@ const availableAnalysis: [TAnalysis] = [
             />
         </div>
       )),
-      label: 'SCRNA-SEQ',
+      label: 'Single Cell RNA Sequencing',
       ResultComponent: props => (
         <SCRNASeqContainer
           {...props}

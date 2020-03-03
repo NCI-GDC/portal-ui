@@ -82,6 +82,7 @@ const CreateAnalysis = ({
         {availableAnalysis.map(item => {
           const isGeneExpression = item.type === 'gene_expression';
           const isSCRNASeq = item.type === 'scrna_seq';
+
           return (
             <Row
               key={item.type}

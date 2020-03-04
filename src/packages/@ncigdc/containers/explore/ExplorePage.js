@@ -1,6 +1,7 @@
 /* @flow */
 import React from 'react';
 import Relay from 'react-relay/classic';
+import { connect } from 'react-redux';
 import { get, isEqual } from 'lodash';
 import {
   compose,
@@ -32,6 +33,7 @@ import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
 import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
 import { setModal } from '@ncigdc/dux/modal';
+import ControlledAccessModal from '@ncigdc/components/Modals/ControlledAccess';
 
 import {
   DISPLAY_10K, DISPLAY_DAVE_CA, DISPLAY_SUMMARY_PAGE, CASE_LIMIT_API,
@@ -126,10 +128,19 @@ const ClinicalAggregationsWithFacetData = withFacetData(props => (
 const enhance = compose(
   setDisplayName('EnhancedExplorePageComponent'),
   withRouter,
+  connect(),
   withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
+
+      // open controlled access modal
+      const { dispatch, query } = this.props;
+      const { controlled: isControlledAccess = false } = query;
+
+      if (isControlledAccess && DISPLAY_DAVE_CA) {
+        dispatch(setModal(<ControlledAccessModal query={query} />));
+      }
     },
     componentWillReceiveProps(nextProps) {
       const { filters } = this.props;
@@ -297,17 +308,6 @@ const ExplorePageComponent = ({
             queryParam="searchTableTab"
             tabToolbar={(
               <Row>
-                {DISPLAY_DAVE_CA && (
-                  <Button
-                    onClick={() => setModal(null)}
-                    style={{
-                      backgroundColor: 'rebeccapurple',
-                      marginRight: 5,
-                    }}
-                    >
-                    DEV - DAVE-CA
-                  </Button>
-                )}
                 {filters ? (
                   <CreateExploreCaseSetButton
                     disabled={!hasCaseHits}

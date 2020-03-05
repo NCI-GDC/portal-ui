@@ -78,7 +78,21 @@ const CADevControls = ({
         ))}
       </div>
     )
-    : (<p><Button onClick={() => setShowDevControls(true)} style={buttonStyle}>dev</Button></p>);
+    : (
+      <p>
+        <Button
+          onClick={() => setShowDevControls(true)}
+          style={{
+            ...buttonStyle,
+            position: 'absolute',
+            right: 0,
+            top: -45,
+          }}
+          >
+          dev
+        </Button>
+      </p>
+);
 };
 
 export default CADevControls;

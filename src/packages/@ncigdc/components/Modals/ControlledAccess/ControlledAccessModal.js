@@ -14,6 +14,7 @@ import { humanify } from '@ncigdc/utils/string';
 import CAMessage from './CAMessage';
 import CADevControls from './CADevControls';
 import { dataStub, getHeadings } from './helpers';
+import CAIconMessage from './CAIconMessage';
 
 const enhance = compose(
   connect(state => ({
@@ -46,9 +47,24 @@ const ControlledAccessModal = ({
     genes_mutations: datum.genes_mutations === 'controlled'
       ? isAuth
         ? controlledProgramsWithAccess.includes(datum.program)
-          ? <span>You have access</span>
-          : <span>Controlled. Apply for access.</span>
-        : <span>Controlled</span>
+          ? (
+            <CAIconMessage faClass="fa-check">
+              You have access
+            </CAIconMessage>
+          )
+          : (
+            <CAIconMessage faClass="fa-lock">
+              Controlled. Please
+              {' '}
+              <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" target="_blank">apply for access</a>
+              .
+            </CAIconMessage>
+        )
+        : (
+          <CAIconMessage faClass="fa-lock">
+              Controlled
+          </CAIconMessage>
+        )
       : humanify({ term: datum.genes_mutations }),
     program: datum.program.toUpperCase(),
     ...controlledProgramsWithAccess.length > 0 && {

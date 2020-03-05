@@ -9,7 +9,7 @@ export const userAccessListStub = ['fm'];
 
 export const getHeadings = ({ isAuth, userAccessList }) => ([
   ...isAuth &&
-    userAccessList.length === 1 &&
+    userAccessList.length > 0 &&
     [
       {
         key: 'select',

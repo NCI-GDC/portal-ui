@@ -1,62 +1,61 @@
 // @flow
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
+import {
+  compose, withState,
+} from 'recompose';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import LoginButton from '@ncigdc/components/LoginButton';
-import { setModal } from '@ncigdc/dux/modal';
 import Button from '@ncigdc/uikit/Button';
 
-class ControlledAccessModal extends Component {
-  componentWillReceiveProps(nextProps) {
-    // TODO: can I do something with this?
-    // keep the modal open after the login process?
-    const { user } = this.props;
-    if (nextProps.user && !user) {
-      console.log('logged in via modal');
-      // nextProps.dispatch(setModal(null));
-    }
-  }
+import CAMessage from './CAMessage';
+import CADevControls from './CADevControls';
 
-  render() {
-    const {
-      closeText = 'Close',
-      message = 'You don\'t have access.',
-      // TODO: remove devauth
-      query: { devauth = false },
-      user,
-    } = this.props;
+const enhance = compose(
+  connect(state => ({
+    user: state.auth.user,
+  })),
+  withState('isLoggedIn', 'setIsLoggedIn', false),
+  withState('hasAccess', 'setHasAccess', false),
+  withState('showDevControls', 'setShowDevControls', false),
+);
 
-    const isLoggedIn = user || devauth;
+const ControlledAccessModal = ({
+  closeText = 'Close',
+  hasAccess,
+  isLoggedIn,
+  setHasAccess,
+  setIsLoggedIn,
+  setShowDevControls,
+  showDevControls,
+  user,
+}) => {
+  const isAuth = user || isLoggedIn;
 
-    return (
-      <BaseModal
-        closeText={closeText}
-        extraButtons={isLoggedIn
-          ? <Button>Explore</Button>
-          : (
-            <LoginButton keepModalOpen>
-              <Button>Login</Button>
-            </LoginButton>
-        )}
-        title="Controlled Access"
-        >
-        {isLoggedIn
-          ? (<p>You're logged in</p>)
-          : (
-            <p>
-              {message}
-              {' '}
-              Please
-              {' '}
-              <LoginButton keepModalOpen>login</LoginButton>
-            </p>
-          )}
-      </BaseModal>
-    );
-  }
-}
+  return (
+    <BaseModal
+      closeText={closeText}
+      extraButtons={isAuth
+        ? <Button>Explore</Button>
+        : (
+          <LoginButton keepModalOpen>
+            <Button>Login</Button>
+          </LoginButton>
+      )}
+      title="Explore Controlled & Open Data"
+      >
+      <CADevControls
+        hasAccess={hasAccess}
+        isLoggedIn={isLoggedIn}
+        setHasAccess={setHasAccess}
+        setIsLoggedIn={setIsLoggedIn}
+        setShowDevControls={setShowDevControls}
+        showDevControls={showDevControls}
+        />
+      <CAMessage hasAccess={hasAccess} isAuth={isAuth} />
+    </BaseModal>
+  );
+};
 
-export default connect(state => ({
-  user: state.auth.user,
-}))(ControlledAccessModal);
+export default enhance(ControlledAccessModal);

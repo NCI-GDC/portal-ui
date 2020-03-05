@@ -8,30 +8,57 @@ import {
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import LoginButton from '@ncigdc/components/LoginButton';
 import Button from '@ncigdc/uikit/Button';
+import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import { humanify } from '@ncigdc/utils/string';
 
 import CAMessage from './CAMessage';
 import CADevControls from './CADevControls';
+import { dataStub, getHeadings } from './helpers';
 
 const enhance = compose(
   connect(state => ({
     user: state.auth.user,
   })),
-  withState('isLoggedIn', 'setIsLoggedIn', false),
-  withState('hasAccess', 'setHasAccess', false),
+  withState('isFakeLoggedIn', 'setIsFakeLoggedIn', false),
   withState('showDevControls', 'setShowDevControls', false),
+  withState('userAccessList', 'setUserAccessList', []),
 );
 
 const ControlledAccessModal = ({
   closeText = 'Close',
-  hasAccess,
-  isLoggedIn,
-  setHasAccess,
-  setIsLoggedIn,
+  isFakeLoggedIn,
+  setIsFakeLoggedIn,
   setShowDevControls,
+  setUserAccessList,
   showDevControls,
   user,
+  userAccessList,
 }) => {
-  const isAuth = user || isLoggedIn;
+  const isAuth = user || isFakeLoggedIn;
+  const controlledProgramsWithAccess = dataStub
+    .filter(datum => datum.genes_mutations === 'controlled')
+    .filter(datum => userAccessList.includes(datum.program))
+    .map(datum => datum.program);
+
+  const dataFormatted = dataStub.map(datum => ({
+    ...datum,
+    cases_clinical: humanify({ term: datum.cases_clinical }),
+    genes_mutations: datum.genes_mutations === 'controlled'
+      ? isAuth
+        ? controlledProgramsWithAccess.includes(datum.program)
+          ? <span>You have access</span>
+          : <span>Controlled. Apply for access.</span>
+        : <span>Controlled</span>
+      : humanify({ term: datum.genes_mutations }),
+    program: datum.program.toUpperCase(),
+    ...controlledProgramsWithAccess.length > 0 && {
+      select: controlledProgramsWithAccess.includes(datum.program)
+        ? <input name="controlled-access-programs" type="radio" val={datum.program} />
+        : ' ',
+    },
+  }))
+    .filter((datum, i) => !(isAuth &&
+      dataStub[i].genes_mutations === 'not_available'));
 
   return (
     <BaseModal
@@ -46,14 +73,23 @@ const ControlledAccessModal = ({
       title="Explore Controlled & Open Data"
       >
       <CADevControls
-        hasAccess={hasAccess}
-        isLoggedIn={isLoggedIn}
-        setHasAccess={setHasAccess}
-        setIsLoggedIn={setIsLoggedIn}
+        isFakeLoggedIn={isFakeLoggedIn}
+        setIsFakeLoggedIn={setIsFakeLoggedIn}
         setShowDevControls={setShowDevControls}
+        setUserAccessList={setUserAccessList}
         showDevControls={showDevControls}
+        userAccessList={userAccessList}
         />
-      <CAMessage hasAccess={hasAccess} isAuth={isAuth} />
+      <CAMessage isAuth={isAuth} userAccessList={userAccessList} />
+      <EntityPageHorizontalTable
+        data={dataFormatted}
+        headings={getHeadings({
+          isAuth,
+          userAccessList,
+        })}
+        tableContainerStyle={{ height: 300 }}
+        tableId="controlled-access-table"
+        />
     </BaseModal>
   );
 };

@@ -2,6 +2,7 @@
 import React from 'react';
 
 import Button from '@ncigdc/uikit/Button';
+import { userAccessListStub } from './helpers';
 
 const buttonStyle = {
   background: 'white',
@@ -12,36 +13,36 @@ const buttonStyle = {
 };
 
 const CADevControls = ({
-  hasAccess,
-  isLoggedIn,
-  setHasAccess,
-  setIsLoggedIn,
+  isFakeLoggedIn,
+  setIsFakeLoggedIn,
   setShowDevControls,
+  setUserAccessList,
   showDevControls,
+  userAccessList,
 }) => {
   const devButtons = [
     {
-      active: !isLoggedIn,
+      active: !isFakeLoggedIn,
       label: 'logged out',
       onClick: () => {
-        setIsLoggedIn(false);
-        setHasAccess(false);
+        setIsFakeLoggedIn(false);
+        setUserAccessList([]);
       },
     },
     {
-      active: isLoggedIn && !hasAccess,
+      active: isFakeLoggedIn && userAccessList.length === 0,
       label: 'logged in, no controlled access',
       onClick: () => {
-        setIsLoggedIn(true);
-        setHasAccess(false);
+        setIsFakeLoggedIn(true);
+        setUserAccessList([]);
       },
     },
     {
-      active: isLoggedIn && hasAccess,
+      active: isFakeLoggedIn && userAccessList === 1,
       label: 'logged in, some controlled access',
       onClick: () => {
-        setIsLoggedIn(true);
-        setHasAccess(true);
+        setIsFakeLoggedIn(true);
+        setUserAccessList(userAccessListStub);
       },
     },
   ];

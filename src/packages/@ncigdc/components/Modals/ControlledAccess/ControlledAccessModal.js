@@ -87,7 +87,7 @@ const ControlledAccessModal = ({
           isAuth,
           userAccessList,
         })}
-        tableContainerStyle={{ height: 300 }}
+        tableContainerStyle={{ maxHeight: 300 }}
         tableId="controlled-access-table"
         />
     </BaseModal>

@@ -5,7 +5,7 @@ const stickyHeaderStyle = {
   },
 };
 
-export const userAccessListStub = ['fm'];
+export const userAccessListStub = ['fm', 'genie'];
 
 export const getHeadings = ({ isAuth, userAccessList }) => ([
   ...isAuth &&

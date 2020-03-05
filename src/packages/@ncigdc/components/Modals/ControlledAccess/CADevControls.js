@@ -38,8 +38,16 @@ const CADevControls = ({
       },
     },
     {
-      active: isFakeLoggedIn && userAccessList.length > 0,
+      active: isFakeLoggedIn && userAccessList.length === 1,
       label: 'logged in, some controlled access',
+      onClick: () => {
+        setIsFakeLoggedIn(true);
+        setUserAccessList(userAccessListStub.slice(0, 1));
+      },
+    },
+    {
+      active: isFakeLoggedIn && userAccessList.length === 2,
+      label: 'logged in, all controlled access',
       onClick: () => {
         setIsFakeLoggedIn(true);
         setUserAccessList(userAccessListStub);

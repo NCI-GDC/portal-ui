@@ -128,18 +128,24 @@ const ClinicalAggregationsWithFacetData = withFacetData(props => (
 const enhance = compose(
   setDisplayName('EnhancedExplorePageComponent'),
   withRouter,
-  connect(),
+  connect(state => ({
+    user: state.auth.user,
+  })),
   withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
 
       // open controlled access modal
-      const { dispatch, query } = this.props;
+      const { dispatch, query, user } = this.props;
       const { controlled: isControlledAccess = false } = query;
 
       if (isControlledAccess && DISPLAY_DAVE_CA) {
-        dispatch(setModal(<ControlledAccessModal query={query} />));
+        dispatch(setModal(<ControlledAccessModal
+          dispatch={dispatch}
+          query={query}
+          user={user}
+          />));
       }
     },
     componentWillReceiveProps(nextProps) {

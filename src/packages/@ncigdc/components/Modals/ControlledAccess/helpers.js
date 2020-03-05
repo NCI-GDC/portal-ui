@@ -1,3 +1,9 @@
+import React from 'react';
+
+import { humanify } from '@ncigdc/utils/string';
+
+import CAIconMessage from './CAIconMessage';
+
 const stickyHeaderStyle = {
   thStyle: {
     position: 'sticky',
@@ -88,3 +94,52 @@ export const dataStub = [
     cases_clinical: 'open',
     genes_mutations: stub.genes_mutations || 'not_available',
   }));
+
+export const formatData = ({
+  data,
+  handleProgramSelect,
+  isAuth,
+  selectedPrograms,
+  userCAPrograms,
+}) => data.map(datum => ({
+  ...datum,
+  cases_clinical: humanify({ term: datum.cases_clinical }),
+  genes_mutations: datum.genes_mutations === 'controlled'
+    ? isAuth
+      ? userCAPrograms.includes(datum.program)
+        ? (
+          <CAIconMessage faClass="fa-check">
+            You have access
+          </CAIconMessage>
+        )
+        : (
+          <CAIconMessage faClass="fa-lock">
+            Controlled. Please
+            {' '}
+            <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" target="_blank">apply for access</a>
+            .
+          </CAIconMessage>
+      )
+      : (
+        <CAIconMessage faClass="fa-lock">
+          Controlled
+        </CAIconMessage>
+      )
+    : humanify({ term: datum.genes_mutations }),
+  program: datum.program.toUpperCase(),
+  ...userCAPrograms.length > 0 && {
+    select: userCAPrograms.includes(datum.program)
+      ? (
+        <input
+          checked={selectedPrograms.includes(datum.program)}
+          name="controlled-access-programs"
+          onChange={handleProgramSelect}
+          type="radio"
+          value={datum.program}
+          />
+      )
+      : ' ',
+  },
+}))
+  .filter((datum, i) => !(isAuth &&
+      data[i].genes_mutations === 'not_available'));

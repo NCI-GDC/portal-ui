@@ -25,13 +25,15 @@ const styles = {
   },
 };
 
-const LoginButton = ({ children, dispatch, user }) => (
+const LoginButton = ({ children, dispatch, keepModalOpen = false }) => (
   <LocationSubscriber>
     {({ pathname, push }) => (
       <Link
         className="test-login-button"
         onClick={async () => {
-          await dispatch(setModal(null));
+          if (!keepModalOpen) {
+            await dispatch(setModal(null));
+          }
           await openAuthWindow({
             name: 'NIH',
           });

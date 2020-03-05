@@ -13,8 +13,8 @@ class ControlledAccessModal extends Component {
     // keep the modal open after the login process?
     const { user } = this.props;
     if (nextProps.user && !user) {
-      console.log('ControlledAccessModal is closing itself');
-      nextProps.dispatch(setModal(null));
+      console.log('logged in via modal');
+      // nextProps.dispatch(setModal(null));
     }
   }
 
@@ -35,7 +35,7 @@ class ControlledAccessModal extends Component {
         extraButtons={isLoggedIn
           ? <Button>Explore</Button>
           : (
-            <LoginButton>
+            <LoginButton keepModalOpen>
               <Button>Login</Button>
             </LoginButton>
         )}
@@ -49,7 +49,7 @@ class ControlledAccessModal extends Component {
               {' '}
               Please
               {' '}
-              <LoginButton>login</LoginButton>
+              <LoginButton keepModalOpen>login</LoginButton>
             </p>
           )}
       </BaseModal>

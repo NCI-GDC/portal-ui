@@ -73,11 +73,22 @@ const ControlledAccessModal = ({
     userCAPrograms,
   });
 
+  const exploreButtonDisabled = isAuth &&
+    userCAPrograms.length > 0 &&
+    selectedModalPrograms.length === 0;
+
   return (
     <BaseModal
       closeText="Close"
       extraButtons={isAuth
-        ? <Button onClick={handleModalSubmit}>Explore</Button>
+        ? (
+          <Button
+            disabled={exploreButtonDisabled}
+            onClick={handleModalSubmit}
+            >
+            Explore
+          </Button>
+        )
         : (
           <LoginButton keepModalOpen>
             <Button>Login</Button>

@@ -19,7 +19,6 @@ const enhance = compose(
   withState('selectedModalPrograms', 'setSelectedModalPrograms', []),
   // START temporary UI dev props. update when APIs are available.
   withState('isFakeLoggedIn', 'setIsFakeLoggedIn', false),
-  withState('showDevSettings', 'setShowDevSettings', false),
   withState('userAccessList', 'setUserAccessList', []),
   withState('isAuth', 'setIsAuth', false),
   // END temporary UI dev props
@@ -53,9 +52,7 @@ const ControlledAccessModal = ({
   selectedModalPrograms,
   setIsFakeLoggedIn,
   setSelectedModalPrograms,
-  setShowDevSettings,
   setUserAccessList,
-  showDevSettings,
   user,
   userAccessList,
 }) => {
@@ -100,9 +97,7 @@ const ControlledAccessModal = ({
       <CADevSettings
         isFakeLoggedIn={isFakeLoggedIn}
         setIsFakeLoggedIn={setIsFakeLoggedIn}
-        setShowDevSettings={setShowDevSettings}
         setUserAccessList={setUserAccessList}
-        showDevSettings={showDevSettings}
         userAccessList={userAccessList}
         />
       <CAMessage isAuth={isAuth} userAccessList={userAccessList} />

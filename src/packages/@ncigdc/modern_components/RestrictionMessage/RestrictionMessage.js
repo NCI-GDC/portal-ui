@@ -3,7 +3,7 @@ import React from 'react';
 const styles = {
   faLeftAlign: {
     display: 'inline-block',
-    marginRight: 5,
+    marginRight: 8,
   },
   icon: {
     height: 34,

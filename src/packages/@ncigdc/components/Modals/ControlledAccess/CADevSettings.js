@@ -7,9 +7,7 @@ import { userAccessListStub } from './helpers';
 const CADevSettings = ({
   isFakeLoggedIn,
   setIsFakeLoggedIn,
-  setShowDevSettings,
   setUserAccessList,
-  showDevSettings,
   userAccessList,
 }) => {
   const buttons = [
@@ -50,9 +48,7 @@ const CADevSettings = ({
   return (
     <DevSettings
       buttons={buttons}
-      message="For local or Netlify. If you're on dev-oicr and you login, that will override these Settings."
-      setShowDevSettings={setShowDevSettings}
-      showDevSettings={showDevSettings}
+      message="For local or Netlify. If you're on dev-oicr and you login, that will override these settings."
       />
   );
 };

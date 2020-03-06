@@ -8,6 +8,7 @@ const buttonStyle = {
   border: '1px solid #ccc',
   color: 'black',
   display: 'inline-block',
+  marginBottom: 5,
   marginRight: 5,
 };
 

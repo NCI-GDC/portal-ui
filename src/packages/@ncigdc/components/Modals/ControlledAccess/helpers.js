@@ -99,7 +99,7 @@ export const formatData = ({
   data,
   handleProgramSelect,
   isAuth,
-  selectedPrograms,
+  selectedModalPrograms,
   userCAPrograms,
 }) => data.map(datum => ({
   ...datum,
@@ -131,7 +131,7 @@ export const formatData = ({
     select: userCAPrograms.includes(datum.program)
       ? (
         <input
-          checked={selectedPrograms.includes(datum.program)}
+          checked={selectedModalPrograms.includes(datum.program)}
           name="controlled-access-programs"
           onChange={handleProgramSelect}
           type="radio"

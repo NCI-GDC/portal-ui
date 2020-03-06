@@ -132,18 +132,27 @@ const enhance = compose(
     user: state.auth.user,
   })),
   withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
+  withState('activeControlledPrograms', 'setActiveControlledPrograms', []),
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
 
       // open controlled access modal
-      const { dispatch, query, user } = this.props;
-      const { controlled: isControlledAccess = false } = query;
+      const {
+        activeControlledPrograms,
+        dispatch,
+        query,
+        query: { controlled: isControlledAccess = false },
+        setActiveControlledPrograms,
+        user,
+      } = this.props;
 
       if (isControlledAccess && DISPLAY_DAVE_CA) {
         dispatch(setModal(<ControlledAccessModal
+          activeControlledPrograms={activeControlledPrograms}
           dispatch={dispatch}
           query={query}
+          setActiveControlledPrograms={setActiveControlledPrograms}
           user={user}
           />));
       }
@@ -158,11 +167,17 @@ const enhance = compose(
 );
 
 const ExplorePageComponent = ({
+  activeControlledPrograms,
+  dispatch,
   filters,
   maxFacetsPanelHeight,
   push,
+  query,
+  query: { controlled: isControlledAccess = false },
   relay,
+  setActiveControlledPrograms,
   setMaxFacetsPanelHeight,
+  user,
   viewer,
 }) => {
   const hasCaseHits = get(viewer, 'explore.cases.hits.total', 0);
@@ -314,6 +329,23 @@ const ExplorePageComponent = ({
             queryParam="searchTableTab"
             tabToolbar={(
               <Row>
+                {isControlledAccess && DISPLAY_DAVE_CA && (
+                  <Button
+                    onClick={() => dispatch(setModal(<ControlledAccessModal
+                      activeControlledPrograms={activeControlledPrograms}
+                      dispatch={dispatch}
+                      query={query}
+                      setActiveControlledPrograms={setActiveControlledPrograms}
+                      user={user}
+                      />))}
+                    style={{
+                      backgroundColor: 'rebeccapurple',
+                      marginRight: 5,
+                    }}
+                    >
+                    DEV - DAVE-CA
+                  </Button>
+                )}
                 {filters ? (
                   <CreateExploreCaseSetButton
                     disabled={!hasCaseHits}

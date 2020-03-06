@@ -116,7 +116,7 @@ export const formatData = ({
           <CAIconMessage faClass="fa-lock">
             Controlled. Please
             {' '}
-            <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" target="_blank">apply for access</a>
+            <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" rel="noopener noreferrer" target="_blank">apply for access</a>
             .
           </CAIconMessage>
       )

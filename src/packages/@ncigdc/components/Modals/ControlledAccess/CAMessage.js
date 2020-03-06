@@ -13,14 +13,14 @@ const CAMessage = ({
         You do not have access to any controlled datasets, please apply for access.
         </strong>
       </h3>
-)
+    )
     : (
       <h3 style={{ marginTop: 0 }}>
         <strong>
       Select a single controlled access dataset you wish to explore with the open dataset(s):
         </strong>
       </h3>
-)
+    )
   : (
     <p>
       The following matrix shows the program data that can be explored in this section.

@@ -12,7 +12,7 @@ const ControlledAccessMessage = () => (
     icon={filterCaseLimitImg}
     title="This dataset is too large to visualize"
     >
-    <React.Fragment>
+    <span>
       Please use the
       {' '}
       <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/#facet-filters">filters/facets</a>
@@ -20,7 +20,7 @@ const ControlledAccessMessage = () => (
       on the left to reduce your dataset to
       {` ${maxCasesFormatted} `}
       cases or less.
-    </React.Fragment>
+    </span>
   </RestrictionMessage>
 );
 

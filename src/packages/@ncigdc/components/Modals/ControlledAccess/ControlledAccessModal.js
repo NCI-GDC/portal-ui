@@ -9,16 +9,17 @@ import LoginButton from '@ncigdc/components/LoginButton';
 import Button from '@ncigdc/uikit/Button';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import { setModal } from '@ncigdc/dux/modal';
+import RestrictionMessage from '@ncigdc/modern_components/RestrictionMessage/RestrictionMessage';
 
 import CAMessage from './CAMessage';
-import CADevControls from './CADevControls';
+import CADevSettings from './CADevSettings';
 import { dataStub as data, getHeadings, formatData } from './helpers';
 
 const enhance = compose(
   withState('selectedModalPrograms', 'setSelectedModalPrograms', []),
   // START temporary UI dev props. update when APIs are available.
   withState('isFakeLoggedIn', 'setIsFakeLoggedIn', false),
-  withState('showDevControls', 'setShowDevControls', false),
+  withState('showDevSettings', 'setShowDevSettings', false),
   withState('userAccessList', 'setUserAccessList', []),
   withState('isAuth', 'setIsAuth', false),
   // END temporary UI dev props
@@ -52,9 +53,9 @@ const ControlledAccessModal = ({
   selectedModalPrograms,
   setIsFakeLoggedIn,
   setSelectedModalPrograms,
-  setShowDevControls,
+  setShowDevSettings,
   setUserAccessList,
-  showDevControls,
+  showDevSettings,
   user,
   userAccessList,
 }) => {
@@ -96,12 +97,12 @@ const ControlledAccessModal = ({
       )}
       title="Explore Controlled & Open Data"
       >
-      <CADevControls
+      <CADevSettings
         isFakeLoggedIn={isFakeLoggedIn}
         setIsFakeLoggedIn={setIsFakeLoggedIn}
-        setShowDevControls={setShowDevControls}
+        setShowDevSettings={setShowDevSettings}
         setUserAccessList={setUserAccessList}
-        showDevControls={showDevControls}
+        showDevSettings={showDevSettings}
         userAccessList={userAccessList}
         />
       <CAMessage isAuth={isAuth} userAccessList={userAccessList} />
@@ -114,6 +115,23 @@ const ControlledAccessModal = ({
         tableContainerStyle={{ maxHeight: 300 }}
         tableId="controlled-access-table"
         />
+      {isAuth || (
+        <RestrictionMessage
+          compact
+          faClass="fa-lock"
+          faStyle={{ color: '#773388' }}
+          fullWidth
+          leftAlign
+          title="The controlled data require dbGaP access"
+          >
+          <span>
+            If you don't have access, follow the instructions for
+            {' '}
+            <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" rel="noopener noreferrer" target="_blank">obtaining access to controlled data</a>
+            .
+          </span>
+        </RestrictionMessage>
+      )}
     </BaseModal>
   );
 };

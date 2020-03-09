@@ -76,11 +76,9 @@ const config = {
 const toolbarButtons = [
   // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
   {
-    // attr: 'zoom',
     faClass: 'fa-undo',
     label: 'Reset',
-    name: 'reset',
-    // val: 'reset',
+    name: 'react',
   },
   {
     attr: 'dragmode',
@@ -140,7 +138,7 @@ export default class SCRNASeqChart extends Component {
         format,
         scale,
       });
-    } else if (name === 'reset') {
+    } else if (name === 'react') {
       const { data, dataType } = this.props;
       Plotly.react(graphDiv, data, getLayout(dataType));
     } else {

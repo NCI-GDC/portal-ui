@@ -22,16 +22,13 @@ import withRouter from '@ncigdc/utils/withRouter';
 import { withTheme } from '@ncigdc/theme';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 
-import './Header.css';
+import './styles.scss';
 
 const styles = {
   activeNavLink: theme => ({
     backgroundColor: theme.greyScale2,
     color: theme.white,
   }),
-  iconPadding: {
-    paddingRight: '4px',
-  },
 };
 
 const Header = ({
@@ -49,8 +46,21 @@ const Header = ({
       id="header"
       role="banner"
       >
-      <div className="container-fluid">
-        <div className="navbar-header">
+      <div className="header-navbar">
+        <div className="navbar-mobile_items">
+          <HomeLink
+            className="navbar-brand"
+            tabIndex="0"
+            >
+            <img
+              alt="gdc-logo"
+              src="https://i.imgur.com/O33FmeE.png"
+              />
+            <Hidden>
+              <h1>Home</h1>
+            </Hidden>
+          </HomeLink>
+
           <button
             className="navbar-toggle"
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -63,75 +73,74 @@ const Header = ({
             <span className="icon-bar" />
             <span className="icon-bar" />
           </button>
-          <HomeLink
-            className="navbar-brand"
-            style={{ padding: 0 }}
-            tabIndex="0"
-            >
-            <img
-              alt="gdc-logo"
-              src="https://i.imgur.com/O33FmeE.png"
-              style={{ width: 260 }}
-              />
-            <Hidden>
-              <h1>Home</h1>
-            </Hidden>
-          </HomeLink>
         </div>
+
         <nav
           aria-label="Site Navigation"
           className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
           data-uib-collapse="hc.isCollapsed"
-          onClick={() => setIsCollapsed(true)}
           style={{ outline: 'none' }}
           tabIndex="-1"
           >
           <ul className="nav navbar-nav">
             <li>
-              <ProjectsLink activeStyle={styles.activeNavLink(theme)} exact>
-                <i className="icon-gdc-projects" style={styles.iconPadding} />
+              <ProjectsLink
+                activeStyle={styles.activeNavLink(theme)}
+                exact
+                onClick={setIsCollapsed}
+                testTag="projects-link"
+                >
+                <i className="icon-gdc-projects" />
                 <span className="header-hidden-sm">Projects</span>
                 <Hidden>Projects</Hidden>
               </ProjectsLink>
             </li>
+
             <li>
-              <RepositoryLink activeStyle={styles.activeNavLink(theme)} exact>
-                <DatabaseIcon style={styles.iconPadding} />
+              <RepositoryLink
+                activeStyle={styles.activeNavLink(theme)}
+                exact
+                onClick={setIsCollapsed}
+                testTag="repository-link"
+                >
+                <DatabaseIcon />
                 <span className="header-hidden-sm">Repository</span>
                 <Hidden>Repository</Hidden>
               </RepositoryLink>
             </li>
           </ul>
+
           <ul className="nav navbar-nav navbar-right">
             <li>
               <QuickSearch
                 isInSearchMode={isInSearchMode}
                 setIsInSearchMode={setIsInSearchMode}
                 tabIndex="0"
+                testTag="quicksearch"
                 />
             </li>
+
             {!isInSearchMode && (
               <React.Fragment>
                 {user && (
-                  <li className="header-hidden-xs">
-                    <UserDropdown />
+                  <li>
+                    <UserDropdown testTag="user-link" />
                   </li>
                 )}
 
                 <li>
-                  <CartLink>
+                  <CartLink
+                    onClick={setIsCollapsed}
+                    testTag="cart-link"
+                    >
                     {count => (
-                      <span>
-                        <i
-                          className="fa fa-shopping-cart"
-                          style={styles.iconPadding}
-                          />
-                        <span
-                          className="header-hidden-sm header-hidden-md"
-                          style={styles.iconPadding}
-                          >
+                      <span className="header-link">
+                        <i className="fa fa-shopping-cart" />
+
+                        <span className="header-hidden-sm header-hidden-md">
                           Cart
                         </span>
+
                         <span className="label label-primary">
                           {count.toLocaleString()}
                         </span>

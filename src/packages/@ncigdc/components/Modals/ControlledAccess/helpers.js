@@ -92,7 +92,7 @@ export const dataStub = [
   .map(stub => ({
     ...stub,
     cases_clinical: 'open',
-    genes_mutations: stub.genes_mutations || 'not_available',
+    genes_mutations: stub.genes_mutations || 'in_progress',
   }));
 
 export const formatData = ({
@@ -142,4 +142,4 @@ export const formatData = ({
   },
 }))
   .filter((datum, i) => !(isAuth &&
-      data[i].genes_mutations === 'not_available'));
+      data[i].genes_mutations === 'in_progress'));

@@ -6,11 +6,14 @@ import {
   compose,
   pure,
   setDisplayName,
+  withHandlers,
+  withState,
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import withRouter from '@ncigdc/utils/withRouter';
 
+import Tabs from '@ncigdc/uikit/Tabs';
 import SCRNASeqChart from './SCRNASeqChart';
 import dataObj from './data';
 
@@ -35,65 +38,68 @@ const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
   withRouter,
   pure,
+  withState('activeTab', 'setActiveTab', 0),
+  withState('data', 'setData', styleData(dataObj.umap)),
+  withState('dataType', 'setDataType', 'umap'),
+  withHandlers({
+    handleSetData: ({ setData, setDataType }) => dataType => {
+      const data = styleData(dataObj[dataType]);
+      setDataType(dataType);
+      setData(data);
+    },
+  }),
+
 );
 
-class SCRNASeq extends Component {
-  state = {
-    data: styleData(dataObj.umap), // for viz demo
-    dataType: 'umap',
-  };
-
-  handleDataButton = dataType => {
-    // for viz demo
-    const data = styleData(dataObj[dataType]);
-    this.setState({
-      data,
-      dataType,
-    });
-  };
-
-  render() {
-    const { data = [], dataType = '' } = this.state;
-
-    return (
-      <Column style={{ marginBottom: '1rem' }}>
-        <Row
-          style={{
-            margin: '20px 0',
-            padding: '2rem 3rem',
+const SCRNASeq = ({
+  activeTab, data, dataType, handleSetData, setActiveTab,
+}) => (
+  <Column style={{ marginBottom: '1rem' }}>
+    <Row
+      style={{
+        margin: '20px 0',
+        padding: '2rem 3rem',
+      }}
+      >
+      <Column
+        style={{
+          flex: '1 0 auto',
+        }}
+        >
+        <h1 style={{ margin: '0 0 20px' }}>Single Cell RNA Sequencing</h1>
+        <Tabs
+          activeIndex={activeTab}
+          contentStyle={{
+            border: 'none',
+            borderTop: '1px solid #c8c8c8',
           }}
+          onTabClick={i => setActiveTab(i)}
+          tabs={[<p key="Analysis">Analysis</p>, <p key="Summary">Summary</p>]}
           >
-          <Column
-            style={{
-              flex: '1 0 auto',
-            }}
-            >
-            <h1 style={{ margin: '0 0 20px' }}>Single Cell RNA Sequencing</h1>
-            {showDataButtons && dataTypes.length > 0 && (
-              // for viz demo
-              <Row>
-                {dataTypes.map(dType => (
-                  <button
-                    key={dType}
-                    onClick={() => this.handleDataButton(dType)}
-                    type="button"
-                    >
-                    {dType}
-                  </button>
-                ))}
-              </Row>
-            )}
-            {data.length > 0 && (
-              <SCRNASeqChart
-                data={data}
-                dataType={dataType}
-                />
-            )}
-          </Column>
-        </Row>
+          {dataTypes.length > 0 && (
+            // for viz demo
+            <Row>
+              {dataTypes.map(dType => (
+                <button
+                  key={dType}
+                  onClick={() => handleSetData(dType)}
+                  type="button"
+                  >
+                  {dType}
+                </button>
+              ))}
+            </Row>
+          )}
+          {activeTab === 0 && data.length > 0 && (
+            <SCRNASeqChart
+              data={data}
+              dataType={dataType}
+              />
+          )}
+        </Tabs>
       </Column>
-    );
-  }
-}
+    </Row>
+  </Column>
+);
 
 export default enhance(SCRNASeq);

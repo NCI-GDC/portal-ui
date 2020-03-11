@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable camelcase */
 
-import React, { Component } from 'react';
+import React from 'react';
 import {
   compose,
   pure,
@@ -23,7 +23,6 @@ import dataObj from './data';
 
 const dataTypes = Object.keys(dataObj);
 // const showDataButtons = localStorage.REACT_APP_DISPLAY_SCRNA_SEQ_BUTTONS || false;
-const showDataButtons = true;
 // end - for viz demo
 
 const styleData = (input = []) => input.map(row => ({
@@ -72,11 +71,12 @@ const SCRNASeq = ({
           contentStyle={{
             border: 'none',
             borderTop: '1px solid #c8c8c8',
+            padding: 20,
           }}
           onTabClick={i => setActiveTab(i)}
-          tabs={[<p key="Analysis">Analysis</p>, <p key="Summary">Summary</p>]}
+          tabs={[<span key="Analysis">Analysis</span>, <span key="Summary">Summary</span>]}
           >
-          {dataTypes.length > 0 && (
+          {/* {dataTypes.length > 0 && (
             // for viz demo
             <Row>
               {dataTypes.map(dType => (
@@ -89,12 +89,23 @@ const SCRNASeq = ({
                 </button>
               ))}
             </Row>
-          )}
+          )} */}
           {activeTab === 0 && data.length > 0 && (
-            <SCRNASeqChart
-              data={data}
-              dataType={dataType}
-              />
+            <div
+              style={{
+                alignItems: 'center',
+                border: '1px solid #c8c8c8',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                padding: 20,
+              }}
+              >
+              <SCRNASeqChart
+                data={data}
+                dataType={dataType}
+                />
+            </div>
           )}
         </Tabs>
       </Column>

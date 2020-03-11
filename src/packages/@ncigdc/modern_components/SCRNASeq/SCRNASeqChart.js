@@ -5,7 +5,7 @@ import ModeBarButtons from 'plotly.js/src/components/modebar/buttons';
 import Plotly from 'plotly.js/lib/index-basic';
 import createPlotlyComponent from 'react-plotly.js/factory';
 
-import { Row } from '@ncigdc/uikit/Flex';
+import { Column, Row } from '@ncigdc/uikit/Flex';
 import { theme } from '@ncigdc/theme';
 import './style.css';
 
@@ -159,12 +159,13 @@ export default class SCRNASeqChart extends Component {
     const { data, dataType } = this.props;
 
     return (
-      <React.Fragment>
+      <Column>
         <Row
           style={{
             justifyContent: 'flex-end',
             maxWidth: 700,
             position: 'relative',
+            width: 700,
           }}
           >
           {toolbarButtons.map(btn => (btn.name === 'download'
@@ -189,7 +190,7 @@ export default class SCRNASeqChart extends Component {
           layout={getLayout(dataType)}
           onInitialized={this.onInitialized}
           />
-      </React.Fragment>
+      </Column>
     );
   }
 }

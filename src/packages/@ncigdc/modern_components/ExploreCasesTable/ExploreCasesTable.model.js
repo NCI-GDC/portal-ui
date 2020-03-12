@@ -84,8 +84,6 @@ const getProjectIdFilter = projects =>
     false,
   );
 
-console.log('dataCategoryColumns', dataCategoryColumns);
-
 const casesTableModel = [
   createSelectColumn({
     idField: 'case_id',

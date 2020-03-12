@@ -49,7 +49,7 @@ const getLayout = dataType => {
     name: 'scrna_seq',
     title: {
       font,
-      text: `${dataTypeCaps} Sample Data`,
+      text: `${dataTypeCaps} projection of Cells Colored by Automated Clustering`,
     },
     width: 700,
     xaxis: {
@@ -65,16 +65,7 @@ const getLayout = dataType => {
 
 const config = {
   displaylogo: false,
-  displayModeBar: 'hover',
-  modeBarButtonsToRemove: [
-    'sendDataToCloud',
-    'zoom2d',
-    'pan2d',
-    'zoomIn2d',
-    'zoomOut2d',
-    'resetScale2d',
-    'toImage',
-  ],
+  displayModeBar: false,
   showLink: false,
   toImageButtonOptions: {
     filename: 'scrna_seq',

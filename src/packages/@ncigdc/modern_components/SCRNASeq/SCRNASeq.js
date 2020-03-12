@@ -15,6 +15,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 
 import Tabs from '@ncigdc/uikit/Tabs';
 import SCRNASeqChart from './SCRNASeqChart';
+import ClusterTable from './ClusterTable';
 import dataObj from './data';
 
 // start - for viz demo
@@ -71,7 +72,7 @@ const SCRNASeq = ({
           contentStyle={{
             border: 'none',
             borderTop: '1px solid #c8c8c8',
-            padding: 20,
+            padding: '20px 0',
           }}
           onTabClick={i => setActiveTab(i)}
           tabs={[<span key="Analysis">Analysis</span>, <span key="Summary">Summary</span>]}
@@ -105,6 +106,9 @@ const SCRNASeq = ({
                 data={data}
                 dataType={dataType}
                 />
+
+              <h3>Top Features by Cluster (Log2 fold-change, p-value)</h3>
+              <ClusterTable />
             </div>
           )}
         </Tabs>

@@ -1,20 +1,20 @@
 import React from 'react';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import { random } from 'lodash';
 
 const ClusterTable = () => {
-  // make stub data
-  const clusterArray = [...Array(11)].map((arr, i) => ({
+  const stubClusterArray = [...Array(11)].map((arr, i) => ({
     key: `cluster-${i + 1}`,
     subheadings: ['L2FC', 'p-value'],
     title: `Cluster ${i + 1}`,
   }));
-  const headings = [
+  const stubHeadings = [
     {
       key: 'feature',
       subheadings: ['ID', 'Name'],
       title: 'Feature',
     },
-  ].concat(clusterArray)
+  ].concat(stubClusterArray)
     .map(row => ({
       ...row,
       thStyle: {
@@ -27,6 +27,17 @@ const ClusterTable = () => {
       },
     }));
 
+  const makeStubDataRow = () => [...Array(11)].reduce((acc, curr, i) => ({
+    ...acc,
+    [`cluster-${i + 1}`]: [(random(1, 9, 2)).toFixed(2), `${random(1, 9)}e-${random(10, 99)}`],
+  }), {});
+
+  const stubData = [...Array(20)]
+    .map(() => ({
+      feature: [`ENSG00000${random(100000, 999999)}`, random(1000, 9999)],
+      ...makeStubDataRow(),
+    }));
+
   return (
     <div
       style={{
@@ -35,100 +46,8 @@ const ClusterTable = () => {
       }}
       >
       <EntityPageHorizontalTable
-        data={[
-          [
-            1,
-            2,
-            3,
-            4,
-          ],
-          [
-            5,
-            6,
-            7,
-            8,
-            9,
-          ],
-          [
-            1,
-            2,
-            3,
-            4,
-          ],
-          [
-            5,
-            6,
-            7,
-            8,
-            9,
-          ],
-          [
-            1,
-            2,
-            3,
-            4,
-          ],
-          [
-            5,
-            6,
-            7,
-            8,
-            9,
-          ],
-          [
-            1,
-            2,
-            3,
-            4,
-          ],
-          [
-            5,
-            6,
-            7,
-            8,
-            9,
-          ],
-          [
-            1,
-            2,
-            3,
-            4,
-          ],
-          [
-            5,
-            6,
-            7,
-            8,
-            9,
-          ],
-          [
-            1,
-            2,
-            3,
-            4,
-          ],
-          [
-            5,
-            6,
-            7,
-            8,
-            9,
-          ],
-          [
-            1,
-            2,
-            3,
-            4,
-          ],
-          [
-            5,
-            6,
-            7,
-            8,
-            9,
-          ],
-        ]}
-        headings={headings}
+        data={stubData}
+        headings={stubHeadings}
         style={{
           maxHeight: 300,
           overflowX: 'visible',

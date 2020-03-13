@@ -33,7 +33,10 @@ import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspec
 import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
 
 import {
-  DISPLAY_10K, DISPLAY_DAVE_CA, DISPLAY_SUMMARY_PAGE, CASE_LIMIT_API,
+  CASE_LIMIT_API,
+  DISPLAY_10K,
+  DISPLAY_DAVE_CA,
+  DISPLAY_SUMMARY_PAGE,
 } from '@ncigdc/utils/constants';
 
 export type TProps = {

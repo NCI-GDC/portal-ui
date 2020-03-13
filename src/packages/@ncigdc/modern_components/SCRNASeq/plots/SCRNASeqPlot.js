@@ -6,52 +6,23 @@ import Plotly from 'plotly.js/lib/index-basic';
 import createPlotlyComponent from 'react-plotly.js/factory';
 
 import { Column, Row } from '@ncigdc/uikit/Flex';
-import { theme } from '@ncigdc/theme';
 
 import { DownloadButton, ToolbarButton } from '../toolbar';
+import * as common from './common';
 
 // setup Plotly layout & config
 
 const Plot = createPlotlyComponent(Plotly);
 
-const layoutDefaults = {
-  axisFont: {
-    color: '#767676',
-  },
-  font: {
-    color: theme.greyScale2,
-    family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-  },
-};
-
-layoutDefaults.axisStyles = {
-  autorange: true,
-  gridcolor: theme.greyScale6,
-  gridwidth: 2,
-  linecolor: 'gray',
-  linewidth: 2,
-  tickfont: layoutDefaults.axisFont,
-  titlefont: layoutDefaults.axisFont,
-  type: 'linear',
-  zerolinecolor: theme.greyScale4,
-  zerolinewidth: 2,
-};
-
 const getLayout = dataType => {
   const dataTypeCaps = dataType.toUpperCase();
-  const { axisFont, axisStyles, font } = layoutDefaults;
+  const { axisFont, axisStyles, font } = common.layoutDefaults;
   return {
+    ...common.layout,
     height: 500,
-    hovermode: 'closest',
     legend: {
       ...font,
       ...axisFont,
-    },
-    margin: {
-      b: 70,
-      l: 70,
-      r: 20,
-      t: 60,
     },
     name: 'scrna_seq',
     title: {
@@ -70,63 +41,25 @@ const getLayout = dataType => {
   };
 };
 
-const config = {
-  displaylogo: false,
-  displayModeBar: false,
-  showLink: false,
-  toImageButtonOptions: {
-    filename: 'scrna_seq',
-    format: 'svg', // one of png, svg, jpeg, webp
-  },
-};
-
 // setup custom toolbar
 
-const toolbarButtons = [
-  // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
-  {
-    attr: 'zoom',
-    faClass: 'fa-undo',
-    label: 'Reset Axes',
-    name: 'resetScale2d',
-    val: 'reset',
-  },
-  {
-    attr: 'dragmode',
-    faClass: 'fa-arrows',
-    label: 'Pan',
-    name: 'pan2d',
-    val: 'pan',
-  },
-  {
-    attr: 'dragmode',
-    faClass: 'fa-search',
-    label: 'Zoom',
-    name: 'zoom2d',
-    val: 'zoom',
-  },
-  {
-    attr: 'zoom',
-    faClass: 'fa-search-plus',
-    label: 'Zoom In',
-    name: 'zoomIn2d',
-    val: 'in',
-  },
-  {
-    attr: 'zoom',
-    faClass: 'fa-search-minus',
-    label: 'Zoom Out',
-    name: 'zoomOut2d',
-    val: 'out',
-  },
-  {
-    faClass: 'fa-download',
-    label: 'Download',
-    name: 'download',
-  },
-];
+const getToolbarButtons = () => {
+  const {
+    download, pan, reset, zoom, zoomIn, zoomOut,
+  } = common.toolbarButtons;
+  return [
+    reset,
+    pan,
+    zoom,
+    zoomIn,
+    zoomOut,
+    download,
+  ];
+};
 
-const styleData = (input = []) => input.map(row => ({
+const toolbarButtons = getToolbarButtons();
+
+const getDataWithMarkers = (input = []) => input.map(row => ({
   ...row,
   marker: {
     opacity: 0.75,
@@ -165,7 +98,7 @@ export default class SCRNASeqChart extends Component {
   render() {
     const { data, dataType } = this.props;
 
-    const styledData = styleData(data);
+    const dataWithMarkers = getDataWithMarkers(data);
 
     return (
       <Column>
@@ -194,8 +127,8 @@ export default class SCRNASeqChart extends Component {
             )))}
         </Row>
         <Plot
-          config={config}
-          data={styledData}
+          config={common.config}
+          data={dataWithMarkers}
           layout={getLayout(dataType)}
           onInitialized={this.onInitialized}
           />

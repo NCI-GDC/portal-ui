@@ -14,7 +14,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import withRouter from '@ncigdc/utils/withRouter';
 
 import Tabs from '@ncigdc/uikit/Tabs';
-import { SCRNASeqPlot, SequencingSaturationPlot } from './plots';
+import { MedianGenesPlot, SCRNASeqPlot, SequencingSaturationPlot } from './plots';
 import { ClusterTable } from './tables';
 import './style.css';
 
@@ -91,7 +91,6 @@ const SCRNASeq = ({
                     padding: 20,
                   }}
                   >
-                  <h3 style={{ marginTop: 0 }}>Sequencing Saturation</h3>
                   <SequencingSaturationPlot />
                 </div>
                 <div
@@ -102,7 +101,7 @@ const SCRNASeq = ({
                     padding: 20,
                   }}
                   >
-                  <h3 style={{ marginTop: 0 }}>Median Genes per Cell</h3>
+                  <MedianGenesPlot />
                 </div>
               </Row>
             </div>

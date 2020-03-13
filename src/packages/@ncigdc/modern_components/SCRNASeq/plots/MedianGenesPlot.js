@@ -12,7 +12,7 @@ const data = [
       width: 3,
     },
     mode: 'lines',
-    name: '',
+    name: 'GRCh38',
     x: [
       0,
       2892,
@@ -30,56 +30,47 @@ const data = [
     ],
     y: [
       0,
-      0.09450769010047018,
-      0.15377258533207913,
-      0.1740928348556821,
-      0.24186995018330684,
-      0.3000755711056219,
-      0.35039722540721835,
-      0.3943605279659034,
-      0.4298859268029742,
-      0.4328746658010797,
-      0.46693992783118726,
-      0.49726807871181444,
-      0.5243126238631172,
+      506,
+      721,
+      786,
+      992,
+      1148,
+      1276,
+      1380,
+      1456,
+      1461,
+      1535,
+      1593,
+      1644,
     ],
   },
 ];
 
 const layout = {
   ...common.layoutSmallPlots,
-  shapes: [
-    {
-      line: {
-        color: 'rgb(128, 128, 128)',
-        dash: 'dot',
-        width: 4,
-      },
-      type: 'line',
-      x0: 0,
-      x1: 28918,
-      y0: 0.9,
-      y1: 0.9,
-    },
-  ],
+  legend: {
+    ...common.layoutDefaults.font,
+    ...common.layoutDefaults.axisFont,
+  },
+  name: 'median_genes',
+  showlegend: true,
   title: {
     font: common.layoutDefaults.font,
-    text: 'Sequencing Saturation',
+    text: 'Median Genes per Cell',
   },
   xaxis: {
     ...common.layoutDefaults.axisStyles,
-    fixedrange: false,
+    fixedrange: true,
     title: 'Mean Reads per Cell',
   },
   yaxis: {
     ...common.layoutDefaults.axisStyles,
-    fixedrange: false,
-    range: [0, 1],
-    title: 'Sequencing Saturation',
+    fixedrange: true,
+    title: 'Median Genes per Cell',
   },
 };
 
-const SequencingSaturationPlot = () => (
+const MedianGenesPlot = () => (
   <Plot
     config={common.configSmallPlots}
     data={data}
@@ -88,4 +79,4 @@ const SequencingSaturationPlot = () => (
     />
 );
 
-export default SequencingSaturationPlot;
+export default MedianGenesPlot;

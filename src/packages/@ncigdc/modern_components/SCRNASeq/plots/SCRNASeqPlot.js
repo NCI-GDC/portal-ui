@@ -10,9 +10,9 @@ import { theme } from '@ncigdc/theme';
 
 import { DownloadButton, ToolbarButton } from '../toolbar';
 
-const Plot = createPlotlyComponent(Plotly);
-
 // setup Plotly layout & config
+
+const Plot = createPlotlyComponent(Plotly);
 
 const layoutDefaults = {
   axisFont: {

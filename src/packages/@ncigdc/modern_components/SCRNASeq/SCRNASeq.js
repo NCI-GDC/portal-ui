@@ -21,6 +21,15 @@ import './style.css';
 // temporarily importing data
 import stubData from './stubData';
 
+const containerStyle = {
+  alignItems: 'center',
+  border: '1px solid #c8c8c8',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  padding: 20,
+};
+
 const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
   withRouter,
@@ -58,54 +67,49 @@ const SCRNASeq = ({
           contentStyle={{
             border: 'none',
             borderTop: '1px solid #c8c8c8',
-            padding: '20px 0',
+            padding: '20px 0 0',
           }}
           onTabClick={i => setActiveTab(i)}
           tabs={[<span key="Analysis">Analysis</span>, <span key="Summary">Summary</span>]}
           >
-          {activeTab === 0 && data.length > 0 && (
-            <div>
-              <div
-                style={{
-                  alignItems: 'center',
-                  border: '1px solid #c8c8c8',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  padding: 20,
-                }}
-                >
-                <SCRNASeqPlot
-                  data={data}
-                  dataType={dataType}
-                  />
-                <h3>Top Features by Cluster (Log2 fold-change, p-value)</h3>
-                <ClusterTable />
-              </div>
-              <Row style={{ marginTop: 20 }}>
-                <div
-                  style={{
-                    border: '1px solid #c8c8c8',
-                    flexGrow: 1,
-                    marginRight: 10,
-                    padding: 20,
-                  }}
-                  >
-                  <SequencingSaturationPlot />
+          {data.length > 0 &&
+            (activeTab === 0
+              ? (
+                <div>
+                  <div
+                    style={containerStyle}
+                    >
+                    <SCRNASeqPlot
+                      data={data}
+                      dataType={dataType}
+                      />
+                    <h3>Top Features by Cluster (Log2 fold-change, p-value)</h3>
+                    <ClusterTable />
+                  </div>
+                  <Row style={{ marginTop: 20 }}>
+                    <div
+                      style={{
+                        ...containerStyle,
+                        flexGrow: 1,
+                        marginRight: 10,
+                      }}
+                      >
+                      <SequencingSaturationPlot />
+                    </div>
+                    <div
+                      style={{
+                        ...containerStyle,
+                        flexGrow: 1,
+                        marginLeft: 10,
+                      }}
+                      >
+                      <MedianGenesPlot />
+                    </div>
+                  </Row>
                 </div>
-                <div
-                  style={{
-                    border: '1px solid #c8c8c8',
-                    flexGrow: 1,
-                    marginLeft: 10,
-                    padding: 20,
-                  }}
-                  >
-                  <MedianGenesPlot />
-                </div>
-              </Row>
-            </div>
-          )}
+            ) : (
+              <div>Summary</div>
+            ))}
         </Tabs>
       </Column>
     </Row>

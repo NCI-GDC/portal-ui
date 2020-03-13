@@ -7,39 +7,46 @@ import createPlotlyComponent from 'react-plotly.js/factory';
 
 import { Column, Row } from '@ncigdc/uikit/Flex';
 import { theme } from '@ncigdc/theme';
-import './style.css';
 
-import ToolbarButton from './ToolbarButton';
-import DownloadButton from './DownloadButton';
+import { DownloadButton, ToolbarButton } from '../toolbar';
 
 const Plot = createPlotlyComponent(Plotly);
 
-const getLayout = dataType => {
-  const dataTypeCaps = dataType.toUpperCase();
-  const font = {
+// setup Plotly layout & config
+
+const layoutDefaults = {
+  axisFont: {
+    color: '#767676',
+  },
+  font: {
     color: theme.greyScale2,
     family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-  };
-  const axisFont = {
-    ...font,
-    color: '#767676',
-  };
-  const axisStyles = {
-    autorange: true,
-    gridcolor: theme.greyScale6,
-    gridwidth: 2,
-    linecolor: 'gray',
-    linewidth: 2,
-    tickfont: axisFont,
-    titlefont: axisFont,
-    type: 'linear',
-    zerolinecolor: theme.greyScale4,
-    zerolinewidth: 2,
-  };
+  },
+};
+
+layoutDefaults.axisStyles = {
+  autorange: true,
+  gridcolor: theme.greyScale6,
+  gridwidth: 2,
+  linecolor: 'gray',
+  linewidth: 2,
+  tickfont: layoutDefaults.axisFont,
+  titlefont: layoutDefaults.axisFont,
+  type: 'linear',
+  zerolinecolor: theme.greyScale4,
+  zerolinewidth: 2,
+};
+
+const getLayout = dataType => {
+  const dataTypeCaps = dataType.toUpperCase();
+  const { axisFont, axisStyles, font } = layoutDefaults;
   return {
     height: 500,
     hovermode: 'closest',
-    legend: { axisFont },
+    legend: {
+      ...font,
+      ...axisFont,
+    },
     margin: {
       b: 70,
       l: 70,
@@ -71,8 +78,9 @@ const config = {
     filename: 'scrna_seq',
     format: 'svg', // one of png, svg, jpeg, webp
   },
-
 };
+
+// setup custom toolbar
 
 const toolbarButtons = [
   // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
@@ -118,6 +126,14 @@ const toolbarButtons = [
   },
 ];
 
+const styleData = (input = []) => input.map(row => ({
+  ...row,
+  marker: {
+    opacity: 0.75,
+    size: 10,
+  },
+}));
+
 export default class SCRNASeqChart extends Component {
   state = {
     graphDiv: '',
@@ -149,6 +165,8 @@ export default class SCRNASeqChart extends Component {
   render() {
     const { data, dataType } = this.props;
 
+    const styledData = styleData(data);
+
     return (
       <Column>
         <Row
@@ -177,7 +195,7 @@ export default class SCRNASeqChart extends Component {
         </Row>
         <Plot
           config={config}
-          data={data}
+          data={styledData}
           layout={getLayout(dataType)}
           onInitialized={this.onInitialized}
           />

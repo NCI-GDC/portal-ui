@@ -248,7 +248,9 @@ const ExplorePageComponent = ({
               {
                 component: isCaseLimitExceeded || isControlledAccess
                   ? (
-                    <CaseLimitMessages />
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
                   )
                   : hasGeneHits
                     ? (
@@ -265,7 +267,9 @@ const ExplorePageComponent = ({
               {
                 component: isCaseLimitExceeded || isControlledAccess
                   ? (
-                    <CaseLimitMessages />
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
                   )
                   : hasSsmsHits
                     ? (
@@ -285,7 +289,9 @@ const ExplorePageComponent = ({
               {
                 component: isCaseLimitExceeded || isControlledAccess
                   ? (
-                    <CaseLimitMessages />
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
                   )
                   : (
                     <OncogridTab />

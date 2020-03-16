@@ -46,6 +46,7 @@ const Tabs = ({
           {Children.map(tabs, (child, i) => (
             <Tab
               active={i === activeIndex}
+              borderStyle={borderStyle}
               className="test-tab"
               onClick={() => (onTabClick ? onTabClick(i) : () => {})}
               sibling={i}
@@ -76,6 +77,7 @@ const Tabs = ({
         {Children.map(tabs, (child, i) => (
           <Tab
             active={i === activeIndex}
+            borderStyle={borderStyle}
             className="test-tab"
             onClick={() => (onTabClick ? onTabClick(i) : () => {})}
             sibling={i}

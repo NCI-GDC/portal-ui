@@ -1,5 +1,6 @@
 import React from 'react';
 import controlledAccessImg from '@ncigdc/theme/images/icon-controlled-data.svg';
+import LoginButton from '@ncigdc/components/LoginButton';
 import RestrictionMessage from './RestrictionMessage';
 
 const ControlledAccessMessage = () => (
@@ -16,7 +17,7 @@ const ControlledAccessMessage = () => (
     <React.Fragment>
       If you have access
       {' '}
-      <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/#facet-filters">log in to view controlled data</a>
+      <LoginButton><span style={{ textDecoration: 'underline' }}>log in to view controlled data</span></LoginButton>
       .
     </React.Fragment>
   </RestrictionMessage>

@@ -92,7 +92,7 @@ export const dataStub = [
   .map(stub => ({
     ...stub,
     cases_clinical: 'open',
-    genes_mutations: stub.genes_mutations || 'in_progress',
+    genes_mutations: stub.genes_mutations || 'in_process',
   }));
 
 export const formatData = ({
@@ -114,9 +114,9 @@ export const formatData = ({
         )
         : (
           <CAIconMessage faClass="fa-lock">
-            Controlled. Please
+            Controlled.
             {' '}
-            <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" rel="noopener noreferrer" target="_blank">apply for access</a>
+            <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" rel="noopener noreferrer" target="_blank">Apply for access</a>
             .
           </CAIconMessage>
       )
@@ -142,4 +142,4 @@ export const formatData = ({
   },
 }))
   .filter((datum, i) => !(isAuth &&
-      data[i].genes_mutations === 'in_progress'));
+      data[i].genes_mutations === 'in_process'));

@@ -8,18 +8,28 @@ const CAMessage = ({
 }) => (isAuth
   ? userAccessList.length === 0
     ? (
-      <h3 style={{ marginTop: 0 }}>
+      <p
+        style={{
+          fontSize: '18px',
+          marginTop: 0,
+        }}
+        >
         <strong>
         You do not have access to any controlled datasets, please apply for access.
         </strong>
-      </h3>
+      </p>
     )
     : (
-      <h3 style={{ marginTop: 0 }}>
+      <p
+        style={{
+          fontSize: '18px',
+          marginTop: 0,
+        }}
+        >
         <strong>
       Select a single controlled access dataset you wish to explore with the open dataset(s):
         </strong>
-      </h3>
+      </p>
     )
   : (
     <p>

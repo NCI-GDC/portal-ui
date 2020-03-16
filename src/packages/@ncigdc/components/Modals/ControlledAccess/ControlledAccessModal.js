@@ -77,7 +77,7 @@ const ControlledAccessModal = ({
 
   return (
     <BaseModal
-      closeText="Close"
+      closeText="Cancel"
       extraButtons={isAuth
         ? (
           <Button
@@ -107,7 +107,7 @@ const ControlledAccessModal = ({
           isAuth,
           userAccessList,
         })}
-        tableContainerStyle={{ maxHeight: 300 }}
+        tableContainerStyle={{ maxHeight: 350 }}
         tableId="controlled-access-table"
         />
       {isAuth || (

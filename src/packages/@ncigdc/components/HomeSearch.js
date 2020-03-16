@@ -107,7 +107,7 @@ const HomeSearch = compose(
         }}
         placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
         type="text"
-        value={state.query}
+        value={state.query || ''}
         />
 
       {state.query && (

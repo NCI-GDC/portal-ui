@@ -5468,56 +5468,6 @@ td {
     font-size: 1rem;
   }
 }
-.header-banner {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  background-color: #265986;
-  color: white;
-  padding: 1rem;
-  transition: all 0.25s ease;
-  border-bottom: 1px solid #ebebeb;
-}
-.header-banner .icon {
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  padding-left: 5px;
-  font-size: 1.2em;
-}
-.header-banner .message {
-  -webkit-flex: 32;
-      -ms-flex: 32;
-          flex: 32;
-}
-.header-banner.dismissed,
-.header-banner.ng-enter {
-  height: 0px;
-  overflow: hidden;
-  padding: 0;
-  border-bottom: 0;
-}
-.header-banner.warning {
-  background-color: #D39C3F;
-}
-.header-banner.error {
-  background-color: #83001E;
-}
-.header-banner-link {
-  margin-left: 0.6rem;
-  text-decoration: underline;
-  cursor: pointer;
-}
-.header-banner-dismiss {
-  padding-right: 5px;
-  cursor: pointer;
-}
-.header-banner-dismiss:hover {
-  text-decoration: underline;
-}
 .banner-title-link {
   color: #bb0e3d;
   font-size: 0.8em;

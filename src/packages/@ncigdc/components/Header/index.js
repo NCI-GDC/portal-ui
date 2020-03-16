@@ -36,7 +36,9 @@ import { AnalysisIcon } from '@ncigdc/theme/icons';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
 import { Row } from '@ncigdc/uikit/Flex';
+import { DISPLAY_DAVE_CA } from '@ncigdc/utils/constants';
 
+import SectionBanner from './SectionBanner';
 import './styles.scss';
 
 const styles = {
@@ -238,6 +240,8 @@ const Header = ({
           </ul>
         </nav>
       </div>
+
+      {DISPLAY_DAVE_CA && <SectionBanner />}
     </header>
 
     <div

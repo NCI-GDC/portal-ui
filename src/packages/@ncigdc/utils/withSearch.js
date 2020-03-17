@@ -53,8 +53,11 @@ export const withSearch = passedInState => {
       },
     })),
     withHandlers({
-      setQuery: ({ setState }) => q => {
-        setState(s => ({ ...s, query: q.trim() }));
+      setQuery: ({ setState }) => query => {
+        setState(s => ({
+          ...s,
+          query,
+        }));
       },
       reset: ({ setState }) => () => {
         setState(s => ({
@@ -99,7 +102,7 @@ export const withSearch = passedInState => {
         timeOfMostRecentRequest = new Date().getTime();
         if (query) {
           setState(s => ({ ...s, isLoading: true }));
-          fetchResults(query, timeOfMostRecentRequest);
+          fetchResults(query.trim(), timeOfMostRecentRequest);
         } else if (
           (results && results.length) ||
           (fileHistoryResult && fileHistoryResult.length)

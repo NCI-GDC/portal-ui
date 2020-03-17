@@ -12,8 +12,9 @@ import {
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import withRouter from '@ncigdc/utils/withRouter';
-
 import Tabs from '@ncigdc/uikit/Tabs';
+
+import ScrnaDevSettings from './ScrnaDevSettings';
 import { MedianGenesPlot, SCRNASeqPlot, SequencingSaturationPlot } from './plots';
 import { ClusterTable } from './tables';
 import './style.css';
@@ -43,7 +44,6 @@ const enhance = compose(
       setData(stubData[dataType]);
     },
   }),
-
 );
 
 const SCRNASeq = ({
@@ -72,6 +72,11 @@ const SCRNASeq = ({
           onTabClick={i => setActiveTab(i)}
           tabs={[<span key="Analysis">Analysis</span>, <span key="Summary">Summary</span>]}
           >
+          <ScrnaDevSettings
+            dataType={dataType}
+            dataTypes={dataTypes}
+            handleDataButton={handleSetData(dataType)} // TEMP
+            />
           {data.length > 0 &&
             (activeTab === 0
               ? (

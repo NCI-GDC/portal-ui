@@ -13,14 +13,13 @@ import withRouter from '@ncigdc/utils/withRouter';
 
 import SCRNASeqChart from './SCRNASeqChart';
 import dataObj from './data';
+import ScrnaDevSettings from './ScrnaDevSettings';
 
 // start - for viz demo
 // import pre-made clustered data,
 // and use buttons to switch between datasets
 
 const dataTypes = Object.keys(dataObj);
-// const showDataButtons = localStorage.REACT_APP_DISPLAY_SCRNA_SEQ_BUTTONS || false;
-const showDataButtons = true;
 // end - for viz demo
 
 const styleData = (input = []) => input.map(row => ({
@@ -69,20 +68,11 @@ class SCRNASeq extends Component {
             }}
             >
             <h1 style={{ margin: '0 0 20px' }}>Single Cell RNA Sequencing</h1>
-            {showDataButtons && dataTypes.length > 0 && (
-              // for viz demo
-              <Row>
-                {dataTypes.map(dType => (
-                  <button
-                    key={dType}
-                    onClick={() => this.handleDataButton(dType)}
-                    type="button"
-                    >
-                    {dType}
-                  </button>
-                ))}
-              </Row>
-            )}
+            <ScrnaDevSettings
+              dataType={dataType}
+              dataTypes={dataTypes}
+              handleDataButton={this.handleDataButton}
+              />
             {data.length > 0 && (
               <SCRNASeqChart
                 data={data}

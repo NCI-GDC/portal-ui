@@ -6,7 +6,7 @@ import {
   compose,
   pure,
   setDisplayName,
-  withHandlers,
+  withPropsOnChange,
   withState,
 } from 'recompose';
 
@@ -22,6 +22,8 @@ import './style.css';
 // temporarily importing data
 import stubData from './stubData';
 
+const dataTypes = Object.keys(stubData);
+
 const containerStyle = {
   alignItems: 'center',
   border: '1px solid #c8c8c8',
@@ -36,18 +38,14 @@ const enhance = compose(
   withRouter,
   pure,
   withState('activeTab', 'setActiveTab', 0),
-  withState('data', 'setData', stubData.umap),
   withState('dataType', 'setDataType', 'umap'),
-  withHandlers({
-    handleSetData: ({ setData, setDataType }) => dataType => {
-      setDataType(dataType);
-      setData(stubData[dataType]);
-    },
-  }),
+  withPropsOnChange(['dataType'], ({ dataType }) => ({
+    data: stubData[dataType],
+  })),
 );
 
 const SCRNASeq = ({
-  activeTab, data, dataType, setActiveTab,
+  activeTab, data, dataType, setActiveTab, setDataType,
 }) => (
   <Column style={{ marginBottom: '1rem' }}>
     <Row
@@ -75,7 +73,7 @@ const SCRNASeq = ({
           <ScrnaDevSettings
             dataType={dataType}
             dataTypes={dataTypes}
-            handleDataButton={handleSetData(dataType)} // TEMP
+            handleDataButton={setDataType}
             />
           {data.length > 0 &&
             (activeTab === 0

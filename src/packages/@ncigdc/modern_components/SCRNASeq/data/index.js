@@ -5,11 +5,11 @@ import umap from './umap';
 import pca from './pca';
 
 const data = {
-  tsne,
   // tsne3d,
-  umap,
   // umap3d,
   pca,
+  tsne,
+  umap,
 };
 
 export default data;

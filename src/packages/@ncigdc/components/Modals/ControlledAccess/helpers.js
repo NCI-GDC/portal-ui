@@ -131,7 +131,8 @@ export const formatData = ({
     select: userCAPrograms.includes(datum.program)
       ? (
         <input
-          checked={selectedModalPrograms.includes(datum.program)}
+          checked={userCAPrograms.length === 1 ||
+            selectedModalPrograms.includes(datum.program)}
           name="controlled-access-programs"
           onChange={handleProgramSelect}
           type="radio"

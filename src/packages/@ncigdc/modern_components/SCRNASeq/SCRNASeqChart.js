@@ -65,32 +65,20 @@ const getLayout = dataType => {
 
 const config = {
   displaylogo: false,
-  displayModeBar: 'hover',
-  modeBarButtonsToRemove: [
-    'sendDataToCloud',
-    'zoom2d',
-    'pan2d',
-    'zoomIn2d',
-    'zoomOut2d',
-    'resetScale2d',
-    'toImage',
-  ],
+  displayModeBar: false,
   showLink: false,
   toImageButtonOptions: {
     filename: 'scrna_seq',
     format: 'svg', // one of png, svg, jpeg, webp
   },
-
 };
 
 const toolbarButtons = [
   // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
   {
-    attr: 'zoom',
     faClass: 'fa-undo',
-    label: 'Reset Axes',
-    name: 'resetScale2d',
-    val: 'reset',
+    label: 'Reset',
+    name: 'react',
   },
   {
     attr: 'dragmode',
@@ -150,6 +138,9 @@ export default class SCRNASeqChart extends Component {
         format,
         scale,
       });
+    } else if (name === 'react') {
+      const { data, dataType } = this.props;
+      Plotly.react(graphDiv, data, getLayout(dataType));
     } else {
       ModeBarButtons[name].click(graphDiv, e);
     }
@@ -181,7 +172,7 @@ export default class SCRNASeqChart extends Component {
                 key={btn.name}
                 onToolbarClick={this.handleToolbarClick}
                 />
-            )))}
+              )))}
         </Row>
         <Plot
           config={config}

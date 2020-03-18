@@ -37,7 +37,7 @@ const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
   withRouter,
   pure,
-  withState('activeTab', 'setActiveTab', 0),
+  withState('activeTab', 'setActiveTab', 1),
   withState('dataType', 'setDataType', 'umap'),
   withPropsOnChange(['dataType'], ({ dataType }) => ({
     data: stubData[dataType],

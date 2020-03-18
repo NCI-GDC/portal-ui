@@ -1,6 +1,7 @@
 /* @flow */
 import React from 'react';
 import Relay from 'react-relay/classic';
+import { connect } from 'react-redux';
 import { get, isEqual } from 'lodash';
 import {
   compose,
@@ -31,9 +32,14 @@ import ResizeDetector from 'react-resize-detector';
 import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
 import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
+import { setModal } from '@ncigdc/dux/modal';
+import ControlledAccessModal from '@ncigdc/components/Modals/ControlledAccess';
 
 import {
-  DISPLAY_10K, DISPLAY_SUMMARY_PAGE, CASE_LIMIT_API,
+  CASE_LIMIT_API,
+  DISPLAY_10K,
+  DISPLAY_DAVE_CA,
+  DISPLAY_SUMMARY_PAGE,
 } from '@ncigdc/utils/constants';
 
 export type TProps = {
@@ -125,10 +131,34 @@ const ClinicalAggregationsWithFacetData = withFacetData(props => (
 const enhance = compose(
   setDisplayName('EnhancedExplorePageComponent'),
   withRouter,
+  connect(state => ({
+    user: state.auth.user,
+  })),
   withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
+  withState('activeControlledPrograms', 'setActiveControlledPrograms', []),
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
+
+      // open controlled access modal
+      const {
+        activeControlledPrograms,
+        dispatch,
+        query,
+        query: { controlled: isControlledAccess = false },
+        setActiveControlledPrograms,
+        user,
+      } = this.props;
+
+      if (isControlledAccess && DISPLAY_DAVE_CA) {
+        dispatch(setModal(<ControlledAccessModal
+          activeControlledPrograms={activeControlledPrograms}
+          dispatch={dispatch}
+          query={query}
+          setActiveControlledPrograms={setActiveControlledPrograms}
+          user={user}
+          />));
+      }
     },
     componentWillReceiveProps(nextProps) {
       const { filters } = this.props;
@@ -140,11 +170,17 @@ const enhance = compose(
 );
 
 const ExplorePageComponent = ({
+  activeControlledPrograms,
+  dispatch,
   filters,
   maxFacetsPanelHeight,
   push,
+  query,
+  query: { controlled = false },
   relay,
+  setActiveControlledPrograms,
   setMaxFacetsPanelHeight,
+  user,
   viewer,
 }) => {
   const hasCaseHits = get(viewer, 'explore.cases.hits.total', 0);
@@ -152,6 +188,7 @@ const ExplorePageComponent = ({
   const hasSsmsHits = get(viewer, 'explore.ssms.hits.total', 0);
 
   const isCaseLimitExceeded = DISPLAY_10K && hasCaseHits > CASE_LIMIT_API;
+  const isControlledAccess = DISPLAY_DAVE_CA && controlled;
 
   return (
     <SearchPage
@@ -245,9 +282,11 @@ const ExplorePageComponent = ({
                 text: `Cases (${hasCaseHits.toLocaleString()})`,
               },
               {
-                component: isCaseLimitExceeded
+                component: isCaseLimitExceeded || isControlledAccess
                   ? (
-                    <CaseLimitMessages />
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
                   )
                   : hasGeneHits
                     ? (
@@ -262,9 +301,11 @@ const ExplorePageComponent = ({
                   : ` (${hasGeneHits.toLocaleString()})`}`,
               },
               {
-                component: isCaseLimitExceeded
+                component: isCaseLimitExceeded || isControlledAccess
                   ? (
-                    <CaseLimitMessages />
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
                   )
                   : hasSsmsHits
                     ? (
@@ -282,9 +323,11 @@ const ExplorePageComponent = ({
                   : ` (${hasSsmsHits.toLocaleString()})`}`,
               },
               {
-                component: isCaseLimitExceeded
+                component: isCaseLimitExceeded || isControlledAccess
                   ? (
-                    <CaseLimitMessages />
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
                   )
                   : (
                     <OncogridTab />
@@ -296,6 +339,23 @@ const ExplorePageComponent = ({
             queryParam="searchTableTab"
             tabToolbar={(
               <Row>
+                {isControlledAccess && DISPLAY_DAVE_CA && (
+                  <Button
+                    onClick={() => dispatch(setModal(<ControlledAccessModal
+                      activeControlledPrograms={activeControlledPrograms}
+                      dispatch={dispatch}
+                      query={query}
+                      setActiveControlledPrograms={setActiveControlledPrograms}
+                      user={user}
+                      />))}
+                    style={{
+                      backgroundColor: 'rebeccapurple',
+                      marginRight: 5,
+                    }}
+                    >
+                    DEV - DAVE-CA
+                  </Button>
+                )}
                 {filters ? (
                   <CreateExploreCaseSetButton
                     disabled={!hasCaseHits}

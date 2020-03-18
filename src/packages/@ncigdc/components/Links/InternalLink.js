@@ -1,9 +1,8 @@
-/* @flow */
-
 import React from 'react';
 import _ from 'lodash';
 import { NavLink as Link } from 'react-router-dom';
 import { stringify } from 'query-string';
+
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 import validAttributes from '@ncigdc/theme/utils/validAttributes';
@@ -22,10 +21,11 @@ const reactRouterLinkProps = [
 ];
 
 const InternalLink = ({
-  pathname,
-  query,
   deepLink,
+  pathname = '',
+  query,
   search,
+  testTag = 'unnamed-component',
   ...rest
 }: TLinkProps) => {
   const q0 = query || {};
@@ -43,6 +43,7 @@ const InternalLink = ({
 
   return (
     <Link
+      data-test={testTag}
       to={{
         pathname,
         search: search || stringify(q),
@@ -57,7 +58,9 @@ const InternalLink = ({
           scrollToId(deepLink);
         }
       }}
-    />
+      >
+      {validAttrProps.children}
+    </Link>
   );
 };
 

@@ -5,51 +5,29 @@ import ModeBarButtons from 'plotly.js/src/components/modebar/buttons';
 import Plotly from 'plotly.js/lib/index-basic';
 import createPlotlyComponent from 'react-plotly.js/factory';
 
-import { Row } from '@ncigdc/uikit/Flex';
-import { theme } from '@ncigdc/theme';
-import './style.css';
+import { Column, Row } from '@ncigdc/uikit/Flex';
 
-import ToolbarButton from './ToolbarButton';
-import DownloadButton from './DownloadButton';
+import { DownloadButton, ToolbarButton } from '../toolbar';
+import * as common from './common';
+
+// setup Plotly layout & config
 
 const Plot = createPlotlyComponent(Plotly);
 
 const getLayout = dataType => {
   const dataTypeCaps = dataType.toUpperCase();
-  const font = {
-    color: theme.greyScale2,
-    family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-  };
-  const axisFont = {
-    ...font,
-    color: '#767676',
-  };
-  const axisStyles = {
-    autorange: true,
-    gridcolor: theme.greyScale6,
-    gridwidth: 2,
-    linecolor: 'gray',
-    linewidth: 2,
-    tickfont: axisFont,
-    titlefont: axisFont,
-    type: 'linear',
-    zerolinecolor: theme.greyScale4,
-    zerolinewidth: 2,
-  };
+  const { axisFont, axisStyles, font } = common.layoutDefaults;
   return {
+    ...common.layout,
     height: 500,
-    hovermode: 'closest',
-    legend: { axisFont },
-    margin: {
-      b: 70,
-      l: 70,
-      r: 20,
-      t: 60,
+    legend: {
+      ...font,
+      ...axisFont,
     },
     name: 'scrna_seq',
     title: {
       font,
-      text: `${dataTypeCaps} Sample Data`,
+      text: `${dataTypeCaps} projection of Cells Colored by Automated Clustering`,
     },
     width: 700,
     xaxis: {
@@ -63,57 +41,31 @@ const getLayout = dataType => {
   };
 };
 
-const config = {
-  displaylogo: false,
-  displayModeBar: false,
-  showLink: false,
-  toImageButtonOptions: {
-    filename: 'scrna_seq',
-    format: 'svg', // one of png, svg, jpeg, webp
-  },
+// setup custom toolbar
+
+const getToolbarButtons = () => {
+  const {
+    download, pan, reset, zoom, zoomIn, zoomOut,
+  } = common.toolbarButtons;
+  return [
+    reset,
+    pan,
+    zoom,
+    zoomIn,
+    zoomOut,
+    download,
+  ];
 };
 
-const toolbarButtons = [
-  // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
-  {
-    faClass: 'fa-undo',
-    label: 'Reset',
-    name: 'react',
+const toolbarButtons = getToolbarButtons();
+
+const getDataWithMarkers = (input = []) => input.map(row => ({
+  ...row,
+  marker: {
+    opacity: 0.75,
+    size: 10,
   },
-  {
-    attr: 'dragmode',
-    faClass: 'fa-arrows',
-    label: 'Pan',
-    name: 'pan2d',
-    val: 'pan',
-  },
-  {
-    attr: 'dragmode',
-    faClass: 'fa-search',
-    label: 'Zoom',
-    name: 'zoom2d',
-    val: 'zoom',
-  },
-  {
-    attr: 'zoom',
-    faClass: 'fa-search-plus',
-    label: 'Zoom In',
-    name: 'zoomIn2d',
-    val: 'in',
-  },
-  {
-    attr: 'zoom',
-    faClass: 'fa-search-minus',
-    label: 'Zoom Out',
-    name: 'zoomOut2d',
-    val: 'out',
-  },
-  {
-    faClass: 'fa-download',
-    label: 'Download',
-    name: 'download',
-  },
-];
+}));
 
 export default class SCRNASeqChart extends Component {
   state = {
@@ -138,9 +90,6 @@ export default class SCRNASeqChart extends Component {
         format,
         scale,
       });
-    } else if (name === 'react') {
-      const { data, dataType } = this.props;
-      Plotly.react(graphDiv, data, getLayout(dataType));
     } else {
       ModeBarButtons[name].click(graphDiv, e);
     }
@@ -149,13 +98,16 @@ export default class SCRNASeqChart extends Component {
   render() {
     const { data, dataType } = this.props;
 
+    const dataWithMarkers = getDataWithMarkers(data);
+
     return (
-      <React.Fragment>
+      <Column>
         <Row
           style={{
             justifyContent: 'flex-end',
             maxWidth: 700,
             position: 'relative',
+            width: 700,
           }}
           >
           {toolbarButtons.map(btn => (btn.name === 'download'
@@ -172,15 +124,15 @@ export default class SCRNASeqChart extends Component {
                 key={btn.name}
                 onToolbarClick={this.handleToolbarClick}
                 />
-              )))}
+            )))}
         </Row>
         <Plot
-          config={config}
-          data={data}
+          config={common.config}
+          data={dataWithMarkers}
           layout={getLayout(dataType)}
           onInitialized={this.onInitialized}
           />
-      </React.Fragment>
+      </Column>
     );
   }
 }

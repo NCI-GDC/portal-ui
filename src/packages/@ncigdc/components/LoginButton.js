@@ -14,16 +14,10 @@ import { setModal } from '@ncigdc/dux/modal';
 /*----------------------------------------------------------------------------*/
 
 const Link = styled.a({
+  cursor: 'pointer',
   textDecoration: 'none',
   transition: 'background-color 0.2s ease',
-  cursor: 'pointer',
 });
-
-const styles = {
-  marginLeft: {
-    marginLeft: '0.7rem',
-  },
-};
 
 const LoginButton = ({ children, dispatch, user }) => (
   <LocationSubscriber>
@@ -43,10 +37,7 @@ const LoginButton = ({ children, dispatch, user }) => (
         {children || (
           <span>
             <LoginIcon />
-            <span
-              className="header-hidden-sm header-hidden-md"
-              style={styles.marginLeft}
-              >
+            <span className="header-hidden-sm header-hidden-md">
               Login
             </span>
           </span>

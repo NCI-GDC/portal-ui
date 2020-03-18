@@ -1,39 +1,55 @@
 // @flow
 
 import React from 'react';
+import withRouter from '@ncigdc/utils/withRouter';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import * as styles from '@ncigdc/theme/mixins';
 import withDropdown from './withDropdown';
 import { Row, Column } from './Flex';
 
 const Dropdown = ({
-  style,
-  selected,
   active,
-  setActive,
-  children,
-  dropdownStyle = {},
-  dropdownClassName = '',
-  button = null,
-  isDisabled = false,
+  activeStyle = {},
   autoclose = true,
-  className,
+  basePath = '',
+  button = null,
+  children,
+  className = '',
+  dropdownClassName = 'dropdown-items',
+  dropdownStyle = {},
+  isDisabled = false,
+  location: { pathname = '' },
+  selected,
+  setActive,
+  style,
 }) => (
   <span
-    className={`${className} dropdown`}
+    className={`dropdown${
+      active ? ' active' : ''}${
+      className ? `${className} ` : ''
+    }`}
     style={{
       position: 'relative',
       ...style,
     }}
     >
     <span onClick={e => !isDisabled && setActive(!active)}>
-      {button || (
-        <Row style={styles.dropdownButton}>
-          <span>{selected}</span>
-          <DownCaretIcon style={{ marginLeft: 'auto' }} />
-        </Row>
-      )}
+      {button
+        ? React.cloneElement(button, {
+          className: `${button.props.className}${active ? ' dropdown-active' : ''}`,
+          style: {
+            ...button.props.style,
+            ...pathname.toLowerCase().includes(basePath.toLowerCase()) && activeStyle,
+          },
+        })
+        : (
+          <Row style={styles.dropdownButton}>
+            <span>{selected}</span>
+            <DownCaretIcon style={{ marginLeft: 'auto' }} />
+          </Row>
+        )}
     </span>
+
     {active && (
       <Column
         className={dropdownClassName}
@@ -49,4 +65,4 @@ const Dropdown = ({
   </span>
 );
 
-export default withDropdown(Dropdown);
+export default withRouter(withDropdown(Dropdown));

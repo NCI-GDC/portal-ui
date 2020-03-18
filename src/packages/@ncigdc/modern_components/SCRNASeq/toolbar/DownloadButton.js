@@ -29,7 +29,9 @@ export default class DownloadButton extends Component {
 
   render() {
     const {
-      faClass, label, name,
+      faClass,
+      label,
+      name,
     } = this.props;
     return (
       <DropDown

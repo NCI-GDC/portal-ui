@@ -14,9 +14,9 @@ import { setModal } from '@ncigdc/dux/modal';
 /*----------------------------------------------------------------------------*/
 
 const Link = styled.a({
+  cursor: 'pointer',
   textDecoration: 'none',
   transition: 'background-color 0.2s ease',
-  cursor: 'pointer',
 });
 
 const styles = {
@@ -45,10 +45,7 @@ const LoginButton = ({ children, dispatch, keepModalOpen = false }) => (
         {children || (
           <span>
             <LoginIcon />
-            <span
-              className="header-hidden-sm header-hidden-md"
-              style={styles.marginLeft}
-              >
+            <span className="header-hidden-sm header-hidden-md">
               Login
             </span>
           </span>

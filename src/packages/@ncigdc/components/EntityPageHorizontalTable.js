@@ -132,11 +132,12 @@ const EntityPageHorizontalTable = ({
                     key={`subheading-${j}`}
                     style={{
                       ...(i > 0 && j === 0 ? dividerStyle : {}),
+                      ...(h.thSubheadingStyle || {}),
                     }}
                     >
                     {s}
                   </Th>
-                ))
+                )),
             )}
             />
         )

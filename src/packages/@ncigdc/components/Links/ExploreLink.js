@@ -23,11 +23,17 @@ export default makeListLink({
   dropDownElements: [
     {
       description: 'Explore Open Data',
+      state: {
+        sectionBannerTitle: 'Explore Open Data',
+      },
     },
     {
       description: 'Explore Controlled & Open Data',
       query: {
         controlled: true,
+      },
+      state: {
+        sectionBannerTitle: 'Explore Controlled & Open Data',
       },
     },
   ],

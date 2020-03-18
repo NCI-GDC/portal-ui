@@ -34,6 +34,7 @@ const HeaderDropdown = ({
       onClick = () => {},
       pathname = '',
       query = {},
+      state = {},
     }) => (
       <DropdownItemStyled
         key={description}
@@ -49,6 +50,7 @@ const HeaderDropdown = ({
             ...baseQuery,
             ...query,
           }}
+          state={state}
           testTag={description.split(' ').join('')}
           >
           {IconComponent && (

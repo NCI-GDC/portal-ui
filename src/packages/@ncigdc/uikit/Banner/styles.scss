@@ -1,0 +1,78 @@
+.header-banner {
+  align-items: center;
+  color: #fff;
+  height: 0;
+  line-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0 1rem;
+  transition: all 0.5s ease;
+
+  &.sectionHeader {
+    box-shadow: inset 0 1px #ccc, inset 0 3px #eee;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  &.notification {
+    border-color: #ebebeb;
+    border-style: solid;
+    border-width: 0 0 1px;
+  }
+
+  &.dismissed,
+  &.ng-enter {
+    border-bottom: 0;
+    height: 0px;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  &.error {
+    background-color: #83001E;
+  }
+
+  &.info {
+    background-color: #265986;
+  }
+
+  &.warning {
+    background-color: #D39C3F;
+    font-weight: bold;
+  }
+
+  a,
+  a:visited {
+    color: white;
+    text-decoration: underline;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .icon {
+    flex: 1;
+    font-size: 1.2em;
+    padding-left: 5px;
+  }
+
+  .message {
+    flex: 32;
+  }
+
+  &-link {
+    cursor: pointer;
+    margin-left: 0.6rem;
+    text-decoration: underline;
+  }
+
+  &-dismiss {
+    cursor: pointer;
+    padding-right: 5px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

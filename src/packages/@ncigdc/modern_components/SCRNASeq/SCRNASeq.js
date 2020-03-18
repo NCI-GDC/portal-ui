@@ -45,7 +45,11 @@ const enhance = compose(
 );
 
 const SCRNASeq = ({
-  activeTab, data, dataType, setActiveTab, setDataType,
+  activeTab,
+  data,
+  dataType,
+  setActiveTab,
+  setDataType,
 }) => (
   <Column style={{ marginBottom: '1rem' }}>
     <Row

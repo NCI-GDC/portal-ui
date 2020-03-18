@@ -44,8 +44,11 @@ const GDCAppsDropdown = () => (
   <Dropdown
     button={(
       <DropDownButton>
-        <i className="icon-gdc-apps-menu" style={{ paddingRight: '4px' }} />
-        <span className="header-hidden-sm header-hidden-md" data-translate>
+        <i className="icon-gdc-apps-menu" />
+        <span
+          className="header-hidden-sm header-hidden-md"
+          data-translate
+          >
           GDC Apps
         </span>
       </DropDownButton>

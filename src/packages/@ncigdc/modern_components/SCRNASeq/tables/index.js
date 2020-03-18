@@ -1,3 +1,1 @@
-import ClusterTable from './ClusterTable';
-
-export { ClusterTable };
+export { default as ClusterTable } from './ClusterTable';

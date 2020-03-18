@@ -10,7 +10,7 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import withRouter from '@ncigdc/utils/withRouter';
 import { WithSize } from '@ncigdc/utils/withSize';
 import { setFilter, mergeQuery, removeFilter } from '@ncigdc/utils/filters';
-import { removeEmptyKeys } from '@ncigdc/utils/removeEmptyKeys';
+import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 import StackedBarChart from '@ncigdc/components/Charts/StackedBarChart';
 import ExploreLink, { defaultExploreQuery } from '@ncigdc/components/Links/ExploreLink';
 import styled from '@ncigdc/theme/styled';

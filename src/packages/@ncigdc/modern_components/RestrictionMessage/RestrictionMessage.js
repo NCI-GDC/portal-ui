@@ -1,6 +1,10 @@
 import React from 'react';
 
 const styles = {
+  faLeftAlign: {
+    display: 'inline-block',
+    marginRight: 8,
+  },
   icon: {
     height: 34,
   },
@@ -9,6 +13,9 @@ const styles = {
     paddingBottom: 10,
     paddingLeft: 30,
     width: '100%',
+  },
+  listCompact: {
+    paddingBottom: 0,
   },
   listItem: {
     fontSize: 14,
@@ -32,6 +39,10 @@ const styles = {
     lineHeight: 1.333,
     marginTop: 10,
   },
+  titleLeftAlign: {
+    paddingLeft: 10,
+    textAlign: 'left',
+  },
   wrapper: {
     border: '1px solid rgba(38, 120, 178, 0.27)',
     borderRadius: 5,
@@ -42,30 +53,75 @@ const styles = {
     textAlign: 'center',
     width: 'calc(50% - 28px)',
   },
+  wrapperCompact: {
+    marginBottom: 0,
+    padding: '5px 5px 0',
+  },
+  wrapperFullWidth: {
+    marginLeft: 0,
+    marginRight: 0,
+    maxWidth: '100%',
+    width: '100%',
+  },
 };
 
 const RestrictionMessage = ({
   children,
-  // children need to be React.Fragment
+  // children need to be span elements
+  compact = false,
+  faClass = '',
+  faStyle = {},
+  fullWidth = false,
   icon,
+  leftAlign = false,
   title,
 }) => (
   <div
-    style={styles.wrapper}
+    style={{
+      ...styles.wrapper,
+      ...fullWidth && styles.wrapperFullWidth,
+      ...compact && styles.wrapperCompact,
+    }}
     >
-    <img
-      alt=""
-      src={icon}
-      style={styles.icon}
-      />
+    {faClass
+      ? leftAlign || (
+        <i
+          className={`fa ${faClass}`}
+          style={{
+            ...faStyle,
+          }}
+          />
+      )
+      : (
+        <img
+          alt=""
+          src={icon}
+          style={styles.icon}
+          />
+      )}
     <h3
-      style={styles.title}
+      style={{
+        ...styles.title,
+        ...leftAlign && styles.titleLeftAlign,
+      }}
       >
+      {leftAlign && (
+        <i
+          className={`fa ${faClass}`}
+          style={{
+            ...styles.faLeftAlign,
+            ...faStyle,
+          }}
+          />
+      )}
       {title}
     </h3>
     {children && (
       <ul
-        style={styles.list}
+        style={{
+          ...styles.list,
+          ...compact && styles.listCompact,
+        }}
         >
         {[].concat(children).map((child, i) => (
           <li

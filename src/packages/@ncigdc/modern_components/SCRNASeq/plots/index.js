@@ -1,5 +1,3 @@
-import MedianGenesPlot from './MedianGenesPlot';
-import SCRNASeqPlot from './SCRNASeqPlot';
-import SequencingSaturationPlot from './SequencingSaturationPlot';
-
-export { MedianGenesPlot, SCRNASeqPlot, SequencingSaturationPlot };
+export { default as MedianGenesPlot } from './MedianGenesPlot';
+export { default as SCRNASeqPlot } from './SCRNASeqPlot';
+export { default as SequencingSaturationPlot } from './SequencingSaturationPlot';

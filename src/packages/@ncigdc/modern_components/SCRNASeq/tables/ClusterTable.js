@@ -8,6 +8,7 @@ const ClusterTable = () => {
     subheadings: ['L2FC', 'p-value'],
     title: `Cluster ${i + 1}`,
   }));
+
   const stubHeadings = [
     {
       key: 'feature',

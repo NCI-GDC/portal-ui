@@ -19,12 +19,6 @@ const Link = styled.a({
   transition: 'background-color 0.2s ease',
 });
 
-const styles = {
-  marginLeft: {
-    marginLeft: '0.7rem',
-  },
-};
-
 const LoginButton = ({ children, dispatch, keepModalOpen = false }) => (
   <LocationSubscriber>
     {({ pathname, push }) => (

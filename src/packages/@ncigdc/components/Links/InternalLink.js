@@ -25,6 +25,7 @@ const InternalLink = ({
   pathname = '',
   query,
   search,
+  state,
   testTag = 'unnamed-component',
   ...rest
 }: TLinkProps) => {
@@ -47,6 +48,7 @@ const InternalLink = ({
       to={{
         pathname,
         search: search || stringify(q),
+        state,
       }}
       {...validAttrProps}
       {...validLinkProps}

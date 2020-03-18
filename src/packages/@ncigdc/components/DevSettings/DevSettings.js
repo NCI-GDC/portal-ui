@@ -61,7 +61,7 @@ export default class DevControls extends Component {
         </div>
       )
       : (
-        <p>
+        <p style={{ margin: 0 }}>
           <DevSettingsButton
             buttonClickHandler={() => this.toggleDevSettings()}
             style={openButtonStyle}

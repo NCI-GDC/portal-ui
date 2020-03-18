@@ -7,18 +7,18 @@ const ControlledAccessMessage = () => (
     icon={controlledAccessImg}
     title="This controlled dataset requires dbGaP access"
     >
-    <React.Fragment>
+    <span>
       If you don&lsquo;t have access, follow the instructions for
       {' '}
       <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" target="_blank">obtaining access to controlled data</a>
       .
-    </React.Fragment>
-    <React.Fragment>
+    </span>
+    <span>
       If you have access
       {' '}
       <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/#facet-filters">log in to view controlled data</a>
       .
-    </React.Fragment>
+    </span>
   </RestrictionMessage>
 );
 

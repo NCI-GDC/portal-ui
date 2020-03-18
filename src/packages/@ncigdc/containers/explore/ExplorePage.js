@@ -33,7 +33,10 @@ import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspec
 import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
 
 import {
-  DISPLAY_10K, DISPLAY_SUMMARY_PAGE, CASE_LIMIT_API,
+  CASE_LIMIT_API,
+  DISPLAY_10K,
+  DISPLAY_DAVE_CA,
+  DISPLAY_SUMMARY_PAGE,
 } from '@ncigdc/utils/constants';
 
 export type TProps = {
@@ -152,6 +155,7 @@ const ExplorePageComponent = ({
   const hasSsmsHits = get(viewer, 'explore.ssms.hits.total', 0);
 
   const isCaseLimitExceeded = DISPLAY_10K && hasCaseHits > CASE_LIMIT_API;
+  const isControlledAccess = DISPLAY_DAVE_CA;
 
   return (
     <SearchPage
@@ -245,9 +249,11 @@ const ExplorePageComponent = ({
                 text: `Cases (${hasCaseHits.toLocaleString()})`,
               },
               {
-                component: isCaseLimitExceeded
+                component: isCaseLimitExceeded || isControlledAccess
                   ? (
-                    <CaseLimitMessages />
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
                   )
                   : hasGeneHits
                     ? (
@@ -262,9 +268,11 @@ const ExplorePageComponent = ({
                   : ` (${hasGeneHits.toLocaleString()})`}`,
               },
               {
-                component: isCaseLimitExceeded
+                component: isCaseLimitExceeded || isControlledAccess
                   ? (
-                    <CaseLimitMessages />
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
                   )
                   : hasSsmsHits
                     ? (
@@ -282,9 +290,11 @@ const ExplorePageComponent = ({
                   : ` (${hasSsmsHits.toLocaleString()})`}`,
               },
               {
-                component: isCaseLimitExceeded
+                component: isCaseLimitExceeded || isControlledAccess
                   ? (
-                    <CaseLimitMessages />
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
                   )
                   : (
                     <OncogridTab />

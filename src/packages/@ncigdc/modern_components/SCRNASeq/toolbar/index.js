@@ -1,6 +1,2 @@
-import DownloadButton from './DownloadButton';
-import ToolbarButton from './ToolbarButton';
-
-export {
-  DownloadButton, ToolbarButton,
-};
+export { default as DownloadButton } from './DownloadButton';
+export { default as ToolbarButton } from './ToolbarButton';

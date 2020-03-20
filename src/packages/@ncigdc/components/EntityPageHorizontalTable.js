@@ -28,7 +28,7 @@ const EntityPageHorizontalTable = ({
   title,
   titleStyle,
   rightComponent,
-  headings,
+  headings = [],
   data,
   emptyMessage = 'No valid data to be shown',
   emptyMessageStyle,
@@ -36,6 +36,7 @@ const EntityPageHorizontalTable = ({
   tableId,
   idKey,
   dividerStyle,
+  showHeadings = true,
   tableContainerStyle = {},
   ...props
 }) => {
@@ -124,6 +125,7 @@ const EntityPageHorizontalTable = ({
               </Th>
             ))}
             id={tableId}
+            showHeadings={showHeadings}
             style={styles.table}
             subheadings={headings.map(
               (h, i) => h.subheadings &&

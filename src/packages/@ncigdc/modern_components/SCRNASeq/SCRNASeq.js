@@ -18,6 +18,7 @@ import ScrnaDevSettings from './ScrnaDevSettings';
 import { MedianGenesPlot, SCRNASeqPlot, SequencingSaturationPlot } from './plots';
 import { ClusterTable } from './tables';
 import './style.css';
+import Counter from './Counter';
 
 // temporarily importing data
 import stubData from './stubData';
@@ -26,10 +27,11 @@ const dataTypes = Object.keys(stubData);
 
 const containerStyle = {
   alignItems: 'center',
-  border: '1px solid #c8c8c8',
+  boxShadow: '0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12)',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
+  margin: '0 10px 10px',
   padding: 20,
 };
 
@@ -74,11 +76,11 @@ const SCRNASeq = ({
           onTabClick={i => setActiveTab(i)}
           tabs={[<span key="Analysis">Analysis</span>, <span key="Summary">Summary</span>]}
           >
-          <ScrnaDevSettings
+          {/* <ScrnaDevSettings
             dataType={dataType}
             dataTypes={dataTypes}
             handleDataButton={setDataType}
-            />
+            /> */}
           {data.length > 0 &&
             (activeTab === 0
               ? (
@@ -115,7 +117,35 @@ const SCRNASeq = ({
                   </Row>
                 </div>
             ) : (
-              <div>Summary</div>
+              <Row>
+                <Column
+                  style={{
+                    margin: -10,
+                  }}
+                  >
+                  <div style={containerStyle}>
+                    <Counter
+                      metric="5,247"
+                      name="Estimated Number of Cells"
+                      threshold="pass"
+                      />
+                  </div>
+                  <div style={containerStyle}>
+                    <Row>
+                      <Counter
+                        metric="28,918"
+                        name="Mean Reads per Cell"
+                        threshold="pass"
+                        />
+                      <Counter
+                        metric="1,644"
+                        name="Median Genes per Cell"
+                        threshold="pass"
+                        />
+                    </Row>
+                  </div>
+                </Column>
+              </Row>
             ))}
         </Tabs>
       </Column>

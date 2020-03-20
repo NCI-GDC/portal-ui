@@ -54,20 +54,21 @@ const enhance = compose(
   withState('showFacets', 'setShowFacets', true),
 );
 
-const SearchPage = (
-  {
-    className,
-    facetTabs = [],
-    pageName,
-    results = <span />,
-    showFacets,
-    setShowFacets,
-    filtersLinkProps,
-  }: TProps = {},
-) => (
+const SearchPage = ({
+  className,
+  ControlledAccess,
+  facetTabs = [],
+  pageName,
+  results = <span />,
+  showFacets,
+  setShowFacets,
+  filtersLinkProps,
+}: TProps = {}) => (
   <Container className={`${className} test-search-page`}>
     {showFacets && (
       <FacetsPanel>
+        {ControlledAccess}
+
         <TabbedLinks
           defaultIndex={0}
           hideTabs={facetTabs.length <= 1}
@@ -91,6 +92,7 @@ const SearchPage = (
           />
       </FacetsPanel>
     )}
+
     <Content>
       <Column>
         {pageName === 'repository' && (

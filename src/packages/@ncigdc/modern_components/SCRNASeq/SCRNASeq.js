@@ -13,11 +13,10 @@ import {
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import withRouter from '@ncigdc/utils/withRouter';
 import Tabs from '@ncigdc/uikit/Tabs';
-import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 
 import ScrnaDevSettings from './ScrnaDevSettings';
 import { MedianGenesPlot, SCRNASeqPlot, SequencingSaturationPlot } from './plots';
-import { ClusterTable, summaryData } from './tables';
+import { ClusterTable, summaryData, SummaryTable } from './tables';
 import './style.css';
 import Counter from './Counter';
 
@@ -146,25 +145,26 @@ const SCRNASeq = ({
                     </Row>
                   </div>
                   {Object.values(summaryData.leftColumnTables).map(table => (
-                    <div key={table.header} style={containerStyle}>
-                      <h3
-                        style={{
-                          margin: '0 0 10px 0',
-                          textAlign: 'left',
-                        }}
-                        >
-                        {table.header}
-                      </h3>
-                      <EntityPageHorizontalTable
-                        data={table.rows.map(([key, value]) => ({
-                          key,
-                          value,
-                        }))}
-                        headings={[{ key: 'key' }, { key: 'value' }]}
-                        showHeadings={false}
-                        tableContainerStyle={{ width: '100%' }}
-                        />
-                    </div>
+                    <SummaryTable
+                      containerStyle={containerStyle}
+                      header={table.header}
+                      key={table.header}
+                      rows={table.rows}
+                      />
+                  ))}
+                </Column>
+                <Column
+                  style={{
+                    margin: -10,
+                  }}
+                  >
+                  {Object.values(summaryData.rightColumnTables).map(table => (
+                    <SummaryTable
+                      containerStyle={containerStyle}
+                      header={table.header}
+                      key={table.header}
+                      rows={table.rows}
+                      />
                   ))}
                 </Column>
               </Row>

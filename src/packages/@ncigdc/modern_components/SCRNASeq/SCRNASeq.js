@@ -114,7 +114,6 @@ const SCRNASeq = ({
               <Row style={{ margin: '0 -5px' }}>
                 <Column
                   style={{
-                    // margin: -5,
                     padding: '0 5px',
                     width: '50%',
                   }}

@@ -5,14 +5,14 @@ import { SummaryCellsPlot } from '../plots';
 
 const SummaryTable = ({ containerStyle, header, rows }) => (
   <div key={header} style={containerStyle}>
-    <h3
+    <h2
       style={{
         margin: '0 0 10px 0',
-        textAlign: 'left',
+        width: '100%',
       }}
       >
       {header}
-    </h3>
+    </h2>
     {header === 'Cells' && <SummaryCellsPlot />}
     <EntityPageHorizontalTable
       data={rows.map(([key, value]) => ({

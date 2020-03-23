@@ -30,7 +30,7 @@ const containerStyle = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  margin: '0 10px 10px',
+  margin: '0 0 10px',
   padding: 20,
 };
 
@@ -52,74 +52,71 @@ const SCRNASeq = ({
   setActiveTab,
   setDataType,
 }) => (
-  <Column style={{ marginBottom: '1rem' }}>
-    <Row
+  <Row
+    style={{
+      margin: '10px 0',
+      padding: '2rem 3rem',
+    }}
+    >
+    <Column
       style={{
-        margin: '20px 0',
-        padding: '2rem 3rem',
+        flex: '1 0 auto',
       }}
       >
-      <Column
-        style={{
-          flex: '1 0 auto',
+      <h1 style={{ margin: '0 0 20px' }}>Single Cell RNA Sequencing</h1>
+      <Tabs
+        activeIndex={activeTab}
+        contentStyle={{
+          border: 'none',
+          borderTop: '1px solid #c8c8c8',
+          padding: '20px 0 0',
         }}
+        onTabClick={i => setActiveTab(i)}
+        tabs={[<span key="Analysis">Analysis</span>, <span key="Summary">Summary</span>]}
         >
-        <h1 style={{ margin: '0 0 20px' }}>Single Cell RNA Sequencing</h1>
-        <Tabs
-          activeIndex={activeTab}
-          contentStyle={{
-            border: 'none',
-            borderTop: '1px solid #c8c8c8',
-            padding: '20px 0 0',
-          }}
-          onTabClick={i => setActiveTab(i)}
-          tabs={[<span key="Analysis">Analysis</span>, <span key="Summary">Summary</span>]}
-          >
-          {/* <ScrnaDevSettings
-            dataType={dataType}
-            dataTypes={dataTypes}
-            handleDataButton={setDataType}
-            /> */}
-          {data.length > 0 &&
-            (activeTab === 0
-              ? (
-                <div>
-                  <div
-                    style={containerStyle}
-                    >
-                    <SCRNASeqPlot
-                      data={data}
-                      dataType={dataType}
-                      />
-                    <h3>Top Features by Cluster (Log2 fold-change, p-value)</h3>
-                    <ClusterTable />
-                  </div>
-                  <Row style={{ marginTop: 20 }}>
-                    <div
-                      style={{
-                        ...containerStyle,
-                        flexGrow: 1,
-                        marginRight: 10,
-                      }}
-                      >
-                      <SequencingSaturationPlot />
-                    </div>
-                    <div
-                      style={{
-                        ...containerStyle,
-                        flexGrow: 1,
-                        marginLeft: 10,
-                      }}
-                      >
-                      <MedianGenesPlot />
-                    </div>
-                  </Row>
+        {data.length > 0 &&
+          (activeTab === 0
+            ? (
+              <div>
+                <div
+                  style={containerStyle}
+                  >
+                  <SCRNASeqPlot
+                    data={data}
+                    dataType={dataType}
+                    />
+                  <h3>Top Features by Cluster (Log2 fold-change, p-value)</h3>
+                  <ClusterTable />
                 </div>
-            ) : (
-              <Row>
+                <Row style={{ marginTop: 10 }}>
+                  <div
+                    style={{
+                      ...containerStyle,
+                      flexGrow: 1,
+                      marginRight: 5,
+                    }}
+                    >
+                    <SequencingSaturationPlot />
+                  </div>
+                  <div
+                    style={{
+                      ...containerStyle,
+                      flexGrow: 1,
+                      marginLeft: 5,
+                    }}
+                    >
+                    <MedianGenesPlot />
+                  </div>
+                </Row>
+              </div>
+            )
+            : (
+              <Row style={{ margin: '0 -5px' }}>
                 <Column
                   style={{
-                    margin: -10,
+                    // margin: -5,
+                    padding: '0 5px',
+                    width: '50%',
                   }}
                   >
                   <div style={containerStyle}>
@@ -154,7 +151,8 @@ const SCRNASeq = ({
                 </Column>
                 <Column
                   style={{
-                    margin: -10,
+                    padding: '0 5px',
+                    width: '50%',
                   }}
                   >
                   {Object.values(summaryData.rightColumnTables).map(table => (
@@ -168,10 +166,10 @@ const SCRNASeq = ({
                 </Column>
               </Row>
             ))}
-        </Tabs>
-      </Column>
-    </Row>
-  </Column>
+      </Tabs>
+    </Column>
+  </Row>
+
 );
 
 export default enhance(SCRNASeq);

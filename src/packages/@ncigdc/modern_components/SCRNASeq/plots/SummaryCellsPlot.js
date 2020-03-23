@@ -11352,7 +11352,9 @@ const layout = {
   },
 };
 
-const style = { height: 313 };
+const style = {
+  height: 300,
+};
 
 const MedianGenesPlot = () => (
   <Plot

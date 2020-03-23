@@ -14,11 +14,10 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import withRouter from '@ncigdc/utils/withRouter';
 import Tabs from '@ncigdc/uikit/Tabs';
 
-import ScrnaDevSettings from './ScrnaDevSettings';
+import { Counter, ScrnaDevSetting } from './components';
 import { MedianGenesPlot, SCRNASeqPlot, SequencingSaturationPlot } from './plots';
 import { ClusterTable, summaryData, SummaryTable } from './tables';
 import './style.css';
-import Counter from './Counter';
 
 // temporarily importing data
 import stubData from './stubData';

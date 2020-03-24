@@ -6,15 +6,13 @@ import {
   compose,
   pure,
   setDisplayName,
-  withPropsOnChange,
   withState,
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import withRouter from '@ncigdc/utils/withRouter';
 import Tabs from '@ncigdc/uikit/Tabs';
 
-import { Counter, ScrnaDevSetting } from './components';
+import { Counter } from './components';
 import { MedianGenesPlot, SCRNASeqPlot, SequencingSaturationPlot } from './plots';
 import { ClusterTable, summaryData, SummaryTable } from './tables';
 import './style.css';
@@ -36,21 +34,13 @@ const containerStyle = {
 
 const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
-  withRouter,
   pure,
-  withState('activeTab', 'setActiveTab', 1),
-  withState('dataType', 'setDataType', 'umap'),
-  withPropsOnChange(['dataType'], ({ dataType }) => ({
-    data: stubData[dataType],
-  })),
+  withState('activeTab', 'setActiveTab', 0),
 );
 
 const SCRNASeq = ({
   activeTab,
-  data,
-  dataType,
   setActiveTab,
-  setDataType,
 }) => (
   <Row
     style={{
@@ -74,98 +64,110 @@ const SCRNASeq = ({
         onTabClick={i => setActiveTab(i)}
         tabs={[<span key="Analysis">Analysis</span>, <span key="Summary">Summary</span>]}
         >
-        {data.length > 0 &&
-          (activeTab === 0
-            ? (
-              <div>
+        {activeTab === 0
+          ? (
+            <div>
+              {dataTypes.map(dType => (
                 <div
+                  key={stubData[dType].name}
                   style={containerStyle}
                   >
-                  <SCRNASeqPlot
-                    data={data}
-                    dataType={dataType}
-                    />
-                  <h3>Top Features by Cluster (Log2 fold-change, p-value)</h3>
-                  <ClusterTable />
+                  <h2 style={{ width: '100%' }}>{stubData[dType].name}</h2>
+                  <Row
+                    style={{
+                      justifyContent: 'space-between',
+                      width: '100%',
+                    }}
+                    >
+                    <SCRNASeqPlot
+                      data={stubData[dType].data}
+                      dataType={stubData[dType].name}
+                      />
+                    <div>
+                      <h3>Top Features by Cluster (Log2 fold-change, p-value)</h3>
+                      <ClusterTable />
+                    </div>
+                  </Row>
                 </div>
-                <Row style={{ marginTop: 10 }}>
-                  <div
-                    style={{
-                      ...containerStyle,
-                      flexGrow: 1,
-                      marginRight: 5,
-                    }}
-                    >
-                    <SequencingSaturationPlot />
-                  </div>
-                  <div
-                    style={{
-                      ...containerStyle,
-                      flexGrow: 1,
-                      marginLeft: 5,
-                    }}
-                    >
-                    <MedianGenesPlot />
-                  </div>
-                </Row>
-              </div>
-            )
-            : (
-              <Row style={{ margin: '0 -5px' }}>
-                <Column
+              ))}
+              <Row style={{ marginTop: 10 }}>
+                <div
                   style={{
-                    // margin: -5,
-                    padding: '0 5px',
-                    width: '50%',
+                    ...containerStyle,
+                    flexGrow: 1,
+                    marginRight: 5,
                   }}
                   >
-                  <div style={containerStyle}>
+                  <SequencingSaturationPlot />
+                </div>
+                <div
+                  style={{
+                    ...containerStyle,
+                    flexGrow: 1,
+                    marginLeft: 5,
+                  }}
+                  >
+                  <MedianGenesPlot />
+                </div>
+              </Row>
+            </div>
+          )
+          : (
+            <Row style={{ margin: '0 -5px' }}>
+              <Column
+                style={{
+                  // margin: -5,
+                  padding: '0 5px',
+                  width: '50%',
+                }}
+                >
+                <div style={containerStyle}>
+                  <Counter
+                    metric="5,247"
+                    name="Estimated Number of Cells"
+                    threshold="pass"
+                    />
+                </div>
+                <div style={containerStyle}>
+                  <Row>
                     <Counter
-                      metric="5,247"
-                      name="Estimated Number of Cells"
+                      metric="28,918"
+                      name="Mean Reads per Cell"
                       threshold="pass"
                       />
-                  </div>
-                  <div style={containerStyle}>
-                    <Row>
-                      <Counter
-                        metric="28,918"
-                        name="Mean Reads per Cell"
-                        threshold="pass"
-                        />
-                      <Counter
-                        metric="1,644"
-                        name="Median Genes per Cell"
-                        threshold="pass"
-                        />
-                    </Row>
-                  </div>
-                  {Object.values(summaryData.leftColumnTables).map(table => (
-                    <SummaryTable
-                      containerStyle={containerStyle}
-                      header={table.header}
-                      key={table.header}
-                      rows={table.rows}
+                    <Counter
+                      metric="1,644"
+                      name="Median Genes per Cell"
+                      threshold="pass"
                       />
-                  ))}
-                </Column>
-                <Column
-                  style={{
-                    padding: '0 5px',
-                    width: '50%',
-                  }}
-                  >
-                  {Object.values(summaryData.rightColumnTables).map(table => (
-                    <SummaryTable
-                      containerStyle={containerStyle}
-                      header={table.header}
-                      key={table.header}
-                      rows={table.rows}
-                      />
-                  ))}
-                </Column>
-              </Row>
-            ))}
+                  </Row>
+                </div>
+                {Object.values(summaryData.leftColumnTables).map(table => (
+                  <SummaryTable
+                    containerStyle={containerStyle}
+                    header={table.header}
+                    key={table.header}
+                    rows={table.rows}
+                    />
+                ))}
+              </Column>
+              <Column
+                style={{
+                  padding: '0 5px',
+                  width: '50%',
+                }}
+                >
+                {Object.values(summaryData.rightColumnTables).map(table => (
+                  <SummaryTable
+                    containerStyle={containerStyle}
+                    header={table.header}
+                    key={table.header}
+                    rows={table.rows}
+                    />
+                ))}
+              </Column>
+            </Row>
+          )}
       </Tabs>
     </Column>
   </Row>

@@ -42,7 +42,7 @@ const ClusterTable = () => {
   return (
     <div
       style={{
-        maxWidth: 800,
+        maxWidth: 400,
         overflowX: 'auto',
       }}
       >

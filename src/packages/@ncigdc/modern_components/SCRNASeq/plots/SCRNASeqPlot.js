@@ -19,7 +19,7 @@ const getLayout = dataType => {
   const { axisFont, axisStyles, font } = common.layoutDefaults;
   return {
     ...common.layout,
-    height: 500,
+    height: 300,
     legend: {
       ...font,
       ...axisFont,
@@ -29,7 +29,7 @@ const getLayout = dataType => {
       font,
       text: `${dataTypeCaps} projection of Cells Colored by Automated Clustering`,
     },
-    width: 700,
+    width: 400,
     xaxis: {
       ...axisStyles,
       title: `${dataTypeCaps}_1`,
@@ -105,9 +105,9 @@ export default class SCRNASeqChart extends Component {
         <Row
           style={{
             justifyContent: 'flex-end',
-            maxWidth: 700,
+            maxWidth: 400,
             position: 'relative',
-            width: 700,
+            width: 400,
           }}
           >
           {toolbarButtons.map(btn => (btn.name === 'download'

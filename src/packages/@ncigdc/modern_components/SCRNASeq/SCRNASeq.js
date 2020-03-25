@@ -80,19 +80,11 @@ const SCRNASeq = ({
                     >
                     {stubData[dType].name}
                   </h2>
-                  <Row
-                    style={{
-                      justifyContent: 'space-between',
-                      width: '100%',
-                    }}
-                    >
+                  <div className="scrnaseq-projection">
                     <SCRNASeqPlot
+                      className="scrnaseq-cluster-plot"
                       data={stubData[dType].data}
                       dataType={stubData[dType].name}
-                      style={{
-                        // float: 'left',
-                        width: 500,
-                      }}
                       />
                     <div
                       className="scrnaseq-cluster-table"
@@ -100,7 +92,7 @@ const SCRNASeq = ({
                       <h3 style={{ marginTop: 0 }}>Top Features by Cluster (Log2 fold-change, p-value)</h3>
                       <ClusterTable />
                     </div>
-                  </Row>
+                  </div>
                 </div>
               ))}
               <div style={{ marginTop: 10 }}>

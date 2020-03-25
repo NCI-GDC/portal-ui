@@ -48,21 +48,42 @@ button * {
 
 // cluster table
 
+.scrnaseq-projection {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  @media(min-width: 1300px) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  @media(min-width: 14400px) {
+    justify-content: space-evenly;
+  }
+}
+
+.scrnaseq-cluster-plot[style] {
+  width: 500px;
+}
+
 .scrnaseq-cluster-table {
-  width: 300px;
-  @media(min-width: 1200px) {
+  width: 600px;
+  @media(min-width: 1300px) {
     width: 400px;
   }
   @media(min-width: 1440px) {
     width: 500px;
   }
-  @media(min-width: 1600px) {
+  @media(min-width: 1500px) {
     width: 600px;
+  }
+  @media(min-width: 1600px) {
+    width: 700px;
   }
 }
 
 .scrnaseq-column {
-  @media(min-width: 1200px) {
+  @media(min-width: 1300px) {
     float: left;
     width: calc(50% - 5px);
     &:nth-child(odd) {

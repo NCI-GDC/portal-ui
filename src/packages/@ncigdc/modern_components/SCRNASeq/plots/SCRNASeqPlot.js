@@ -98,12 +98,14 @@ export default class SCRNASeqChart extends Component {
   };
 
   render() {
-    const { data, dataType, style = {} } = this.props;
+    const {
+      className, data, dataType, style = {},
+    } = this.props;
 
     const dataWithMarkers = getDataWithMarkers(data);
 
     return (
-      <Column style={style}>
+      <Column className={className} style={style}>
         <Row
           style={{
             justifyContent: 'flex-end',

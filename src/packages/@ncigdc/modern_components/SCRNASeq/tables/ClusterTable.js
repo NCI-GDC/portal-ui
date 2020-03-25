@@ -40,23 +40,17 @@ const ClusterTable = () => {
     }));
 
   return (
-    <div
+    <EntityPageHorizontalTable
+      data={stubData}
+      headings={stubHeadings}
       style={{
-        maxWidth: 400,
-        overflowX: 'auto',
+        maxHeight: 320,
+        maxWidth: '100%',
+        minHeight: 0,
+        overflowX: 'visible',
+        overflowY: 'auto',
       }}
-      >
-      <EntityPageHorizontalTable
-        data={stubData}
-        headings={stubHeadings}
-        style={{
-          maxHeight: 300,
-          overflowX: 'visible',
-          overflowY: 'auto',
-          width: '100%',
-        }}
-        />
-    </div>
+      />
   );
 };
 

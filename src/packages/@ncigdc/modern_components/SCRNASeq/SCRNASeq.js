@@ -15,7 +15,7 @@ import Tabs from '@ncigdc/uikit/Tabs';
 import { Counter } from './components';
 import { MedianGenesPlot, SCRNASeqPlot, SequencingSaturationPlot } from './plots';
 import { ClusterTable, summaryData, SummaryTable } from './tables';
-import './style.css';
+import './styles.scss';
 
 // temporarily importing data
 import stubData from './stubData';
@@ -28,7 +28,7 @@ const containerStyle = {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  margin: '0 0 10px',
+  marginBottom: 10,
   padding: 20,
 };
 
@@ -72,7 +72,14 @@ const SCRNASeq = ({
                   key={stubData[dType].name}
                   style={containerStyle}
                   >
-                  <h2 style={{ width: '100%' }}>{stubData[dType].name}</h2>
+                  <h2
+                    style={{
+                      marginTop: 0,
+                      width: '100%',
+                    }}
+                    >
+                    {stubData[dType].name}
+                  </h2>
                   <Row
                     style={{
                       justifyContent: 'space-between',
@@ -82,41 +89,44 @@ const SCRNASeq = ({
                     <SCRNASeqPlot
                       data={stubData[dType].data}
                       dataType={stubData[dType].name}
+                      style={{
+                        // float: 'left',
+                        width: 500,
+                      }}
                       />
-                    <div>
-                      <h3>Top Features by Cluster (Log2 fold-change, p-value)</h3>
+                    <div
+                      className="scrnaseq-cluster-table"
+                      >
+                      <h3 style={{ marginTop: 0 }}>Top Features by Cluster (Log2 fold-change, p-value)</h3>
                       <ClusterTable />
                     </div>
                   </Row>
                 </div>
               ))}
-              <Row style={{ marginTop: 10 }}>
+              <div style={{ marginTop: 10 }}>
                 <div
+                  className="scrnaseq-column"
                   style={{
                     ...containerStyle,
-                    flexGrow: 1,
-                    marginRight: 5,
                   }}
                   >
                   <SequencingSaturationPlot />
                 </div>
                 <div
+                  className="scrnaseq-column"
                   style={{
                     ...containerStyle,
-                    flexGrow: 1,
-                    marginLeft: 5,
                   }}
                   >
                   <MedianGenesPlot />
                 </div>
-              </Row>
+              </div>
             </div>
           )
           : (
             <Row style={{ margin: '0 -5px' }}>
               <Column
                 style={{
-                  // margin: -5,
                   padding: '0 5px',
                   width: '50%',
                 }}

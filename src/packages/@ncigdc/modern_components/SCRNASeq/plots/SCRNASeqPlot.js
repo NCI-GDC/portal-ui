@@ -14,12 +14,14 @@ import * as common from './common';
 
 const Plot = createPlotlyComponent(Plotly);
 
+const width = 500;
+
 const getLayout = dataType => {
   const dataTypeCaps = dataType.toUpperCase();
   const { axisFont, axisStyles, font } = common.layoutDefaults;
   return {
     ...common.layout,
-    height: 300,
+    height: 350,
     legend: {
       ...font,
       ...axisFont,
@@ -27,9 +29,9 @@ const getLayout = dataType => {
     name: 'scrna_seq',
     title: {
       font,
-      text: `${dataTypeCaps} projection of Cells Colored by Automated Clustering`,
+      text: `${dataTypeCaps} projection of<br>Cells Colored by Automated Clustering`,
     },
-    width: 400,
+    width,
     xaxis: {
       ...axisStyles,
       title: `${dataTypeCaps}_1`,
@@ -96,18 +98,18 @@ export default class SCRNASeqChart extends Component {
   };
 
   render() {
-    const { data, dataType } = this.props;
+    const { data, dataType, style = {} } = this.props;
 
     const dataWithMarkers = getDataWithMarkers(data);
 
     return (
-      <Column>
+      <Column style={style}>
         <Row
           style={{
             justifyContent: 'flex-end',
-            maxWidth: 400,
+            maxWidth: width,
             position: 'relative',
-            width: 400,
+            width,
           }}
           >
           {toolbarButtons.map(btn => (btn.name === 'download'

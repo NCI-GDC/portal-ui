@@ -83,17 +83,8 @@ const SCRNASeq = ({
               ))}
               <div className="scrnaseq-column">
                 <div className="scrnaseq-card">
+                  <h3 style={{ marginTop: 0 }}>Read and Gene Counts Per Cell</h3>
                   <ClusterTable />
-                </div>
-              </div>
-              <div className="scrnaseq-column">
-                <div className="scrnaseq-card">
-                  <SequencingSaturationPlot />
-                </div>
-              </div>
-              <div className="scrnaseq-column">
-                <div className="scrnaseq-card">
-                  <MedianGenesPlot />
                 </div>
               </div>
             </div>

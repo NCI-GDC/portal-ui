@@ -3,41 +3,46 @@ import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTa
 import { random } from 'lodash';
 
 const ClusterTable = () => {
-  const stubClusterArray = [...Array(11)].map((arr, i) => ({
-    key: `cluster-${i + 1}`,
-    subheadings: ['L2FC', 'p-value'],
-    title: `Cluster ${i + 1}`,
-  }));
-
   const stubHeadings = [
     {
-      key: 'feature',
-      subheadings: ['ID', 'Name'],
-      title: 'Feature',
+      key: 'cell_barcode',
+      title: 'Cell Barcode',
     },
-  ].concat(stubClusterArray)
+    {
+      key: 'read_count',
+      title: '# Reads',
+    },
+    {
+      key: 'gene_count',
+      title: '# Genes',
+    },
+    {
+      key: 'seurat_cluster',
+      title: 'Cluster ID',
+    },
+  ]
     .map(row => ({
       ...row,
       thStyle: {
         position: 'sticky',
         top: 0,
       },
-      thSubheadingStyle: {
-        position: 'sticky',
-        top: 26,
-      },
     }));
 
-  const makeStubDataRow = () => [...Array(11)].reduce((acc, curr, i) => ({
+  const makeStubDataRow = () => stubHeadings.reduce((acc, curr, i) => ({
     ...acc,
-    [`cluster-${i + 1}`]: [(random(1, 9, 2)).toFixed(2), `${random(1, 9)}e-${random(10, 99)}`],
+    [curr.key]: curr.key === 'seurat_cluster'
+      ? random(1, 11)
+      : random(1000, 9999),
   }), {});
 
   const stubData = [...Array(20)]
     .map(() => ({
-      feature: [`ENSG00000${random(100000, 999999)}`, random(1000, 9999)],
       ...makeStubDataRow(),
+      cell_barcode: `ENSG00000${random(100000, 999999)}`,
     }));
+
+  console.log(stubData);
 
   return (
     <EntityPageHorizontalTable

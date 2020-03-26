@@ -50,17 +50,20 @@ button * {
   display: flex;
   flex-flow: row wrap;
   margin: -5px;
-  max-width: 1000px;
+  max-width: 600px;
   width: 100%;
+  @media(min-width: 1300px) {
+    max-width: 1000px;
+  }
 }
 
 .scrnaseq-column {
   padding: 5px;
   display: flex; 
-  flex: 1 0 400px;
-  flex-flow: column; 
+  flex: 0 1 100%;
+  flex-flow: column;
   @media(min-width: 1300px) {
-    width: 50%;
+    flex: 1 0 400px;
   }
 }
 
@@ -70,6 +73,5 @@ button * {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  // justify-content: center;
   padding: 20px 10px 10px;
 }

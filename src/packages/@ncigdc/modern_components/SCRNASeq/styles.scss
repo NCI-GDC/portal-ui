@@ -87,6 +87,7 @@ button * {
     float: left;
     width: calc(50% - 5px);
     &:nth-child(odd) {
+      clear: both;
       margin-right: 5px;
     }
     &:nth-child(even) {

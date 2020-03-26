@@ -69,30 +69,15 @@ const SCRNASeq = ({
             <div>
               {dataTypes.map(dType => (
                 <div
+                  className="scrnaseq-column"
                   key={stubData[dType].name}
                   style={containerStyle}
                   >
-                  <h2
-                    style={{
-                      marginTop: 0,
-                      width: '100%',
-                    }}
-                    >
-                    {stubData[dType].name}
-                  </h2>
-                  <div className="scrnaseq-projection">
-                    <SCRNASeqPlot
-                      className="scrnaseq-cluster-plot"
-                      data={stubData[dType].data}
-                      dataType={stubData[dType].name}
-                      />
-                    <div
-                      className="scrnaseq-cluster-table"
-                      >
-                      <h3 style={{ marginTop: 0 }}>Top Features by Cluster (Log2 fold-change, p-value)</h3>
-                      <ClusterTable />
-                    </div>
-                  </div>
+                  <SCRNASeqPlot
+                    className="scrnaseq-cluster-plot"
+                    data={stubData[dType].data}
+                    dataType={stubData[dType].name}
+                    />
                 </div>
               ))}
               <div style={{ marginTop: 10 }}>

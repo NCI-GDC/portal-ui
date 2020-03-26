@@ -7,17 +7,17 @@ import pca from './pca';
 const data = {
   // tsne3d,
   // umap3d,
-  pca: {
-    data: pca,
-    name: 'PCA',
+  umap: {
+    data: umap,
+    name: 'UMAP',
   },
   tsne: {
     data: tsne,
     name: 't-SNE',
   },
-  umap: {
-    data: umap,
-    name: 'UMAP',
+  pca: {
+    data: pca,
+    name: 'PCA',
   },
 };
 

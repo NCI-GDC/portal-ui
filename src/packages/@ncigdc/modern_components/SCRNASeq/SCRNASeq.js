@@ -66,35 +66,33 @@ const SCRNASeq = ({
         >
         {activeTab === 0
           ? (
-            <div>
+            <div className="scrnaseq-row">
               {dataTypes.map(dType => (
                 <div
                   className="scrnaseq-column"
                   key={stubData[dType].name}
-                  style={containerStyle}
                   >
-                  <SCRNASeqPlot
-                    className="scrnaseq-cluster-plot"
-                    data={stubData[dType].data}
-                    dataType={stubData[dType].name}
-                    />
+                  <div className="scrnaseq-card">
+                    <SCRNASeqPlot
+                      className="scrnaseq-cluster-plot"
+                      data={stubData[dType].data}
+                      dataType={stubData[dType].name}
+                      />
+                  </div>
                 </div>
               ))}
-              <div style={{ marginTop: 10 }}>
-                <div
-                  className="scrnaseq-column"
-                  style={{
-                    ...containerStyle,
-                  }}
-                  >
+              <div className="scrnaseq-column">
+                <div className="scrnaseq-card">
+                  <ClusterTable />
+                </div>
+              </div>
+              <div className="scrnaseq-column">
+                <div className="scrnaseq-card">
                   <SequencingSaturationPlot />
                 </div>
-                <div
-                  className="scrnaseq-column"
-                  style={{
-                    ...containerStyle,
-                  }}
-                  >
+              </div>
+              <div className="scrnaseq-column">
+                <div className="scrnaseq-card">
                   <MedianGenesPlot />
                 </div>
               </div>

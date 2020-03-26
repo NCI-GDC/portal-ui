@@ -14,7 +14,7 @@ import * as common from './common';
 
 const Plot = createPlotlyComponent(Plotly);
 
-const width = 500;
+const width = 460;
 
 const getLayout = dataType => {
   const dataTypeCaps = dataType.toUpperCase();

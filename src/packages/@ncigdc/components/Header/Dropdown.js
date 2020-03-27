@@ -42,8 +42,7 @@ const HeaderDropdown = ({
         <Link
           {...linkProps}
           onClick={event => {
-            baseOnClick(event);
-            onClick(event);
+            baseOnClick(event, onClick);
           }}
           pathname={basePath + pathname}
           query={{

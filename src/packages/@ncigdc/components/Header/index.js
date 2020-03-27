@@ -1,5 +1,7 @@
 
 import React from 'react';
+import { isEqual } from 'lodash';
+import { connect } from 'react-redux';
 import {
   compose,
   lifecycle,
@@ -8,8 +10,6 @@ import {
   withHandlers,
   withState,
 } from 'recompose';
-import { isEqual } from 'lodash';
-import { connect } from 'react-redux';
 import ResizeObserver from 'resize-observer-polyfill';
 
 import { dismissNotification, removeNotification } from '@ncigdc/dux/bannerNotification';
@@ -30,6 +30,7 @@ import { forceLogout } from '@ncigdc/dux/auth';
 
 import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
 import withRouter from '@ncigdc/utils/withRouter';
+import withControlledAccess from '@ncigdc/utils/withControlledAccess';
 import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
 import { AnalysisIcon } from '@ncigdc/theme/icons';
@@ -50,6 +51,7 @@ const styles = {
 
 const Header = ({
   dispatch,
+  handleOnClick,
   headerHeight,
   isCollapsed,
   isInSearchMode,
@@ -115,7 +117,7 @@ const Header = ({
               <HomeLink
                 activeStyle={styles.activeNavLink(theme)}
                 exact
-                onClick={setIsCollapsed}
+                onClick={handleOnClick}
                 testTag="home-link"
                 >
                 <i className="fa fa-home" />
@@ -128,7 +130,7 @@ const Header = ({
               <ProjectsLink
                 activeStyle={styles.activeNavLink(theme)}
                 exact
-                onClick={setIsCollapsed}
+                onClick={handleOnClick}
                 testTag="projects-link"
                 >
                 <i className="icon-gdc-projects" />
@@ -142,7 +144,7 @@ const Header = ({
                 activeStyle={styles.activeNavLink(theme)}
                 exact
                 isDropDown
-                onClick={setIsCollapsed}
+                onClick={handleOnClick}
                 query={defaultExploreQuery}
                 testTag="exploration-link"
                 >
@@ -156,7 +158,7 @@ const Header = ({
               <AnalysisLink
                 activeStyle={styles.activeNavLink(theme)}
                 exact
-                onClick={setIsCollapsed}
+                onClick={handleOnClick}
                 testTag="analysis-link"
                 >
                 <Row
@@ -174,7 +176,7 @@ const Header = ({
               <RepositoryLink
                 activeStyle={styles.activeNavLink(theme)}
                 exact
-                onClick={setIsCollapsed}
+                onClick={handleOnClick}
                 testTag="repository-link"
                 >
                 <DatabaseIcon />
@@ -199,7 +201,7 @@ const Header = ({
                 <li>
                   <ManageSetsLink
                     activeStyle={styles.activeNavLink(theme)}
-                    onClick={setIsCollapsed}
+                    onClick={handleOnClick}
                     testTag="manageSet-link"
                     />
                 </li>
@@ -213,7 +215,7 @@ const Header = ({
                 <li>
                   <CartLink
                     className="header-link"
-                    onClick={setIsCollapsed}
+                    onClick={handleOnClick}
                     testTag="cart-link"
                     >
                     {count => (
@@ -267,6 +269,7 @@ export default compose(
     notifications: state.bannerNotification,
     user: state.auth.user,
   })),
+  withControlledAccess,
   withHandlers({
     handleApiError: ({ dispatch }) => ({ status, user }) => {
       if (user && status === 401) {
@@ -274,6 +277,14 @@ export default compose(
         dispatch(setModal(<SessionExpiredModal />));
         dispatch(forceLogout());
       }
+    },
+    handleOnClick: ({
+      controlledAccessProps,
+      dispatch,
+      setIsCollapsed,
+    }) => (event, elementOnClick) => {
+      setIsCollapsed(true);
+      elementOnClick && elementOnClick(event, dispatch, controlledAccessProps);
     },
     resizeObserver: ({ setHeaderHeight }) => () =>
       new ResizeObserver(([{ target }]) => { // the target here will be the header itself

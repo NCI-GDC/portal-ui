@@ -3,9 +3,9 @@ import React from 'react';
 import LoginButton from '@ncigdc/components/LoginButton';
 
 const CAMessage = ({
-  isAuth,
+  user,
   userAccessList,
-}) => (isAuth
+}) => (user
   ? userAccessList.length === 0
     ? (
       <p
@@ -15,7 +15,7 @@ const CAMessage = ({
         }}
         >
         <strong>
-        You do not have access to any controlled datasets, please apply for access.
+          You do not have access to any controlled datasets, please apply for access.
         </strong>
       </p>
     )
@@ -27,7 +27,7 @@ const CAMessage = ({
         }}
         >
         <strong>
-      Select a single controlled access dataset you wish to explore with the open dataset(s):
+          Select a single controlled access dataset you wish to explore with the open dataset(s):
         </strong>
       </p>
     )
@@ -35,11 +35,9 @@ const CAMessage = ({
     <p>
       The following matrix shows the program data that can be explored in this section.
       <br />
-      Please
-      {' '}
+      {'Please '}
       <LoginButton keepModalOpen>log in</LoginButton>
-      {' '}
-      to choose the controlled dataset you wish to explore.
+      {' to choose the controlled dataset you wish to explore.'}
     </p>
 ));
 

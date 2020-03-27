@@ -92,9 +92,7 @@ const SCRNASeq = ({
             </div>
           )
           : (
-            <div
-              className="scrnaseq-row"
-              >
+            <div className="scrnaseq-row">
               <div className="scrnaseq-column">
                 <div style={containerStyle}>
                   <Counter

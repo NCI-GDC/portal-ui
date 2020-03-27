@@ -42,17 +42,13 @@ const ClusterTable = () => {
       cell_barcode: `ENSG00000${random(100000, 999999)}`,
     }));
 
-  console.log(stubData);
-
   return (
     <EntityPageHorizontalTable
       data={stubData}
       headings={stubHeadings}
       style={{
         maxHeight: 320,
-        maxWidth: 460,
         minHeight: 0,
-        overflowX: 'visible',
         overflowY: 'auto',
         width: '100%',
       }}

@@ -51,7 +51,7 @@ button * {
   flex-flow: row wrap;
   margin: -5px;
   max-width: 600px;
-  width: 100%;
+  width: calc(100% + 10px);
   @media(min-width: 1300px) {
     max-width: 1000px;
   }
@@ -63,7 +63,7 @@ button * {
   flex: 0 1 100%;
   flex-flow: column;
   @media(min-width: 1300px) {
-    flex: 1 0 400px;
+    flex: 1 0 50%;
   }
 }
 

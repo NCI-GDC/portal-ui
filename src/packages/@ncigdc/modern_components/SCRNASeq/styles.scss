@@ -47,23 +47,18 @@ button * {
 }
 
 .scrnaseq-row {
-  display: flex;
-  flex-flow: row wrap;
-  margin: -5px;
-  max-width: 600px;
   width: calc(100% + 10px);
-  @media(min-width: 1300px) {
-    max-width: 1000px;
-  }
+  margin: -5px;
 }
 
 .scrnaseq-column {
   padding: 5px;
-  display: flex; 
-  flex: 0 1 100%;
-  flex-flow: column;
   @media(min-width: 1300px) {
-    flex: 1 0 50%;
+    width: 50%;
+    float: left;
+  }
+  &:nth-child(odd) {
+    clear: both;
   }
 }
 

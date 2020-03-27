@@ -66,7 +66,9 @@ const SCRNASeq = ({
         >
         {activeTab === 0
           ? (
-            <div className="scrnaseq-row">
+            <div
+              className="scrnaseq-row"
+              >
               {dataTypes.map(dType => (
                 <div
                   className="scrnaseq-column"
@@ -90,13 +92,10 @@ const SCRNASeq = ({
             </div>
           )
           : (
-            <Row style={{ margin: '0 -5px' }}>
-              <Column
-                style={{
-                  padding: '0 5px',
-                  width: '50%',
-                }}
-                >
+            <div
+              className="scrnaseq-row"
+              >
+              <div className="scrnaseq-column">
                 <div style={containerStyle}>
                   <Counter
                     metric="5,247"
@@ -126,13 +125,8 @@ const SCRNASeq = ({
                     rows={table.rows}
                     />
                 ))}
-              </Column>
-              <Column
-                style={{
-                  padding: '0 5px',
-                  width: '50%',
-                }}
-                >
+              </div>
+              <div className="scrnaseq-column">
                 {Object.values(summaryData.rightColumnTables).map(table => (
                   <SummaryTable
                     containerStyle={containerStyle}
@@ -141,8 +135,8 @@ const SCRNASeq = ({
                     rows={table.rows}
                     />
                 ))}
-              </Column>
-            </Row>
+              </div>
+            </div>
           )}
       </Tabs>
     </Column>

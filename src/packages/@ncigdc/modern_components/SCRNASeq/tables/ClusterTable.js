@@ -47,7 +47,7 @@ const ClusterTable = () => {
       data={stubData}
       headings={stubHeadings}
       style={{
-        maxHeight: 320,
+        maxHeight: 350,
         minHeight: 0,
         overflowY: 'auto',
         width: '100%',

@@ -13,7 +13,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import Tabs from '@ncigdc/uikit/Tabs';
 
 import { Counter } from './components';
-import { MedianGenesPlot, SCRNASeqPlot, SequencingSaturationPlot } from './plots';
+import { SCRNASeqPlot } from './plots';
 import { ClusterTable, summaryData, SummaryTable } from './tables';
 import './styles.scss';
 

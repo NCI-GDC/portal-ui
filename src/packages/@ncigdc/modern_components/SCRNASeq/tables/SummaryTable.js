@@ -1,7 +1,6 @@
 import React from 'react';
 
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import { SummaryCellsPlot } from '../plots';
 
 const SummaryTable = ({ containerStyle, header, rows }) => (
   <div key={header} style={containerStyle}>
@@ -13,7 +12,6 @@ const SummaryTable = ({ containerStyle, header, rows }) => (
       >
       {header}
     </h2>
-    {header === 'Cells' && <SummaryCellsPlot />}
     <EntityPageHorizontalTable
       data={rows.map(([key, value]) => ({
         key,

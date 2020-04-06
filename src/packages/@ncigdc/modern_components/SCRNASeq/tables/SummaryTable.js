@@ -19,11 +19,15 @@ const SummaryTable = ({ containerStyle, header, rows }) => (
       }))}
       headings={[{
         key: 'key',
+        tdStyle: {
+          whiteSpace: 'normal',
+        },
       },
       {
         key: 'value',
         tdStyle: {
           textAlign: 'right',
+          whiteSpace: 'normal',
         },
       }]}
       showHeadings={false}

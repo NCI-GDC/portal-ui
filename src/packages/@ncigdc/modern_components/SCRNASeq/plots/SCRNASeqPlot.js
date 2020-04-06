@@ -29,7 +29,7 @@ const getLayout = dataType => {
     name: 'scrna_seq',
     title: {
       font,
-      text: `${dataTypeCaps} projection of<br>Cells Colored by Automated Clustering`,
+      text: `${dataTypeCaps} Projection of<br>Cells Colored by Automated Clustering`,
     },
     width,
     xaxis: {

@@ -2,6 +2,8 @@ import React from 'react';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import { random } from 'lodash';
 
+import data from './tableData';
+
 const ClusterTable = () => {
   const stubHeadings = [
     {
@@ -29,22 +31,9 @@ const ClusterTable = () => {
       },
     }));
 
-  const makeStubDataRow = () => stubHeadings.reduce((acc, curr, i) => ({
-    ...acc,
-    [curr.key]: curr.key === 'seurat_cluster'
-      ? random(1, 11)
-      : random(1000, 9999),
-  }), {});
-
-  const stubData = [...Array(20)]
-    .map(() => ({
-      ...makeStubDataRow(),
-      cell_barcode: `ENSG00000${random(100000, 999999)}`,
-    }));
-
   return (
     <EntityPageHorizontalTable
-      data={stubData}
+      data={data}
       headings={stubHeadings}
       style={{
         maxHeight: 350,

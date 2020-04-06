@@ -17,7 +17,15 @@ const SummaryTable = ({ containerStyle, header, rows }) => (
         key,
         value,
       }))}
-      headings={[{ key: 'key' }, { key: 'value' }]}
+      headings={[{
+        key: 'key',
+      },
+      {
+        key: 'value',
+        tdStyle: {
+          textAlign: 'right',
+        },
+      }]}
       showHeadings={false}
       tableContainerStyle={{ width: '100%' }}
       />

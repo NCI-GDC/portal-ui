@@ -24,16 +24,10 @@ export default makeListLink({
     },
     {
       description: 'Explore Controlled & Open Data',
-      // query: {
-      //   controlled: true,
-      // },
       onClick: (event, dispatch, { showControlledAccessModal }) => {
         event.preventDefault();
         showControlledAccessModal();
       },
-      // state: {
-      //   sectionBannerTitle: 'Explore Controlled & Open Data',
-      // },
     },
   ],
   pathname: '/exploration',

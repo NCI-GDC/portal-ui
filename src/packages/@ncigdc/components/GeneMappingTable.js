@@ -167,12 +167,7 @@ export default enhance(
                   }}
                   >
                   <div>
-                    {unmatched.length}
-                    {' '}
-submitted gene identifier
-                    {unmatched.length > 1 ? 's' : ''}
-                    {' '}
-                    not recognized
+                    {`${unmatched.length} submitted gene identifier${unmatched.length > 1 ? 's' : ''} not recognized`}
                   </div>
                   <Button
                     onClick={() =>

@@ -19,6 +19,12 @@ const downloadOptions = [
     name: 'downloadImage',
     scale: 3,
   },
+  {
+    format: 'tsv',
+    label: 'TSV',
+    name: 'downloadImage',
+    scale: 3,
+  },
 ];
 
 export default class DownloadButton extends Component {
@@ -48,11 +54,13 @@ export default class DownloadButton extends Component {
             data-format={dlOpt.format}
             data-name={dlOpt.name}
             data-scale={dlOpt.scale}
-            key={dlOpt.name}
+            key={dlOpt.label}
             onClick={this.handleClick}
-            style={{ cursor: 'pointer' }}
+            style={{
+              cursor: 'pointer',
+            }}
             >
-            {dlOpt.label}
+            <span>{dlOpt.label}</span>
           </DropdownItem>
         ))}
       </DropDown>

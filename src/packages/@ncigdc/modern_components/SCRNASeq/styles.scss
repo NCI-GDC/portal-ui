@@ -70,3 +70,7 @@ button * {
   flex-grow: 1;
   padding: 20px 10px 10px;
 }
+
+.scrnaseq-card .dropdown-items[style] {
+  min-width: 100px !important;
+}

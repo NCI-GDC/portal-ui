@@ -16,6 +16,8 @@ import Counter from './Counter';
 import { SCRNASeqPlot } from './plots';
 import { ClusterTable, summaryData, SummaryTable } from './tables';
 import './styles.scss';
+import { toolbarButtons } from './plots/common'; 
+import { DownloadButton} from './toolbar';
 
 // temporarily importing data
 import stubData from './stubData';
@@ -85,7 +87,15 @@ const SCRNASeq = ({
               ))}
               <div className="scrnaseq-column">
                 <div className="scrnaseq-card">
-                  <h3 style={{ marginTop: 0 }}>Read and Gene Counts Per Cell</h3>
+                  <Row style={{ alignItems: 'center', ustifyContent: 'space-between', marginBottom: 10, width: '100%' }}>
+                    <h3 style={{ margin: 0, width: '100%', textAlign: 'left' }}>Read and Gene Counts Per Cell TEST</h3>
+                    <DownloadButton 
+                      {...toolbarButtons.download}
+                      downloadOptions={[
+                        { label: 'TSV' }
+                      ]}
+                      />
+                  </Row>
                   <ClusterTable />
                 </div>
               </div>

@@ -332,7 +332,6 @@ const casesTableModel = [
                     }}
                     >
                     <MicroscopeIcon style={{ maxWidth: '20px' }} />
-
                     {` (${slideCount})`}
                   </ImageViewerLink>
                 </Tooltip>

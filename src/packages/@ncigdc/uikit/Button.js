@@ -49,7 +49,7 @@ const Button = ({
   leftIcon = null,
   disabled = false,
   children,
-  className,
+  className = '',
   buttonContentStyle = {},
   ...props
 }: TButtonProps = {}) => {

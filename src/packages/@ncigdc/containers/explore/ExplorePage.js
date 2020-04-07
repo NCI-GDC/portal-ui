@@ -7,6 +7,7 @@ import {
   compose,
   lifecycle,
   setDisplayName,
+  withPropsOnChange,
   withState,
 } from 'recompose';
 
@@ -34,6 +35,7 @@ import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspec
 import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
 import { setModal } from '@ncigdc/dux/modal';
 import ControlledAccessModal from '@ncigdc/components/Modals/ControlledAccess';
+import ControlledAccessSwitch from '@ncigdc/components/ControlledAccessSwitch';
 
 import {
   CASE_LIMIT_API,
@@ -84,41 +86,6 @@ export type TProps = {
   push: Function,
 };
 
-function setVariables({ filters, relay }) {
-  relay.setVariables({
-    cosmicFilters: replaceFilters(
-      {
-        content: [
-          {
-            content: {
-              field: 'cosmic_id',
-              value: ['MISSING'],
-            },
-            op: 'not',
-          },
-        ],
-        op: 'and',
-      },
-      filters,
-    ),
-    dbsnpRsFilters: replaceFilters(
-      {
-        content: [
-          {
-            content: {
-              field: 'consequence.transcript.annotation.dbsnp_rs',
-              value: ['MISSING'],
-            },
-            op: 'not',
-          },
-        ],
-        op: 'and',
-      },
-      filters,
-    ),
-  });
-}
-
 const ClinicalAggregationsWithFacetData = withFacetData(props => (
   <ClinicalAggregations
     data={props.introspectiveType}
@@ -128,49 +95,9 @@ const ClinicalAggregationsWithFacetData = withFacetData(props => (
     />
 ));
 
-const enhance = compose(
-  setDisplayName('EnhancedExplorePageComponent'),
-  withRouter,
-  connect(state => ({
-    user: state.auth.user,
-  })),
-  withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
-  withState('activeControlledPrograms', 'setActiveControlledPrograms', []),
-  lifecycle({
-    componentDidMount() {
-      setVariables(this.props);
-
-      // open controlled access modal
-      const {
-        activeControlledPrograms,
-        dispatch,
-        query,
-        query: { controlled: isControlledAccess = false },
-        setActiveControlledPrograms,
-        user,
-      } = this.props;
-
-      if (isControlledAccess && DISPLAY_DAVE_CA) {
-        dispatch(setModal(<ControlledAccessModal
-          activeControlledPrograms={activeControlledPrograms}
-          dispatch={dispatch}
-          query={query}
-          setActiveControlledPrograms={setActiveControlledPrograms}
-          user={user}
-          />));
-      }
-    },
-    componentWillReceiveProps(nextProps) {
-      const { filters } = this.props;
-      if (!isEqual(filters, nextProps.filters)) {
-        setVariables(nextProps);
-      }
-    },
-  }),
-);
-
 const ExplorePageComponent = ({
   activeControlledPrograms,
+  controlledStudies,
   dispatch,
   filters,
   maxFacetsPanelHeight,
@@ -180,6 +107,7 @@ const ExplorePageComponent = ({
   relay,
   setActiveControlledPrograms,
   setMaxFacetsPanelHeight,
+  showControlledAccessModal,
   user,
   viewer,
 }) => {
@@ -193,6 +121,13 @@ const ExplorePageComponent = ({
   return (
     <SearchPage
       className="test-explore-page"
+      ControlledAccess={DISPLAY_DAVE_CA && [
+        <ControlledAccessSwitch
+          key="ControlledAccessSwitch"
+          studies={controlledStudies}
+          switchHandler={showControlledAccessModal}
+          />,
+      ]}
       facetTabs={[
         {
           component: (
@@ -254,6 +189,7 @@ const ExplorePageComponent = ({
             onResize={(width, height) =>
               setMaxFacetsPanelHeight(height < 600 ? 600 : height)}
             />
+
           <TabbedLinks
             defaultIndex={0}
             links={[
@@ -469,8 +405,85 @@ export const ExplorePageQuery = {
   },
 };
 
+const setVariables = ({ filters, relay }) => {
+  relay.setVariables({
+    cosmicFilters: replaceFilters(
+      {
+        content: [
+          {
+            content: {
+              field: 'cosmic_id',
+              value: ['MISSING'],
+            },
+            op: 'not',
+          },
+        ],
+        op: 'and',
+      },
+      filters,
+    ),
+    dbsnpRsFilters: replaceFilters(
+      {
+        content: [
+          {
+            content: {
+              field: 'consequence.transcript.annotation.dbsnp_rs',
+              value: ['MISSING'],
+            },
+            op: 'not',
+          },
+        ],
+        op: 'and',
+      },
+      filters,
+    ),
+  });
+};
+
 const ExplorePage = Relay.createContainer(
-  enhance(ExplorePageComponent),
+  compose(
+    setDisplayName('EnhancedExplorePageComponent'),
+    withRouter,
+    connect(state => ({
+      user: state.auth.user,
+    })),
+    withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
+    withState('activeControlledPrograms', 'setActiveControlledPrograms', []),
+    withPropsOnChange(
+      (
+        {
+          query: {
+            controlled,
+          },
+        },
+        {
+          query: {
+            controlled: nextControlled,
+          },
+        },
+      ) => !(
+        controlled === nextControlled
+      ),
+      ({
+        query: {
+          controlled = '',
+        },
+      }) => ({
+        controlledStudies: controlled.length && controlled.split(','),
+      }),
+    ),
+    lifecycle({
+      componentDidMount() {
+        setVariables(this.props);
+      },
+      componentWillReceiveProps(nextProps) {
+        const { filters } = this.props;
+        if (!isEqual(filters, nextProps.filters)) {
+          setVariables(nextProps);
+        }
+      },
+    }),
+  )(ExplorePageComponent),
   ExplorePageQuery,
 );
 

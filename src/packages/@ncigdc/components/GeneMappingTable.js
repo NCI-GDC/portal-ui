@@ -79,7 +79,11 @@ const enhance = compose(
 
 export default enhance(
   ({
-    matched, matchedGenes, submittedHeaders, unmatched, ...props
+    matched,
+    matchedGenes,
+    submittedHeaders,
+    unmatched,
+    ...props
   }) => {
     const from = matched.length;
     const to = matchedGenes.length;
@@ -101,17 +105,7 @@ export default enhance(
                   }}
                   >
                   <div>
-                    {from}
-                    {' '}
-submitted gene identifier
-                    {from > 1 ? 's' : ''}
-                    {' '}
-mapped
-                    to
-                    {to}
-                    {' '}
-unique GDC gene
-                    {to > 1 ? 's' : ''}
+                    {`${from} submitted gene identifier${from > 1 ? 's' : ''} mapped to ${to} unique GDC gene${to > 1 ? 's' : ''}`}
                   </div>
                   <Button
                     onClick={() =>
@@ -173,12 +167,7 @@ unique GDC gene
                   }}
                   >
                   <div>
-                    {unmatched.length}
-                    {' '}
-submitted gene identifier
-                    {unmatched.length > 1 ? 's' : ''}
-                    {' '}
-                    not recognized
+                    {`${unmatched.length} submitted gene identifier${unmatched.length > 1 ? 's' : ''} not recognized`}
                   </div>
                   <Button
                     onClick={() =>

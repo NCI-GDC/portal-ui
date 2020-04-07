@@ -88,7 +88,7 @@ const SCRNASeq = ({
               <div className="scrnaseq-column">
                 <div className="scrnaseq-card">
                   <Row style={{ alignItems: 'center', ustifyContent: 'space-between', marginBottom: 10, width: '100%' }}>
-                    <h3 style={{ margin: 0, width: '100%', textAlign: 'left' }}>Read and Gene Counts Per Cell TEST</h3>
+                    <h3 style={{ margin: 0, width: '100%', textAlign: 'left' }}>Read and Gene Counts Per Cell</h3>
                     <DownloadButton 
                       {...toolbarButtons.download}
                       downloadOptions={[

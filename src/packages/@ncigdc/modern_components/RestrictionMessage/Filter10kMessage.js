@@ -15,7 +15,7 @@ const ControlledAccessMessage = () => (
     <span>
       Please use the
       {' '}
-      <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/#facet-filters">filters/facets</a>
+      <a href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Getting_Started/#facet-filters" rel="noopener noreferrer" target="_blank">filters/facets</a>
       {' '}
       on the left to reduce your dataset to
       {` ${maxCasesFormatted} `}

@@ -79,7 +79,11 @@ const enhance = compose(
 
 export default enhance(
   ({
-    matched, matchedGenes, submittedHeaders, unmatched, ...props
+    matched,
+    matchedGenes,
+    submittedHeaders,
+    unmatched,
+    ...props
   }) => {
     const from = matched.length;
     const to = matchedGenes.length;

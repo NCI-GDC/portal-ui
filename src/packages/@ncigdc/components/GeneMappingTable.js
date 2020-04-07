@@ -105,17 +105,7 @@ export default enhance(
                   }}
                   >
                   <div>
-                    {from}
-                    {' '}
-submitted gene identifier
-                    {from > 1 ? 's' : ''}
-                    {' '}
-mapped
-                    to
-                    {to}
-                    {' '}
-unique GDC gene
-                    {to > 1 ? 's' : ''}
+                    {`${from} submitted gene identifier${from > 1 ? 's' : ''} mapped to ${to} unique GDC gene${to > 1 ? 's' : ''}`}
                   </div>
                   <Button
                     onClick={() =>

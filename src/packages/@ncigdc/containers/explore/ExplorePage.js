@@ -1,16 +1,15 @@
 /* @flow */
 import React from 'react';
 import Relay from 'react-relay/classic';
-import { connect } from 'react-redux';
 import { get, isEqual } from 'lodash';
 import {
   compose,
   lifecycle,
   setDisplayName,
-  withPropsOnChange,
   withState,
 } from 'recompose';
 
+import withControlledAccess from '@ncigdc/utils/withControlledAccess';
 import withRouter from '@ncigdc/utils/withRouter';
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
@@ -33,14 +32,11 @@ import ResizeDetector from 'react-resize-detector';
 import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
 import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
-import { setModal } from '@ncigdc/dux/modal';
-import ControlledAccessModal from '@ncigdc/components/Modals/ControlledAccess';
 import ControlledAccessSwitch from '@ncigdc/components/ControlledAccessSwitch';
 
 import {
   CASE_LIMIT_API,
   DISPLAY_10K,
-  DISPLAY_DAVE_CA,
   DISPLAY_SUMMARY_PAGE,
 } from '@ncigdc/utils/constants';
 
@@ -96,19 +92,15 @@ const ClinicalAggregationsWithFacetData = withFacetData(props => (
 ));
 
 const ExplorePageComponent = ({
-  activeControlledPrograms,
-  controlledStudies,
-  dispatch,
+  controlledAccessProps: {
+    controlledStudies,
+    showControlledAccessModal,
+  } = {},
   filters,
   maxFacetsPanelHeight,
   push,
-  query,
-  query: { controlled = false },
   relay,
-  setActiveControlledPrograms,
   setMaxFacetsPanelHeight,
-  showControlledAccessModal,
-  user,
   viewer,
 }) => {
   const hasCaseHits = get(viewer, 'explore.cases.hits.total', 0);
@@ -116,12 +108,11 @@ const ExplorePageComponent = ({
   const hasSsmsHits = get(viewer, 'explore.ssms.hits.total', 0);
 
   const isCaseLimitExceeded = DISPLAY_10K && hasCaseHits > CASE_LIMIT_API;
-  const isControlledAccess = DISPLAY_DAVE_CA && controlled;
 
   return (
     <SearchPage
       className="test-explore-page"
-      ControlledAccess={DISPLAY_DAVE_CA && [
+      ControlledAccess={controlledStudies && [
         <ControlledAccessSwitch
           key="ControlledAccessSwitch"
           studies={controlledStudies}
@@ -218,7 +209,7 @@ const ExplorePageComponent = ({
                 text: `Cases (${hasCaseHits.toLocaleString()})`,
               },
               {
-                component: isCaseLimitExceeded || isControlledAccess
+                component: isCaseLimitExceeded || controlledStudies
                   ? (
                     <CaseLimitMessages
                       isCaseLimitExceeded={isCaseLimitExceeded}
@@ -237,7 +228,7 @@ const ExplorePageComponent = ({
                   : ` (${hasGeneHits.toLocaleString()})`}`,
               },
               {
-                component: isCaseLimitExceeded || isControlledAccess
+                component: isCaseLimitExceeded || controlledStudies
                   ? (
                     <CaseLimitMessages
                       isCaseLimitExceeded={isCaseLimitExceeded}
@@ -259,7 +250,7 @@ const ExplorePageComponent = ({
                   : ` (${hasSsmsHits.toLocaleString()})`}`,
               },
               {
-                component: isCaseLimitExceeded || isControlledAccess
+                component: isCaseLimitExceeded || controlledStudies
                   ? (
                     <CaseLimitMessages
                       isCaseLimitExceeded={isCaseLimitExceeded}
@@ -275,50 +266,35 @@ const ExplorePageComponent = ({
             queryParam="searchTableTab"
             tabToolbar={(
               <Row>
-                {isControlledAccess && DISPLAY_DAVE_CA && (
-                  <Button
-                    onClick={() => dispatch(setModal(<ControlledAccessModal
-                      activeControlledPrograms={activeControlledPrograms}
-                      dispatch={dispatch}
-                      query={query}
-                      setActiveControlledPrograms={setActiveControlledPrograms}
-                      user={user}
-                      />))}
-                    style={{
-                      backgroundColor: 'rebeccapurple',
-                      marginRight: 5,
-                    }}
-                    >
-                    DEV - DAVE-CA
-                  </Button>
-                )}
-                {filters ? (
-                  <CreateExploreCaseSetButton
-                    disabled={!hasCaseHits}
-                    filters={filters}
-                    onComplete={setId => {
-                      push({
-                        pathname: '/repository',
-                        query: {
-                          filters: stringifyJSONParam({
-                            content: [
-                              {
-                                content: {
-                                  field: 'cases.case_id',
-                                  value: [`set_id:${setId}`],
+                {filters
+                  ? (
+                    <CreateExploreCaseSetButton
+                      disabled={!hasCaseHits}
+                      filters={filters}
+                      onComplete={setId => {
+                        push({
+                          pathname: '/repository',
+                          query: {
+                            filters: stringifyJSONParam({
+                              content: [
+                                {
+                                  content: {
+                                    field: 'cases.case_id',
+                                    value: [`set_id:${setId}`],
+                                  },
+                                  op: 'IN',
                                 },
-                                op: 'IN',
-                              },
-                            ],
-                            op: 'AND',
-                          }),
-                        },
-                      });
-                    }}
-                    >
-                    View Files in Repository
-                  </CreateExploreCaseSetButton>
-                ) : (
+                              ],
+                              op: 'AND',
+                            }),
+                          },
+                        });
+                      }}
+                      >
+                      View Files in Repository
+                    </CreateExploreCaseSetButton>
+                  )
+                : (
                   <Button
                     disabled={!hasCaseHits}
                     onClick={() => push({
@@ -338,23 +314,6 @@ const ExplorePageComponent = ({
 };
 
 export const ExplorePageQuery = {
-  initialVariables: {
-    cases_offset: null,
-    cases_size: null,
-    cases_sort: null,
-    cases_score: 'gene.gene_id',
-    genes_offset: null,
-    genes_size: null,
-    genes_sort: null,
-    ssms_offset: null,
-    ssms_size: null,
-    ssms_sort: null,
-    filters: null,
-    idAutocompleteSsms: null,
-    runAutocompleteSsms: false,
-    dbsnpRsFilters: null,
-    cosmicFilters: null,
-  },
   fragments: {
     viewer: () => Relay.QL`
       fragment on Root {
@@ -403,6 +362,23 @@ export const ExplorePageQuery = {
       }
     `,
   },
+  initialVariables: {
+    cases_score: 'gene.gene_id',
+    cases_offset: null,
+    cases_size: null,
+    cases_sort: null,
+    cosmicFilters: null,
+    dbsnpRsFilters: null,
+    filters: null,
+    genes_offset: null,
+    genes_size: null,
+    genes_sort: null,
+    idAutocompleteSsms: null,
+    runAutocompleteSsms: false,
+    ssms_offset: null,
+    ssms_size: null,
+    ssms_sort: null,
+  },
 };
 
 const setVariables = ({ filters, relay }) => {
@@ -444,34 +420,8 @@ const ExplorePage = Relay.createContainer(
   compose(
     setDisplayName('EnhancedExplorePageComponent'),
     withRouter,
-    connect(state => ({
-      user: state.auth.user,
-    })),
+    withControlledAccess,
     withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
-    withState('activeControlledPrograms', 'setActiveControlledPrograms', []),
-    withPropsOnChange(
-      (
-        {
-          query: {
-            controlled,
-          },
-        },
-        {
-          query: {
-            controlled: nextControlled,
-          },
-        },
-      ) => !(
-        controlled === nextControlled
-      ),
-      ({
-        query: {
-          controlled = '',
-        },
-      }) => ({
-        controlledStudies: controlled.length && controlled.split(','),
-      }),
-    ),
     lifecycle({
       componentDidMount() {
         setVariables(this.props);

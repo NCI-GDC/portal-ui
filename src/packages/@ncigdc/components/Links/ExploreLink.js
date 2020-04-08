@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { makeFilter } from '@ncigdc/utils/filters';
 import { makeListLink } from './utils';
 
@@ -23,17 +21,12 @@ export default makeListLink({
   dropDownElements: [
     {
       description: 'Explore Open Data',
-      state: {
-        sectionBannerTitle: 'Explore Open Data',
-      },
     },
     {
       description: 'Explore Controlled & Open Data',
-      query: {
-        controlled: true,
-      },
-      state: {
-        sectionBannerTitle: 'Explore Controlled & Open Data',
+      onClick: (event, dispatch, { showControlledAccessModal }) => {
+        event.preventDefault();
+        showControlledAccessModal();
       },
     },
   ],

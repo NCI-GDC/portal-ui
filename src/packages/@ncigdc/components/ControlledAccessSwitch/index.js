@@ -20,7 +20,7 @@ const ControlledAccessSwitch = ({
       <p>
         {'Controlled data from: '}
         <span>
-          {studies.join(', ')}
+          {studies.join(', ').toUpperCase()}
         </span>
       </p>
       <Button
@@ -46,4 +46,5 @@ export default compose(
   connect(state => ({
     user: state.auth.user,
   })),
+  pure,
 )(ControlledAccessSwitch);

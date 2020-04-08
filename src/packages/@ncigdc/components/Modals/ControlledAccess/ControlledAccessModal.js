@@ -9,12 +9,14 @@ import {
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import LoginButton from '@ncigdc/components/LoginButton';
-import Button from '@ncigdc/uikit/Button';
+import ExploreLink, { defaultExploreQuery } from '@ncigdc/components/Links/ExploreLink';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import RestrictionMessage from '@ncigdc/modern_components/RestrictionMessage/RestrictionMessage';
 
 import CAMessage from './CAMessage';
 import { getHeadings, formatData } from './helpers';
+
+import './styles.scss';
 
 const ControlledAccessModal = ({
   handleModalSubmit,
@@ -29,18 +31,27 @@ const ControlledAccessModal = ({
     closeText="Cancel"
     extraButtons={user
       ? (
-        <Button
+        <ExploreLink
+          className="action-button"
           disabled={user &&
-            userAccessList.length > 0 &&
-            selectedStudies.length === 0}
+            selectedStudies.length < 1}
           onClick={handleModalSubmit}
+          query={{
+            controlled: selectedStudies.join(',').toUpperCase(),
+            ...defaultExploreQuery,
+          }}
+          testTag="explore-selected-studies"
           >
           Explore
-        </Button>
+        </ExploreLink>
       )
       : (
-        <LoginButton keepModalOpen>
-          <Button>Login</Button>
+        <LoginButton
+          className="action-button"
+          keepModalOpen
+          testTag="controlled_access-login-button"
+          >
+          Login
         </LoginButton>
     )}
     title="Explore Controlled & Open Data"

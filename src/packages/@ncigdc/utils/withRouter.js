@@ -59,12 +59,14 @@ export default compose(
       if (typeof opts === 'object') {
         push({
           pathname: opts.pathname,
-          search: `?${stringify(opts.query)}`,
+          search: `?${stringify(opts.query, {
+            ...(opts.queryOptions || {}),
+          })}`,
           state: opts.state,
         });
       } else {
         push(opts);
       }
     },
-  }))
+  })),
 );

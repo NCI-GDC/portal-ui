@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { isEqual } from 'lodash';
+import {
+  isEqual,
+  omit,
+} from 'lodash';
 import {
   compose,
   setDisplayName,
@@ -71,7 +74,7 @@ const dataStub = [
   genes_mutations: stub.genes_mutations || 'in_process',
 }));
 
-const userAccessList = [];
+const userAccessList = ['fm'];
 
 export default compose(
   setDisplayName('withControlledAccess'),
@@ -100,15 +103,54 @@ export default compose(
     ),
     ({
       dispatch,
+      location: {
+        pathname,
+      },
+      push,
+      query,
       query: {
         controlled = '',
       },
       studiesList,
       user,
     }) => {
-      const controlledStudies = user && controlled.length > 0 ? controlled.toLowerCase().split(',') : [];
+      // gets the whole array of 'controlled' from the URL
+      const controlledQuery = Array.isArray(controlled)
+        ? controlled.map(study => study.toLowerCase().split(',')).flat()
+        : controlled.toLowerCase().split(',');
 
-      return DISPLAY_DAVE_CA && controlledStudies && {
+      // distills the list
+      const controlledStudies = user && controlled.length > 0
+        ? controlledQuery.filter((study, index, self) => (
+          userAccessList.includes(study) && // is it allowed?
+          index === self.indexOf(study) // is it unique?
+        )).sort()
+        : [];
+
+      // validates and corrects the displayed URL if necessary
+      (controlledStudies.length > 1 ||// Single study. Remove it when ready.
+      !(
+        controlledStudies.every(study => study.toUpperCase() === study) && // any study in lowercase
+        controlledStudies.length === controlledQuery.length // any invalid study
+      )) && push({
+        pathname,
+        ...(controlledStudies.length
+          ? {
+            query: {
+              ...query,
+              controlled: controlledStudies[0].toUpperCase(), // Single study. Remove it when ready.
+              // controlled: controlledStudies.map(study => study.toUpperCase()), // clean URL
+              // ^^^ ready for whenever they enable querying multiple controlled studies
+            },
+            queryOptions: { arrayFormat: 'comma' },
+          }
+          : {
+            query: omit(query, ['controlled']),
+          }
+        ),
+      });
+
+      return DISPLAY_DAVE_CA && {
         controlledAccessProps: {
           controlledStudies,
           showControlledAccessModal: () => {

@@ -42,6 +42,7 @@ type TButtonProps = {
   onClick?: Function,
   className?: string,
   buttonContentStyle?: Object,
+  testTag?: string,
 };
 const Button = ({
   style = {},
@@ -51,7 +52,7 @@ const Button = ({
   children,
   className = '',
   buttonContentStyle = {},
-  testTag = '',
+  testTag = 'untagged-button',
   ...props
 }: TButtonProps = {}) => {
   const StyledButton = styled.button({

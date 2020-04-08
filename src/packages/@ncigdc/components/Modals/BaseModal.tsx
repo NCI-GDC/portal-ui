@@ -34,30 +34,36 @@ const baseStyles = {
 };
 
 const BaseModal = ({
-  dispatch,
-  title,
   children,
   closeText = 'Accept',
-  onClose,
-  extraButtons,
-  style,
   contentStyle,
+  dispatch,
+  extraButtons,
+  onClose,
+  style,
+  title,
   ...props
 }: IBaseModalProps) => (
-  <Column style={{...baseStyles.container, ...style}} {...props}>
+  <Column
+    style={{
+      ...baseStyles.container,
+      ...style,
+    }}
+    {...props}
+    >
     <h2>{title}</h2>
     <Column
       style={{
         ...baseStyles.contentStyle,
         ...contentStyle,
       }}
-    >
+      >
       {children}
     </Column>
     <Row
+      spacing="10px"
       style={baseStyles.buttonRow}
-      spacing={'10px'}
-    >
+      >
       <Button
         onClick={() => {
           if (typeof onClose === 'function') {
@@ -65,7 +71,8 @@ const BaseModal = ({
           }
           dispatch(setModal(null));
         }}
-      >
+        testTag="modal-cancel-button"
+        >
         {closeText}
       </Button>
       {extraButtons && <span style={{ marginRight: 10 }}>{extraButtons}</span>}

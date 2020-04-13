@@ -5,7 +5,7 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 
 import ToolbarButton from './ToolbarButton';
 
-const downloadOptions = [
+const downloadOptionsDefaults = [
   // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
   {
     format: 'svg',
@@ -22,8 +22,9 @@ const downloadOptions = [
 ];
 
 export default class DownloadButton extends Component {
+  // TODO: handle TSV downloads
   handleClick = e => {
-    const { onToolbarClick } = this.props;
+    const { onToolbarClick = () => {} } = this.props;
     onToolbarClick(e);
   }
 
@@ -32,6 +33,7 @@ export default class DownloadButton extends Component {
       faClass,
       label,
       name,
+      downloadOptions = downloadOptionsDefaults,
     } = this.props;
     return (
       <DropDown
@@ -45,12 +47,16 @@ export default class DownloadButton extends Component {
         >
         {downloadOptions.map(dlOpt => (
           <DropdownItem
-            data-format={dlOpt.format}
-            data-name={dlOpt.name}
-            data-scale={dlOpt.scale}
-            key={dlOpt.name}
+            data-format={dlOpt.format || ''}
+            data-name={dlOpt.name || ''}
+            data-scale={dlOpt.scale || ''}
+            key={dlOpt.label}
             onClick={this.handleClick}
-            style={{ cursor: 'pointer' }}
+            style={{
+              cursor: 'pointer',
+              minWidth: '50px',
+              width: 'auto',
+            }}
             >
             {dlOpt.label}
           </DropdownItem>

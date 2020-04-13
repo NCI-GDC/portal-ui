@@ -2,8 +2,8 @@ import React from 'react';
 
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 
-const SummaryTable = ({ containerStyle, header, rows }) => (
-  <div key={header} style={containerStyle}>
+const SummaryTable = ({ header, rows }) => (
+  <div className="scrnaseq-card" key={header}>
     <h2
       style={{
         margin: '0 0 10px 0',
@@ -17,19 +17,21 @@ const SummaryTable = ({ containerStyle, header, rows }) => (
         key,
         value,
       }))}
-      headings={[{
-        key: 'key',
-        tdStyle: {
-          whiteSpace: 'normal',
+      headings={[
+        {
+          key: 'key',
+          tdStyle: {
+            whiteSpace: 'normal',
+          },
         },
-      },
-      {
-        key: 'value',
-        tdStyle: {
-          textAlign: 'right',
-          whiteSpace: 'normal',
+        {
+          key: 'value',
+          tdStyle: {
+            textAlign: 'right',
+            whiteSpace: 'normal',
+          },
         },
-      }]}
+      ]}
       showHeadings={false}
       tableContainerStyle={{ width: '100%' }}
       />

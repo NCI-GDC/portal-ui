@@ -4,7 +4,6 @@ import DropDown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 
 import ToolbarButton from './ToolbarButton';
-import download from '@ncigdc/utils/filesaver';
 
 const downloadOptionsDefaults = [
   // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
@@ -24,7 +23,7 @@ const downloadOptionsDefaults = [
 
 export default class DownloadButton extends Component {
   handleClick = e => {
-    const { onToolbarClick = () => {}} = this.props;
+    const { onToolbarClick = () => {} } = this.props;
     onToolbarClick(e);
   }
 

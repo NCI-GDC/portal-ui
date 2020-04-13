@@ -16,23 +16,13 @@ import Counter from './Counter';
 import { SCRNASeqPlot } from './plots';
 import { ClusterTable, summaryData, SummaryTable } from './tables';
 import './styles.scss';
-import { toolbarButtons } from './plots/common'; 
-import { DownloadButton} from './toolbar';
+import { toolbarButtons } from './plots/common';
+import { DownloadButton } from './toolbar';
 
 // temporarily importing data
 import stubData from './stubData';
 
 const dataTypes = Object.keys(stubData);
-
-const containerStyle = {
-  alignItems: 'center',
-  boxShadow: '0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12)',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  marginBottom: 10,
-  padding: 20,
-};
 
 const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
@@ -87,13 +77,26 @@ const SCRNASeq = ({
               ))}
               <div className="scrnaseq-column">
                 <div className="scrnaseq-card">
-                  <Row style={{ alignItems: 'center', ustifyContent: 'space-between', marginBottom: 10, width: '100%' }}>
-                    <h3 style={{ margin: 0, width: '100%', textAlign: 'left' }}>Read and Gene Counts Per Cell</h3>
-                    <DownloadButton 
+                  <Row
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: 10,
+                      width: '100%',
+                    }}
+                    >
+                    <h3
+                      style={{
+                        margin: 0,
+                        textAlign: 'left',
+                        width: '100%',
+                      }}
+                      >
+                      Read and Gene Counts Per Cell
+                    </h3>
+                    <DownloadButton
                       {...toolbarButtons.download}
-                      downloadOptions={[
-                        { label: 'TSV' }
-                      ]}
+                      downloadOptions={[{ label: 'TSV' }]}
                       />
                   </Row>
                   <ClusterTable />
@@ -104,14 +107,14 @@ const SCRNASeq = ({
           : (
             <div className="scrnaseq-row">
               <div className="scrnaseq-column">
-                <div style={containerStyle}>
+                <div className="scrnaseq-card">
                   <Counter
                     metric="5,247"
                     name="Estimated Number of Cells"
                     threshold="pass"
                     />
                 </div>
-                <div style={containerStyle}>
+                <div className="scrnaseq-card">
                   <Row>
                     <Counter
                       metric="28,918"
@@ -127,7 +130,6 @@ const SCRNASeq = ({
                 </div>
                 {Object.values(summaryData.leftColumnTables).map(table => (
                   <SummaryTable
-                    containerStyle={containerStyle}
                     header={table.header}
                     key={table.header}
                     rows={table.rows}
@@ -137,7 +139,6 @@ const SCRNASeq = ({
               <div className="scrnaseq-column">
                 {Object.values(summaryData.rightColumnTables).map(table => (
                   <SummaryTable
-                    containerStyle={containerStyle}
                     header={table.header}
                     key={table.header}
                     rows={table.rows}
@@ -149,7 +150,6 @@ const SCRNASeq = ({
       </Tabs>
     </Column>
   </Row>
-
 );
 
 export default enhance(SCRNASeq);

@@ -22,6 +22,7 @@ const downloadOptionsDefaults = [
 ];
 
 export default class DownloadButton extends Component {
+  // TODO: handle TSV downloads
   handleClick = e => {
     const { onToolbarClick = () => {} } = this.props;
     onToolbarClick(e);

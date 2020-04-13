@@ -95,6 +95,7 @@ const SCRNASeq = ({
                       Read and Gene Counts Per Cell
                     </h3>
                     <DownloadButton
+                      // TODO: this button is for display purposes only
                       {...toolbarButtons.download}
                       downloadOptions={[{ label: 'TSV' }]}
                       />

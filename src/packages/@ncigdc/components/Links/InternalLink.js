@@ -21,12 +21,15 @@ const reactRouterLinkProps = [
 ];
 
 const InternalLink = ({
+  className = 'unnamed-link',
   deepLink,
+  disabled,
   pathname = '',
   query,
   search,
   state,
-  testTag = 'unnamed-component',
+  style = {},
+  testTag = 'untagged-link',
   ...rest
 }: TLinkProps) => {
   const q0 = query || {};
@@ -42,8 +45,16 @@ const InternalLink = ({
   const validAttrProps = validAttributes(rest);
   const validLinkProps = _.pick(rest, reactRouterLinkProps);
 
+  const isLinkDisabled = disabled
+    ? {
+      cursor: 'default',
+      pointerEvents: 'none',
+    }
+    : {};
+
   return (
     <Link
+      className={`${className}${disabled ? ' disabled' : ''}`}
       data-test={testTag}
       to={{
         pathname,
@@ -59,6 +70,10 @@ const InternalLink = ({
         if (deepLink) {
           scrollToId(deepLink);
         }
+      }}
+      style={{
+        ...style,
+        ...isLinkDisabled,
       }}
       >
       {validAttrProps.children}

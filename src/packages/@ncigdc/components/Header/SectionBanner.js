@@ -9,6 +9,7 @@ import {
 
 import Banner from '@ncigdc/uikit/Banner';
 import withRouter from '@ncigdc/utils/withRouter';
+import withControlledAccess from '@ncigdc/utils/withControlledAccess';
 
 const SectionHeader = ({ message }) => (
   <Banner
@@ -20,28 +21,39 @@ const SectionHeader = ({ message }) => (
 );
 
 const sectionTitles = {
-  '/exploration': 'Explore Open Data',
+  '/exploration': controlled => `Explore${controlled ? ' Controlled & ' : ' '}Open Data`,
 };
 
 export default compose(
   setDisplayName('EnhancedSectionHeader'),
   withRouter,
+  withControlledAccess,
   withPropsOnChange(
     ({
+      controlledAccessProps: {
+        controlledStudies,
+      },
       location: {
         pathname,
         state,
       },
     }, {
+      controlledAccessProps: {
+        controlledStudies: nextControlledStudies,
+      },
       location: {
         pathname: nextPathname,
         state: nextState,
       },
     }) => !(
+      isEqual(controlledStudies, nextControlledStudies) &&
       pathname === nextPathname &&
       isEqual(state, nextState)
     ),
     ({
+      controlledAccessProps: {
+        controlledStudies,
+      },
       location: {
         pathname,
         state: {
@@ -49,7 +61,8 @@ export default compose(
         } = {},
       },
     }) => ({ // "message" can be a React component
-      message: sectionBannerTitle || sectionTitles[pathname],
+      message: sectionBannerTitle ||
+        (sectionTitles[pathname] && sectionTitles[pathname](controlledStudies.length)),
     }),
   ),
   pure,

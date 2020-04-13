@@ -42,6 +42,7 @@ type TButtonProps = {
   onClick?: Function,
   className?: string,
   buttonContentStyle?: Object,
+  testTag?: string,
 };
 const Button = ({
   style = {},
@@ -51,6 +52,7 @@ const Button = ({
   children,
   className = '',
   buttonContentStyle = {},
+  testTag = 'untagged-button',
   ...props
 }: TButtonProps = {}) => {
   const StyledButton = styled.button({
@@ -61,6 +63,7 @@ const Button = ({
 
   return (
     <StyledButton
+      data-test={testTag}
       disabled={disabled}
       {...validAttributes(props)}
       className={`${className} button`}

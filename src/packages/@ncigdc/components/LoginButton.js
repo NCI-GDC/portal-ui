@@ -19,11 +19,18 @@ const Link = styled.a({
   transition: 'background-color 0.2s ease',
 });
 
-const LoginButton = ({ children, dispatch, keepModalOpen = false }) => (
+const LoginButton = ({
+  children,
+  className,
+  dispatch,
+  keepModalOpen = false,
+  testTag = 'login-button',
+}) => (
   <LocationSubscriber>
     {({ pathname, push }) => (
       <Link
-        className="test-login-button"
+        className={`login-button${className ? ` ${className}` : ''}`}
+        data-test={testTag}
         onClick={async () => {
           if (!keepModalOpen) {
             await dispatch(setModal(null));

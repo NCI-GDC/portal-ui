@@ -1,134 +1,122 @@
-// @flow
 import React from 'react';
+import { connect } from 'react-redux';
 import {
-  compose, lifecycle, withHandlers, withState,
+  compose,
+  setDisplayName,
+  withHandlers,
+  withState,
 } from 'recompose';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import LoginButton from '@ncigdc/components/LoginButton';
-import Button from '@ncigdc/uikit/Button';
+import ExploreLink, { defaultExploreQuery } from '@ncigdc/components/Links/ExploreLink';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import { setModal } from '@ncigdc/dux/modal';
 import RestrictionMessage from '@ncigdc/modern_components/RestrictionMessage/RestrictionMessage';
 
 import CAMessage from './CAMessage';
-import CADevSettings from './CADevSettings';
-import { dataStub as data, getHeadings, formatData } from './helpers';
+import { getHeadings, formatData } from './helpers';
 
-const enhance = compose(
-  withState('selectedModalPrograms', 'setSelectedModalPrograms', []),
-  // START temporary UI dev props. update when APIs are available.
-  withState('isFakeLoggedIn', 'setIsFakeLoggedIn', false),
-  withState('userAccessList', 'setUserAccessList', []),
-  withState('isAuth', 'setIsAuth', false),
-  // END temporary UI dev props
-  withHandlers({
-    handleModalSubmit: ({
-      dispatch,
-      selectedModalPrograms,
-      setActiveControlledPrograms,
-    }) => () => {
-      dispatch(setModal(null));
-      setActiveControlledPrograms(selectedModalPrograms);
-    },
-    handleProgramSelect: ({
-      setSelectedModalPrograms,
-    }) => ({ target: { value } }) => {
-      setSelectedModalPrograms([value]);
-    },
-  }),
-  lifecycle({
-    componentDidMount() {
-      const { activeControlledPrograms, setSelectedModalPrograms } = this.props;
-      setSelectedModalPrograms(activeControlledPrograms);
-    },
-  }),
-);
+import './styles.scss';
 
 const ControlledAccessModal = ({
   handleModalSubmit,
   handleProgramSelect,
-  isFakeLoggedIn,
-  selectedModalPrograms,
-  setIsFakeLoggedIn,
-  setSelectedModalPrograms,
-  setUserAccessList,
+  selectedStudies,
+  setSelectedStudies,
+  studiesList,
   user,
   userAccessList,
-}) => {
-  const isAuth = user || isFakeLoggedIn;
-  const userCAPrograms = data
-    .filter(datum => datum.genes_mutations === 'controlled')
-    .filter(datum => userAccessList.includes(datum.program))
-    .map(datum => datum.program);
-
-  const dataFormatted = formatData({
-    data,
-    handleProgramSelect,
-    isAuth,
-    selectedModalPrograms,
-    setSelectedModalPrograms,
-    userCAPrograms,
-  });
-
-  const exploreButtonDisabled = isAuth &&
-    userCAPrograms.length > 0 &&
-    selectedModalPrograms.length === 0;
-
-  return (
-    <BaseModal
-      closeText="Cancel"
-      extraButtons={isAuth
-        ? (
-          <Button
-            disabled={exploreButtonDisabled}
-            onClick={handleModalSubmit}
-            >
-            Explore
-          </Button>
-        )
-        : (
-          <LoginButton keepModalOpen>
-            <Button>Login</Button>
-          </LoginButton>
-      )}
-      title="Explore Controlled & Open Data"
-      >
-      <CADevSettings
-        isFakeLoggedIn={isFakeLoggedIn}
-        setIsFakeLoggedIn={setIsFakeLoggedIn}
-        setUserAccessList={setUserAccessList}
-        userAccessList={userAccessList}
-        />
-      <CAMessage isAuth={isAuth} userAccessList={userAccessList} />
-      <EntityPageHorizontalTable
-        data={dataFormatted}
-        headings={getHeadings({
-          isAuth,
-          userAccessList,
-        })}
-        tableContainerStyle={{ maxHeight: 350 }}
-        tableId="controlled-access-table"
-        />
-      {isAuth || (
-        <RestrictionMessage
-          compact
-          faClass="fa-lock"
-          faStyle={{ color: '#773388' }}
-          fullWidth
-          leftAlign
-          title="The controlled data require dbGaP access"
+}) => (
+  <BaseModal
+    closeText="Cancel"
+    extraButtons={user
+      ? (
+        <ExploreLink
+          className="action-button"
+          disabled={user &&
+            selectedStudies.length < 1}
+          onClick={handleModalSubmit}
+          query={{
+            controlled: selectedStudies.join(',').toUpperCase(),
+            ...defaultExploreQuery,
+          }}
+          testTag="explore-selected-studies"
           >
-          <span>
-            If you don't have access, follow the instructions for
-            {' '}
-            <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" rel="noopener noreferrer" target="_blank">obtaining access to controlled data</a>
-            .
-          </span>
-        </RestrictionMessage>
-      )}
-    </BaseModal>
-  );
-};
+          Explore
+        </ExploreLink>
+      )
+      : (
+        <LoginButton
+          className="action-button"
+          keepModalOpen
+          testTag="controlled_access-login-button"
+          >
+          Login
+        </LoginButton>
+    )}
+    title="Explore Controlled & Open Data"
+    >
+    <CAMessage user={user} userAccessList={userAccessList} />
 
-export default enhance(ControlledAccessModal);
+    <EntityPageHorizontalTable
+      data={formatData({
+        handleProgramSelect,
+        selectedStudies,
+        setSelectedStudies,
+        studiesList,
+        user,
+        userAccessList,
+      })}
+      headings={getHeadings({
+        user,
+      })}
+      tableContainerStyle={{ maxHeight: 350 }}
+      tableId="controlled-access-table"
+      />
+
+    {!!user || (
+      <RestrictionMessage
+        compact
+        faClass="fa-lock"
+        faStyle={{ color: '#773388' }}
+        fullWidth
+        leftAlign
+        title="The controlled data require dbGaP access"
+        >
+        <span>
+          {'If you don\'t have access, follow the instructions for '}
+          <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" rel="noopener noreferrer" target="_blank">obtaining access to controlled data</a>
+          .
+        </span>
+      </RestrictionMessage>
+    )}
+  </BaseModal>
+);
+
+export default compose(
+  setDisplayName('EnhancedControlledAccessModal'),
+  connect(state => ({
+    user: state.auth.user,
+  })),
+  withState(
+    'selectedStudies',
+    'setSelectedStudies',
+    ({
+      activeControlledPrograms,
+      userAccessList,
+    }) => (userAccessList.length === 1 ? userAccessList : activeControlledPrograms),
+    // TODO: this ^^^ is a placeholder for the "controlled" array of the CA response.
+  ),
+  withHandlers({
+    handleModalSubmit: ({
+      closeModal,
+    }) => () => {
+      closeModal();
+    },
+    handleProgramSelect: ({
+      setSelectedStudies,
+    }) => ({ target: { value } }) => {
+      setSelectedStudies([value]);
+    },
+  }),
+)(ControlledAccessModal);

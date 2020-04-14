@@ -7,8 +7,6 @@ import {
   compose, withState, withPropsOnChange, pure,
 } from 'recompose';
 
-import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
-import { IRawQuery } from '@ncigdc/utils/uri/types';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import { inCurrentFilters } from '@ncigdc/utils/filters';
 
@@ -20,8 +18,6 @@ import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
 
 import { internalHighlight } from '@ncigdc/uikit/Highlight';
 import { Container, BucketLink } from '.';
-
-import { IBucket } from './types';
 
 type TProps = {
   buckets: [IBucket],
@@ -40,10 +36,10 @@ type TProps = {
 };
 
 export const ToggleMoreLink = styled.div({
-  marginLeft: 'auto',
   color: ({ theme }) => theme.greyScale7,
-  fontSize: '1.2rem',
   cursor: 'pointer',
+  fontSize: '1.2rem',
+  marginLeft: 'auto',
   ':link': {
     color: ({ theme }) => theme.greyScale7,
   },
@@ -57,10 +53,6 @@ const CountLabel = styled.div({
   fontSize: '1.2rem',
   fontWeight: 500,
   marginLeft: 'auto',
-});
-
-const BucketRow = styled(Row, {
-  padding: '0.3rem 0',
 });
 
 export const BottomRow = styled(Row, {
@@ -161,9 +153,9 @@ const TermAggregation = (props: TProps) => {
                           >
                           <input
                             checked={inCurrentFilters({
-                              key: bucket.name.toLowerCase(),
-                              dotField,
                               currentFilters,
+                              dotField,
+                              key: bucket.name.toLowerCase(),
                             })}
                             id={`input-${props.title}-${bucket.name.replace(
                               /\s/g,
@@ -175,9 +167,9 @@ const TermAggregation = (props: TProps) => {
                             )}`}
                             readOnly
                             style={{
-                              pointerEvents: 'none',
-                              marginRight: '5px',
                               flexShrink: 0,
+                              marginRight: '5px',
+                              pointerEvents: 'none',
                               verticalAlign: 'middle',
                             }}
                             type="checkbox"

@@ -1,10 +1,9 @@
 import React from 'react';
 
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import { SummaryCellsPlot } from '../plots';
 
-const SummaryTable = ({ containerStyle, header, rows }) => (
-  <div key={header} style={containerStyle}>
+const SummaryTable = ({ header, rows }) => (
+  <div className="scrnaseq-card" key={header}>
     <h2
       style={{
         margin: '0 0 10px 0',
@@ -13,13 +12,26 @@ const SummaryTable = ({ containerStyle, header, rows }) => (
       >
       {header}
     </h2>
-    {header === 'Cells' && <SummaryCellsPlot />}
     <EntityPageHorizontalTable
       data={rows.map(([key, value]) => ({
         key,
         value,
       }))}
-      headings={[{ key: 'key' }, { key: 'value' }]}
+      headings={[
+        {
+          key: 'key',
+          tdStyle: {
+            whiteSpace: 'normal',
+          },
+        },
+        {
+          key: 'value',
+          tdStyle: {
+            textAlign: 'right',
+            whiteSpace: 'normal',
+          },
+        },
+      ]}
       showHeadings={false}
       tableContainerStyle={{ width: '100%' }}
       />

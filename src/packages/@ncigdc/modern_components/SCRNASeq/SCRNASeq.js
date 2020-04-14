@@ -6,51 +6,33 @@ import {
   compose,
   pure,
   setDisplayName,
-  withPropsOnChange,
   withState,
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import withRouter from '@ncigdc/utils/withRouter';
 import Tabs from '@ncigdc/uikit/Tabs';
 
-import { Counter, ScrnaDevSetting } from './components';
-import { MedianGenesPlot, SCRNASeqPlot, SequencingSaturationPlot } from './plots';
+import Counter from './Counter';
+import { SCRNASeqPlot } from './plots';
 import { ClusterTable, summaryData, SummaryTable } from './tables';
-import './style.css';
+import './styles.scss';
+import { toolbarButtons } from './plots/common';
+import { DownloadButton } from './toolbar';
 
 // temporarily importing data
 import stubData from './stubData';
 
 const dataTypes = Object.keys(stubData);
 
-const containerStyle = {
-  alignItems: 'center',
-  boxShadow: '0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12)',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  margin: '0 0 10px',
-  padding: 20,
-};
-
 const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
-  withRouter,
   pure,
-  withState('activeTab', 'setActiveTab', 1),
-  withState('dataType', 'setDataType', 'umap'),
-  withPropsOnChange(['dataType'], ({ dataType }) => ({
-    data: stubData[dataType],
-  })),
+  withState('activeTab', 'setActiveTab', 0),
 );
 
 const SCRNASeq = ({
   activeTab,
-  data,
-  dataType,
   setActiveTab,
-  setDataType,
 }) => (
   <Row
     style={{
@@ -74,101 +56,101 @@ const SCRNASeq = ({
         onTabClick={i => setActiveTab(i)}
         tabs={[<span key="Analysis">Analysis</span>, <span key="Summary">Summary</span>]}
         >
-        {data.length > 0 &&
-          (activeTab === 0
-            ? (
-              <div>
+        {activeTab === 0
+          ? (
+            <div
+              className="scrnaseq-row"
+              >
+              {dataTypes.map(dType => (
                 <div
-                  style={containerStyle}
+                  className="scrnaseq-column"
+                  key={stubData[dType].name}
                   >
-                  <SCRNASeqPlot
-                    data={data}
-                    dataType={dataType}
-                    />
-                  <h3>Top Features by Cluster (Log2 fold-change, p-value)</h3>
+                  <div className="scrnaseq-card">
+                    <SCRNASeqPlot
+                      className="scrnaseq-cluster-plot"
+                      data={stubData[dType].data}
+                      dataType={stubData[dType].name}
+                      />
+                  </div>
+                </div>
+              ))}
+              <div className="scrnaseq-column">
+                <div className="scrnaseq-card">
+                  <Row
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: 10,
+                      width: '100%',
+                    }}
+                    >
+                    <h3
+                      style={{
+                        margin: 0,
+                        textAlign: 'left',
+                        width: '100%',
+                      }}
+                      >
+                      Read and Gene Counts Per Cell
+                    </h3>
+                    <DownloadButton
+                      // TODO: this button is for display purposes only
+                      {...toolbarButtons.download}
+                      downloadOptions={[{ label: 'TSV' }]}
+                      />
+                  </Row>
                   <ClusterTable />
                 </div>
-                <Row style={{ marginTop: 10 }}>
-                  <div
-                    style={{
-                      ...containerStyle,
-                      flexGrow: 1,
-                      marginRight: 5,
-                    }}
-                    >
-                    <SequencingSaturationPlot />
-                  </div>
-                  <div
-                    style={{
-                      ...containerStyle,
-                      flexGrow: 1,
-                      marginLeft: 5,
-                    }}
-                    >
-                    <MedianGenesPlot />
-                  </div>
-                </Row>
               </div>
-            )
-            : (
-              <Row style={{ margin: '0 -5px' }}>
-                <Column
-                  style={{
-                    padding: '0 5px',
-                    width: '50%',
-                  }}
-                  >
-                  <div style={containerStyle}>
+            </div>
+          )
+          : (
+            <div className="scrnaseq-row">
+              <div className="scrnaseq-column">
+                <div className="scrnaseq-card">
+                  <Counter
+                    metric="5,247"
+                    name="Estimated Number of Cells"
+                    threshold="pass"
+                    />
+                </div>
+                <div className="scrnaseq-card">
+                  <Row>
                     <Counter
-                      metric="5,247"
-                      name="Estimated Number of Cells"
+                      metric="28,918"
+                      name="Mean Reads per Cell"
                       threshold="pass"
                       />
-                  </div>
-                  <div style={containerStyle}>
-                    <Row>
-                      <Counter
-                        metric="28,918"
-                        name="Mean Reads per Cell"
-                        threshold="pass"
-                        />
-                      <Counter
-                        metric="1,644"
-                        name="Median Genes per Cell"
-                        threshold="pass"
-                        />
-                    </Row>
-                  </div>
-                  {Object.values(summaryData.leftColumnTables).map(table => (
-                    <SummaryTable
-                      containerStyle={containerStyle}
-                      header={table.header}
-                      key={table.header}
-                      rows={table.rows}
+                    <Counter
+                      metric="1,644"
+                      name="Median Genes per Cell"
+                      threshold="pass"
                       />
-                  ))}
-                </Column>
-                <Column
-                  style={{
-                    padding: '0 5px',
-                    width: '50%',
-                  }}
-                  >
-                  {Object.values(summaryData.rightColumnTables).map(table => (
-                    <SummaryTable
-                      containerStyle={containerStyle}
-                      header={table.header}
-                      key={table.header}
-                      rows={table.rows}
-                      />
-                  ))}
-                </Column>
-              </Row>
-            ))}
+                  </Row>
+                </div>
+                {Object.values(summaryData.leftColumnTables).map(table => (
+                  <SummaryTable
+                    header={table.header}
+                    key={table.header}
+                    rows={table.rows}
+                    />
+                ))}
+              </div>
+              <div className="scrnaseq-column">
+                {Object.values(summaryData.rightColumnTables).map(table => (
+                  <SummaryTable
+                    header={table.header}
+                    key={table.header}
+                    rows={table.rows}
+                    />
+                ))}
+              </div>
+            </div>
+          )}
       </Tabs>
     </Column>
   </Row>
-
 );
 
 export default enhance(SCRNASeq);

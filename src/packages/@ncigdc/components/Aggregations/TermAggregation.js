@@ -85,6 +85,9 @@ const TermAggregation = (props: TProps) => {
               },
             }
             ));
+        // const currentControlledStudies = ctx.query.controlled
+        //   ? ctx.query.controlled.split(',')
+        //   : [];
         return (
           <Container
             className="test-term-aggregation"
@@ -156,7 +159,9 @@ const TermAggregation = (props: TProps) => {
                               currentFilters,
                               dotField,
                               key: bucket.name.toLowerCase(),
-                            })}
+                            })
+                            // || currentControlledStudies.includes(bucket.name)
+                          }
                             id={`input-${props.title}-${bucket.name.replace(
                               /\s/g,
                               '-',

@@ -65,7 +65,7 @@ const getDataWithMarkers = (input = []) => input.map(row => ({
   ...row,
   marker: {
     opacity: 0.75,
-    size: 10,
+    size: 4,
   },
 }));
 

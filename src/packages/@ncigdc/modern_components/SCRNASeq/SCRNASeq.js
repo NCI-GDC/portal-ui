@@ -36,7 +36,24 @@ const SCRNASeq = () => (
         flex: '1 0 auto',
       }}
       >
-      <h1 style={{ margin: '0 0 20px' }}>Single Cell RNA Sequencing</h1>
+      <Row
+        style={{
+          borderBottom: '1px solid #ccc',
+          justifyContent: 'space-between',
+          marginBottom: 20,
+          width: '100%',
+        }}
+        >
+        <h1
+          style={{
+            margin: '0 0 10px 0',
+          }}
+          >
+          Single Cell RNA Sequencing
+        </h1>
+        <DownloadButton {...toolbarButtons.download} />
+
+      </Row>
       <div className="scrnaseq-row">
         {dataTypes.map(dType => (
           <div
@@ -52,33 +69,6 @@ const SCRNASeq = () => (
             </div>
           </div>
         ))}
-        <div className="scrnaseq-column">
-          <div className="scrnaseq-card">
-            <Row
-              style={{
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: 10,
-                width: '100%',
-              }}
-              >
-              <h3
-                style={{
-                  margin: 0,
-                  textAlign: 'left',
-                  width: '100%',
-                }}
-                >
-                Read and Gene Counts Per Cell
-              </h3>
-              <DownloadButton
-                // TODO: this button is for display purposes only
-                {...toolbarButtons.download}
-                downloadOptions={[{ label: 'TSV' }]}
-                />
-            </Row>
-          </div>
-        </div>
       </div>
     </Column>
   </Row>

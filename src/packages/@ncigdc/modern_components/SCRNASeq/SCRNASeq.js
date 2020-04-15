@@ -9,9 +9,9 @@ import {
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import { SCRNASeqPlot } from './plots';
+import SCRNASeqPlot from './SCRNASeqPlot';
+import { toolbarButtons } from './SCRNASeqPlot/utils';
 import './styles.scss';
-import { toolbarButtons } from './plots/common';
 import { DownloadButton } from './toolbar';
 
 // temporarily importing data
@@ -69,10 +69,10 @@ const SCRNASeq = () => (
                   width: '100%',
                 }}
                 >
-                      Read and Gene Counts Per Cell
+                Read and Gene Counts Per Cell
               </h3>
               <DownloadButton
-                      // TODO: this button is for display purposes only
+                // TODO: this button is for display purposes only
                 {...toolbarButtons.download}
                 downloadOptions={[{ label: 'TSV' }]}
                 />

@@ -8,7 +8,7 @@ import createPlotlyComponent from 'react-plotly.js/factory';
 import { Column, Row } from '@ncigdc/uikit/Flex';
 
 import { DownloadButton, ToolbarButton } from '../toolbar';
-import * as common from './common';
+import * as utils from './utils';
 
 // setup Plotly layout & config
 
@@ -18,9 +18,9 @@ const width = 460;
 
 const getLayout = dataType => {
   const dataTypeCaps = dataType.toUpperCase();
-  const { axisFont, axisStyles, font } = common.layoutDefaults;
+  const { axisFont, axisStyles, font } = utils.layoutDefaults;
   return {
-    ...common.layout,
+    ...utils.layout,
     height: 350,
     legend: {
       ...font,
@@ -48,7 +48,7 @@ const getLayout = dataType => {
 const getToolbarButtons = () => {
   const {
     download, pan, reset, zoom, zoomIn, zoomOut,
-  } = common.toolbarButtons;
+  } = utils.toolbarButtons;
   return [
     reset,
     pan,
@@ -131,7 +131,7 @@ export default class SCRNASeqChart extends Component {
             )))}
         </Row>
         <Plot
-          config={common.config}
+          config={utils.config}
           data={dataWithMarkers}
           layout={getLayout(dataType)}
           onInitialized={this.onInitialized}

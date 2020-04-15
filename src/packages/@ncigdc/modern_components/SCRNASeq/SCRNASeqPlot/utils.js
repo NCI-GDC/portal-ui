@@ -6,17 +6,6 @@ export const config = {
   showLink: false,
 };
 
-export const configSmallPlots = {
-  ...config,
-  scrollZoom: false,
-  showAxisDragHandles: true,
-  staticPlot: false,
-};
-
-export const styleSmallPlots = {
-  height: '380px',
-};
-
 export const layout = {
   hovermode: 'closest',
   margin: {
@@ -25,11 +14,6 @@ export const layout = {
     r: 20,
     t: 60,
   },
-};
-
-export const layoutSmallPlots = {
-  ...layout,
-  width: 460,
 };
 
 export const layoutDefaults = {

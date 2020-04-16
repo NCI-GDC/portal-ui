@@ -6,6 +6,11 @@ import Plotly from 'plotly.js/lib/index-basic';
 import createPlotlyComponent from 'react-plotly.js/factory';
 
 import { Column, Row } from '@ncigdc/uikit/Flex';
+import {
+  exitFullScreen,
+  enterFullScreen,
+  isFullScreen,
+} from '@ncigdc/utils/fullscreen';
 
 import { DownloadButton, ToolbarButton } from '../toolbar';
 import * as utils from './utils';
@@ -47,15 +52,17 @@ const getLayout = dataType => {
 
 const getToolbarButtons = () => {
   const {
-    download, pan, reset, zoom, zoomIn, zoomOut,
+    download, fullscreen, pan, reset, zoom, zoomIn, zoomOut,
   } = utils.toolbarButtons;
   return [
+    // intentionally not alphabetized
     reset,
     pan,
     zoom,
     zoomIn,
     zoomOut,
     download,
+    fullscreen,
   ];
 };
 
@@ -95,6 +102,18 @@ export default class SCRNASeqChart extends Component {
     } else if (name === 'react') {
       const { data, dataType } = this.props;
       Plotly.react(graphDiv, data, getLayout(dataType));
+    } else if (name === 'fullscreen') {
+      if (isFullScreen()) {
+        exitFullScreen();
+        oncoGrid.reload();
+      } else {
+        enterFullScreen(containerRefs[uniqueGridClass]);
+        oncoGrid.resize(
+          screen.width - 400,
+          screen.height - 400,
+          true,
+        );
+      }
     } else {
       ModeBarButtons[name].click(graphDiv, e);
     }

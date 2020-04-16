@@ -46,6 +46,10 @@ export const toolbarButtons = {
     label: 'Download',
     name: 'download',
   },
+  fullscreen: {
+    label: 'Fullscreen',
+    name: 'fullscreen',
+  },
   pan: {
     attr: 'dragmode',
     faClass: 'fa-arrows',

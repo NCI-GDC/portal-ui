@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import FullScreenIcon from 'react-icons/lib/md/fullscreen';
 
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
@@ -14,7 +15,7 @@ export default class ToolbarButton extends Component {
   render() {
     const {
       attr = '',
-      faClass,
+      faClass = '',
       label,
       name,
       val = '',
@@ -35,10 +36,13 @@ export default class ToolbarButton extends Component {
             marginLeft: 6,
           }}
           >
-          <i
-            aria-hidden="true"
-            className={`fa ${faClass}`}
-            />
+          {faClass && (
+            <i
+              aria-hidden="true"
+              className={`fa ${faClass}`}
+              />
+          )}
+          {label === 'Fullscreen' && <FullScreenIcon />}
           <Hidden>{label}</Hidden>
         </Button>
       </Tooltip>

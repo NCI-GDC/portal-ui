@@ -92,6 +92,9 @@ export default class SCRNASeqChart extends Component {
         format,
         scale,
       });
+    } else if (name === 'react') {
+      const { data, dataType } = this.props;
+      Plotly.react(graphDiv, data, getLayout(dataType));
     } else {
       ModeBarButtons[name].click(graphDiv, e);
     }

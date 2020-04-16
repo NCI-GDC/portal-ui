@@ -54,11 +54,9 @@ export const toolbarButtons = {
     val: 'pan',
   },
   reset: {
-    attr: 'zoom',
     faClass: 'fa-undo',
-    label: 'Reset Axes',
-    name: 'resetScale2d',
-    val: 'reset',
+    label: 'Reset',
+    name: 'react',
   },
   zoom: {
     attr: 'dragmode',

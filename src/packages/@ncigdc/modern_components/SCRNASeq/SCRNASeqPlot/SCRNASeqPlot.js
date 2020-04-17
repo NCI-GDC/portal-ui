@@ -93,7 +93,7 @@ const styles = {
   },
 };
 
-export default class SCRNASeqChart extends Component {
+export default class SCRNASeqPlot extends Component {
   state = {
     graphDiv: '',
     uniqueGridClass: '',

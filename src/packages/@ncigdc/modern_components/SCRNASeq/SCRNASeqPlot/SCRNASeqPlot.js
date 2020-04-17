@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import ModeBarButtons from 'plotly.js/src/components/modebar/buttons';
 import Plotly from 'plotly.js/lib/index-basic';
 import createPlotlyComponent from 'react-plotly.js/factory';
+import { uniqueId } from 'lodash';
 
 import { Column, Row } from '@ncigdc/uikit/Flex';
 import {
@@ -76,14 +77,32 @@ const getDataWithMarkers = (input = []) => input.map(row => ({
   },
 }));
 
+// setup fullscreen mode
+
+const containerRefs = {};
+const GRID_CLASS = 'scrnaseq-wrapper';
+const styles = {
+  fullscreen: {
+    background: '#fff',
+    height: '100%',
+    marginLeft: 0,
+    maxWidth: '100%',
+    overflow: 'scroll',
+    padding: '100px 100px 0',
+    width: '100%',
+  },
+};
+
 export default class SCRNASeqChart extends Component {
   state = {
     graphDiv: '',
+    uniqueGridClass: '',
   };
 
   onInitialized = (figure, graphDiv) => {
     this.setState({
       graphDiv,
+      uniqueGridClass: GRID_CLASS + uniqueId(),
     });
   };
 
@@ -99,21 +118,18 @@ export default class SCRNASeqChart extends Component {
         format,
         scale,
       });
-    } else if (name === 'react') {
-      const { data, dataType } = this.props;
-      Plotly.react(graphDiv, data, getLayout(dataType));
-    } else if (name === 'fullscreen') {
-      if (isFullScreen()) {
-        exitFullScreen();
-        oncoGrid.reload();
-      } else {
-        enterFullScreen(containerRefs[uniqueGridClass]);
-        oncoGrid.resize(
-          screen.width - 400,
-          screen.height - 400,
-          true,
-        );
+    } else if (name === 'react' || name === 'fullscreen') {
+      if (name === 'fullscreen') {
+        if (isFullScreen()) {
+          exitFullScreen();
+        } else {
+          const { uniqueGridClass } = this.state;
+          enterFullScreen(containerRefs[uniqueGridClass]);
+        }
       }
+      const { data, dataType } = this.props;
+      // TODO pass fullscreen into getLayout
+      Plotly.react(graphDiv, data, getLayout(dataType));
     } else {
       ModeBarButtons[name].click(graphDiv, e);
     }
@@ -123,20 +139,34 @@ export default class SCRNASeqChart extends Component {
     const {
       className, data, dataType, style = {},
     } = this.props;
+    const { uniqueGridClass } = this.state;
 
     const dataWithMarkers = getDataWithMarkers(data);
 
+    console.log('render');
+
     return (
-      <Column className={className} style={style}>
-        <Row
-          style={{
-            justifyContent: 'flex-end',
-            maxWidth: width,
-            position: 'relative',
-            width,
+      <Column
+        className={className}
+        style={{
+          ...style,
+        }}
+        >
+        <div
+          ref={r => {
+            containerRefs[uniqueGridClass] = r;
           }}
+          style={{ ...isFullScreen() && styles.fullscreen }}
           >
-          {toolbarButtons.map(btn => (btn.name === 'download'
+          <Row
+            style={{
+              justifyContent: 'flex-end',
+              maxWidth: width,
+              position: 'relative',
+              width,
+            }}
+            >
+            {toolbarButtons.map(btn => (btn.name === 'download'
             ? (
               <DownloadButton
                 {...btn}
@@ -151,13 +181,14 @@ export default class SCRNASeqChart extends Component {
                 onToolbarClick={this.handleToolbarClick}
                 />
             )))}
-        </Row>
-        <Plot
-          config={utils.config}
-          data={dataWithMarkers}
-          layout={getLayout(dataType)}
-          onInitialized={this.onInitialized}
-          />
+          </Row>
+          <Plot
+            config={utils.config}
+            data={dataWithMarkers}
+            layout={getLayout(dataType)}
+            onInitialized={this.onInitialized}
+            />
+        </div>
       </Column>
     );
   }

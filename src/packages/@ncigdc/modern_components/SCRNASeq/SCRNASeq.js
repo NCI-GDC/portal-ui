@@ -62,7 +62,6 @@ const SCRNASeq = () => (
             >
             <div className="scrnaseq-card">
               <SCRNASeqPlot
-                className="scrnaseq-cluster-plot"
                 data={stubData[dType].data}
                 dataType={stubData[dType].name}
                 />

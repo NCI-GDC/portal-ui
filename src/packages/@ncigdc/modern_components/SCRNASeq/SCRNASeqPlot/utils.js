@@ -84,3 +84,68 @@ export const toolbarButtons = {
     val: 'out',
   },
 };
+
+export const getToolbarButtons = () => {
+  const {
+    download, fullscreen, pan, reset, zoom, zoomIn, zoomOut,
+  } = toolbarButtons;
+  return [
+    // intentionally not alphabetized
+    reset,
+    pan,
+    zoom,
+    zoomIn,
+    zoomOut,
+    download,
+    fullscreen,
+  ];
+};
+
+export const width = 460;
+
+export const getLayout = dataType => {
+  const dataTypeCaps = dataType.toUpperCase();
+  const { axisFont, axisStyles, font } = layoutDefaults;
+  return {
+    ...layout,
+    height: 350,
+    legend: {
+      ...font,
+      ...axisFont,
+    },
+    name: 'scrna_seq',
+    title: {
+      font,
+      text: `${dataTypeCaps} Projection of<br>Cells Colored by Automated Clustering`,
+    },
+    width,
+    xaxis: {
+      ...axisStyles,
+      title: `${dataTypeCaps}_1`,
+    },
+    yaxis: {
+      ...axisStyles,
+      title: `${dataTypeCaps}_2`,
+    },
+  };
+};
+
+export const styles = {
+  fullscreen: {
+    background: '#fff',
+    height: '100%',
+    marginLeft: 0,
+    maxWidth: '100%',
+    overflow: 'scroll',
+    padding: '100px 100px 0',
+    width: '100%',
+  },
+};
+
+export const getDataWithMarkers = (input = []) => input.map(row => ({
+  ...row,
+  marker: {
+    opacity: 0.75,
+    size: 4,
+  },
+}));

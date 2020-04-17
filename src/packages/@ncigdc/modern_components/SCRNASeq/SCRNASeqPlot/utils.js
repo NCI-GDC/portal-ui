@@ -1,4 +1,5 @@
 import { theme } from '@ncigdc/theme';
+import { isFullScreen } from '@ncigdc/utils/fullscreen';
 
 export const config = {
   displaylogo: false,
@@ -103,12 +104,12 @@ export const getToolbarButtons = () => {
 
 export const width = 460;
 
-export const getLayout = dataType => {
+export const getLayout = (dataType, isFullScreen = false) => {
   const dataTypeCaps = dataType.toUpperCase();
   const { axisFont, axisStyles, font } = layoutDefaults;
   return {
     ...layout,
-    height: 350,
+    height: isFullScreen ? 800 : 350,
     legend: {
       ...font,
       ...axisFont,
@@ -118,7 +119,7 @@ export const getLayout = dataType => {
       font,
       text: `${dataTypeCaps} Projection of<br>Cells Colored by Automated Clustering`,
     },
-    width,
+    width: isFullScreen ? 800 : width,
     xaxis: {
       ...axisStyles,
       title: `${dataTypeCaps}_1`,

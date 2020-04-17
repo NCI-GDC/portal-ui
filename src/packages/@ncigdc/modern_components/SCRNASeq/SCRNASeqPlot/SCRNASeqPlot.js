@@ -1,10 +1,17 @@
 /* eslint-disable camelcase */
 
-import React, { Component } from 'react';
+import React from 'react';
 import ModeBarButtons from 'plotly.js/src/components/modebar/buttons';
 import Plotly from 'plotly.js/lib/index-basic';
 import createPlotlyComponent from 'react-plotly.js/factory';
 import { uniqueId } from 'lodash';
+import {
+  compose,
+  setDisplayName,
+  withHandlers,
+  withProps,
+  withState,
+} from 'recompose';
 
 import { Column, Row } from '@ncigdc/uikit/Flex';
 import {
@@ -21,101 +28,105 @@ const toolbarButtons = utils.getToolbarButtons();
 const containerRefs = {};
 const GRID_CLASS = 'scrnaseq-wrapper';
 
-export default class SCRNASeqPlot extends Component {
-  state = {
-    graphDiv: '',
-    uniqueGridClass: '',
-  };
-
-  onInitialized = (figure, graphDiv) => {
-    this.setState({
-      graphDiv,
-      uniqueGridClass: GRID_CLASS + uniqueId(),
-    });
-  };
-
-  handleToolbarClick = e => {
-    const { graphDiv } = this.state;
-    e.persist();
-    const name = e.target.getAttribute('data-name');
-    if (name === 'downloadImage') {
-      const format = e.target.getAttribute('data-format');
-      const scale = e.target.getAttribute('data-scale');
-      Plotly.downloadImage(graphDiv, {
-        filename: 'scrnaseq',
-        format,
-        scale,
-      });
-    } else if (name === 'react' || name === 'fullscreen') {
-      if (name === 'fullscreen') {
-        if (isFullScreen()) {
-          exitFullScreen();
-        } else {
-          const { uniqueGridClass } = this.state;
-          enterFullScreen(containerRefs[uniqueGridClass]);
-        }
-      }
-      const { data, dataType } = this.props;
-      // TODO pass fullscreen into getLayout
-      Plotly.react(graphDiv, data, utils.getLayout(dataType));
-    } else {
-      ModeBarButtons[name].click(graphDiv, e);
-    }
-  };
-
-  render() {
-    const { data, dataType } = this.props;
-    const { uniqueGridClass } = this.state;
-
-    const dataWithMarkers = utils.getDataWithMarkers(data);
-
-    console.log('render');
-
-    return (
-      <Column
-        className="scrnaseq-cluster-plot"
+const SCRNASeqPlot = ({
+  dataType,
+  dataWithMarkers,
+  handleInitialize,
+  handleToolbarClick,
+  uniqueGridClass,
+}) => {
+  return (
+    <Column className="scrnaseq-cluster-plot">
+      <div
+        ref={r => {
+          containerRefs[uniqueGridClass] = r;
+        }}
+        style={{
+          ...isFullScreen() &&
+            utils.styles.fullscreen,
+        }}
         >
-        <div
-          ref={r => {
-            containerRefs[uniqueGridClass] = r;
-          }}
+        <h1>{isFullScreen() ? 'fullscreen' : 'not fullscreen'}</h1>
+        <Row
           style={{
-            ...isFullScreen() &&
-              utils.styles.fullscreen,
+            justifyContent: 'flex-end',
+            maxWidth: utils.width,
+            position: 'relative',
+            width: utils.width,
           }}
           >
-          <Row
-            style={{
-              justifyContent: 'flex-end',
-              maxWidth: utils.width,
-              position: 'relative',
-              width: utils.width,
-            }}
-            >
-            {toolbarButtons.map(btn => (btn.name === 'download'
+          {toolbarButtons.map(btn => (btn.name === 'download'
             ? (
               <DownloadButton
                 {...btn}
                 key="download"
-                onToolbarClick={this.handleToolbarClick}
+                onToolbarClick={handleToolbarClick}
                 />
             )
             : (
               <ToolbarButton
                 {...btn}
                 key={btn.name}
-                onToolbarClick={this.handleToolbarClick}
+                onToolbarClick={handleToolbarClick}
                 />
             )))}
-          </Row>
-          <Plot
-            config={utils.config}
-            data={dataWithMarkers}
-            layout={utils.getLayout(dataType)}
-            onInitialized={this.onInitialized}
-            />
-        </div>
-      </Column>
-    );
-  }
-}
+        </Row>
+        <Plot
+          config={utils.config}
+          data={dataWithMarkers}
+          layout={utils.getLayout(dataType, isFullScreen())}
+          onInitialized={handleInitialize}
+          />
+      </div>
+    </Column>
+  );
+};
+
+export default compose(
+  setDisplayName('EnhancedSCRNASeqPlot'),
+  withState('graphDiv', 'setGraphDiv', ''),
+  withState('uniqueGridClass', 'setUniqueGridClass', ''),
+  withProps(({ data }) => ({
+    dataWithMarkers: utils.getDataWithMarkers(data),
+  })),
+  withHandlers({
+    handleInitialize: ({
+      setGraphDiv,
+      setUniqueGridClass,
+    }) => (figure, graphDiv) => {
+      setGraphDiv(graphDiv);
+      setUniqueGridClass(GRID_CLASS + uniqueId());
+    },
+    handleToolbarClick: ({
+      data,
+      dataType,
+      graphDiv,
+      uniqueGridClass,
+    }) => e => {
+      e.persist();
+      const name = e.target.getAttribute('data-name');
+      if (name === 'downloadImage') {
+        const format = e.target.getAttribute('data-format');
+        const scale = e.target.getAttribute('data-scale');
+        Plotly.downloadImage(graphDiv, {
+          filename: 'scrnaseq',
+          format,
+          scale,
+        });
+      } else if (name === 'react' || name === 'fullscreen') {
+        if (name === 'fullscreen') {
+          if (isFullScreen()) {
+            exitFullScreen();
+          } else {
+            enterFullScreen(containerRefs[uniqueGridClass]);
+          }
+        }
+        // TODO pass fullscreen into getLayout
+        Plotly.react(graphDiv, data, utils.getLayout(dataType, isFullScreen()));
+      } else {
+        // use Plotly button functions
+        ModeBarButtons[name].click(graphDiv, e);
+      }
+    },
+  }),
+)(SCRNASeqPlot);

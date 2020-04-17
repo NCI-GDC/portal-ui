@@ -52,7 +52,6 @@ const SCRNASeq = () => (
           Single Cell RNA Sequencing
         </h1>
         <DownloadButton {...toolbarButtons.download} />
-
       </Row>
       <div className="scrnaseq-row">
         {dataTypes.map(dType => (

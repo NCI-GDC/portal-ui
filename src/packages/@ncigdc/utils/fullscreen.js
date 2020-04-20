@@ -14,8 +14,10 @@ export const isFullScreen = el => {
   return el && fullScreenElement ? fullScreenElement === el : fullScreenElement;
 };
 
-export const exitFullScreen = () =>
+export const exitFullScreen = () => {
   document.exitFullscreen && document.exitFullscreen();
+  window.dispatchEvent(new Event('resize'));
+};
 
 export const enterFullScreen = element => {
   if (element.requestFullscreen) {
@@ -25,4 +27,5 @@ export const enterFullScreen = element => {
   } else if (element.webkitRequestFullScreen) {
     element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
   }
+  window.dispatchEvent(new Event('resize'));
 };

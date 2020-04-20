@@ -89,6 +89,10 @@ export default compose(
     dataWithMarkers: utils.getDataWithMarkers(data),
   })),
   withHandlers({
+    resizeHandler: () => {
+      this.child.resizeHandler();
+      window.dispatchEvent(new Event('resize'));
+    },
     handleEsc: ({ data, dataType, graphDiv }) => e => {
       if (e.keyCode === 27) {
         console.log('handle esc, pressed escape key');

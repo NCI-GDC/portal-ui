@@ -7,16 +7,6 @@ export const config = {
   showLink: false,
 };
 
-export const layout = {
-  hovermode: 'closest',
-  margin: {
-    b: 70,
-    l: 70,
-    r: 20,
-    t: 60,
-  },
-};
-
 export const layoutDefaults = {
   axisFont: {
     color: '#767676',
@@ -108,6 +98,7 @@ export const getLayout = dataType => {
   const dataTypeCaps = dataType === 'tsne' ? 't-SNE' : dataType.toUpperCase();
   const { axisFont, axisStyles, font } = layoutDefaults;
   return {
+    autosize: true,
     hovermode: 'closest',
     legend: {
       ...font,

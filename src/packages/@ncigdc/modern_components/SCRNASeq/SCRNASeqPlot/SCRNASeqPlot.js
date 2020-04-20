@@ -115,14 +115,12 @@ export default compose(
         });
       } else if (name === 'fullscreen') {
         // button works
-        if (name === 'fullscreen') {
-          if (isFullScreen()) {
-            Plotly.react(graphDiv, data, utils.getLayout(dataType, false));
-            exitFullScreen();
-          } else {
-            enterFullScreen(containerRefs[uniqueGridClass]);
-            Plotly.react(graphDiv, data, utils.getLayout(dataType, true));
-          }
+        if (isFullScreen()) {
+          Plotly.react(graphDiv, data, utils.getLayout(dataType, false));
+          exitFullScreen();
+        } else {
+          enterFullScreen(containerRefs[uniqueGridClass]);
+          Plotly.react(graphDiv, data, utils.getLayout(dataType, true));
         }
       } else if (name === 'react') {
         // button works

@@ -11,8 +11,6 @@ const stickyHeaderStyle = {
   },
 };
 
-export const userAccessListStub = ['fm', 'genie'];
-
 export const getHeadings = ({ user }) => ([
   ...user
       ? [

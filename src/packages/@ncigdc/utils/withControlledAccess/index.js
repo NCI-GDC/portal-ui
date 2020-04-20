@@ -6,11 +6,14 @@ import {
 } from 'lodash';
 import {
   compose,
+  lifecycle,
   setDisplayName,
+  withHandlers,
   withPropsOnChange,
   withState,
 } from 'recompose';
 
+import { fetchApi } from '@ncigdc/utils/ajax';
 import withRouter from '@ncigdc/utils/withRouter';
 import ControlledAccessModal from '@ncigdc/components/Modals/ControlledAccess';
 import { setModal } from '@ncigdc/dux/modal';
@@ -19,86 +22,90 @@ import {
   DISPLAY_DAVE_CA,
 } from '@ncigdc/utils/constants';
 
-const dataStub = [
-  {
-    genes_mutations: 'controlled',
-    program: 'fm',
-  },
-  {
-    genes_mutations: 'controlled',
-    program: 'genie',
-  },
-  {
-    genes_mutations: 'open',
-    program: 'tcga',
-  },
-  {
-    program: 'target',
-  },
-  {
-    program: 'mmrf',
-  },
-  {
-    program: 'cptac',
-  },
-  {
-    program: 'beataml 1.0',
-  },
-  {
-    program: 'nciccr',
-  },
-  {
-    program: 'ohu',
-  },
-  {
-    program: 'cgci',
-  },
-  {
-    program: 'wcdt',
-  },
-  {
-    program: 'organoid',
-  },
-  {
-    program: 'ctsp',
-  },
-  {
-    program: 'hcmi',
-  },
-  {
-    program: 'varpop',
-  },
-].map(stub => ({
-  ...stub,
-  cases_clinical: 'open',
-  genes_mutations: stub.genes_mutations || 'in_process',
-}));
+import {
+  checkUserAccess,
+  reshapeSummary,
+} from './helpers';
 
-const userAccessList = ['fm'];
 
 export default compose(
   setDisplayName('withControlledAccess'),
   connect(state => ({
+    token: state.auth.token,
     user: state.auth.user,
   })),
   withRouter,
-  withState('studiesList', 'setStudiesList', dataStub),
+  withState('userAccessList', 'setUserAccessList', []),
+  withState('studiesList', 'setStudiesList', []),
+  withHandlers({
+    fetchStudiesList: ({ setStudiesList }) => () => (
+      fetchApi(
+        '/studies/summary/all',
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+        .then(({ data } = {}) => {
+          data && setStudiesList(reshapeSummary(data));
+        })
+        .catch(error => console.error(error))
+    ),
+    fetchUserAccess: ({ setUserAccessList }) => () => (
+      // fetchApi(
+      //   '/studies/user',
+      //   {
+      //     credentials: 'same-origin',
+      //     headers: {
+      //       'Access-Control-Allow-Origin': true,
+      //       'Content-Type': 'application/json',
+      //       'X-Auth-Token': 'secret admin token',
+      //     },
+      //   },
+      // ).then((response) => {
+      //   console.log('user?', response);
+      // })
+      setUserAccessList(['tcga'])
+    ),
+  }),
+  withPropsOnChange(
+    (
+      {
+        user,
+      },
+      {
+        user: nextUser,
+      },
+    ) => !(
+      isEqual(user, nextUser)
+    ),
+    ({
+      fetchUserAccess,
+      user,
+    }) => {
+      user && fetchUserAccess();
+    },
+  ),
   withPropsOnChange(
     (
       {
         query: {
           controlled,
         },
+        studiesList,
         user,
       },
       {
         query: {
           controlled: nextControlled,
         },
+        studiesList: nextStudiesList,
         user: nextUser,
       },
     ) => !(
       controlled === nextControlled &&
+      isEqual(studiesList, nextStudiesList) &&
       isEqual(user, nextUser)
     ),
     ({
@@ -113,6 +120,7 @@ export default compose(
       },
       studiesList,
       user,
+      userAccessList,
     }) => {
       // gets the whole array of 'controlled' from the URL
       const controlledQuery = Array.isArray(controlled)
@@ -168,4 +176,13 @@ export default compose(
       };
     },
   ),
+  lifecycle({
+    componentDidMount() {
+      const {
+        fetchStudiesList,
+      } = this.props;
+
+      fetchStudiesList();
+    },
+  }),
 );

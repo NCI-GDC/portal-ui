@@ -14,7 +14,10 @@ import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTa
 import RestrictionMessage from '@ncigdc/modern_components/RestrictionMessage/RestrictionMessage';
 
 import CAMessage from './CAMessage';
-import { getHeadings, formatData } from './helpers';
+import {
+  getHeadings,
+  formatData,
+} from './helpers';
 
 import './styles.scss';
 

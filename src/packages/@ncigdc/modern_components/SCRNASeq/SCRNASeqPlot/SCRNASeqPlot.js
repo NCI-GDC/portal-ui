@@ -7,11 +7,11 @@ import createPlotlyComponent from 'react-plotly.js/factory';
 import { uniqueId } from 'lodash';
 import {
   compose,
+  pure,
   setDisplayName,
   withHandlers,
   withProps,
   withState,
-  lifecycle,
 } from 'recompose';
 
 import { Row } from '@ncigdc/uikit/Flex';
@@ -20,6 +20,7 @@ import {
   enterFullScreen,
   isFullScreen,
 } from '@ncigdc/utils/fullscreen';
+import withSize from '@ncigdc/utils/withSize';
 
 import { DownloadButton, ToolbarButton } from '../toolbar';
 import * as utils from './utils';
@@ -34,27 +35,23 @@ const SCRNASeqPlot = ({
   dataWithMarkers,
   handleInitialize,
   handleToolbarClick,
+  size: { height, width },
   uniqueGridClass,
 }) => {
+  const layoutParams = {
+    dataType,
+    ...isFullScreen() && { height },
+    width,
+  };
+  console.log(height, width);
   return (
     <div
-      className="scrnaseq-cluster-plot"
+      className="scrnaseq-plot"
       ref={r => {
         containerRefs[uniqueGridClass] = r;
       }}
-      style={{
-        background: '#fff',
-        width: '100%',
-      }}
       >
-      <Row
-        style={{
-          justifyContent: 'flex-end',
-          paddingRight: 10,
-          position: 'relative',
-          width: '100%',
-        }}
-        >
+      <Row className="scrnaseq-toolbar">
         {toolbarButtons.map(btn => (btn.name === 'download'
           ? (
             <DownloadButton
@@ -74,7 +71,7 @@ const SCRNASeqPlot = ({
       <Plot
         config={utils.config}
         data={dataWithMarkers}
-        layout={utils.getLayout(dataType, isFullScreen())}
+        layout={utils.getLayout(layoutParams)}
         onInitialized={handleInitialize}
         />
     </div>
@@ -88,17 +85,8 @@ export default compose(
   withProps(({ data }) => ({
     dataWithMarkers: utils.getDataWithMarkers(data),
   })),
+  withSize({ monitorHeight: true }),
   withHandlers({
-    resizeHandler: () => {
-      this.child.resizeHandler();
-      window.dispatchEvent(new Event('resize'));
-    },
-    handleEsc: ({ data, dataType, graphDiv }) => e => {
-      if (e.keyCode === 27) {
-        console.log('handle esc, pressed escape key');
-        Plotly.react(graphDiv, data, utils.getLayout(dataType, false));
-      }
-    },
     handleInitialize: ({
       setGraphDiv,
       setUniqueGridClass,
@@ -110,10 +98,16 @@ export default compose(
       data,
       dataType,
       graphDiv,
+      size: { height, width },
       uniqueGridClass,
     }) => e => {
       e.persist();
       const name = e.target.getAttribute('data-name');
+      const layoutParams = {
+        dataType,
+        ...isFullScreen() && { height },
+        width,
+      };
       if (name === 'downloadImage') {
         const format = e.target.getAttribute('data-format');
         const scale = e.target.getAttribute('data-scale');
@@ -125,27 +119,20 @@ export default compose(
       } else if (name === 'fullscreen') {
         // button works
         if (isFullScreen()) {
-          Plotly.react(graphDiv, data, utils.getLayout(dataType, false));
+          Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
           exitFullScreen();
         } else {
           enterFullScreen(containerRefs[uniqueGridClass]);
-          Plotly.react(graphDiv, data, utils.getLayout(dataType, true));
+          Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
         }
       } else if (name === 'react') {
         // button works
-        Plotly.react(graphDiv, data, utils.getLayout(dataType, isFullScreen()));
+        Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
       } else {
         // use Plotly button functions
         ModeBarButtons[name].click(graphDiv, e);
       }
     },
   }),
-  lifecycle({
-    componentDidMount() {
-      document.addEventListener('keydown', this.props.handleEsc, false);
-    },
-    componentWillUnmount() {
-      document.removeEventListener('keydown', this.props.handleEsc, false);
-    },
-  }),
+  pure,
 )(SCRNASeqPlot);

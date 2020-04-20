@@ -92,13 +92,12 @@ export const getToolbarButtons = () => {
   ];
 };
 
-export const width = 460;
-
-export const getLayout = dataType => {
+export const getLayout = ({ dataType, height = 0, width }) => {
   const dataTypeCaps = dataType === 'tsne' ? 't-SNE' : dataType.toUpperCase();
   const { axisFont, axisStyles, font } = layoutDefaults;
   return {
     autosize: true,
+    ...height && { height },
     hovermode: 'closest',
     legend: {
       ...font,
@@ -115,6 +114,7 @@ export const getLayout = dataType => {
       font,
       text: `${dataTypeCaps} Projection of<br>Cells Colored by Automated Clustering`,
     },
+    width,
     xaxis: {
       ...axisStyles,
       title: `${dataTypeCaps}_1`,

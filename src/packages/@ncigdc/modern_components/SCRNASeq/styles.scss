@@ -74,3 +74,17 @@ button * {
 .scrnaseq-card .dropdown-items[style] {
   min-width: 100px !important;
 }
+
+.scrnaseq-plot {
+  background: #fff;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+}
+
+.scrnaseq-toolbar {
+  justify-content: flex-end;
+  padding-right: 10px;
+  position: relative;
+  width: 100%;
+}

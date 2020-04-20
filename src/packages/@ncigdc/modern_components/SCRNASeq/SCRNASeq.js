@@ -41,7 +41,6 @@ const SCRNASeq = () => (
           borderBottom: '1px solid #ccc',
           justifyContent: 'space-between',
           marginBottom: 20,
-          width: '100%',
         }}
         >
         <h1
@@ -53,14 +52,13 @@ const SCRNASeq = () => (
         </h1>
         <DownloadButton {...toolbarButtons.download} />
       </Row>
-      <div className="scrnaseq-row" style={{ width: '100%' }}>
+      <div className="scrnaseq-row">
         {dataTypes.map(dType => (
           <div
             className="scrnaseq-column"
             key={stubData[dType].name}
-            style={{ width: '100%' }}
             >
-            <div className="scrnaseq-card" style={{ width: '100%' }}>
+            <div className="scrnaseq-card">
               <SCRNASeqPlot
                 data={stubData[dType].data}
                 dataType={stubData[dType].name}

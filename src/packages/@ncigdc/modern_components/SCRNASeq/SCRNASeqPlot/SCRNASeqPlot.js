@@ -14,7 +14,7 @@ import {
   lifecycle,
 } from 'recompose';
 
-import { Column, Row } from '@ncigdc/uikit/Flex';
+import { Row } from '@ncigdc/uikit/Flex';
 import {
   exitFullScreen,
   enterFullScreen,
@@ -37,50 +37,47 @@ const SCRNASeqPlot = ({
   uniqueGridClass,
 }) => {
   return (
-    <Column className="scrnaseq-cluster-plot">
-      <div
-        ref={r => {
-          containerRefs[uniqueGridClass] = r;
-        }}
+    <div
+      className="scrnaseq-cluster-plot"
+      ref={r => {
+        containerRefs[uniqueGridClass] = r;
+      }}
+      style={{
+        background: '#fff',
+        width: '100%',
+      }}
+      >
+      <Row
         style={{
-          background: '#fff',
+          justifyContent: 'flex-end',
+          paddingRight: 10,
+          position: 'relative',
           width: '100%',
-          ...isFullScreen() &&
-            utils.styles.fullscreen,
         }}
         >
-        <Row
-          style={{
-            justifyContent: 'flex-end',
-            maxWidth: utils.width,
-            position: 'relative',
-            width: utils.width,
-          }}
-          >
-          {toolbarButtons.map(btn => (btn.name === 'download'
-            ? (
-              <DownloadButton
-                {...btn}
-                key="download"
-                onToolbarClick={handleToolbarClick}
-                />
-            )
-            : (
-              <ToolbarButton
-                {...btn}
-                key={btn.name}
-                onToolbarClick={handleToolbarClick}
-                />
-            )))}
-        </Row>
-        <Plot
-          config={utils.config}
-          data={dataWithMarkers}
-          layout={utils.getLayout(dataType, isFullScreen())}
-          onInitialized={handleInitialize}
-          />
-      </div>
-    </Column>
+        {toolbarButtons.map(btn => (btn.name === 'download'
+          ? (
+            <DownloadButton
+              {...btn}
+              key="download"
+              onToolbarClick={handleToolbarClick}
+              />
+          )
+          : (
+            <ToolbarButton
+              {...btn}
+              key={btn.name}
+              onToolbarClick={handleToolbarClick}
+              />
+          )))}
+      </Row>
+      <Plot
+        config={utils.config}
+        data={dataWithMarkers}
+        layout={utils.getLayout(dataType, isFullScreen())}
+        onInitialized={handleInitialize}
+        />
+    </div>
   );
 };
 

@@ -11,6 +11,7 @@ import {
   withHandlers,
   withProps,
   withState,
+  lifecycle,
 } from 'recompose';
 
 import { Column, Row } from '@ncigdc/uikit/Flex';
@@ -42,11 +43,12 @@ const SCRNASeqPlot = ({
           containerRefs[uniqueGridClass] = r;
         }}
         style={{
+          background: '#fff',
+          width: '100%',
           ...isFullScreen() &&
             utils.styles.fullscreen,
         }}
         >
-        <h1>{isFullScreen() ? 'fullscreen' : 'not fullscreen'}</h1>
         <Row
           style={{
             justifyContent: 'flex-end',
@@ -90,6 +92,12 @@ export default compose(
     dataWithMarkers: utils.getDataWithMarkers(data),
   })),
   withHandlers({
+    handleEsc: ({ data, dataType, graphDiv }) => e => {
+      if (e.keyCode === 27) {
+        console.log('handle esc, pressed escape key');
+        Plotly.react(graphDiv, data, utils.getLayout(dataType, false));
+      }
+    },
     handleInitialize: ({
       setGraphDiv,
       setUniqueGridClass,
@@ -129,6 +137,14 @@ export default compose(
         // use Plotly button functions
         ModeBarButtons[name].click(graphDiv, e);
       }
+    },
+  }),
+  lifecycle({
+    componentDidMount() {
+      document.addEventListener('keydown', this.props.handleEsc, false);
+    },
+    componentWillUnmount() {
+      document.removeEventListener('keydown', this.props.handleEsc, false);
     },
   }),
 )(SCRNASeqPlot);

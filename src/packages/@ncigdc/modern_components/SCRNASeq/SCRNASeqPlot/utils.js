@@ -1,9 +1,9 @@
 import { theme } from '@ncigdc/theme';
-import { isFullScreen } from '@ncigdc/utils/fullscreen';
 
 export const config = {
   displaylogo: false,
   displayModeBar: false,
+  responsive: true,
   showLink: false,
 };
 
@@ -104,22 +104,26 @@ export const getToolbarButtons = () => {
 
 export const width = 460;
 
-export const getLayout = (dataType, isFullScreen = false) => {
-  const dataTypeCaps = dataType.toUpperCase();
+export const getLayout = dataType => {
+  const dataTypeCaps = dataType === 'tsne' ? 't-SNE' : dataType.toUpperCase();
   const { axisFont, axisStyles, font } = layoutDefaults;
   return {
-    ...layout,
-    height: isFullScreen ? 800 : 350,
+    hovermode: 'closest',
     legend: {
       ...font,
       ...axisFont,
+    },
+    margin: {
+      b: 70,
+      l: 70,
+      r: 20,
+      t: 60,
     },
     name: 'scrna_seq',
     title: {
       font,
       text: `${dataTypeCaps} Projection of<br>Cells Colored by Automated Clustering`,
     },
-    width: isFullScreen ? 800 : width,
     xaxis: {
       ...axisStyles,
       title: `${dataTypeCaps}_1`,

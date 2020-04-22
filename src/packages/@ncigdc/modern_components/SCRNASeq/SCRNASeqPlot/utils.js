@@ -97,7 +97,7 @@ export const getLayout = ({ dataType, height = 0, width }) => {
   const { axisFont, axisStyles, font } = layoutDefaults;
   return {
     autosize: true,
-    ...height && { height },
+    height: height || width - 100,
     hovermode: 'closest',
     legend: {
       ...font,

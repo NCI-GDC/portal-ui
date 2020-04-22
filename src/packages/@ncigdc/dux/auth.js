@@ -7,6 +7,8 @@ import { FAKE_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
 
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
+const USER_CA_CLEAR = 'gdc/USER_CONTROLLED_ACCESS_CLEAR';
+const USER_CA_SUCCESS = 'gdc/USER_CONTROLLED_ACCESS_SUCCESS';
 const USER_REQUEST = 'gdc/USER_REQUEST';
 const USER_SUCCESS = 'gdc/USER_SUCCESS';
 const USER_FAILURE = 'gdc/USER_FAILURE';
@@ -81,10 +83,19 @@ const initialState: State = {
   isFetchingToken: false,
   token: undefined,
   failed: false,
+  userControlledAccess: {},
 };
 
 export default handleActions(
   {
+    [USER_CA_CLEAR]: state => ({
+      ...state,
+      userControlledAccess: initialState.userControlledAccess,
+    }),
+    [USER_CA_SUCCESS]: (state, action) => ({
+      ...state,
+      userControlledAccess: action.payload,
+    }),
     [USER_REQUEST]: state => ({
       ...state,
       isFetching: true,

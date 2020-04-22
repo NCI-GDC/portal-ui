@@ -20,25 +20,48 @@ import { setModal } from '@ncigdc/dux/modal';
 
 import {
   DISPLAY_DAVE_CA,
+  IS_DEV,
 } from '@ncigdc/utils/constants';
 
 import {
-  checkUserAccess,
   reshapeSummary,
+  reshapeUserAccess,
 } from './helpers';
 
+
+const FAKE_USER_ACCESS = [ // controlled access mock
+  {
+    programs: [
+      {
+        name: 'TARGET',
+        projects: ['TARGET-ALL-P1', 'TARGET-ALL-P2'],
+      },
+    ],
+  },
+];
 
 export default compose(
   setDisplayName('withControlledAccess'),
   connect(state => ({
     token: state.auth.token,
     user: state.auth.user,
+    userControlledAccess: state.auth.userControlledAccess,
   })),
   withRouter,
   withState('userAccessList', 'setUserAccessList', []),
-  withState('studiesList', 'setStudiesList', []),
+  withState('studiesSummary', 'setStudiesSummary', {}),
   withHandlers({
-    fetchStudiesList: ({ setStudiesList }) => () => (
+    clearUserAccess: ({
+      dispatch,
+      setUserAccessList,
+      userAccessList,
+      userControlledAccess,
+    }) => () => {
+      userAccessList.length > 0 && setUserAccessList([]);
+      Object.keys(userControlledAccess).length > 0 &&
+        dispatch({ type: 'gdc/USER_CONTROLLED_ACCESS_CLEAR' });
+    },
+    fetchStudiesList: ({ setStudiesSummary }) => () => (
       fetchApi(
         '/studies/summary/all',
         {
@@ -48,26 +71,22 @@ export default compose(
         },
       )
         .then(({ data } = {}) => {
-          data && setStudiesList(reshapeSummary(data));
+          data && setStudiesSummary(reshapeSummary(data));
         })
         .catch(error => console.error(error))
     ),
-    fetchUserAccess: ({ setUserAccessList }) => () => (
-      // fetchApi(
-      //   '/studies/user',
-      //   {
-      //     credentials: 'same-origin',
-      //     headers: {
-      //       'Access-Control-Allow-Origin': true,
-      //       'Content-Type': 'application/json',
-      //       'X-Auth-Token': 'secret admin token',
-      //     },
-      //   },
-      // ).then((response) => {
-      //   console.log('user?', response);
-      // })
-      setUserAccessList(['tcga'])
-    ),
+    storeUserAccess: ({
+      dispatch,
+      setUserAccessList,
+    }) => controlled => {
+      const userControlledAccess = reshapeUserAccess(controlled);
+
+      setUserAccessList(Object.keys(userControlledAccess));
+      dispatch({
+        payload: userControlledAccess,
+        type: 'gdc/USER_CONTROLLED_ACCESS_SUCCESS',
+      });
+    },
   }),
   withPropsOnChange(
     (
@@ -81,11 +100,32 @@ export default compose(
       isEqual(user, nextUser)
     ),
     ({
-      fetchUserAccess,
+      clearUserAccess,
+      storeUserAccess,
       user,
-    }) => {
-      user && fetchUserAccess();
-    },
+    }) => (user
+      ? IS_DEV
+        ? storeUserAccess(FAKE_USER_ACCESS)
+        : fetchApi(
+          '/studies/user',
+          {
+            credentials: 'same-origin',
+            headers: {
+              'Access-Control-Allow-Origin': true,
+              'Content-Type': 'application/json',
+              'X-Auth-Token': 'secret admin token',
+            },
+          },
+        )
+          .then(({ data }) => {
+            storeUserAccess(data.controlled);
+          })
+          .catch(error => {
+            console.error('while fetching user controlled access', error);
+            clearUserAccess();
+          })
+      : clearUserAccess()
+    ),
   ),
   withPropsOnChange(
     (
@@ -93,19 +133,19 @@ export default compose(
         query: {
           controlled,
         },
-        studiesList,
+        studiesSummary,
         user,
       },
       {
         query: {
           controlled: nextControlled,
         },
-        studiesList: nextStudiesList,
+        studiesSummary: nextStudiesSummary,
         user: nextUser,
       },
     ) => !(
       controlled === nextControlled &&
-      isEqual(studiesList, nextStudiesList) &&
+      isEqual(studiesSummary, nextStudiesSummary) &&
       isEqual(user, nextUser)
     ),
     ({
@@ -118,7 +158,7 @@ export default compose(
       query: {
         controlled = '',
       },
-      studiesList,
+      studiesSummary,
       user,
       userAccessList,
     }) => {
@@ -167,8 +207,7 @@ export default compose(
                 activeControlledPrograms={controlledStudies}
                 closeModal={() => dispatch(setModal(null))}
                 querySelectedStudies={() => {}}
-                studiesList={studiesList}
-                userAccessList={userAccessList}
+                studiesSummary={studiesSummary}
                 />,
             ));
           },

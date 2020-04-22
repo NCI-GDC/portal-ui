@@ -1,4 +1,5 @@
 import React from 'react';
+import { flatten } from 'lodash';
 
 import { humanify } from '@ncigdc/utils/string';
 
@@ -40,36 +41,45 @@ export const getHeadings = ({ user }) => ([
 export const formatData = ({
   handleProgramSelect,
   selectedStudies,
-  studiesList,
+  studiesSummary,
   user,
   userAccessList,
-}) => studiesList.map(datum => ({
-  ...datum,
-  cases_clinical: humanify({ term: datum.cases_clinical }),
-  genes_mutations: datum.genes_mutations === 'controlled'
-    ? user
-      ? userAccessList.includes(datum.program)
-        ? (
-          <CAIconMessage faClass="fa-check">
-            You have access
-          </CAIconMessage>
-        )
+}) => flatten(Object.values(
+  user && userAccessList.length > 0
+  ? {
+    ...studiesSummary,
+    controlled: studiesSummary.controlled
+      .sort(study => -(userAccessList.includes(study.program))),
+  }
+  : studiesSummary,
+))
+  .filter(datum => user || datum.genes_mutations !== 'in_process')
+  .map(datum => ({
+    ...datum,
+    cases_clinical: humanify({ term: datum.cases_clinical }),
+    genes_mutations: datum.genes_mutations === 'controlled'
+      ? user
+        ? userAccessList.includes(datum.program)
+          ? (
+            <CAIconMessage faClass="fa-check">
+              You have access
+            </CAIconMessage>
+          )
+          : (
+            <CAIconMessage faClass="fa-lock">
+              {'Controlled. '}
+              <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" rel="noopener noreferrer" target="_blank">Apply for access</a>
+              .
+            </CAIconMessage>
+          )
         : (
           <CAIconMessage faClass="fa-lock">
-            {'Controlled. '}
-            <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" rel="noopener noreferrer" target="_blank">Apply for access</a>
-            .
+            Controlled
           </CAIconMessage>
-      )
-      : (
-        <CAIconMessage faClass="fa-lock">
-          Controlled
-        </CAIconMessage>
-      )
-    : humanify({ term: datum.genes_mutations }),
-  program: datum.program.toUpperCase(),
-  ...userAccessList.length > 0 && {
-    select: userAccessList.includes(datum.program)
+        )
+      : humanify({ term: datum.genes_mutations }),
+    program: datum.program.toUpperCase(),
+    select: userAccessList.length > 0 && userAccessList.includes(datum.program)
       ? (
         <input
           checked={selectedStudies.includes(datum.program)}
@@ -80,6 +90,4 @@ export const formatData = ({
           />
       )
       : ' ',
-  },
-}))
-  .filter((datum, i) => !(user && studiesList[i].genes_mutations === 'in_process'));
+  }));

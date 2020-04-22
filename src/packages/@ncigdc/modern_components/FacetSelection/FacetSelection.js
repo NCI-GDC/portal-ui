@@ -1,8 +1,16 @@
-/* @flow */
-
 import React from 'react';
 import {
-  every, filter, includes, map, noop, omitBy, some, toLower, values,
+  every,
+  filter,
+  groupBy,
+  includes,
+  isEqual,
+  map,
+  noop,
+  omitBy,
+  some,
+  toLower,
+  values,
 } from 'lodash';
 import { css } from 'glamor';
 import {
@@ -14,16 +22,19 @@ import {
   withProps,
   withState,
 } from 'recompose';
+
+import { OverlayLoader } from '@ncigdc/uikit/Loaders/Loader';
 import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
 import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
-import Highlight from '@ncigdc/uikit/Highlight';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 
+import ConditionalHighlight from './ConditionalHighlight';
+
 const facetMatchesQuery = ({ facet, query }) => some(
   [facet.field, facet.description].map(toLower),
-  searchTarget => includes(searchTarget, query)
+  searchTarget => includes(searchTarget, query),
 );
 
 const styles = {
@@ -109,13 +120,6 @@ const styles = {
   },
 };
 
-// Highlighting is frustratingly slow with > 100 items
-const ConditionalHighlight = ({ children, condition, search }) => (condition ? (
-  <Highlight search={search}>{children}</Highlight>
-  ) : (
-    <span>{children}</span>
-  ));
-
 const FacetSelection = ({
   docType,
   filteredFacets,
@@ -125,18 +129,19 @@ const FacetSelection = ({
   handleQueryInputChange,
   handleQueryInputClear,
   handleSelectFacet,
+  hideUselessFacets,
   isCaseInsensitive,
   isLoading,
+  loading,
   query,
   setFocusedFacet,
-  setUselessFacetVisibility,
-  shouldHideUselessFacets,
+  setHideUselessFacets,
   title,
 }) => {
   const parsedQuery = isCaseInsensitive ? query.toLowerCase() : query;
 
   return (
-    <div className="test-facet-selection">
+    <div className="test-facet-selection" data-test="facet-selection-modal">
       <div {...css(styles.header)}>
         <h2
           data-translate
@@ -151,7 +156,7 @@ const FacetSelection = ({
             onClick={handleClose}
             style={{ fontSize: '1.5rem' }}
             >
-          Cancel
+            Cancel
           </a>
         </h2>
 
@@ -199,21 +204,25 @@ const FacetSelection = ({
           </label>
         </div>
 
-        <h3 {...css(styles.resultsCount)}>
-          {`${filteredFacets.length} ${docType} fields`}
-        </h3>
+        <div style={{ position: 'relative' }}>
+          <h3 {...css(styles.resultsCount)}>
+            {`${filteredFacets.length} ${docType} fields`}
+          </h3>
 
-        <label className="pull-right" htmlFor="useful-facet-input" role="button" tabIndex={0}>
-          <input
-            checked={shouldHideUselessFacets}
-            className="test-filter-useful-facet"
-            id="useful-facet-input"
-            onChange={event => setUselessFacetVisibility(event.target.checked)}
-            style={styles.uselessFacetVisibilityCheckbox}
-            type="checkbox"
-            />
-        Only show fields with values
-        </label>
+          <label className="pull-right" htmlFor="useful-facet-input" role="button" tabIndex={0}>
+            <input
+              checked={hideUselessFacets}
+              className="test-filter-useful-facet"
+              id="useful-facet-input"
+              onChange={event => setHideUselessFacets(event.target.checked)}
+              style={styles.uselessFacetVisibilityCheckbox}
+              type="checkbox"
+              />
+            Only show fields with values
+          </label>
+
+          {loading && <OverlayLoader loading={loading} />}
+        </div>
       </div>
 
       {isLoading || (
@@ -302,39 +311,55 @@ export default compose(
         ? tryParseJSON(viewer.repository[docType].facets, {})
         : {},
   })),
-  withPropsOnChange(['parsedFacets'], ({ parsedFacets }) => ({
-    usefulFacets: omitBy(
-      parsedFacets,
-      aggregation => !aggregation ||
-        some([
-          aggregation.buckets &&
-            aggregation.buckets.filter(bucket => bucket.key !== '_missing')
-              .length === 0,
-          aggregation.count === 0,
-          aggregation.count === null,
-          aggregation.stats && aggregation.stats.count === 0,
-        ]),
+  withPropsOnChange(
+    (
+      {
+        parsedFacets,
+      },
+      {
+        parsedFacets: nextParsedFacets,
+      },
+    ) => !(
+      isEqual(parsedFacets, nextParsedFacets)
     ),
-  })),
+    ({ parsedFacets }) => ({
+      usefulFacets: omitBy(
+        parsedFacets,
+        aggregation => !aggregation ||
+          some([
+            aggregation.buckets &&
+              aggregation.buckets.filter(bucket => bucket.key !== '_missing')
+                .length === 0,
+            aggregation.count === 0,
+            aggregation.count === null,
+            aggregation.stats && aggregation.stats.count === 0,
+          ]),
+      ),
+    }),
+  ),
   withProps(
     ({
+      docType,
       excludeFacetsBy,
       facetMapping,
       isCaseInsensitive,
       query,
-      shouldHideUselessFacets,
       usefulFacets,
-    }) => ({
-      filteredFacets: filter(values(facetMapping), facet => every([
-        facetMatchesQuery({
-          facet,
-          query: isCaseInsensitive ? query.toLowerCase() : query,
-        }),
-        !excludeFacetsBy(facet),
-        !shouldHideUselessFacets ||
-            Object.keys(usefulFacets).includes(facet.field),
-      ]),),
-    }),
+    }) => {
+      const mapping = groupBy(values(facetMapping), 'doc_type');
+      const facetsWithValues = Object.keys(usefulFacets);
+
+      return ({
+        filteredFacets: filter(mapping[docType], facet => every([
+          facetMatchesQuery({
+            facet,
+            query: isCaseInsensitive ? query.toLowerCase() : query,
+          }),
+          !excludeFacetsBy(facet),
+          facetsWithValues.length === 0 || facetsWithValues.includes(facet.field),
+        ])),
+      });
+    },
   ),
   renameProps({
     onSelect: 'handleSelectFacet',

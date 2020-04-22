@@ -83,7 +83,10 @@ const initialState: State = {
   isFetchingToken: false,
   token: undefined,
   failed: false,
-  userControlledAccess: {},
+  userControlledAccess: {
+    fetched: false,
+    studies: {},
+  },
 };
 
 export default handleActions(
@@ -94,7 +97,10 @@ export default handleActions(
     }),
     [USER_CA_SUCCESS]: (state, action) => ({
       ...state,
-      userControlledAccess: action.payload,
+      userControlledAccess: {
+        fetched: true,
+        studies: action.payload,
+      },
     }),
     [USER_REQUEST]: state => ({
       ...state,

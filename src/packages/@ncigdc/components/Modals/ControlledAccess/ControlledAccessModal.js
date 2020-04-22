@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { isEqual } from 'lodash';
 import {
   compose,
   setDisplayName,
   withHandlers,
+  withPropsOnChange,
   withState,
 } from 'recompose';
 
@@ -100,15 +102,36 @@ export default compose(
   setDisplayName('EnhancedControlledAccessModal'),
   connect(state => ({
     user: state.auth.user,
-    userAccessList: Object.keys(state.auth.userControlledAccess),
+    userAccessList: Object.keys(state.auth.userControlledAccess.studies),
   })),
+  withHandlers({
+    autoSelectStudy: ({
+      activeControlledPrograms,
+      userAccessList,
+    }) => () => (userAccessList.length === 1 ? userAccessList : activeControlledPrograms),
+  }),
   withState(
     'selectedStudies',
     'setSelectedStudies',
+    ({ autoSelectStudy }) => autoSelectStudy(),
+  ),
+  withPropsOnChange(
+    (
+      {
+        userAccessList,
+      },
+      {
+        userAccessList: nextUserAccessList,
+      },
+    ) => !(
+      isEqual(userAccessList, nextUserAccessList)
+    ),
     ({
-      activeControlledPrograms,
-      userAccessList,
-    }) => (userAccessList.length === 1 ? userAccessList : activeControlledPrograms),
+      autoSelectStudy,
+      setSelectedStudies,
+    }) => {
+      setSelectedStudies(autoSelectStudy());
+    },
   ),
   withHandlers({
     handleModalSubmit: ({

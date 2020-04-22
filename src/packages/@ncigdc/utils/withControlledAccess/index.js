@@ -48,17 +48,13 @@ export default compose(
     userControlledAccess: state.auth.userControlledAccess,
   })),
   withRouter,
-  withState('userAccessList', 'setUserAccessList', []),
   withState('studiesSummary', 'setStudiesSummary', {}),
   withHandlers({
     clearUserAccess: ({
       dispatch,
-      setUserAccessList,
-      userAccessList,
-      userControlledAccess,
+      userControlledAccess = { studies: {} },
     }) => () => {
-      userAccessList.length > 0 && setUserAccessList([]);
-      Object.keys(userControlledAccess).length > 0 &&
+      Object.keys(userControlledAccess.studies).length > 0 &&
         dispatch({ type: 'gdc/USER_CONTROLLED_ACCESS_CLEAR' });
     },
     fetchStudiesList: ({ setStudiesSummary }) => () => (
@@ -77,13 +73,9 @@ export default compose(
     ),
     storeUserAccess: ({
       dispatch,
-      setUserAccessList,
     }) => controlled => {
-      const userControlledAccess = reshapeUserAccess(controlled);
-
-      setUserAccessList(Object.keys(userControlledAccess));
       dispatch({
-        payload: userControlledAccess,
+        payload: reshapeUserAccess(controlled),
         type: 'gdc/USER_CONTROLLED_ACCESS_SUCCESS',
       });
     },
@@ -103,27 +95,30 @@ export default compose(
       clearUserAccess,
       storeUserAccess,
       user,
+      userControlledAccess,
     }) => (user
-      ? IS_DEV
-        ? storeUserAccess(FAKE_USER_ACCESS)
-        : fetchApi(
-          '/studies/user',
-          {
-            credentials: 'same-origin',
-            headers: {
-              'Access-Control-Allow-Origin': true,
-              'Content-Type': 'application/json',
-              'X-Auth-Token': 'secret admin token',
-            },
-          },
-        )
-          .then(({ data }) => {
-            storeUserAccess(data.controlled);
-          })
-          .catch(error => {
-            console.error('while fetching user controlled access', error);
-            clearUserAccess();
-          })
+      ? userControlledAccess.fetched || (
+        IS_DEV
+          ? storeUserAccess(FAKE_USER_ACCESS)
+          : fetchApi(
+            '/studies/user',
+            // {
+            //   credentials: 'same-origin',
+            //   headers: {
+            //     'Access-Control-Allow-Origin': true,
+            //     'Content-Type': 'application/json',
+            //     'X-Auth-Token': 'secret admin token',
+            //   },
+            // },
+          )
+            .then(({ data }) => {
+              storeUserAccess(data.controlled);
+            })
+            .catch(error => {
+              console.error('while fetching user controlled access', error);
+              clearUserAccess();
+            })
+      )
       : clearUserAccess()
     ),
   ),
@@ -160,7 +155,7 @@ export default compose(
       },
       studiesSummary,
       user,
-      userAccessList,
+      userControlledAccess,
     }) => {
       // gets the whole array of 'controlled' from the URL
       const controlledQuery = Array.isArray(controlled)
@@ -170,7 +165,7 @@ export default compose(
       // distills the list
       const controlledStudies = user && controlled.length > 0
         ? controlledQuery.filter((study, index, self) => (
-          userAccessList.includes(study) && // is it allowed?
+          Object.keys(userControlledAccess.studies || {}).includes(study) && // is it allowed?
           index === self.indexOf(study) // is it unique?
         )).sort()
         : [];
@@ -206,7 +201,6 @@ export default compose(
               <ControlledAccessModal
                 activeControlledPrograms={controlledStudies}
                 closeModal={() => dispatch(setModal(null))}
-                querySelectedStudies={() => {}}
                 studiesSummary={studiesSummary}
                 />,
             ));

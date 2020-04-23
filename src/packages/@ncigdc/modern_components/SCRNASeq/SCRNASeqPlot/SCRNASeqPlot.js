@@ -35,26 +35,15 @@ const SCRNASeqPlot = ({
   dataWithMarkers,
   handleInitialize,
   handleToolbarClick,
-  initialHeight,
-  // setInitialHeight,
   size: { height, width },
   uniqueGridClass,
 }) => {
-  // if (initialHeight === 0) {
-  //   setInitialHeight(height);
-  // }
   const layoutParams = {
     dataType,
-    height: isFullScreen() ? height : initialHeight,
+    fullscreen: isFullScreen(),
+    ...isFullScreen() && { height },
     width,
   };
-  console.log({
-    dataType,
-    height,
-    initialHeight,
-    type: 'render',
-    width,
-  });
   return (
     <div
       className="scrnaseq-plot"
@@ -93,7 +82,6 @@ export default compose(
   setDisplayName('EnhancedSCRNASeqPlot'),
   withState('graphDiv', 'setGraphDiv', ''),
   withState('uniqueGridClass', 'setUniqueGridClass', ''),
-  withState('initialHeight', 'setInitialHeight', null),
   withProps(({ data }) => ({
     dataWithMarkers: utils.getDataWithMarkers(data),
   })),
@@ -101,34 +89,24 @@ export default compose(
   withHandlers({
     handleInitialize: ({
       setGraphDiv,
-      // setInitialHeight,
       setUniqueGridClass,
-      // size: { height },
     }) => (figure, graphDiv) => {
       setGraphDiv(graphDiv);
       setUniqueGridClass(GRID_CLASS + uniqueId());
-      // setInitialHeight(height);
     },
     handleToolbarClick: ({
       data,
       dataType,
       graphDiv,
-      initialHeight,
-      setInitialHeight,
       size: { height, width },
       uniqueGridClass,
     }) => e => {
-      console.log({
-        dataType,
-        height,
-        initialHeight,
-        type: 'toolbarClick',
-        width,
-      });
       e.persist();
       const name = e.target.getAttribute('data-name');
       const layoutParams = {
         dataType,
+        fullscreen: isFullScreen(),
+        ...isFullScreen() && { height },
         width,
       };
       if (name === 'downloadImage') {
@@ -140,30 +118,16 @@ export default compose(
           scale,
         });
       } else if (name === 'fullscreen') {
-        // button works
         if (isFullScreen()) {
-          Plotly.react(graphDiv, data, utils.getLayout({
-            ...layoutParams,
-            height,
-          }));
           exitFullScreen();
         } else {
           enterFullScreen(containerRefs[uniqueGridClass]);
-          Plotly.react(graphDiv, data, utils.getLayout({
-            ...layoutParams,
-            // height,
-          }));
-          if (initialHeight === null) {
-            // set initialHeight for the first time
-            // TODO: change initialHeight on resize IF not fullscreen!
-            setInitialHeight(height);
-          }
         }
+        Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
       } else if (name === 'react') {
-        // button works
         Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
       } else {
-        // use Plotly button functions
+        // use Plotly's built-in button functions
         ModeBarButtons[name].click(graphDiv, e);
       }
     },

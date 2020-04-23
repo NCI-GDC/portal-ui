@@ -92,12 +92,15 @@ export const getToolbarButtons = () => {
   ];
 };
 
-export const getLayout = ({ dataType, height = 0, width }) => {
-  const dataTypeCaps = dataType === 'tsne' ? 't-SNE' : dataType.toUpperCase();
+export const getLayout = ({
+  dataType, fullscreen = false, height = 0, width,
+}) => {
   const { axisFont, axisStyles, font } = layoutDefaults;
   return {
     autosize: true,
-    height: height || width - 100,
+    height: fullscreen
+      ? height || width * 0.5
+      : width * 0.75,
     hovermode: 'closest',
     legend: {
       ...font,
@@ -112,16 +115,16 @@ export const getLayout = ({ dataType, height = 0, width }) => {
     name: 'scrna_seq',
     title: {
       font,
-      text: `${dataTypeCaps} Projection of<br>Cells Colored by Automated Clustering`,
+      text: `${dataType} Projection of<br>Cells Colored by Automated Clustering`,
     },
     width,
     xaxis: {
       ...axisStyles,
-      title: `${dataTypeCaps}_1`,
+      title: `${dataType}_1`,
     },
     yaxis: {
       ...axisStyles,
-      title: `${dataTypeCaps}_2`,
+      title: `${dataType}_2`,
     },
   };
 };

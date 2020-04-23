@@ -1,19 +1,20 @@
-FROM jenkins-agent:node as builder
+FROM node:13 as builder
 
-COPY . /portal
 WORKDIR /portal
 
+COPY ./ /portal
 
-ENV REACT_APP_API="https://portal.awg.gdc.cancer.gov/auth/api"
-ENV REACT_APP_GDC_AUTH="https://portal.awg.gdc.cancer.gov/auth/"
-ENV REACT_APP_FENCE="https://login.awg.gdc.cancer.gov"
-ENV GDC_BASE="/"
-ENV REACT_APP_GDC_AUTH_API="https://portal.awg.gdc.cancer.gov/auth/api"
-ENV REACT_APP_AWG=true
-ENV REACT_APP_IS_AUTH_PORTAL=true
+ENV REACT_APP_API="https://portal.awg.gdc.cancer.gov/auth/api" \
+    REACT_APP_GDC_AUTH="https://portal.awg.gdc.cancer.gov/auth/"\
+    REACT_APP_FENCE="https://login.awg.gdc.cancer.gov"\
+    GDC_BASE="/" \
+    REACT_APP_GDC_AUTH_API="https://portal.awg.gdc.cancer.gov/auth/api" \
+    REACT_APP_AWG=true \
+    REACT_APP_IS_AUTH_PORTAL=true 
 
-RUN export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD`
-RUN export REACT_APP_COMMIT_TAG=`git tag -l --points-at HEAD`
+RUN export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD` && export REACT_APP_COMMIT_TAG=`git tag -l --points-at HEAD`
+
+RUN npm install
 
 RUN npm run build
 
@@ -21,4 +22,4 @@ FROM quay.io/ncigdc/nginx-extras:1.10.3-redfish
 
 RUN rm -v /etc/nginx/sites-enabled/default
 
-COPY --from=builder build /usr/share/nginx/html
+COPY --from=builder /portal/build /usr/share/nginx/html

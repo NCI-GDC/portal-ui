@@ -14,9 +14,8 @@ export const isFullScreen = el => {
   return el && fullScreenElement ? fullScreenElement === el : fullScreenElement;
 };
 
-export const exitFullScreen = () => {
+export const exitFullScreen = () =>
   document.exitFullscreen && document.exitFullscreen();
-};
 
 export const enterFullScreen = element => {
   if (element.requestFullscreen) {

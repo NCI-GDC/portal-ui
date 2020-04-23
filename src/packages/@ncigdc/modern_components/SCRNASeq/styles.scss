@@ -47,9 +47,6 @@ button * {
 }
 
 .scrnaseq-row {
-  // display: flex;
-  // flex-flow: wrap;
-  // max-width: 100%;
   margin: -5px;
   width: calc(100% + 10px);
 }
@@ -59,7 +56,6 @@ button * {
   @media(min-width: 1300px) {
     width: 50%;
     float: left;
-    // flex: 0 0 50%;
   }
   &:nth-child(odd) {
     clear: both;
@@ -72,7 +68,7 @@ button * {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  padding: 20px 10px 10px;
+  padding: 0 0 10px;
 }
 
 .scrnaseq-card .dropdown-items[style] {
@@ -88,7 +84,7 @@ button * {
 
 .scrnaseq-toolbar {
   justify-content: flex-end;
-  padding-right: 10px;
+  padding: 20px 20px 0 0;
   position: relative;
   width: 100%;
 }

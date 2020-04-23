@@ -31,8 +31,10 @@ layoutDefaults.axisStyles = {
 };
 
 export const toolbarButtons = {
+  // plotly's built-in buttons:
   // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
   download: {
+    // custom button
     faClass: 'fa-download',
     label: 'Download',
     name: 'download',
@@ -49,6 +51,7 @@ export const toolbarButtons = {
     val: 'pan',
   },
   reset: {
+    // custom button
     faClass: 'fa-undo',
     label: 'Reset',
     name: 'react',
@@ -99,8 +102,12 @@ export const getLayout = ({
   return {
     autosize: true,
     height: fullscreen
-      ? height || width * 0.5
-      : width * 0.75,
+      // leave room for the toolbar.
+      // height may be 0 while plotly loads.
+      ? height - 50 || width * 0.5
+      // keep height consistent before & after
+      // toggling fullscreen mode
+      : width * 0.7,
     hovermode: 'closest',
     legend: {
       ...font,

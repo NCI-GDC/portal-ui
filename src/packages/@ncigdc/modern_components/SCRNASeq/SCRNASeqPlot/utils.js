@@ -136,18 +136,6 @@ export const getLayout = ({
   };
 };
 
-export const styles = {
-  fullscreen: {
-    background: '#fff',
-    height: '100%',
-    marginLeft: 0,
-    maxWidth: '100%',
-    overflow: 'scroll',
-    padding: '100px 100px 0',
-    width: '100%',
-  },
-};
-
 export const getDataWithMarkers = (input = []) => input.map(row => ({
   ...row,
   marker: {

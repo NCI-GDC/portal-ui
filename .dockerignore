@@ -3,7 +3,6 @@
 **/.git
 **/.gitignore
 **/.pytest_cache
-**/build
 **/config.*
 **/env
 **/logs

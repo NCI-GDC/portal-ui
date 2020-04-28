@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { isEqual } from 'lodash';
 import {
   compose,
   setDisplayName,
   withHandlers,
+  withPropsOnChange,
   withState,
 } from 'recompose';
 
@@ -14,7 +16,10 @@ import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTa
 import RestrictionMessage from '@ncigdc/modern_components/RestrictionMessage/RestrictionMessage';
 
 import CAMessage from './CAMessage';
-import { getHeadings, formatData } from './helpers';
+import {
+  getHeadings,
+  formatData,
+} from './helpers';
 
 import './styles.scss';
 
@@ -23,7 +28,7 @@ const ControlledAccessModal = ({
   handleProgramSelect,
   selectedStudies,
   setSelectedStudies,
-  studiesList,
+  studiesSummary,
   user,
   userAccessList,
 }) => (
@@ -63,7 +68,7 @@ const ControlledAccessModal = ({
         handleProgramSelect,
         selectedStudies,
         setSelectedStudies,
-        studiesList,
+        studiesSummary,
         user,
         userAccessList,
       })}
@@ -97,15 +102,36 @@ export default compose(
   setDisplayName('EnhancedControlledAccessModal'),
   connect(state => ({
     user: state.auth.user,
+    userAccessList: Object.keys(state.auth.userControlledAccess.studies),
   })),
+  withHandlers({
+    autoSelectStudy: ({
+      activeControlledPrograms,
+      userAccessList,
+    }) => () => (userAccessList.length === 1 ? userAccessList : activeControlledPrograms),
+  }),
   withState(
     'selectedStudies',
     'setSelectedStudies',
+    ({ autoSelectStudy }) => autoSelectStudy(),
+  ),
+  withPropsOnChange(
+    (
+      {
+        userAccessList,
+      },
+      {
+        userAccessList: nextUserAccessList,
+      },
+    ) => !(
+      isEqual(userAccessList, nextUserAccessList)
+    ),
     ({
-      activeControlledPrograms,
-      userAccessList,
-    }) => (userAccessList.length === 1 ? userAccessList : activeControlledPrograms),
-    // TODO: this ^^^ is a placeholder for the "controlled" array of the CA response.
+      autoSelectStudy,
+      setSelectedStudies,
+    }) => {
+      setSelectedStudies(autoSelectStudy());
+    },
   ),
   withHandlers({
     handleModalSubmit: ({

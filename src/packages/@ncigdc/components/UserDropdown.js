@@ -49,20 +49,9 @@ const logout = async dispatch => {
 
   dispatch(forceLogout());
 
-  if (window.location.port) {
-    window.location.assign(
-        IS_DEV
-          ? ''
-          : urlJoin(
-            AUTH,
-              `logout?next=:${window.location.port}${window.location.pathname}`,
-          ),
-    );
-  } else {
-    window.location.assign(
-        IS_DEV ? '' : urlJoin(AUTH, `logout?next=${window.location.pathname}`),
-    );
-  }
+  return IS_DEV || window.location.assign(urlJoin(AUTH, `logout?next=${
+    window.location.port ? `:${window.location.port}` : ''
+  }${window.location.pathname}`));
 };
 
 const UserDropdown = connect(state => ({

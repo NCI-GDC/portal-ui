@@ -6,99 +6,141 @@ import {
 } from 'lodash';
 import {
   compose,
+  lifecycle,
   setDisplayName,
+  withHandlers,
   withPropsOnChange,
   withState,
 } from 'recompose';
 
+import { fetchApi } from '@ncigdc/utils/ajax';
 import withRouter from '@ncigdc/utils/withRouter';
 import ControlledAccessModal from '@ncigdc/components/Modals/ControlledAccess';
 import { setModal } from '@ncigdc/dux/modal';
 
 import {
   DISPLAY_DAVE_CA,
+  IS_DEV,
 } from '@ncigdc/utils/constants';
 
-const dataStub = [
-  {
-    genes_mutations: 'controlled',
-    program: 'fm',
-  },
-  {
-    genes_mutations: 'controlled',
-    program: 'genie',
-  },
-  {
-    genes_mutations: 'open',
-    program: 'tcga',
-  },
-  {
-    program: 'target',
-  },
-  {
-    program: 'mmrf',
-  },
-  {
-    program: 'cptac',
-  },
-  {
-    program: 'beataml 1.0',
-  },
-  {
-    program: 'nciccr',
-  },
-  {
-    program: 'ohu',
-  },
-  {
-    program: 'cgci',
-  },
-  {
-    program: 'wcdt',
-  },
-  {
-    program: 'organoid',
-  },
-  {
-    program: 'ctsp',
-  },
-  {
-    program: 'hcmi',
-  },
-  {
-    program: 'varpop',
-  },
-].map(stub => ({
-  ...stub,
-  cases_clinical: 'open',
-  genes_mutations: stub.genes_mutations || 'in_process',
-}));
+import {
+  reshapeSummary,
+  reshapeUserAccess,
+} from './helpers';
 
-const userAccessList = ['fm'];
+
+const FAKE_USER_ACCESS = [ // controlled access mock
+  {
+    programs: [
+      {
+        name: 'TARGET',
+        projects: ['TARGET-ALL-P1', 'TARGET-ALL-P2'],
+      },
+    ],
+  },
+];
 
 export default compose(
   setDisplayName('withControlledAccess'),
   connect(state => ({
+    token: state.auth.token,
     user: state.auth.user,
+    userControlledAccess: state.auth.userControlledAccess,
   })),
   withRouter,
-  withState('studiesList', 'setStudiesList', dataStub),
+  withState('studiesSummary', 'setStudiesSummary', {}),
+  withHandlers({
+    clearUserAccess: ({
+      dispatch,
+      userControlledAccess = { studies: {} },
+    }) => () => {
+      Object.keys(userControlledAccess.studies).length > 0 &&
+        dispatch({ type: 'gdc/USER_CONTROLLED_ACCESS_CLEAR' });
+    },
+    fetchStudiesList: ({ setStudiesSummary }) => () => (
+      fetchApi(
+        '/studies/summary/all',
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+        .then(({ data } = {}) => {
+          data && setStudiesSummary(reshapeSummary(data));
+        })
+        .catch(error => console.error(error))
+    ),
+    storeUserAccess: ({
+      dispatch,
+    }) => controlled => {
+      dispatch({
+        payload: reshapeUserAccess(controlled),
+        type: 'gdc/USER_CONTROLLED_ACCESS_SUCCESS',
+      });
+    },
+  }),
+  withPropsOnChange(
+    (
+      {
+        user,
+      },
+      {
+        user: nextUser,
+      },
+    ) => !(
+      isEqual(user, nextUser)
+    ),
+    ({
+      clearUserAccess,
+      storeUserAccess,
+      user,
+      userControlledAccess,
+    }) => (user
+      ? userControlledAccess.fetched || (
+        IS_DEV
+          ? storeUserAccess(FAKE_USER_ACCESS)
+          : fetchApi(
+            '/studies/user',
+            // {
+            //   credentials: 'same-origin',
+            //   headers: {
+            //     'Access-Control-Allow-Origin': true,
+            //     'Content-Type': 'application/json',
+            //     'X-Auth-Token': 'secret admin token',
+            //   },
+            // },
+          )
+            .then(({ data }) => {
+              storeUserAccess(data.controlled);
+            })
+            .catch(error => {
+              console.error('while fetching user controlled access', error);
+              clearUserAccess();
+            })
+      )
+      : clearUserAccess()
+    ),
+  ),
   withPropsOnChange(
     (
       {
         query: {
           controlled,
         },
+        studiesSummary,
         user,
       },
       {
         query: {
           controlled: nextControlled,
         },
+        studiesSummary: nextStudiesSummary,
         user: nextUser,
       },
     ) => !(
       controlled === nextControlled &&
+      isEqual(studiesSummary, nextStudiesSummary) &&
       isEqual(user, nextUser)
     ),
     ({
@@ -111,8 +153,9 @@ export default compose(
       query: {
         controlled = '',
       },
-      studiesList,
+      studiesSummary,
       user,
+      userControlledAccess,
     }) => {
       // gets the whole array of 'controlled' from the URL
       const controlledQuery = Array.isArray(controlled)
@@ -122,7 +165,7 @@ export default compose(
       // distills the list
       const controlledStudies = user && controlled.length > 0
         ? controlledQuery.filter((study, index, self) => (
-          userAccessList.includes(study) && // is it allowed?
+          Object.keys(userControlledAccess.studies || {}).includes(study) && // is it allowed?
           index === self.indexOf(study) // is it unique?
         )).sort()
         : [];
@@ -158,9 +201,7 @@ export default compose(
               <ControlledAccessModal
                 activeControlledPrograms={controlledStudies}
                 closeModal={() => dispatch(setModal(null))}
-                querySelectedStudies={() => {}}
-                studiesList={studiesList}
-                userAccessList={userAccessList}
+                studiesSummary={studiesSummary}
                 />,
             ));
           },
@@ -168,4 +209,13 @@ export default compose(
       };
     },
   ),
+  lifecycle({
+    componentDidMount() {
+      const {
+        fetchStudiesList,
+      } = this.props;
+
+      fetchStudiesList();
+    },
+  }),
 );

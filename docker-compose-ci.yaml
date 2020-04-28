@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   app:
-    image: jenkins-agent:node
+    image: quay.io/ncigdc/jenkins-agent:node
     environment:
       CI: 'true'
       SSH_AUTH_SOCK: $SSH_AUTH_SOCK

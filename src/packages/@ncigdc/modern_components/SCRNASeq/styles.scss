@@ -47,8 +47,8 @@ button * {
 }
 
 .scrnaseq-row {
-  width: calc(100% + 10px);
   margin: -5px;
+  width: calc(100% + 10px);
 }
 
 .scrnaseq-column {
@@ -68,9 +68,23 @@ button * {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  padding: 20px 10px 10px;
+  padding: 0 0 10px;
 }
 
 .scrnaseq-card .dropdown-items[style] {
   min-width: 100px !important;
+}
+
+.scrnaseq-plot {
+  background: #fff;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+}
+
+.scrnaseq-toolbar {
+  justify-content: flex-end;
+  padding: 20px 20px 0 0;
+  position: relative;
+  width: 100%;
 }

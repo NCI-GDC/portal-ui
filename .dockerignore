@@ -1,0 +1,16 @@
+**/.cache
+**/.DS_Store
+**/.gitignore
+**/.pytest_cache
+**/config.*
+**/env
+**/logs
+**/node_modules
+**/rsa
+*.md
+
+src/packages/@oncojs
+.env*
+
+*Dockerfile
+.dockerignore

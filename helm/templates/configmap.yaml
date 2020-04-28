@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: portal-nginx-conf
+    labels:
+        app.kubernetes.io/name: {{ include "k8s-service.name" . }}
+        helm.sh/chart: {{ include "k8s-service.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+{{ (.Files.Glob "files/portal.conf").AsConfig | indent 4 }}

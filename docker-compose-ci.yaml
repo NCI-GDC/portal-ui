@@ -12,3 +12,4 @@ services:
     - .:/home/jenkins
     - $SSH_AUTH_SOCK:$SSH_AUTH_SOCK
     command: bash -c "npm install && npm run lint && npm test"
+    

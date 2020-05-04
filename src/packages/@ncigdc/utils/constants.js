@@ -343,8 +343,12 @@ export const IMPACT_SHORT_FORMS = {
   },
 };
 
-export const FAKE_USER =
-  localStorage.REACT_APP_ALLOW_FAKE_USER || process.env.REACT_APP_ALLOW_FAKE_USER
+export const IS_DEV = process.env.NODE_ENV === 'development';
+
+export const DEV_USER =
+  localStorage.REACT_APP_ALLOW_FAKE_USER ||
+  localStorage.REACT_APP_ALLOW_DEV_USER ||
+  process.env.REACT_APP_ALLOW_DEV_USER
     ? {
       projects: {
         gdc_ids: {
@@ -381,7 +385,75 @@ export const FAKE_USER =
     }
     : null;
 
-export const IS_DEV = process.env.NODE_ENV === 'development';
+export const DEV_USER_CA = [ // controlled access mock
+  {
+    programs: [
+      {
+        name: 'TARGET',
+        projects: ['TARGET-ALL-P1', 'TARGET-ALL-P2'],
+      },
+    ],
+  },
+];
+
+export const DEV_CA_SUMMARY = {
+  controlled: [
+    {
+      programs: [
+        {
+          name: 'FM',
+          projects: ['FM-AD'],
+        },
+      ],
+    },
+    {
+      programs: [
+        {
+          name: 'TARGET',
+          projects: ['TARGET-ALL-P2', 'TARGET-OS'],
+        },
+      ],
+    },
+  ],
+  in_process: [
+    {
+      programs: [
+        {
+          name: 'CPTAC',
+          projects: ['CPTAC-2', 'CPTAC-3'],
+        },
+        {
+          name: 'TARGET',
+          projects: [
+            'TARGET-ALL-P1',
+            'TARGET-CCSK',
+            'TARGET-RT',
+          ],
+        },
+      ],
+    },
+  ],
+  open: [
+    {
+      programs: [
+        {
+          name: 'TCGA',
+          projects: ['TCGA-BRCA', 'TCGA-LUAD'],
+        },
+        {
+          name: 'TARGET',
+          projects: [
+            'TARGET-ALL-P3',
+            'TARGET-AML',
+            'TARGET-NBL',
+            'TARGET-WT',
+          ],
+        },
+      ],
+    },
+  ],
+};
+
 
 // Example feature flag
 // export const DISPLAY_CDAVE =

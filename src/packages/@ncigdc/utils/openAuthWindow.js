@@ -1,6 +1,6 @@
 import {
   AUTH,
-  FAKE_USER,
+  DEV_USER,
   IS_DEV,
 } from '@ncigdc/utils/constants';
 
@@ -11,7 +11,7 @@ export default ({
   winStyle = 'width=800, height=600',
 }) =>
   new Promise((resolve, reject) => {
-    if (IS_DEV || FAKE_USER) return resolve('localhost');
+    if (IS_DEV || DEV_USER) return resolve('localhost');
     if (navigator.cookieEnabled) {
       const win = open(winUrl, 'Auth', winStyle);
       const loginAttempt = () => {

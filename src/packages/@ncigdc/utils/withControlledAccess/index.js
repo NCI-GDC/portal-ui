@@ -19,6 +19,8 @@ import ControlledAccessModal from '@ncigdc/components/Modals/ControlledAccess';
 import { setModal } from '@ncigdc/dux/modal';
 
 import {
+  DEV_CA_SUMMARY,
+  DEV_USER_CA,
   DISPLAY_DAVE_CA,
   IS_DEV,
 } from '@ncigdc/utils/constants';
@@ -27,18 +29,6 @@ import {
   reshapeSummary,
   reshapeUserAccess,
 } from './helpers';
-
-
-const FAKE_USER_ACCESS = [ // controlled access mock
-  {
-    programs: [
-      {
-        name: 'TARGET',
-        projects: ['TARGET-ALL-P1', 'TARGET-ALL-P2'],
-      },
-    ],
-  },
-];
 
 export default compose(
   setDisplayName('withControlledAccess'),
@@ -58,18 +48,20 @@ export default compose(
         dispatch({ type: 'gdc/USER_CONTROLLED_ACCESS_CLEAR' });
     },
     fetchStudiesList: ({ setStudiesSummary }) => () => (
-      fetchApi(
-        '/studies/summary/all',
-        {
-          headers: {
-            'Content-Type': 'application/json',
+      IS_DEV
+        ? setStudiesSummary(reshapeSummary(DEV_CA_SUMMARY))
+        : fetchApi(
+          '/studies/summary/all',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
           },
-        },
-      )
-        .then(({ data } = {}) => {
-          data && setStudiesSummary(reshapeSummary(data));
-        })
-        .catch(error => console.error(error))
+        )
+          .then(({ data } = {}) => {
+            data && setStudiesSummary(reshapeSummary(data));
+          })
+          .catch(error => console.error(error))
     ),
     storeUserAccess: ({
       dispatch,
@@ -99,7 +91,7 @@ export default compose(
     }) => (user
       ? userControlledAccess.fetched || (
         IS_DEV
-          ? storeUserAccess(FAKE_USER_ACCESS)
+          ? storeUserAccess(DEV_USER_CA)
           : fetchApi(
             '/studies/user',
             // {

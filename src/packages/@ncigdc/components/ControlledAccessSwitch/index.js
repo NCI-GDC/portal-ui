@@ -18,9 +18,9 @@ const ControlledAccessSwitch = ({
   ? (
     <section className="controlled-access-switch">
       <p>
-        {'Controlled data from: '}
+        Controlled data from:
         <span>
-          {studies.join(', ').toUpperCase()}
+          {` ${studies.join(', ').toUpperCase()}`}
         </span>
       </p>
       <Button

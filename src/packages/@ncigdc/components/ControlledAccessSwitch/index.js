@@ -24,7 +24,15 @@ const ControlledAccessSwitch = ({
           {` ${studies.join(', ').toUpperCase()}`}
         </span>
       </p>
-      <Tooltip Component={<span>Arrange Columns</span>}>
+      <Tooltip
+        Component={(
+          <span>
+            Select a different controlled-access dataset
+            <br />
+            to visualize alongside open-access data
+          </span>
+        )}
+        >
         <Button
           onClick={switchHandler}
           style={{

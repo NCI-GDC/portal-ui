@@ -6,6 +6,7 @@ import {
   setDisplayName,
 } from 'recompose';
 import Button from '@ncigdc/uikit/Button';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 import './styles.scss';
 
@@ -23,19 +24,21 @@ const ControlledAccessSwitch = ({
           {` ${studies.join(', ').toUpperCase()}`}
         </span>
       </p>
-      <Button
-        onClick={switchHandler}
-        style={{
-          ':hover': {
-            backgroundColor: '#9b43b1',
-          },
-          backgroundColor: '#773388',
-          padding: '0.2rem 1rem',
-        }}
-        testTag="controlled-access-switch"
-        >
-        Switch
-      </Button>
+      <Tooltip Component={<span>Arrange Columns</span>}>
+        <Button
+          onClick={switchHandler}
+          style={{
+            ':hover': {
+              backgroundColor: '#9b43b1',
+            },
+            backgroundColor: '#773388',
+            padding: '0.2rem 1rem',
+          }}
+          testTag="controlled-access-switch"
+          >
+          Switch
+        </Button>
+      </Tooltip>
     </section>
   )
   : null

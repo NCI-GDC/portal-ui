@@ -80,6 +80,15 @@ export const withControlledAccessContext = compose(
       });
     },
   }),
+  lifecycle({
+    componentDidMount() {
+      const {
+        fetchStudiesList,
+      } = this.props;
+
+      fetchStudiesList();
+    },
+  }),
   withPropsOnChange(
     (
       {
@@ -196,17 +205,13 @@ export const withControlledAccessContext = compose(
             ));
           },
         },
+        controlledAccessQueryParam: checkUserAccess(
+          userControlledAccess.studies,
+          controlledStudies,
+        )[0],
       };
     },
   ),
-  lifecycle({
-    componentDidMount() {
-      const {
-        fetchStudiesList,
-      } = this.props;
-
-      fetchStudiesList();
-    },
   }),
   withContext(
     CONTROLLED_ACCESS_CONTEXT,

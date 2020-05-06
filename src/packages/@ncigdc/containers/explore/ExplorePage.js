@@ -379,6 +379,7 @@ export const ExplorePageQuery = {
     ssms_size: null,
     ssms_sort: null,
   },
+  shouldComponentUpdate: () => true, // This should likely be improved.
 };
 
 const setVariables = ({ filters, relay }) => {

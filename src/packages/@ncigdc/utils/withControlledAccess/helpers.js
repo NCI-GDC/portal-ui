@@ -1,4 +1,10 @@
-export const checkUserAccess = (list, studyToCheck) => {};
+export const checkUserAccess = (
+  userStudies,
+  studiesToCheck,
+) => studiesToCheck.map(study => ({
+  // TODO: revise once multiple are allowed
+  programs: userStudies[study],
+}));
 
 export const reshapeSummary = controlledAccessSummary => (
   [ // Sorting order for the modal, as per requirement

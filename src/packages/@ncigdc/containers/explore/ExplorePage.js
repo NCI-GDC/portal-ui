@@ -419,8 +419,8 @@ const setVariables = ({ filters, relay }) => {
 const ExplorePage = Relay.createContainer(
   compose(
     setDisplayName('EnhancedExplorePageComponent'),
-    withRouter,
     withControlledAccess,
+    withRouter,
     withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
     lifecycle({
       componentDidMount() {

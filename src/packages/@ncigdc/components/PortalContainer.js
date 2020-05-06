@@ -21,6 +21,7 @@ import ModalContainer from '@ncigdc/components/ModalContainer';
 import Routes from '@ncigdc/routes';
 import AWGRoutes from '@ncigdc/routes/AWGRoutes';
 import withRouter from '@ncigdc/utils/withRouter';
+import { withControlledAccessContext } from '@ncigdc/utils/withControlledAccess';
 import { GlobalTooltip } from '@ncigdc/uikit/Tooltip';
 import styled from '@ncigdc/theme/styled';
 import { setModal } from '@ncigdc/dux/modal';
@@ -74,6 +75,7 @@ const PortalContainer = () => (
 export default compose(
   setDisplayName('EnhancedPortalContainer'),
   withRouter,
+  withControlledAccessContext,
   connect(),
   lifecycle({
     componentDidMount(): void {

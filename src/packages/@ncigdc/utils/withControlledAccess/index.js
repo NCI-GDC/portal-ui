@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   isEqual,
@@ -6,15 +7,17 @@ import {
 } from 'lodash';
 import {
   compose,
+  getContext,
   lifecycle,
   setDisplayName,
+  withContext,
   withHandlers,
   withPropsOnChange,
   withState,
 } from 'recompose';
 
-import { fetchApi } from '@ncigdc/utils/ajax';
 import withRouter from '@ncigdc/utils/withRouter';
+import { fetchApi } from '@ncigdc/utils/ajax';
 import ControlledAccessModal from '@ncigdc/components/Modals/ControlledAccess';
 import { setModal } from '@ncigdc/dux/modal';
 
@@ -26,18 +29,25 @@ import {
 } from '@ncigdc/utils/constants';
 
 import {
+  checkUserAccess,
   reshapeSummary,
   reshapeUserAccess,
 } from './helpers';
 
-export default compose(
+const CONTROLLED_ACCESS_CONTEXT = {
+  controlledAccessProps: PropTypes.object,
+};
+
+export default getContext(CONTROLLED_ACCESS_CONTEXT);
+
+export const withControlledAccessContext = compose(
   setDisplayName('withControlledAccess'),
+  withRouter,
   connect(state => ({
     token: state.auth.token,
     user: state.auth.user,
     userControlledAccess: state.auth.userControlledAccess,
   })),
-  withRouter,
   withState('studiesSummary', 'setStudiesSummary', {}),
   withHandlers({
     clearUserAccess: ({
@@ -198,4 +208,12 @@ export default compose(
       fetchStudiesList();
     },
   }),
+  withContext(
+    CONTROLLED_ACCESS_CONTEXT,
+    ({
+      controlledAccessProps,
+    }) => ({
+      controlledAccessProps,
+    }),
+  ),
 );

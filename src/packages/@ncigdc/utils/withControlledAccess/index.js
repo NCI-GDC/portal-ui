@@ -37,8 +37,12 @@ import {
 const CONTROLLED_ACCESS_CONTEXT = {
   controlledAccessProps: PropTypes.object,
 };
+const CONTROLLED_ACCESS_NETWORK = {
+  addControlledAccessParams: PropTypes.func,
+};
 
 export default getContext(CONTROLLED_ACCESS_CONTEXT);
+export const withControlledAccessNetworkLayer = getContext(CONTROLLED_ACCESS_NETWORK);
 
 export const withControlledAccessContext = compose(
   setDisplayName('withControlledAccess'),
@@ -105,7 +109,7 @@ export const withControlledAccessContext = compose(
       storeUserAccess,
       user,
       userControlledAccess,
-    }) => (user
+    }) => (user && DISPLAY_DAVE_CA
       ? userControlledAccess.fetched || (
         IS_DEV || DEV_USER
           ? storeUserAccess(DEV_USER_CA)
@@ -192,32 +196,66 @@ export const withControlledAccessContext = compose(
         ),
       });
 
-      return DISPLAY_DAVE_CA && {
-        controlledAccessProps: {
-          controlledStudies,
-          showControlledAccessModal: () => {
-            dispatch(setModal(
-              <ControlledAccessModal
-                activeControlledPrograms={controlledStudies}
-                closeModal={() => dispatch(setModal(null))}
-                studiesSummary={studiesSummary}
-                />,
-            ));
-          },
-        },
-        controlledAccessQueryParam: checkUserAccess(
+      return {
+        controlledAccessProps: DISPLAY_DAVE_CA
+          ? {
+            controlledStudies,
+            showControlledAccessModal: () => {
+              dispatch(setModal(
+                <ControlledAccessModal
+                  activeControlledPrograms={controlledStudies}
+                  closeModal={() => dispatch(setModal(null))}
+                  studiesSummary={studiesSummary}
+                  />,
+              ));
+            },
+          }
+          : {},
+        controlledAccessQueryParams: checkUserAccess(
           userControlledAccess.studies,
           controlledStudies,
-        )[0],
+        ),
       };
     },
   ),
+  withHandlers({
+    addControlledAccessParams: ({
+      controlledAccessQueryParams,
+    }) => (
+      query = '',
+      wholeReq,
+    ) => {
+      // reminder/notification for developer mode, due to lack of token.
+      IS_DEV &&
+        controlledAccessQueryParams.length &&
+        console.info(
+          `${query.toLowerCase().includes('requiresstudy') ? 'STUDY' : 'No study'} would be added to this request in Prod. Results actually shown are for open data only.`,
+          wholeReq,
+        );
+
+      return (
+        DISPLAY_DAVE_CA &&
+        !IS_DEV &&
+        controlledAccessQueryParams.length &&
+        query.toLowerCase().includes('requiresstudy')
+          // the first one instead of array, because "single study" ¯\_(ツ)_/¯
+          ? { study: controlledAccessQueryParams[0] }
+          // TODO: Revise when multiple studies are allowed
+          // ? { study: controlledAccessQueryParams }
+          : {}
+      );
+    },
   }),
   withContext(
-    CONTROLLED_ACCESS_CONTEXT,
+    {
+      ...CONTROLLED_ACCESS_CONTEXT,
+      ...CONTROLLED_ACCESS_NETWORK,
+    },
     ({
+      addControlledAccessParams,
       controlledAccessProps,
     }) => ({
+      addControlledAccessParams,
       controlledAccessProps,
     }),
   ),

@@ -1,6 +1,6 @@
 export const checkUserAccess = (
-  userStudies,
-  studiesToCheck,
+  userStudies = {},
+  studiesToCheck = [],
 ) => studiesToCheck.map(study => ({
   // TODO: revise once multiple are allowed
   programs: userStudies[study],

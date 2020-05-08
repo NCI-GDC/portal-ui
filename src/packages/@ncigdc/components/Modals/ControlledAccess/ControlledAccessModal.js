@@ -82,7 +82,7 @@ const ControlledAccessModal = ({
           handleProgramSelect,
           selectedStudies,
           setSelectedStudies,
-          studiesList,
+          studiesSummary,
           user,
           userAccessList,
         })}
@@ -105,7 +105,7 @@ const ControlledAccessModal = ({
           <span>
             {'If you don\'t have access, follow the instructions for '}
             <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" rel="noopener noreferrer" target="_blank">obtaining access to controlled data</a>
-          .
+            .
           </span>
         </RestrictionMessage>
       )}

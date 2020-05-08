@@ -1,6 +1,5 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
-import { isEqual } from 'lodash';
 import { parse } from 'query-string';
 import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
@@ -19,7 +18,6 @@ import {
   lifecycle,
   setDisplayName,
   withHandlers,
-  withPropsOnChange,
 } from 'recompose';
 
 import { withControlledAccessContext } from '@ncigdc/utils/withControlledAccess';
@@ -35,7 +33,6 @@ import Loader from '@ncigdc/uikit/Loaders/Loader';
 import {
   API,
   AWG,
-  DISPLAY_DAVE_CA,
   IS_AUTH_PORTAL,
   IS_DEV,
 } from '@ncigdc/utils/constants';
@@ -95,10 +92,7 @@ const RelaySetup = compose(
   withControlledAccessContext,
   withHandlers({
     customMiddleware: ({
-      controlledAccessProps: {
-        controlledStudiesQueryParam,
-      } = {},
-      useStudyParam,
+      addControlledAccessParams,
     }) => next => req => {
       const [url, search = ''] = req.url.split('?');
       const hash =
@@ -112,16 +106,12 @@ const RelaySetup = compose(
       const parsedBody = JSON.parse(req.body);
       req.body = JSON.stringify({
         ...parsedBody,
-        ...(!IS_DEV &&
-          DISPLAY_DAVE_CA &&
-          useStudyParam &&
-          controlledStudiesQueryParam)
-          ? { study: controlledStudiesQueryParam }
-          : {},
+        ...(!IS_AUTH_PORTAL ? addControlledAccessParams(parsedBody.query, req) : {}),
       });
 
       if (!IS_AUTH_PORTAL) {
         return next(req);
+        // TODO add error handling.
       }
 
       req.credentials = 'include';

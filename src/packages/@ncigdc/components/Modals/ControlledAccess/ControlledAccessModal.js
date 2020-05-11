@@ -13,7 +13,6 @@ import LoginButton from '@ncigdc/components/LoginButton';
 import ExploreLink, { defaultExploreQuery } from '@ncigdc/components/Links/ExploreLink';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import RestrictionMessage from '@ncigdc/modern_components/RestrictionMessage/RestrictionMessage';
-import { nonCosmicStudies } from '@ncigdc/utils/constants';
 
 import CAMessage from './CAMessage';
 import { getHeadings, formatData } from './helpers';
@@ -45,7 +44,8 @@ const ControlledAccessModal = ({
             filters: {
               op: 'AND',
               content: [
-                ...xor(selectedStudiesUpperCase, nonCosmicStudies).length > 0 && defaultExploreQuery.filters.content,
+                // suppressing the cosmic filter/cancer gene census filter
+                // by not using defaultExploreQuery
                 {
                   op: 'IN',
                   content: {

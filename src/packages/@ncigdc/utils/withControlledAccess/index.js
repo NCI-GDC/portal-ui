@@ -19,7 +19,7 @@ import ControlledAccessModal from '@ncigdc/components/Modals/ControlledAccess';
 import { setModal } from '@ncigdc/dux/modal';
 
 import {
-  DEV_CA_SUMMARY,
+  DEV_USER,
   DEV_USER_CA,
   DISPLAY_DAVE_CA,
   IS_DEV,
@@ -48,20 +48,18 @@ export default compose(
         dispatch({ type: 'gdc/USER_CONTROLLED_ACCESS_CLEAR' });
     },
     fetchStudiesList: ({ setStudiesSummary }) => () => (
-      IS_DEV
-        ? setStudiesSummary(reshapeSummary(DEV_CA_SUMMARY))
-        : fetchApi(
-          '/studies/summary/all',
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
+      fetchApi(
+        '/studies/summary/all',
+        {
+          headers: {
+            'Content-Type': 'application/json',
           },
-        )
-          .then(({ data } = {}) => {
-            data && setStudiesSummary(reshapeSummary(data));
-          })
-          .catch(error => console.error(error))
+        },
+      )
+        .then(({ data } = {}) => {
+          data && setStudiesSummary(reshapeSummary(data));
+        })
+        .catch(error => console.error(error))
     ),
     storeUserAccess: ({
       dispatch,
@@ -90,19 +88,9 @@ export default compose(
       userControlledAccess,
     }) => (user
       ? userControlledAccess.fetched || (
-        IS_DEV
+        IS_DEV || DEV_USER
           ? storeUserAccess(DEV_USER_CA)
-          : fetchApi(
-            '/studies/user',
-            // {
-            //   credentials: 'same-origin',
-            //   headers: {
-            //     'Access-Control-Allow-Origin': true,
-            //     'Content-Type': 'application/json',
-            //     'X-Auth-Token': 'secret admin token',
-            //   },
-            // },
-          )
+          : fetchApi('/studies/user')
             .then(({ data }) => {
               storeUserAccess(data.controlled);
             })

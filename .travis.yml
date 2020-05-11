@@ -3,7 +3,6 @@ git:
 language: node_js
 node_js:
 - '13'
-sudo: required
 dist: trusty
 group: edge
 services:

@@ -343,8 +343,12 @@ export const IMPACT_SHORT_FORMS = {
   },
 };
 
-export const FAKE_USER =
-  localStorage.REACT_APP_ALLOW_FAKE_USER || process.env.REACT_APP_ALLOW_FAKE_USER
+export const IS_DEV = process.env.NODE_ENV === 'development';
+
+export const DEV_USER =
+  localStorage.REACT_APP_ALLOW_FAKE_USER ||
+  localStorage.REACT_APP_ALLOW_DEV_USER ||
+  process.env.REACT_APP_ALLOW_DEV_USER
     ? {
       projects: {
         gdc_ids: {
@@ -381,7 +385,16 @@ export const FAKE_USER =
     }
     : null;
 
-export const IS_DEV = process.env.NODE_ENV === 'development';
+export const DEV_USER_CA = [ // controlled access mock
+  {
+    programs: [
+      {
+        name: 'FM',
+        projects: ['FM-AD'],
+      },
+    ],
+  },
+];
 
 // Example feature flag
 // export const DISPLAY_CDAVE =

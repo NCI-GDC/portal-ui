@@ -3,10 +3,12 @@ import { handleActions } from 'redux-actions';
 
 import { saveAs } from 'filesaver.js';
 import { fetchAuth } from '@ncigdc/utils/ajax';
-import { FAKE_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
+import { DEV_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
 
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
+const USER_CA_CLEAR = 'gdc/USER_CONTROLLED_ACCESS_CLEAR';
+const USER_CA_SUCCESS = 'gdc/USER_CONTROLLED_ACCESS_SUCCESS';
 const USER_REQUEST = 'gdc/USER_REQUEST';
 const USER_SUCCESS = 'gdc/USER_SUCCESS';
 const USER_FAILURE = 'gdc/USER_FAILURE';
@@ -16,9 +18,9 @@ const TOKEN_SUCCESS = 'gdc/TOKEN_SUCCESS';
 const TOKEN_FAILURE = 'gdc/TOKEN_FAILURE';
 const TOKEN_CLEAR = 'gdc/TOKEN_CLEAR';
 
-export const fetchUser = () => ((IS_DEV || FAKE_USER)
+export const fetchUser = () => ((IS_DEV || DEV_USER)
 ? {
-  payload: FAKE_USER,
+  payload: DEV_USER,
   type: USER_SUCCESS,
 }
 : fetchAuth({
@@ -81,10 +83,25 @@ const initialState: State = {
   isFetchingToken: false,
   token: undefined,
   failed: false,
+  userControlledAccess: {
+    fetched: false,
+    studies: {},
+  },
 };
 
 export default handleActions(
   {
+    [USER_CA_CLEAR]: state => ({
+      ...state,
+      userControlledAccess: initialState.userControlledAccess,
+    }),
+    [USER_CA_SUCCESS]: (state, action) => ({
+      ...state,
+      userControlledAccess: {
+        fetched: true,
+        studies: action.payload,
+      },
+    }),
     [USER_REQUEST]: state => ({
       ...state,
       isFetching: true,

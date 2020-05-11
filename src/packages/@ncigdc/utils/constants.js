@@ -480,10 +480,6 @@ export const CATEGORY_COLORS = {
   },
 };
 
-// studies/programs with no cases under the Cancer Gene Census filter
-// i.e. conflicts between controlled access and cosmic
-export const nonCosmicStudies = ['FM'];
-
 export const DISPLAY_SUMMARY_PAGE = localStorage.REACT_APP_DISPLAY_SUMMARY_PAGE ||
   process.env.REACT_APP_DISPLAY_SUMMARY_PAGE ||
   false;

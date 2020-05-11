@@ -389,71 +389,12 @@ export const DEV_USER_CA = [ // controlled access mock
   {
     programs: [
       {
-        name: 'TARGET',
-        projects: ['TARGET-ALL-P1', 'TARGET-ALL-P2'],
+        name: 'FM',
+        projects: ['FM-AD'],
       },
     ],
   },
 ];
-
-export const DEV_CA_SUMMARY = {
-  controlled: [
-    {
-      programs: [
-        {
-          name: 'FM',
-          projects: ['FM-AD'],
-        },
-      ],
-    },
-    {
-      programs: [
-        {
-          name: 'TARGET',
-          projects: ['TARGET-ALL-P2', 'TARGET-OS'],
-        },
-      ],
-    },
-  ],
-  in_process: [
-    {
-      programs: [
-        {
-          name: 'CPTAC',
-          projects: ['CPTAC-2', 'CPTAC-3'],
-        },
-        {
-          name: 'TARGET',
-          projects: [
-            'TARGET-ALL-P1',
-            'TARGET-CCSK',
-            'TARGET-RT',
-          ],
-        },
-      ],
-    },
-  ],
-  open: [
-    {
-      programs: [
-        {
-          name: 'TCGA',
-          projects: ['TCGA-BRCA', 'TCGA-LUAD'],
-        },
-        {
-          name: 'TARGET',
-          projects: [
-            'TARGET-ALL-P3',
-            'TARGET-AML',
-            'TARGET-NBL',
-            'TARGET-WT',
-          ],
-        },
-      ],
-    },
-  ],
-};
-
 
 // Example feature flag
 // export const DISPLAY_CDAVE =

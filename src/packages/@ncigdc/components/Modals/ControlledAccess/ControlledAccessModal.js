@@ -6,11 +6,10 @@ import {
   withHandlers,
   withState,
 } from 'recompose';
-import { xor } from 'lodash';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import LoginButton from '@ncigdc/components/LoginButton';
-import ExploreLink, { defaultExploreQuery } from '@ncigdc/components/Links/ExploreLink';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import RestrictionMessage from '@ncigdc/modern_components/RestrictionMessage/RestrictionMessage';
 

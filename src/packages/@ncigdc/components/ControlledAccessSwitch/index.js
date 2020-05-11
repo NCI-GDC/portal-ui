@@ -6,6 +6,7 @@ import {
   setDisplayName,
 } from 'recompose';
 import Button from '@ncigdc/uikit/Button';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 import './styles.scss';
 
@@ -18,24 +19,34 @@ const ControlledAccessSwitch = ({
   ? (
     <section className="controlled-access-switch">
       <p>
-        {'Controlled data from: '}
+        Controlled data from:
         <span>
-          {studies.join(', ').toUpperCase()}
+          {` ${studies.join(', ').toUpperCase()}`}
         </span>
       </p>
-      <Button
-        onClick={switchHandler}
-        style={{
-          ':hover': {
-            backgroundColor: '#9b43b1',
-          },
-          backgroundColor: '#773388',
-          padding: '0.2rem 1rem',
-        }}
-        testTag="controlled-access-switch"
+      <Tooltip
+        Component={(
+          <span>
+            Select a different controlled-access dataset
+            <br />
+            to visualize with open-access data
+          </span>
+        )}
         >
-        Switch
-      </Button>
+        <Button
+          onClick={switchHandler}
+          style={{
+            ':hover': {
+              backgroundColor: '#9b43b1',
+            },
+            backgroundColor: '#773388',
+            padding: '0.2rem 1rem',
+          }}
+          testTag="controlled-access-switch"
+          >
+          Switch
+        </Button>
+      </Tooltip>
     </section>
   )
   : null

@@ -56,12 +56,18 @@ export class BaseQuery extends React.Component {
   lastProps = null;
 
   render() {
-    const { cacheConfig, query, variables } = this.props;
+    const {
+      addControlledAccessParams = () => ({}),
+      cacheConfig,
+      nestedViewersMerge = () => {},
+      query,
+      variables,
+    } = this.props;
 
     return (
       <QueryRenderer
         cacheConfig={cacheConfig}
-        environment={environment(this.props.addControlledAccessParams)}
+        environment={environment(addControlledAccessParams)}
         query={query}
         render={({ error, props: relayProps }) => {
           const { Component, parentProps, parentVariables } = this.props;
@@ -78,6 +84,7 @@ export class BaseQuery extends React.Component {
               }}
               {...this.lastProps}
               {...this.props}
+              {...this.lastProps && nestedViewersMerge(this.lastProps.viewer, parentProps.viewer)}
               firstLoad={!this.lastProps}
               loading={!relayProps && !error}
               />

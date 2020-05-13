@@ -233,7 +233,7 @@ export const SSMAggregationsComponent = compose(
 export const SSMAggregationsQuery = {
   fragments: {
     aggregations: () => Relay.QL`
-      fragment on SsmAggregations {
+      fragment RequiresStudy on SsmAggregations {
         consequence__transcript__annotation__vep_impact {
           buckets {
             doc_count

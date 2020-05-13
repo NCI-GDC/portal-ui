@@ -452,7 +452,7 @@ const ExplorePage = Relay.createContainer(
           //   filters,
           //   nextProps.filters,
           // );
-          setVariables(nextProps, nextProps.controlledAccessProps.controlledStudies.length);
+          setVariables(nextProps);
         }
       },
     }),

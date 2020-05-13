@@ -22,7 +22,7 @@ const ClinicalAggregationsQuery = (Component: ReactClass<*>) => compose(
 
       const filters = parseFilterParam(q.filters, defaultFilters);
       const filteredFields = head(
-        fields.filter(field => field.name === 'aggregations')
+        fields.filter(field => field.name === 'aggregations'),
       ).type.fields;
 
       const clinicalAnalysisFields = testValidClinicalTypes(filteredFields);
@@ -38,6 +38,7 @@ const ClinicalAggregationsQuery = (Component: ReactClass<*>) => compose(
   ),
 )((props: Object) => (
   <Query
+    cacheConfig={{ requiresStudy: true }}
     Component={Component}
     minHeight={578}
     parentProps={props}

@@ -31,9 +31,9 @@ export default (Component: ReactClass<*>) =>
   )((props: Object) => {
     return (
       <BaseQuery
-        parentProps={props}
-        variables={props.variables}
+        cacheConfig={{ requiresStudy: true }}
         Component={Component}
+        parentProps={props}
         query={graphql`
           query GeneSymbol_relayQuery($filters: FiltersArgument) {
             viewer {
@@ -51,6 +51,7 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
+        variables={props.variables}
+        />
     );
   });

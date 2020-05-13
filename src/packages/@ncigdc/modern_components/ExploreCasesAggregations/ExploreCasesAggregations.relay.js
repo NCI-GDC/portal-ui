@@ -24,6 +24,7 @@ export default (Component: ReactClass<*>) => compose(
 )((props: Object) => {
   return (
     <Query
+      cacheConfig={{ requiresStudy: true }}
       Component={Component}
       minHeight={578}
       parentProps={props}

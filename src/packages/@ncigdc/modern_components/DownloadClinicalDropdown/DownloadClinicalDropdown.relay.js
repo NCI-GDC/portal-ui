@@ -17,17 +17,17 @@ export default (Component: ReactClass<*>) =>
         const downloadFilters =
           selectedIds && selectedIds.length
             ? addInFilters(
-                ...filters,
-                makeFilter(
-                  [
-                    {
-                      field: 'cases.case_id',
-                      value: selectedIds,
-                    },
-                  ],
-                  false,
-                ),
-              )
+              ...filters,
+              makeFilter(
+                [
+                  {
+                    field: 'cases.case_id',
+                    value: selectedIds,
+                  },
+                ],
+                false,
+              ),
+            )
             : filters;
         return {
           filters: downloadFilters,
@@ -72,11 +72,12 @@ export default (Component: ReactClass<*>) =>
           `;
     return (
       <Query
-        parentProps={props}
-        variables={props.variables}
+        cacheConfig={{ requiresStudy: props.scope === 'explore' }}
         Component={Component}
-        style={{ width: 'auto' }}
+        parentProps={props}
         query={caseQuery}
-      />
+        style={{ width: 'auto' }}
+        variables={props.variables}
+        />
     );
   });

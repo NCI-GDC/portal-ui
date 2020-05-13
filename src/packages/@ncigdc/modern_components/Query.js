@@ -56,7 +56,12 @@ export class BaseQuery extends React.Component {
   lastProps = null;
 
   render() {
-    const { cacheConfig, query, variables } = this.props;
+    const {
+      cacheConfig,
+      nestedViewersMerge = () => {},
+      query,
+      variables,
+    } = this.props;
 
     return (
       <QueryRenderer
@@ -78,6 +83,7 @@ export class BaseQuery extends React.Component {
               }}
               {...this.lastProps}
               {...this.props}
+              {...this.lastProps && nestedViewersMerge(this.lastProps.viewer, parentProps.viewer)}
               firstLoad={!this.lastProps}
               loading={!relayProps && !error}
               />

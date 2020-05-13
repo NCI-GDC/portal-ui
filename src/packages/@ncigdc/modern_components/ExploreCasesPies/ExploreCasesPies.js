@@ -3,7 +3,8 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import _ from 'lodash';
 import { parse } from 'query-string';
-import { IBucket } from '@ncigdc/components/Aggregations/types';
+
+import { viewerQueryCA } from '@ncigdc/routes/queries';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import {
   ColumnCenter,
@@ -38,10 +39,10 @@ const COMPONENT_NAME = 'ExploreCasesPies';
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
-  static queries = {
-    viewer: () => Relay.QL`query { viewer }`,
-  };
-  static prepareParams = ({ location: { search }, defaultFilters = null }) => {
+
+  static queries = viewerQueryCA;
+
+  static prepareParams = ({ defaultFilters = null, location: { search } }) => {
     const q = parse(search);
 
     return {
@@ -56,8 +57,8 @@ const createContainer = Component =>
       filters: null,
     },
     fragments: {
-      viewer: () => Relay.QL`
-        fragment on Root {
+      viewerWithCA: () => Relay.QL`
+        fragment RequiresStudy on Root {
           explore {
             cases {
               aggregations(filters: $filters aggregations_filter_themselves: true) {
@@ -118,9 +119,9 @@ const createContainer = Component =>
   });
 
 const Component = ({
-  viewer: { explore: { cases: { aggregations } } },
-  query,
   push,
+  query,
+  viewerWithCA: { explore: { cases: { aggregations } } },
 }: TProps) => {
   const currentFilters =
     (query && parseFilterParam((query || {}).filters, {}).content) || [];

@@ -31,7 +31,7 @@ import Button from '@ncigdc/uikit/Button';
 import ResizeDetector from 'react-resize-detector';
 import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
-import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
+import CaseLimitMessages from '@ncigdc/modern_components/RestrictionMessage/CaseLimitMessages';
 import ControlledAccessSwitch from '@ncigdc/components/ControlledAccessSwitch';
 
 import {
@@ -209,7 +209,7 @@ const ExplorePageComponent = ({
                 text: `Cases (${hasCaseHits.toLocaleString()})`,
               },
               {
-                component: isCaseLimitExceeded || controlledStudies
+                component: isCaseLimitExceeded
                   ? (
                     <CaseLimitMessages
                       isCaseLimitExceeded={isCaseLimitExceeded}
@@ -217,7 +217,7 @@ const ExplorePageComponent = ({
                   )
                   : hasGeneHits
                     ? (
-                      <GenesTab viewer={viewerWithCA} />
+                      <GenesTab />
                     )
                     : (
                       <NoResultsMessage>No Genes Found.</NoResultsMessage>
@@ -228,7 +228,7 @@ const ExplorePageComponent = ({
                   : ` (${hasGeneHits.toLocaleString()})`}`,
               },
               {
-                component: isCaseLimitExceeded || controlledStudies
+                component: isCaseLimitExceeded
                   ? (
                     <CaseLimitMessages
                       isCaseLimitExceeded={isCaseLimitExceeded}
@@ -250,7 +250,7 @@ const ExplorePageComponent = ({
                   : ` (${hasSsmsHits.toLocaleString()})`}`,
               },
               {
-                component: isCaseLimitExceeded || controlledStudies
+                component: isCaseLimitExceeded
                   ? (
                     <CaseLimitMessages
                       isCaseLimitExceeded={isCaseLimitExceeded}

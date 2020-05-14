@@ -48,8 +48,10 @@ export const formatData = ({
   user && userAccessList.length > 0
   ? {
     ...studiesSummary,
-    controlled: studiesSummary.controlled
-      .sort(study => -(userAccessList.includes(study.program))),
+    controlled: userAccessList.length > 1
+      ? studiesSummary.controlled
+      : studiesSummary.controlled
+        .sort(study => -(userAccessList.includes(study.program))),
   }
   : studiesSummary,
 ))
@@ -67,7 +69,8 @@ export const formatData = ({
           )
           : (
             <CAIconMessage faClass="fa-lock">
-              {'Controlled. '}
+              Controlled.
+              {' '}
               <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" rel="noopener noreferrer" target="_blank">Apply for access</a>
               .
             </CAIconMessage>
@@ -79,7 +82,9 @@ export const formatData = ({
         )
       : humanify({ term: datum.genes_mutations }),
     program: datum.program.toUpperCase(),
-    select: userAccessList.length > 0 && userAccessList.includes(datum.program)
+    select: datum.genes_mutations === 'controlled' &&
+    userAccessList.length > 0 &&
+    userAccessList.includes(datum.program)
       ? (
         <input
           checked={selectedStudies.includes(datum.program)}

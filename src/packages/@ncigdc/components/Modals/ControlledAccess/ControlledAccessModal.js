@@ -82,7 +82,7 @@ const ControlledAccessModal = ({
           handleProgramSelect,
           selectedStudies,
           setSelectedStudies,
-          studiesList,
+          studiesSummary,
           user,
           userAccessList,
         })}

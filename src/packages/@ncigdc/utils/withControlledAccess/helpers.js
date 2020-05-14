@@ -19,21 +19,22 @@ export const reshapeSummary = controlledAccessSummary => (
           };
           return [
             ...rows,
-            ...genesMutationsAccess === 'controlled'
-              ? study.programs &&
-                study.programs.length > 0 &&
-                [
-                  {
+            ...study.programs &&
+              study.programs.length > 0
+                ? genesMutationsAccess === 'controlled'
+                  ? [
+                    {
+                      ...rowBase,
+                      program: study.programs[0].name.toLowerCase(),
+                      projects: study.programs[0].projects,
+                    },
+                  ]
+                  : study.programs.map(program => ({
                     ...rowBase,
-                    program: study.programs[0].name.toLowerCase(),
-                    projects: study.programs[0].projects,
-                  },
-                ]
-              : study.programs.map(program => ({
-                ...rowBase,
-                program: program.name.toLowerCase(),
-                projects: [],
-              })),
+                    program: program.name.toLowerCase(),
+                    projects: [],
+                  }))
+                : [false],
           ];
         }, []),
     }), {})

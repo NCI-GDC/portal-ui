@@ -32,7 +32,7 @@ export const reshapeSummary = controlledAccessSummary => (
                   : study.programs.map(program => ({
                     ...rowBase,
                     program: program.name.toLowerCase(),
-                    projects: [],
+                    projects: program.projects,
                   }))
                 : [false],
           ];

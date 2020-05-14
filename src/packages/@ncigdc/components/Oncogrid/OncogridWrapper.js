@@ -29,11 +29,12 @@ import {
   cnvChangeTypes,
 } from '@ncigdc/utils/filters/prepared/significantConsequences';
 import withRouter from '@ncigdc/utils/withRouter';
+import { withControlledAccessNetworkLayer } from '@ncigdc/utils/withControlledAccess';
 
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 import Button from '@ncigdc/uikit/Button';
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { Tooltip, withTooltip } from '@ncigdc/uikit/Tooltip';
 
 import { ToggleSwatchLegend } from '@ncigdc/components/Legends';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
@@ -42,7 +43,6 @@ import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import { performanceTracker } from '@ncigdc/utils/analytics';
-import { withTooltip } from '@ncigdc/uikit/Tooltip/index';
 
 import getQueries from './getQueries';
 import oncoGridParams from './oncoGridParams';
@@ -269,47 +269,49 @@ const OncoGridWrapper = compose(
     },
   ),
   withTooltip,
+  withControlledAccessNetworkLayer,
   withProps({
     oncoGridHeight: 150,
     oncoGridPadding: 306,
     oncoGridWrapper: null,
     heatMapColor: '#2E7D32',
-    async getQueries(
+    getQueries: async (
       {
+        addControlledAccessParams,
+        currentCNVFilters,
+        currentFilters,
+        currentSSMFilters,
+        dispatch,
+        filteredConsequenceTypes,
+        gridColors,
+        heatMapColor,
+        heatMapMode,
+        impacts,
+        lastRequest,
         oncoGrid,
+        oncoGridHeight,
+        oncoGridPadding,
+        projectId,
+        push,
+        rankOncoGridBy,
+        setCaseCount,
+        setCrosshairMode,
+        setHeatMapMode,
+        setIsLoading,
+        setLastRequest,
         setOncoGrid,
         setOncoGridData,
-        oncoGridPadding,
-        oncoGridHeight,
-        setIsLoading,
-        projectId,
-        heatMapMode,
-        setHeatMapMode,
         setShowGridLines,
-        setCrosshairMode,
-        setTrackLegends,
-        currentFilters,
-        impacts,
-        uniqueGridClass,
-        dispatch,
-        push,
-        filteredConsequenceTypes,
-        setCaseCount,
-        showGridLines,
-        lastRequest,
-        setLastRequest,
         setTooltip,
-        variationDataTypes,
+        setTrackLegends,
         setVariationDataTypes,
-        currentCNVFilters,
-        currentSSMFilters,
+        showGridLines,
         toggledCnvChanges,
-        rankOncoGridBy,
-        heatMapColor,
-        gridColors,
+        uniqueGridClass,
+        variationDataTypes,
       }: TProps = {},
       previousResponses: Object,
-    ): Promise<*> {
+    ): Promise<*> => {
       if (!filteredConsequenceTypes.length) {
         if (oncoGrid.toggleGridLines) oncoGrid.destroy();
         setOncoGrid({});
@@ -323,6 +325,7 @@ const OncoGridWrapper = compose(
       setLastRequest(request);
       performanceTracker.begin('oncogrid:fetch');
       const responses = await getQueries({
+        addControlledAccessParams,
         currentFilters,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,

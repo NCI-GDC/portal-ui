@@ -69,10 +69,10 @@ export default (Component: ReactClass<*>) =>
   )((props: Object) => {
     return (
       <Query
-        parentProps={props}
-        minHeight={387}
-        variables={props.variables}
+        cacheConfig={{ requiresStudy: props.scope === 'explore' }}
         Component={Component}
+        minHeight={387}
+        parentProps={props}
         query={graphql`
           query SsmsTable_relayQuery(
             $ssmTested: FiltersArgument
@@ -154,6 +154,7 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
+        variables={props.variables}
+        />
     );
   });

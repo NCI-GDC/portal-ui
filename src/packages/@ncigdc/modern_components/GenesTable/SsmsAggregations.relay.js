@@ -8,7 +8,7 @@ export default (Component: ReactClass<*>) =>
   compose(
     withPropsOnChange(
       ['genesTableViewer'],
-      ({ genesTableViewer, defaultFilters = null }) => {
+      ({ defaultFilters = null, genesTableViewer }) => {
         const { hits } = genesTableViewer.explore.genes;
         const geneIds = hits.edges.map(e => e.node.gene_id);
 
@@ -16,14 +16,14 @@ export default (Component: ReactClass<*>) =>
           variables: {
             ssmCountsfilters: geneIds.length
               ? addInFilters(
-                  defaultFilters,
-                  makeFilter([
-                    {
-                      field: 'consequence.transcript.gene.gene_id',
-                      value: geneIds,
-                    },
-                  ]),
-                )
+                defaultFilters,
+                makeFilter([
+                  {
+                    field: 'consequence.transcript.gene.gene_id',
+                    value: geneIds,
+                  },
+                ]),
+              )
               : null,
           },
         };
@@ -32,10 +32,10 @@ export default (Component: ReactClass<*>) =>
   )((props: mixed) => {
     return (
       <Query
-        parentProps={props}
-        minHeight={387}
-        variables={props.variables}
+        cacheConfig={{ requiresStudy: props.scope === 'explore' }}
         Component={Component}
+        minHeight={387}
+        parentProps={props}
         query={graphql`
           query SsmsAggregations_relayQuery(
             $ssmCountsfilters: FiltersArgument
@@ -59,6 +59,7 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
+        variables={props.variables}
+        />
     );
   });

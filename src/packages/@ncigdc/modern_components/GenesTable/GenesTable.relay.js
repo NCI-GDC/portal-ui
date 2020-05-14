@@ -107,10 +107,10 @@ export default (Component: ReactClass<*>) =>
   )((props: mixed) => {
     return (
       <Query
-        parentProps={props}
-        minHeight={387}
-        variables={props.variables}
+        cacheConfig={{ requiresStudy: props.scope === 'explore' }}
         Component={Component}
+        minHeight={387}
+        parentProps={props}
         query={graphql`
           query GenesTable_relayQuery(
             $genesTable_filters: FiltersArgument
@@ -187,6 +187,7 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
+        variables={props.variables}
+        />
     );
   });

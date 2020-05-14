@@ -4,6 +4,8 @@ import { get } from 'lodash';
 import {
   compose, withState, withProps, withHandlers,
 } from 'recompose';
+
+import { withControlledAccessNetworkLayer } from '@ncigdc/utils/withControlledAccess';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import withFilters from '@ncigdc/utils/withFilters';
@@ -45,8 +47,10 @@ export default compose(
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('showingMore', 'setShowingMore', false),
   withState('state', 'setState', initialState),
+  withControlledAccessNetworkLayer,
   withProps(
     ({
+      addControlledAccessParams,
       defaultSurvivalData,
       filters,
       selectedSurvivalData,
@@ -60,8 +64,9 @@ export default compose(
       },
       updateData: async () => {
         const survivalData = await getDefaultCurve({
+          addControlledAccessParams,
           currentFilters: filters,
-          slug: 'Explore',
+          slug: 'ExploreGenesSurvivalPlot',
         });
 
         setDefaultSurvivalData(survivalData);

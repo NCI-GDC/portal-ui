@@ -8,6 +8,7 @@ import {
   withHandlers,
 } from 'recompose';
 
+import { withControlledAccessNetworkLayer } from '@ncigdc/utils/withControlledAccess';
 import { Column, Row } from '@ncigdc/uikit/Flex';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import withFilters from '@ncigdc/utils/withFilters';
@@ -41,8 +42,10 @@ export default compose(
   withState('defaultSurvivalData', 'setDefaultSurvivalData', {}),
   withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   withState('state', 'setState', initialState),
+  withControlledAccessNetworkLayer,
   withProps(
     ({
+      addControlledAccessParams,
       defaultSurvivalData,
       filters,
       selectedSurvivalData,
@@ -56,8 +59,9 @@ export default compose(
       },
       updateData: async () => {
         const survivalData = await getDefaultCurve({
+          addControlledAccessParams,
           currentFilters: filters,
-          slug: 'Explore',
+          slug: 'ExploreMutationsSurvivalPlot',
         });
 
         setDefaultSurvivalData(survivalData);

@@ -29,7 +29,7 @@ const ControlledAccessSwitch = ({
           <span>
             Select a different controlled-access dataset
             <br />
-            to visualize with open-access data
+            to explore with open-access data
           </span>
         )}
         >

@@ -1,6 +1,3 @@
-/* @flow */
-/* eslint fp/no-class:0 */
-
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
@@ -14,13 +11,17 @@ import {
   parseJSONParam,
 } from '@ncigdc/utils/uri';
 
-import { viewerQuery } from './queries';
+import {
+  viewerQuery,
+  viewerQueryCA,
+} from './queries';
 
 class ExploreRoute extends Relay.Route {
   static routeName = 'ExploreRoute';
 
   static queries = {
     ...viewerQuery,
+    ...viewerQueryCA,
     // autocomplete: () => Relay.QL`query { explore }`,
   };
 

@@ -7,6 +7,7 @@ import {
   withPropsOnChange,
 } from 'recompose';
 
+import { withControlledAccessNetworkLayer } from '@ncigdc/utils/withControlledAccess';
 import environment from '@ncigdc/modern_components/environment';
 import { withLoader } from '@ncigdc/uikit/Loaders/Loader';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -47,7 +48,7 @@ export const createClassicRenderer = (Route, Container, minHeight) => {
           </div>
         );
       }
-    }
+    },
   );
 };
 
@@ -55,11 +56,12 @@ export class BaseQuery extends React.Component {
   lastProps = null;
 
   render() {
-    const { query, variables } = this.props;
+    const { cacheConfig, query, variables } = this.props;
 
     return (
       <QueryRenderer
-        environment={environment}
+        cacheConfig={cacheConfig}
+        environment={environment(this.props.addControlledAccessParams)}
         query={query}
         render={({ error, props: relayProps }) => {
           const { Component, parentProps, parentVariables } = this.props;
@@ -89,6 +91,7 @@ export class BaseQuery extends React.Component {
 
 export default compose(
   setDisplayName('EnhancedBaseQuery'),
+  withControlledAccessNetworkLayer,
   withPropsOnChange(['Component'], ({ Component }) => ({
     Component: withLoader(Component),
   })),

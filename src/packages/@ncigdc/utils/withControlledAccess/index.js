@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   isEqual,
@@ -6,15 +7,17 @@ import {
 } from 'lodash';
 import {
   compose,
+  getContext,
   lifecycle,
   setDisplayName,
+  withContext,
   withHandlers,
   withPropsOnChange,
   withState,
 } from 'recompose';
 
-import { fetchApi } from '@ncigdc/utils/ajax';
 import withRouter from '@ncigdc/utils/withRouter';
+import { fetchApi } from '@ncigdc/utils/ajax';
 import ControlledAccessModal from '@ncigdc/components/Modals/ControlledAccess';
 import { setModal } from '@ncigdc/dux/modal';
 
@@ -26,18 +29,29 @@ import {
 } from '@ncigdc/utils/constants';
 
 import {
+  checkUserAccess,
   reshapeSummary,
   reshapeUserAccess,
 } from './helpers';
 
-export default compose(
+const CONTROLLED_ACCESS_CONTEXT = {
+  controlledAccessProps: PropTypes.object,
+};
+const CONTROLLED_ACCESS_NETWORK = {
+  addControlledAccessParams: PropTypes.func,
+};
+
+export default getContext(CONTROLLED_ACCESS_CONTEXT);
+export const withControlledAccessNetworkLayer = getContext(CONTROLLED_ACCESS_NETWORK);
+
+export const withControlledAccessContext = compose(
   setDisplayName('withControlledAccess'),
+  withRouter,
   connect(state => ({
     token: state.auth.token,
     user: state.auth.user,
     userControlledAccess: state.auth.userControlledAccess,
   })),
-  withRouter,
   withState('studiesSummary', 'setStudiesSummary', {}),
   withHandlers({
     clearUserAccess: ({
@@ -70,6 +84,15 @@ export default compose(
       });
     },
   }),
+  lifecycle({
+    componentDidMount() {
+      const {
+        fetchStudiesList,
+      } = this.props;
+
+      fetchStudiesList();
+    },
+  }),
   withPropsOnChange(
     (
       {
@@ -86,7 +109,7 @@ export default compose(
       storeUserAccess,
       user,
       userControlledAccess,
-    }) => (user
+    }) => (user && DISPLAY_DAVE_CA
       ? userControlledAccess.fetched || (
         IS_DEV || DEV_USER
           ? storeUserAccess(DEV_USER_CA)
@@ -173,29 +196,67 @@ export default compose(
         ),
       });
 
-      return DISPLAY_DAVE_CA && {
-        controlledAccessProps: {
+      return {
+        controlledAccessProps: DISPLAY_DAVE_CA
+          ? {
+            controlledStudies,
+            showControlledAccessModal: () => {
+              dispatch(setModal(
+                <ControlledAccessModal
+                  activeControlledPrograms={controlledStudies}
+                  closeModal={() => dispatch(setModal(null))}
+                  studiesSummary={studiesSummary}
+                  />,
+              ));
+            },
+          }
+          : {},
+        controlledAccessQueryParams: checkUserAccess(
+          userControlledAccess.studies,
           controlledStudies,
-          showControlledAccessModal: () => {
-            dispatch(setModal(
-              <ControlledAccessModal
-                activeControlledPrograms={controlledStudies}
-                closeModal={() => dispatch(setModal(null))}
-                studiesSummary={studiesSummary}
-                />,
-            ));
-          },
-        },
+        ),
       };
     },
   ),
-  lifecycle({
-    componentDidMount() {
-      const {
-        fetchStudiesList,
-      } = this.props;
+  withHandlers({
+    addControlledAccessParams: ({
+      controlledAccessQueryParams,
+    }) => (
+      query = '',
+      wholeReq,
+    ) => {
+      // reminder/notification for developer mode, due to lack of token.
+      IS_DEV &&
+        controlledAccessQueryParams.length &&
+        console.info(
+          `${query.toLowerCase().includes('requiresstudy') ? 'STUDY' : 'No study'} would be added to this request in Prod. Results actually shown are for open data only.`,
+          wholeReq,
+        );
 
-      fetchStudiesList();
+      return (
+        DISPLAY_DAVE_CA &&
+        !IS_DEV &&
+        controlledAccessQueryParams.length &&
+        query.toLowerCase().includes('requiresstudy')
+          // the first one instead of array, because "single study" ¯\_(ツ)_/¯
+          ? { study: controlledAccessQueryParams[0] }
+          // TODO: Revise when multiple studies are allowed
+          // ? { study: controlledAccessQueryParams }
+          : {}
+      );
     },
   }),
+  withContext(
+    {
+      ...CONTROLLED_ACCESS_CONTEXT,
+      ...CONTROLLED_ACCESS_NETWORK,
+    },
+    ({
+      addControlledAccessParams,
+      controlledAccessProps,
+    }) => ({
+      addControlledAccessParams,
+      controlledAccessProps,
+    }),
+  ),
 );

@@ -5,18 +5,23 @@ import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { redirectToLogin } from '@ncigdc/utils/auth';
+import consoleDebug from '@ncigdc/utils/consoleDebug';
+
 const source = new RecordSource();
 const store = new Store(source);
 const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
-import { redirectToLogin } from '@ncigdc/utils/auth';
-import consoleDebug from '@ncigdc/utils/consoleDebug';
 
-function fetchQuery(operation, variables, cacheConfig) {
+const fetchQuery = addControlledAccessParams => (operation, variables, cacheConfig) => {
   const body = JSON.stringify({
     query: operation.text, // GraphQL text from input
     variables,
+    ...addControlledAccessParams( // This function will also log queries out in dev mode.
+      cacheConfig.requiresStudy ? JSON.stringify(cacheConfig) : '',
+      operation.text,
+    ),
   });
   const hash = md5(body);
   const [componentName] = operation.name.split('_relayQuery');
@@ -98,15 +103,11 @@ function fetchQuery(operation, variables, cacheConfig) {
             `Something went wrong in environment, but no error status: ${err}`,
           );
         }
-      }),
-  );
-}
+      }));
+};
 
-// Create a network layer from the fetch function
-const network = Network.create(fetchQuery);
-
-export default new Environment({
+export default addControlledAccessParams => new Environment({
   handlerProvider, // Can omit.
-  network,
+  network: Network.create(fetchQuery(addControlledAccessParams)),
   store,
 });

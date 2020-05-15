@@ -55,7 +55,7 @@ export const formatData = ({
   }
   : studiesSummary,
 ))
-  .filter(datum => user || datum.genes_mutations !== 'in_process')
+  .filter(datum => !(user && datum.genes_mutations === 'in_process'))
   .map(datum => ({
     ...datum,
     cases_clinical: humanify({ term: datum.cases_clinical }),

@@ -394,6 +394,14 @@ export const DEV_USER_CA = [ // controlled access mock
       },
     ],
   },
+  {
+    programs: [
+      {
+        name: 'TARGET',
+        projects: ['TARGET-ALL-P2', 'TARGET-OS'],
+      },
+    ],
+  },
 ];
 
 // Example feature flag

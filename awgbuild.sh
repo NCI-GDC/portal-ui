@@ -9,4 +9,5 @@ export GDC_BASE="/"
 export REACT_APP_GDC_AUTH_API="https://portal.awg.gdc.cancer.gov/auth/api"
 export REACT_APP_AWG=true
 export REACT_APP_IS_AUTH_PORTAL=true
+unset REACT_APP_DISPLAY_DAVE_CA
 npm run build

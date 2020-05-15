@@ -53,7 +53,7 @@ export const formatData = ({
   }
   : studiesSummary,
 ))
-  .filter(datum => user || datum.genes_mutations !== 'in_process')
+  .filter(datum => !(user && datum.genes_mutations === 'in_process'))
   .map(datum => ({
     ...datum,
     cases_clinical: humanify({ term: datum.cases_clinical }),
@@ -67,7 +67,8 @@ export const formatData = ({
           )
           : (
             <CAIconMessage faClass="fa-lock">
-              {'Controlled. '}
+              Controlled.
+              {' '}
               <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data" rel="noopener noreferrer" target="_blank">Apply for access</a>
               .
             </CAIconMessage>

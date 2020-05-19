@@ -43,10 +43,10 @@ export default (Component: ReactClass<*>) =>
   )((props: mixed) => {
     return (
       <Query
-        parentProps={props}
-        minHeight={387}
-        variables={props.variables}
+        cacheConfig={{ requiresStudy: true }}
         Component={Component}
+        minHeight={387}
+        parentProps={props}
         query={graphql`
           query ExploreCasesTable_relayQuery(
             $filters: FiltersArgument
@@ -116,6 +116,7 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
+        variables={props.variables}
+        />
     );
   });

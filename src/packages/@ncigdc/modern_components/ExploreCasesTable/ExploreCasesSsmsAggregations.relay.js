@@ -21,17 +21,17 @@ export default (Component: ReactClass<*>) =>
           variables: {
             ssmCountsfilters: caseIds.length
               ? addInFilters(
-                  filters,
-                  makeFilter(
-                    [
-                      {
-                        field: 'occurrence.case.case_id',
-                        value: caseIds,
-                      },
-                    ],
-                    false,
-                  ),
-                )
+                filters,
+                makeFilter(
+                  [
+                    {
+                      field: 'occurrence.case.case_id',
+                      value: caseIds,
+                    },
+                  ],
+                  false,
+                ),
+              )
               : null,
           },
         };
@@ -40,10 +40,10 @@ export default (Component: ReactClass<*>) =>
   )((props: mixed) => {
     return (
       <Query
-        parentProps={props}
-        minHeight={387}
-        variables={props.variables}
+        cacheConfig={{ requiresStudy: true }}
         Component={Component}
+        minHeight={387}
+        parentProps={props}
         query={graphql`
           query ExploreCasesSsmsAggregations_relayQuery(
             $ssmCountsfilters: FiltersArgument
@@ -67,6 +67,7 @@ export default (Component: ReactClass<*>) =>
             }
           }
         `}
-      />
+        variables={props.variables}
+        />
     );
   });

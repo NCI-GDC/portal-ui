@@ -8,7 +8,7 @@ import { parse } from 'query-string';
 
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseFilterParam, stringifyJSONParam } from '@ncigdc/utils/uri';
-import { viewerQuery } from '@ncigdc/routes/queries';
+import { viewerQueryCA } from '@ncigdc/routes/queries';
 import { makeFilter, removeFilter } from '@ncigdc/utils/filters';
 import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -29,7 +29,7 @@ const COMPONENT_NAME = 'GenesBarChart';
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
 
-  static queries = viewerQuery;
+  static queries = viewerQueryCA;
 
   static prepareParams = ({ location: { search }, defaultFilters = null }) => {
     const q = parse(search);
@@ -95,8 +95,8 @@ const createContainer = Component => Relay.createContainer(Component, {
     // ]),
   },
   fragments: {
-    viewer: () => Relay.QL`
-        fragment on Root {
+    viewerWithCA: () => Relay.QL`
+        fragment RequiresStudy on Root {
           explore {
             cases {
               aggregations(filters: $ssmTested) {
@@ -170,7 +170,7 @@ const Component = compose(
   ({
     projectId = '',
     theme,
-    viewer: {
+    viewerWithCA: {
       explore: { genes = { hits: { edges: [] } }, cases, filteredCases },
     },
     context = 'explore',

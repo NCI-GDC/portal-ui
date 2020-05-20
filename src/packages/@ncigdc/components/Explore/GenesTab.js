@@ -121,7 +121,6 @@ export default compose(
     showingMore,
     state: { loading },
     survivalData,
-    viewer,
   }) => (
     <Column style={styles.card}>
       <h1

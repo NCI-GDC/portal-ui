@@ -11,25 +11,30 @@ import { fetchApi, fetchApiChunked } from '@ncigdc/utils/ajax';
 async function getGenes({
   filters,
   size = 50,
+  study,
 }: {
   filters: Object,
   size: number,
+  study: ?Object,
 }): Promise<Object> {
   const fields = ['gene_id', 'symbol', 'is_cancer_gene_census'];
 
   return fetchApi(
-    `analysis/top_mutated_genes_by_project?size=${size}&fields=${fields.join()}${filters
-      .content.length
-      ? `&filters=${JSON.stringify(filters)}`
-      : ''}`,
+    `analysis/top_mutated_genes_by_project?size=${size
+      }&fields=${fields.join()}${
+      filters.content.length ? `&filters=${JSON.stringify(filters)}` : ''}${
+      study ? `&study=${JSON.stringify(study)}` : ''
+    }`,
   );
 }
 
-async function getSSMOccurrences({ filters }): Promise<Object> {
+async function getSSMOccurrences({
+  filters,
+  study,
+}): Promise<Object> {
   return fetchApiChunked('ssm_occurrences', {
     headers: { 'Content-Type': 'application/json' },
     body: {
-      filters,
       fields: [
         'ssm.consequence.transcript.consequence_type',
         'ssm.consequence.transcript.annotation.vep_impact',
@@ -38,21 +43,25 @@ async function getSSMOccurrences({ filters }): Promise<Object> {
         'ssm.ssm_id',
         'case.case_id',
       ].join(),
+      filters,
+      ...study,
     },
   });
 }
 
-async function getCNVOccurrences({ filters }): Promise<Object> {
+async function getCNVOccurrences({
+  filters,
+}): Promise<Object> {
   return fetchApiChunked('cnv_occurrences', {
     headers: { 'Content-Type': 'application/json' },
     body: {
-      filters,
       fields: [
         'cnv_occurrence_id',
         'case.case_id',
         'cnv.consequence.gene.gene_id',
         'cnv.cnv_change',
       ].join(),
+      filters,
     },
   });
 }
@@ -60,16 +69,16 @@ async function getCNVOccurrences({ filters }): Promise<Object> {
 async function getCases({
   filters,
   size = 50,
+  study,
 }: {
   filters: Object,
   size: number,
+  study: ?Object,
 }): Promise<Object> {
   return fetchApi('analysis/top_mutated_cases_by_gene', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: {
-      filters,
-      size,
       fields: [
         'demographic.days_to_death',
         'diagnoses.age_at_diagnosis',
@@ -83,6 +92,9 @@ async function getCases({
         'summary.data_categories.file_count',
         'summary.data_categories.data_category',
       ].join(),
+      filters,
+      size,
+      ...study,
     },
   });
 }
@@ -95,13 +107,14 @@ const NO_RESULT = {
   cnv_occurrences: [],
 };
 async function getQueries({
-  currentFilters,
-  maxGenes,
-  maxCases,
+  addControlledAccessParams = () => ({}),
   currentCNVFilters,
+  currentFilters,
   currentSSMFilters,
-  rankOncoGridBy,
   heatMapMode,
+  maxCases,
+  maxGenes,
+  rankOncoGridBy,
 }: {
   currentFilters: Object,
   maxGenes: number,
@@ -130,9 +143,15 @@ async function getQueries({
         )
       : currentCNVFilters;
 
+  const studyParam = caller => addControlledAccessParams(
+    'requiresStudy',
+    `OncoGrid${caller}`,
+  );
+
   const { data: { hits: genes } } = await getGenes({
     filters: geneFilters,
     size: maxGenes,
+    study: studyParam('GetGenes').study,
   });
 
   if (!genes.length) return NO_RESULT;
@@ -155,6 +174,7 @@ async function getQueries({
   } = await getCases({
     filters: caseFilters,
     size: maxCases,
+    study: studyParam('GetCases'),
   });
   if (!totalCases) return NO_RESULT;
 
@@ -178,6 +198,7 @@ async function getQueries({
 
   const { data: { hits: ssm_occurrences } } = await getSSMOccurrences({
     filters: ssmOccurrenceFilters,
+    study: studyParam('GetSSMOccurrences'),
   });
 
   // remove ssm-specific filters because there is no ssm data in cnv_occurrence_centric

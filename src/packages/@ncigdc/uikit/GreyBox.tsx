@@ -4,11 +4,18 @@ import { ITheme } from '@ncigdc/theme';
 
 const Box = styled('span', {
   backgroundColor: ({ theme }: { theme: ITheme }) => theme.greyScale4,
-  width: '20px',
-  height: '16px',
   display: 'inline-block',
+  height: '16px',
+  width: '20px',
 });
 
-const GreyBox: React.SFC<{style?: React.CSSProperties}> = ({ style }) => <Box style={{ ...style }} />;
+const GreyBox: React.SFC<{style?: React.CSSProperties}> = ({
+  children = null,
+  style,
+}) => (
+  <Box style={{ ...style }}>
+    {children}
+  </Box>
+);
 
 export default GreyBox;

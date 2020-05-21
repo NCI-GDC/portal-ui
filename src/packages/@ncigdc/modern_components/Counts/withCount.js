@@ -23,12 +23,10 @@ export default getProps => Component => {
     const countProps = getProps(props);
     const EnhancedComponent = compose(
       typeMap[countProps.scope][countProps.type],
-      mapProps(({ viewer, path }) => {
-        return {
-          ...props,
-          [countProps.key]: get(viewer, path, -1),
-        };
-      }),
+      mapProps(({ path, viewer }) => ({
+        ...props,
+        [countProps.key]: get(viewer, path, -1),
+      })),
     )(Component);
 
     return <EnhancedComponent {...props} {...countProps} />;

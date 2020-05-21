@@ -3,6 +3,7 @@
 import React from 'react';
 
 import { connect } from 'react-redux';
+import { withControlledAccessNetworkLayer } from '@ncigdc/utils/withControlledAccess';
 import { compose, withState, withHandlers } from 'recompose';
 import { get } from 'lodash';
 import { commitMutation } from 'react-relay';
@@ -13,19 +14,25 @@ import mutations from './mutations';
 export default (Component: any) => {
   return compose(
     connect(),
+    withControlledAccessNetworkLayer,
     withState('isCreating', 'setIsCreating', false),
     withHandlers({
-      createSet: ({ isCreating, setIsCreating, dispatch }) => ({
-        onComplete,
-        type,
-        scope,
+      createSet: ({
+        addControlledAccessParams = () => ({}),
+        dispatch,
+        isCreating,
+        setIsCreating,
+      }) => ({
         action,
+        filters,
         forceCreate,
+        onComplete,
+        scope,
+        score,
+        set_id,
         size,
         sort,
-        score,
-        filters,
-        set_id,
+        type,
       }) => {
         const field = `${type}s.${type}_id`;
         const mutation = mutations[scope][type][action];
@@ -52,7 +59,7 @@ export default (Component: any) => {
           onComplete(setId);
         } else {
           setIsCreating(true);
-          commitMutation(environment, {
+          commitMutation(environment(addControlledAccessParams), {
             mutation,
             variables: {
               input: {
@@ -65,8 +72,13 @@ export default (Component: any) => {
             },
             onCompleted: response => {
               setIsCreating(false);
-              const hash = get(response, ['sets', action, scope, type]);
-              const [setId, size] = [hash['set_id'], hash['size']];
+              const hash = get(response, [
+                'sets',
+                action,
+                scope,
+                type,
+              ]);
+              const [setId, size] = [hash.set_id, hash.size];
               onComplete(setId, size);
             },
             onError: err => {

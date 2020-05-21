@@ -21,7 +21,7 @@ const GDCAppsRow = () => (
     <AppLink
       appName="portal home"
       description="Data Portal"
-      href="https://portal.gdc.cancer.gov"
+      href="https://portal.gdc.cancer.gov/uat/"
       imgSrc={dataPortalImg}
       imgWidth={35}
       title="GDC Data Portal"
@@ -67,7 +67,7 @@ const GDCAppsRow = () => (
       appName="submission-portal"
       description="Data Submission Portal"
       drawnRange={11}
-      href="https://portal.gdc.cancer.gov/submission"
+      href="https://portal.gdc.cancer.gov/uat/submission"
       imgWidth={29}
       title="GDC Data Submission Portal"
       />
@@ -76,7 +76,7 @@ const GDCAppsRow = () => (
       appName="legacy-archive"
       description="Legacy Archive"
       drawnRange={11}
-      href="https://portal.gdc.cancer.gov/legacy-archive"
+      href="https://portal.gdc.cancer.gov/uat/legacy-archive"
       imgWidth={29}
       title="GDC Legacy Archive"
       />

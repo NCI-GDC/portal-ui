@@ -30,7 +30,7 @@ const DismissibleBanner = ({ dispatch }) => (
                 </ExternalLink>.<br />
                 <br />
                 Other data may be in the{' '}
-                <ExternalLink href="https://portal.gdc.cancer.gov/legacy-archive/search/f">
+                <ExternalLink href="https://portal.gdc.cancer.gov/uat/legacy-archive/search/f">
                   GDC Legacy Archive
                 </ExternalLink>. Data in the GDC Data Portal has been harmonized
                 using GDC Bioinformatics Pipelines whereas data in the GDC

@@ -244,7 +244,7 @@ const RelaySetup = compose(
 const Root = (rootProps: mixed) => (
   <Provider store={store}>
     <PersistGate loading={<Loader />} persistor={persistor}>
-      <Router>
+      <Router basename="/uat">
         <RelaySetup {...rootProps} />
       </Router>
     </PersistGate>

@@ -74,13 +74,13 @@ const Header = ({ theme }) => (
           harmonized data.
           <br />
           Please visit the{' '}
-          <a href="https://portal.gdc.cancer.gov/">GDC Data Portal</a>
+          <a href="https://portal.gdc.cancer.gov/uat/">GDC Data Portal</a>
           .
         </span>
       </Row>
       <Row flex="3" style={center}>
         <a
-          href="https://portal.gdc.cancer.gov/"
+          href="https://portal.gdc.cancer.gov/uat/"
           className={styles.activePortalLink(theme)}
         >
           <img

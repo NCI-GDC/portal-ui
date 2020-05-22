@@ -4,19 +4,17 @@ import React from 'react';
 import _ from 'lodash';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
-import { mergeQuery as mq } from '@ncigdc/utils/filters';
+import { mergeQuery } from '@ncigdc/utils/filters';
 
 import { IRawQuery } from '@ncigdc/utils/uri/types';
+import { TLinkProps } from './types';
 
 import InternalLink from './InternalLink';
 
-import { TLinkProps } from './types';
-
 const InternalLinkWithContext = ({
+  merge,
   pathname,
   query,
-  merge,
-  mergeQuery,
   whitelist,
   ...rest
 }: TLinkProps) => (
@@ -46,9 +44,9 @@ const InternalLinkWithContext = ({
       const queryWithOffsetsReset = hasFilterChanged
         ? mergedQuery
         : _.mapValues(
-            mergedQuery,
-            (value, paramName) => (paramName.endsWith('offset') ? 0 : value),
-          );
+          mergedQuery,
+          (value, paramName) => (paramName.endsWith('offset') ? 0 : value),
+        );
 
       return (
         <InternalLink pathname={pn} query={queryWithOffsetsReset} {...rest} />
@@ -56,9 +54,5 @@ const InternalLinkWithContext = ({
     }}
   </LocationSubscriber>
 );
-
-InternalLinkWithContext.defaultProps = {
-  mergeQuery: mq,
-};
 
 export default InternalLinkWithContext;

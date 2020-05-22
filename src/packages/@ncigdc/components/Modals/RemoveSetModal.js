@@ -45,61 +45,61 @@ const RemoveSetModal = ({
   title,
   type,
 }) => (
-    <BaseModal
-      closeText="Cancel"
-      extraButtons={(
-        <RemoveFromSetButton
-          action="remove"
-          disabled={!selected}
-          filters={filters}
-          onComplete={async setId => {
-            if ((query.filters || '').includes(selected)) {
-              history.replace({
-                search: `?${stringify({
-                  ...query,
-                  filters: query.filters.replace(selected, setId),
-                })}`,
-              });
-            }
-
-            onSaveComplete({
-              dispatch,
-              label: sets[selected],
+  <BaseModal
+    closeText="Cancel"
+    extraButtons={(
+      <RemoveFromSetButton
+        action="remove"
+        disabled={!selected}
+        filters={filters}
+        onComplete={async setId => {
+          if ((query.filters || '').includes(selected)) {
+            history.replace({
+              search: `?${stringify({
+                ...query,
+                filters: query.filters.replace(selected, setId),
+              })}`,
             });
-            await dispatch(replaceSet({
-              newId: setId,
-              oldId: selected,
-              type,
-            }));
-            if (type === 'case') {
-              await analyses
-                .filter(analysis => analysis.sets.case[selected])
-                .forEach(affected => {
-                  dispatch(
-                    updateClinicalAnalysisSet({
-                      id: affected.id,
-                      setId,
-                      setName: affected.sets.case[selected],
-                    })
-                  );
-                });
-            }
-          }}
-          set_id={`set_id:${selected}`}
-          >
-          Save
-        </RemoveFromSetButton>
-      )}
-      title={title}
-      >
-      <SetTable
-        field={field}
-        selected={selected}
-        sets={sets}
-        setSelected={setSelected}
-        type={type}
-        />
-    </BaseModal>
-  );
+          }
+
+          onSaveComplete({
+            dispatch,
+            label: sets[selected],
+          });
+          await dispatch(replaceSet({
+            newId: setId,
+            oldId: selected,
+            type,
+          }));
+          if (type === 'case') {
+            await analyses
+              .filter(analysis => analysis.sets.case && analysis.sets.case[selected])
+              .forEach(affected => {
+                dispatch(
+                  updateClinicalAnalysisSet({
+                    id: affected.id,
+                    setId,
+                    setName: affected.sets.case[selected],
+                  }),
+                );
+              });
+          }
+        }}
+        set_id={`set_id:${selected}`}
+        >
+        Save
+      </RemoveFromSetButton>
+    )}
+    title={title}
+    >
+    <SetTable
+      field={field}
+      selected={selected}
+      sets={sets}
+      setSelected={setSelected}
+      type={type}
+      />
+  </BaseModal>
+);
 
 export default enhance(RemoveSetModal);

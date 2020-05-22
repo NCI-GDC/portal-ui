@@ -147,7 +147,7 @@ const AppendSetModal = ({
               );
               if (type === 'case') {
                 await analyses
-                  .filter(analysis => analysis.sets.case[selected])
+                  .filter(analysis => analysis.sets.case && analysis.sets.case[selected])
                   .forEach(affected => {
                     dispatch(
                       updateClinicalAnalysisSet({

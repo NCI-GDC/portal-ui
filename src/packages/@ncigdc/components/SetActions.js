@@ -1,5 +1,9 @@
 import React from 'react';
-import { compose, withProps } from 'recompose';
+import {
+  compose,
+  setDisplayName,
+  withProps,
+} from 'recompose';
 import { connect } from 'react-redux';
 import { capitalize } from 'lodash/string';
 
@@ -16,6 +20,7 @@ import { theme } from '@ncigdc/theme';
 import pluralize from '@ncigdc/utils/pluralize';
 
 const enhance = compose(
+  setDisplayName('EnhancedSetActions'),
   connect(({ sets }) => ({ sets })),
   withProps(({ sets, type }) => ({
     hasSets: !!Object.keys(sets[type] || {}).length,

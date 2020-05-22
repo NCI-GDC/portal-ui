@@ -39,11 +39,11 @@ export const buttonList = {
     label: 'Analysis Downloads',
     name: 'downloadAnalysis',
   },
-  downloadImages: {
+  downloadImage: {
     // custom button
     faClass: 'fa-download',
     label: 'Download',
-    name: 'downloadImages',
+    name: 'downloadImage',
   },
   fullscreen: {
     // custom button
@@ -89,7 +89,7 @@ export const buttonList = {
 export const getToolbarButtons = () => {
   // buttons for plotly toolbar replacement
   const {
-    downloadImages, fullscreen, pan, reset, zoom, zoomIn, zoomOut,
+    downloadImage, fullscreen, pan, reset, zoom, zoomIn, zoomOut,
   } = buttonList;
   return [
     // intentionally not alphabetized
@@ -98,7 +98,7 @@ export const getToolbarButtons = () => {
     zoom,
     zoomIn,
     zoomOut,
-    downloadImages,
+    downloadImage,
     fullscreen,
   ];
 };

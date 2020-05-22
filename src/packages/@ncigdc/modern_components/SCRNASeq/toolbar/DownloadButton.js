@@ -20,7 +20,7 @@ const downloadOptions = {
       label: 'Differential Gene Expression',
     },
   ],
-  downloadImages: [
+  downloadImage: [
   // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
     {
       format: 'svg',

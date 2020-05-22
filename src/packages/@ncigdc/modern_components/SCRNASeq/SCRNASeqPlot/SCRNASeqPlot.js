@@ -52,11 +52,11 @@ const SCRNASeqPlot = ({
       }}
       >
       <Row className="scrnaseq-toolbar">
-        {toolbarButtons.map(btn => (btn.name === 'download'
+        {toolbarButtons.map(btn => (btn.name === 'downloadImages'
           ? (
             <DownloadButton
               {...btn}
-              key="download"
+              key={btn.name}
               onToolbarClick={handleToolbarClick}
               />
           )

@@ -5,27 +5,48 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 
 import ToolbarButton from './ToolbarButton';
 
-const downloadOptionsDefaults = [
+const downloadOptions = {
+  downloadAnalysis: [
+    {
+      format: 'summary',
+      label: 'Summary',
+    },
+    {
+      format: 'cellCounts',
+      label: 'Cell Counts',
+    },
+    {
+      format: 'differentialGeneExpression',
+      label: 'Differential Gene Expression',
+    },
+  ],
+  downloadImages: [
   // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
-  {
-    format: 'svg',
-    label: 'SVG',
-    name: 'downloadImage',
-    scale: 1,
-  },
-  {
-    format: 'png',
-    label: 'PNG',
-    name: 'downloadImage',
-    scale: 3,
-  },
-];
+    {
+      format: 'svg',
+      label: 'SVG',
+      scale: 1,
+    },
+    {
+      format: 'png',
+      label: 'PNG',
+      scale: 3,
+    },
+  ],
+};
 
 export default class DownloadButton extends Component {
-  // TODO: handle TSV downloads
   handleClick = e => {
-    const { onToolbarClick = () => {} } = this.props;
-    onToolbarClick(e);
+    const {
+      name,
+      onAnalysisClick,
+      onToolbarClick,
+    } = this.props;
+    if (name === 'downloadAnalysis') {
+      onAnalysisClick(e);
+    } else {
+      onToolbarClick(e);
+    }
   }
 
   render() {
@@ -33,7 +54,6 @@ export default class DownloadButton extends Component {
       faClass,
       label,
       name,
-      downloadOptions = downloadOptionsDefaults,
     } = this.props;
     return (
       <DropDown
@@ -44,17 +64,19 @@ export default class DownloadButton extends Component {
             name={name}
             />
         )}
+        dropdownStyle={name === 'downloadAnalysis' && {
+          width: 200,
+        }}
         >
-        {downloadOptions.map(dlOpt => (
+        {downloadOptions[name].map(dlOpt => (
           <DropdownItem
             data-format={dlOpt.format || ''}
-            data-name={dlOpt.name || ''}
+            data-name={name}
             data-scale={dlOpt.scale || ''}
             key={dlOpt.label}
             onClick={this.handleClick}
             style={{
               cursor: 'pointer',
-              minWidth: '50px',
               width: 'auto',
             }}
             >

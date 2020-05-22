@@ -30,16 +30,23 @@ layoutDefaults.axisStyles = {
   zerolinewidth: 2,
 };
 
-export const toolbarButtons = {
+export const buttonList = {
   // plotly's built-in buttons:
   // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
-  download: {
+  downloadAnalysis: {
+    // custom button
+    faClass: 'fa-download',
+    label: 'Analysis Downloads',
+    name: 'downloadAnalysis',
+  },
+  downloadImages: {
     // custom button
     faClass: 'fa-download',
     label: 'Download',
-    name: 'download',
+    name: 'downloadImages',
   },
   fullscreen: {
+    // custom button
     label: 'Fullscreen',
     name: 'fullscreen',
   },
@@ -80,9 +87,10 @@ export const toolbarButtons = {
 };
 
 export const getToolbarButtons = () => {
+  // buttons for plotly toolbar replacement
   const {
-    download, fullscreen, pan, reset, zoom, zoomIn, zoomOut,
-  } = toolbarButtons;
+    downloadImages, fullscreen, pan, reset, zoom, zoomIn, zoomOut,
+  } = buttonList;
   return [
     // intentionally not alphabetized
     reset,
@@ -90,7 +98,7 @@ export const getToolbarButtons = () => {
     zoom,
     zoomIn,
     zoomOut,
-    download,
+    downloadImages,
     fullscreen,
   ];
 };

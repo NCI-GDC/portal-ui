@@ -1,7 +1,12 @@
 // @flow
 
 import urlJoin from 'url-join';
-import { Environment, Network, RecordSource, Store } from 'relay-runtime';
+import {
+  Environment,
+  Network,
+  RecordSource,
+  Store,
+} from 'relay-runtime';
 import md5 from 'blueimp-md5';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
@@ -14,12 +19,17 @@ const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
 
-const fetchQuery = addControlledAccessParams => (operation, variables, cacheConfig) => {
+const fetchQuery = (addControlledAccessParams, forceStudyParam) => (operation, variables, cacheConfig) => {
   const body = JSON.stringify({
     query: operation.text, // GraphQL text from input
     variables,
     ...addControlledAccessParams( // This function will also log queries out in dev mode.
-      cacheConfig.requiresStudy ? JSON.stringify(cacheConfig) : '',
+      cacheConfig.requiresStudy
+        ? JSON.stringify(cacheConfig)
+        // Study param from mutations.
+        // : forceStudyParam
+        // ? `requiresStudy ${JSON.stringify(operation.text)}`
+        : '',
       operation.text,
     ),
   });
@@ -80,34 +90,34 @@ const fetchQuery = addControlledAccessParams => (operation, variables, cacheConf
         }
 
         return json;
-      })
-      .catch(err => {
-        if (err.status) {
-          switch (err.status) {
-            case 401:
-            case 403:
-              consoleDebug(err.statusText);
-              if (IS_AUTH_PORTAL) {
-                return redirectToLogin('timeout');
-              }
-              break;
-            case 400:
-            case 404:
-              consoleDebug(err.statusText);
-              break;
-            default:
-              return consoleDebug(`Default error case: ${err.statusText}`);
-          }
-        } else {
-          consoleDebug(
-            `Something went wrong in environment, but no error status: ${err}`,
-          );
+      }))
+    .catch(err => {
+      if (err.status) {
+        switch (err.status) {
+          case 401:
+          case 403:
+            consoleDebug(err.statusText);
+            if (IS_AUTH_PORTAL) {
+              return redirectToLogin('timeout');
+            }
+            break;
+          case 400:
+          case 404:
+            consoleDebug(err.statusText);
+            break;
+          default:
+            return consoleDebug(`Default error case: ${err.statusText}`);
         }
-      }));
+      } else {
+        consoleDebug(
+        `Something went wrong in environment, but no error status: ${err}`,
+        );
+      }
+    });
 };
 
-export default addControlledAccessParams => new Environment({
+export default (addControlledAccessParams, forceStudyParam) => new Environment({
   handlerProvider, // Can omit.
-  network: Network.create(fetchQuery(addControlledAccessParams)),
+  network: Network.create(fetchQuery(addControlledAccessParams, forceStudyParam)),
   store,
 });

@@ -59,7 +59,9 @@ export default (Component: any) => {
           onComplete(setId);
         } else {
           setIsCreating(true);
-          commitMutation(environment(addControlledAccessParams), {
+          // TODO pass environment from props.relay. Needs testing accross the app.
+          const requiresStudy = scope === 'explore';
+          commitMutation(environment(addControlledAccessParams, requiresStudy), {
             mutation,
             variables: {
               input: {

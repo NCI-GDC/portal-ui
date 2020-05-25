@@ -119,7 +119,6 @@ export default compose(
           : {
             ...styles.show,
             ...verticalPadding(isSectionHeader ? '0.5' : '1'),
-            color: `${isSectionHeader ? '#3a3a3a' : '#fff'}`,
           }),
       },
     }),

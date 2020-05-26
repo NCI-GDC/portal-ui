@@ -28,6 +28,7 @@ type BannerProps = {
 };
 
 const Banner = ({
+  dismissed,
   dismissible,
   handleOnDismiss,
   isSectionHeader,
@@ -47,7 +48,9 @@ const Banner = ({
     {level !== 'none' && levelToIcon[level.toLowerCase()]}
 
     {message && (
-      <span className="message">
+      <span
+        className="message"
+        >
         {!reactElement ? (
           <Markdown
             renderers={{
@@ -63,6 +66,7 @@ const Banner = ({
 
     {dismissible && (
       <span
+        aria-disabled={dismissed}
         className="header-banner-dismiss"
         onClick={handleOnDismiss}
         >
@@ -77,6 +81,7 @@ const Banner = ({
 const styles = {
   dismissed: {
     borderBottom: 0,
+    fontSize: 0,
     height: 0,
     lineHeight: 0,
     opacity: 0,

@@ -69,9 +69,11 @@
     text-decoration: underline;
   }
 
-  &-dismiss {
+  &-dismiss-button {
+    background: none;
+    border: none;
     cursor: pointer;
-    padding-right: 5px;
+    padding: 0 5px 0 0;
 
     &:hover {
       text-decoration: underline;

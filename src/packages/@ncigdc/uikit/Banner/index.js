@@ -65,15 +65,16 @@ const Banner = ({
     )}
 
     {dismissible && (
-      <span
+      <button
         aria-disabled={dismissed}
-        className="header-banner-dismiss"
+        className="header-banner-dismiss-button"
         onClick={handleOnDismiss}
+        type="button"
         >
         Dismiss
         {' '}
         <i className="fa fa-times" />
-      </span>
+      </button>
     )}
   </Row>
 );

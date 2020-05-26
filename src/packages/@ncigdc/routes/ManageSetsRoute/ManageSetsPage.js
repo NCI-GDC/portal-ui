@@ -8,11 +8,14 @@ import {
   branch,
   renderComponent,
 } from 'recompose';
-import { map, reduce, xor, find, get, omit } from 'lodash';
+import {
+  map, reduce, xor, find, get, omit,
+} from 'lodash';
 
-import { notify } from '@ncigdc/dux/notification';
-import { closeNotification } from '@ncigdc/dux/notification';
+import { notify, closeNotification } from '@ncigdc/dux/notification';
+
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
+import Hidden from '@ncigdc/components/Hidden';
 import styled from '@ncigdc/theme/styled';
 import { addSet, removeSet, updateSet } from '@ncigdc/dux/sets';
 import ExploreLink, { defaultExploreQuery } from '@ncigdc/components/Links/ExploreLink';
@@ -28,21 +31,21 @@ import { ExclamationTriangleIcon } from '@ncigdc/theme/icons';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 import DownloadButton from '@ncigdc/components/DownloadButton';
-import { iconButton, iconLink } from '@ncigdc/theme/mixins';
+import { iconButton, iconLink, zDepth1 } from '@ncigdc/theme/mixins';
 import {
   UploadCaseSet,
   UploadGeneSet,
   UploadSsmSet,
 } from '@ncigdc/components/Modals/UploadSet';
 import { setModal } from '@ncigdc/dux/modal';
-import { CreateRepositoryCaseSetButton } from '@ncigdc/modern_components/withSetAction';
-import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAction';
-import { CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
+import { CreateRepositoryCaseSetButton, CreateExploreGeneSetButton, CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
+
+
 import { UploadAndSaveSetModal } from '@ncigdc/components/Modals/SaveSetModal';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
-import { zDepth1 } from '@ncigdc/theme/mixins';
+
 import Aux from '@ncigdc/utils/Aux';
 import timestamp from '@ncigdc/utils/timestamp';
 
@@ -56,8 +59,10 @@ const Info = () => (
   <span>
     <Heading>Manage Your Saved Sets</Heading>
     <p>
-      You can create and save case, gene and mutation sets of interest from the{' '}
-      <ExploreLink query={defaultExploreQuery}>Exploration Page</ExploreLink>.
+      You can create and save case, gene and mutation sets of interest from the
+      {' '}
+      <ExploreLink query={defaultExploreQuery}>Exploration Page</ExploreLink>
+.
     </p>
   </span>
 );
@@ -71,50 +76,50 @@ const UploadSet = connect()(({ dispatch }) => (
         whiteSpace: 'nowrap',
         right: 'auto',
       }}
-    >
+      >
       <DropdownItem
-        style={{ cursor: 'pointer' }}
         onClick={() =>
           dispatch(
             setModal(
               <UploadAndSaveSetModal
-                type="case"
                 CreateSetButton={CreateRepositoryCaseSetButton}
+                type="case"
                 UploadSet={UploadCaseSet}
-              />,
+                />,
             ),
-          )}
-      >
+        )}
+        style={{ cursor: 'pointer' }}
+        >
         Case
       </DropdownItem>
       <DropdownItem
-        style={{ cursor: 'pointer' }}
         onClick={() =>
           dispatch(
             setModal(
               <UploadAndSaveSetModal
-                type="gene"
                 CreateSetButton={CreateExploreGeneSetButton}
+                type="gene"
                 UploadSet={UploadGeneSet}
-              />,
+                />,
             ),
-          )}
-      >
+        )}
+        style={{ cursor: 'pointer' }}
+        >
         Gene
       </DropdownItem>
       <DropdownItem
-        style={{ cursor: 'pointer' }}
         onClick={() =>
           dispatch(
             setModal(
               <UploadAndSaveSetModal
-                type="ssm"
                 CreateSetButton={CreateExploreSsmSetButton}
+                type="ssm"
                 UploadSet={UploadSsmSet}
-              />,
+                />,
             ),
-          )}
-      >
+        )}
+        style={{ cursor: 'pointer' }}
+        >
         Mutation
       </DropdownItem>
     </Dropdown>
@@ -128,13 +133,13 @@ const enhance = compose(
   withPropsOnChange(['sets'], ({ setSelectedIds }) => setSelectedIds([])),
   withProps(
     ({
-      sets,
-      selectedIds,
-      setSelectedIds,
       dispatch,
-      setSizes,
-      setSetSizes,
       flattenedSets,
+      selectedIds,
+      sets,
+      setSelectedIds,
+      setSetSizes,
+      setSizes,
     }) => ({
       flattenedSets: reduce(
         sets,
@@ -167,7 +172,9 @@ const enhance = compose(
           })),
         ],
         [],
-      ).map(({ filters, type, id, ...rest }) => ({
+      ).map(({
+        filters, id, type, ...rest
+      }) => ({
         filters,
         type,
         id,
@@ -192,7 +199,7 @@ const enhance = compose(
           justifyContent: 'center',
           height: 200,
         }}
-      >
+        >
         <Column
           style={{
             alignItems: 'center',
@@ -200,7 +207,7 @@ const enhance = compose(
             padding: '20px',
             ...zDepth1,
           }}
-        >
+          >
           <Info />
           <UploadSet />
         </Column>
@@ -215,13 +222,13 @@ const StyledRepoLink = styled(RepositoryLink, {
 });
 
 const ManageSetsPage = ({
-  sets,
-  selectedIds,
-  setSelectedIds,
   dispatch,
-  setSizes,
-  setSetSizes,
   flattenedSets,
+  selectedIds,
+  sets,
+  setSelectedIds,
+  setSetSizes,
+  setSizes,
 }) => {
   const allSelected =
     selectedIds.length !== 0 && flattenedSets.length === selectedIds.length;
@@ -242,17 +249,19 @@ const ManageSetsPage = ({
 
         {flattenedSets.length !== 0 && (
           <DownloadButton
-            className="test-download-set-all-tar"
-            endpoint="/tar_sets"
-            inactiveText="Export selected"
+            active={false}
             activeText="Exporting selected"
             altMessage={false}
-            setParentState={() => {}}
-            active={false}
-            style={{ marginBottom: '1rem', marginLeft: '1rem' }}
+            className="test-download-set-all-tar"
             disabled={selectedIds.length === 0}
+            endpoint="/tar_sets"
+            filename={`gdc_sets.${timestamp()}.tar.gz`}
+            inactiveText="Export selected"
+            setParentState={() => {}}
             sets={flattenedSets.reduce(
-              (acc, { type, filters, label, filenameSafeLabel, id }) => {
+              (acc, {
+                filenameSafeLabel, filters, id, label, type,
+              }) => {
                 if (selectedIds.includes(id)) {
                   return [
                     ...acc,
@@ -270,19 +279,23 @@ const ManageSetsPage = ({
               },
               [],
             )}
-            filename={`gdc_sets.${timestamp()}.tar.gz`}
-          />
+            style={{
+              marginBottom: '1rem',
+              marginLeft: '1rem',
+            }}
+            />
         )}
 
         {flattenedSets.length !== 0 && (
           <Button
+            disabled={selectedIds.length === 0}
             onClick={() => {
               const setsToRemove = selectedIds.map(currentSetId => {
                 const set = find(
                   flattenedSets,
                   ({ id }) => id === currentSetId,
                 );
-                const { type, id, label } = set;
+                const { id, label, type } = set;
                 return {
                   type,
                   id,
@@ -299,11 +312,15 @@ const ManageSetsPage = ({
                       {selectedIds.length === 1 ? (
                         <span>
                           {' '}
-                          set <strong>{setsToRemove[0].label}</strong>
+                          set
+                          {' '}
+                          <strong>{setsToRemove[0].label}</strong>
                         </span>
                       ) : (
                         <span>
-                          <strong>{setsToRemove.length}</strong> sets
+                          <strong>{setsToRemove.length}</strong>
+                          {' '}
+sets
                         </span>
                       )}
                       <strong>
@@ -312,16 +329,16 @@ const ManageSetsPage = ({
                           style={{
                             marginRight: '0.3rem',
                           }}
-                        />
+                          />
                         <UnstyledButton
-                          style={{
-                            textDecoration: 'underline',
-                          }}
                           onClick={() => {
                             setsToRemove.map(set => dispatch(addSet(set)));
                             dispatch(closeNotification());
                           }}
-                        >
+                          style={{
+                            textDecoration: 'underline',
+                          }}
+                          >
                           Undo
                         </UnstyledButton>
                       </strong>
@@ -330,9 +347,11 @@ const ManageSetsPage = ({
                 }),
               );
             }}
-            style={{ marginBottom: '1rem', marginLeft: '1rem' }}
-            disabled={selectedIds.length === 0}
-          >
+            style={{
+              marginBottom: '1rem',
+              marginLeft: '1rem',
+            }}
+            >
             Delete Selected
           </Button>
         )}
@@ -348,74 +367,56 @@ const ManageSetsPage = ({
                         .type,
                       id: currentSetId,
                     }),
-                  ),
-                );
+                  ));
                 setSetSizes(omit(setSizes, emptyOrDeprecatedSets));
               }}
-              style={{ marginBottom: '1rem', marginLeft: '1rem' }}
-            >
+              style={{
+                marginBottom: '1rem',
+                marginLeft: '1rem',
+              }}
+              >
               Delete Empty or Deprecated
             </Button>
-          )}
+        )}
       </Row>
 
       {flattenedSets.length > 0 && (
         <span>
           <Table
-            id="manage-sets-table"
-            style={{
-              maxWidth: '880px',
-              paddingLeft: '20px',
-              paddingRight: '20px',
-            }}
-            headings={[
-              <Th key="all-checkbox">
-                <input
-                  type="checkbox"
-                  aria-label="Select all"
-                  checked={allSelected}
-                  onChange={e =>
-                    setSelectedIds(
-                      allSelected ? [] : flattenedSets.map(({ id }) => id),
-                    )}
-                />
-              </Th>,
-              'Entity Type',
-              'Name',
-              '# Items',
-              '',
-            ]}
-            body={
+            body={(
               <tbody>
                 {flattenedSets.map(
                   (
                     {
-                      id,
-                      label,
-                      type,
-                      filters,
-                      linkFilters,
                       countComponent,
                       filenameSafeLabel,
+                      filters,
+                      id,
+                      label,
+                      linkFilters,
+                      type,
                     },
                     i,
                   ) => (
-                    <Tr key={id} index={i}>
+                    <Tr index={i} key={id}>
                       <Td key={`checkbox${i}`} style={{ width: '50px' }}>
                         <input
-                          type="checkbox"
                           aria-label={`Select ${id}`}
                           checked={selectedIds.includes(id)}
                           onChange={e => setSelectedIds(xor(selectedIds, [id]))}
-                        />
+                          type="checkbox"
+                          />
                         {doneFetchingSetSizes &&
                           !get(setSizes, id) && (
                             <Tooltip Component="Set is either empty or deprecated.">
                               <ExclamationTriangleIcon
-                                style={{ paddingLeft: '5px', color: '#8a6d3b' }}
-                              />
+                                style={{
+                                  paddingLeft: '5px',
+                                  color: '#8a6d3b',
+                                }}
+                                />
                             </Tooltip>
-                          )}
+                        )}
                       </Td>
                       <Td
                         key={`type${i}`}
@@ -423,8 +424,8 @@ const ManageSetsPage = ({
                           width: '100px',
                           textTransform: 'capitalize',
                         }}
-                      >
-                        {type === 'ssm' ? 'mutations' : type + 's'}
+                        >
+                        {type === 'ssm' ? 'mutations' : `${type}s`}
                       </Td>
                       <Td
                         key={`label${i}`}
@@ -432,18 +433,18 @@ const ManageSetsPage = ({
                           width: '450px',
                           whiteSpace: 'normal',
                         }}
-                      >
+                        >
                         <EditableLabel
-                          text={label}
                           handleSave={value =>
                             dispatch(
                               updateSet({
                                 type,
                                 label: value,
-                                id: id,
+                                id,
                               }),
-                            )}
-                        >
+                          )}
+                          text={label}
+                          >
                           <span>{label}</span>
                         </EditableLabel>
                       </Td>
@@ -452,10 +453,10 @@ const ManageSetsPage = ({
                           <ExploreLink
                             query={{
                               searchTableTab:
-                                (type === 'ssm' ? 'mutation' : type) + 's',
+                                `${type === 'ssm' ? 'mutation' : type}s`,
                               filters: linkFilters,
                             }}
-                          >
+                            >
                             {countComponent}
                           </ExploreLink>
                         ) : (
@@ -468,14 +469,13 @@ const ManageSetsPage = ({
                             <Row>
                               <Tooltip Component="Export as TSV">
                                 <DownloadButton
-                                  className="test-download-set-tsv"
-                                  style={iconButton}
-                                  endpoint="/tar_sets"
-                                  activeText="" //intentionally blank
-                                  inactiveText="" //intentionally blank
-                                  altMessage={false}
-                                  setParentState={() => {}}
                                   active={false}
+                                  activeText=""
+                                  altMessage={false}
+                                  className="test-download-set-tsv" // intentionally blank
+                                  endpoint="/tar_sets" // intentionally blank
+                                  inactiveText=""
+                                  setParentState={() => {}}
                                   sets={[
                                     {
                                       id,
@@ -483,7 +483,8 @@ const ManageSetsPage = ({
                                       filename: `${type}_set_${filenameSafeLabel}.${timestamp()}.tsv`,
                                     },
                                   ]}
-                                />
+                                  style={iconButton}
+                                  />
                               </Tooltip>
                               {type === 'case' && (
                                 <Tooltip Component="View Files in Repository">
@@ -493,20 +494,44 @@ const ManageSetsPage = ({
                                       searchTableTab: 'files',
                                       filters: linkFilters,
                                     }}
-                                  >
+                                    >
                                     <DatabaseIcon />
                                   </StyledRepoLink>
                                 </Tooltip>
                               )}
                             </Row>
-                          )}
+                        )}
                       </Td>
                     </Tr>
                   ),
                 )}
               </tbody>
-            }
-          />
+            )}
+            headings={[
+              <Th key="all-checkbox">
+                <input
+                  aria-label="Select all"
+                  checked={allSelected}
+                  onChange={e =>
+                    setSelectedIds(
+                      allSelected ? [] : flattenedSets.map(({ id }) => id),
+                    )}
+                  type="checkbox"
+                  />
+                <Hidden>Select All</Hidden>
+              </Th>,
+              'Entity Type',
+              'Name',
+              '# Items',
+              'Save',
+            ]}
+            id="manage-sets-table"
+            style={{
+              maxWidth: '880px',
+              paddingLeft: '20px',
+              paddingRight: '20px',
+            }}
+            />
 
           <p>
             <ExclamationTriangleIcon
@@ -516,9 +541,10 @@ const ManageSetsPage = ({
                 marginTop: '10px',
                 color: '#8a6d3b',
               }}
-            />
+              />
             Please be aware that your custom sets are deleted during each new
-            GDC data release.<br />
+            GDC data release.
+            <br />
             You can export them and re-upload them on this page.
           </p>
         </span>

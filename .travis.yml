@@ -18,7 +18,7 @@ jobs:
     - npm test || travis_terminate 1
   - stage: deploy
     script:
-    - docker login -u="$QUAY_USERNAME" -p="$QUAY_PASSWORD" quay.io
+    - echo "$QUAY_PASSWORD" | docker login quay.io -u="$QUAY_USERNAME" --password-stdin
     - bash build.sh
     - bash docker.sh
     - bash awgbuild.sh

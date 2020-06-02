@@ -30,9 +30,14 @@ import {
 
 import {
   checkUserAccess,
+  isDemoHack,
   reshapeSummary,
   reshapeUserAccess,
 } from './helpers';
+
+export {
+  isDemoHack,
+};
 
 const CONTROLLED_ACCESS_CONTEXT = {
   controlledAccessProps: PropTypes.object,

@@ -9,6 +9,7 @@ import {
   withState,
 } from 'recompose';
 
+import { isDemoHack } from '@ncigdc/utils/withControlledAccess';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import LoginButton from '@ncigdc/components/LoginButton';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
@@ -54,7 +55,7 @@ const ControlledAccessModal = ({
                   op: 'IN',
                   content: {
                     field: 'cases.project.program.name',
-                    value: selectedStudiesUpperCase,
+                    value: isDemoHack(selectedStudiesUpperCase),
                   },
                 },
               ],

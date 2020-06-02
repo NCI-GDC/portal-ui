@@ -6,6 +6,10 @@ export const checkUserAccess = (
   programs: userStudies[study],
 }));
 
+export const isDemoHack = selectedStudies => selectedStudies.map(study => (
+  study.replace('_DEMO', '').replace('_demo', '') // casing-agnostic
+));
+
 export const reshapeSummary = controlledAccessSummary => (
   [ // Sorting order for the modal, as per requirement
     'controlled',

@@ -397,6 +397,14 @@ export const DEV_USER_CA = [ // controlled access mock
   {
     programs: [
       {
+        name: 'HCMI_DEMO',
+        projects: ['HCMI_DEMO-CMDC'],
+      },
+    ],
+  },
+  {
+    programs: [
+      {
         name: 'TARGET',
         projects: ['TARGET-ALL-P2', 'TARGET-OS'],
       },

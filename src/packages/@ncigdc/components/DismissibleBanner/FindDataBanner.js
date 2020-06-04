@@ -7,6 +7,7 @@ import Button from '@ncigdc/uikit/Button';
 import { ExternalLink } from '@ncigdc/uikit/Links';
 
 import { setModal } from '@ncigdc/dux/modal';
+import { LEGACY_PORTAL } from '@ncigdc/utils/constants';
 
 const DismissibleBanner = ({ dispatch }) => (
   <Row>
@@ -30,7 +31,7 @@ const DismissibleBanner = ({ dispatch }) => (
                 </ExternalLink>.<br />
                 <br />
                 Other data may be in the{' '}
-                <ExternalLink href="https://portal.gdc.cancer.gov/legacy-archive/search/f">
+                <ExternalLink href={`${LEGACY_PORTAL}/search/f`}>
                   GDC Legacy Archive
                 </ExternalLink>. Data in the GDC Data Portal has been harmonized
                 using GDC Bioinformatics Pipelines whereas data in the GDC

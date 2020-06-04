@@ -6,6 +6,20 @@ export const UI_COMMIT_HASH = process.env.REACT_APP_COMMIT_HASH;
 
 const localStorage = window.localStorage || {};
 
+/* PORTAL URLS */
+
+export const GDC_BASE = localStorage.GDC_BASE || process.env.GDC_BASE || '';
+
+export const LEGACY_PORTAL =
+  localStorage.REACT_APP_LEGACY_PORTAL ||
+  process.env.REACT_APP_LEGACY_PORTAL ||
+  `${GDC_BASE}/legacy-archive`;
+
+export const SUBMISSION_PORTAL =
+  localStorage.REACT_APP_SUBMISSION_PORTAL ||
+  process.env.REACT_APP_SUBMISSION_PORTAL ||
+  `${GDC_BASE}/submission`;
+
 /* API ENDPOINTS */
 
 export const AUTH =

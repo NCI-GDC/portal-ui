@@ -10,6 +10,11 @@ import publicationsImg from '@ncigdc/theme/images/GDC-App-publications.svg';
 import websiteImg from '@ncigdc/theme/images/GDC-App-website-blue.svg';
 
 import Row from '@ncigdc/uikit/Flex/Row';
+import {
+  GDC_BASE,
+  LEGACY_PORTAL,
+  SUBMISSION_PORTAL,
+} from '@ncigdc/utils/constants';
 
 import './GDCAppsDropdown.css';
 
@@ -71,7 +76,7 @@ const GDCAppsDropdown = () => (
         <AppLink
           appName="portal home"
           description="Data Portal"
-          href="https://portal.gdc.cancer.gov"
+          href={GDC_BASE}
           imgSrc={dataPortalImg}
           imgWidth={BUTTON_WIDTH}
           title="GDC Data Portal"
@@ -122,7 +127,7 @@ const GDCAppsDropdown = () => (
           appName="submission-portal"
           description="Data Submission Portal"
           drawnRange={11}
-          href="https://portal.gdc.cancer.gov/submission"
+          href={SUBMISSION_PORTAL}
           imgWidth={BUTTON_WIDTH}
           title="GDC Data Submission Portal"
           width="55%"
@@ -132,7 +137,7 @@ const GDCAppsDropdown = () => (
           appName="legacy-archive"
           description="Legacy Archive"
           drawnRange={11}
-          href="https://portal.gdc.cancer.gov/legacy-archive"
+          href={LEGACY_PORTAL}
           imgWidth={BUTTON_WIDTH}
           title="GDC Legacy Archive"
           width="40%"

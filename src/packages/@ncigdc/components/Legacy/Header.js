@@ -13,6 +13,7 @@ import { center } from '@ncigdc/theme/mixins';
 import logo from '@ncigdc/theme/images/NIH-GDC-Legacy-Archive.svg';
 import activePortalLogo from '@ncigdc/theme/images/GDC-App-data-portal.svg';
 import Nav from './Nav';
+import { GDC_BASE } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
@@ -74,13 +75,13 @@ const Header = ({ theme }) => (
           harmonized data.
           <br />
           Please visit the{' '}
-          <a href="https://portal.gdc.cancer.gov/">GDC Data Portal</a>
+          <a href={GDC_BASE}">GDC Data Portal</a>
           .
         </span>
       </Row>
       <Row flex="3" style={center}>
         <a
-          href="https://portal.gdc.cancer.gov/"
+          href={GDC_BASE}
           className={styles.activePortalLink(theme)}
         >
           <img

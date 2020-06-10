@@ -94,7 +94,7 @@ const availableAnalysis: [TAnalysis] = [
           ],
           op: 'and',
         },
-        'demo-bladder-high-varscan': {
+        'demo-bladder-high-varscan2': {
           content: [
             {
               content: {
@@ -114,7 +114,7 @@ const availableAnalysis: [TAnalysis] = [
               content: {
                 field:
                   'ssms.occurrence.case.observation.variant_calling.variant_caller',
-                value: ['varscan'],
+                value: ['varscan2'],
               },
               op: 'in',
             },
@@ -128,7 +128,7 @@ const availableAnalysis: [TAnalysis] = [
         ssm: {
           'demo-bladder-high-muse': 'Bladder, High impact, Muse',
           'demo-bladder-high-mutect2': 'Bladder, High impact, Mutect2',
-          'demo-bladder-high-varscan': 'Bladder, High impact, Varscan',
+          'demo-bladder-high-varscan2': 'Bladder, High impact, Varscan2',
         },
       },
       type: 'set_operations',

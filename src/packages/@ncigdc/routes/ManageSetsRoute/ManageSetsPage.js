@@ -39,13 +39,10 @@ import {
 } from '@ncigdc/components/Modals/UploadSet';
 import { setModal } from '@ncigdc/dux/modal';
 import { CreateRepositoryCaseSetButton, CreateExploreGeneSetButton, CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
-
-
 import { UploadAndSaveSetModal } from '@ncigdc/components/Modals/SaveSetModal';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
-
 import Aux from '@ncigdc/utils/Aux';
 import timestamp from '@ncigdc/utils/timestamp';
 

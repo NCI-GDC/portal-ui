@@ -74,7 +74,7 @@ const CheckBoxModal = ({
           <ul style={{ marginTop: '10px' }}>
             <li>
               I agree not to attempt to reidentify any individual participant in
-              any study represented by GDC data, for any purpose whatever.
+              any study represented by GDC data, for any purpose whatsoever.
             </li>
             <li>
               I agree to have read and understand study-specific Data Use

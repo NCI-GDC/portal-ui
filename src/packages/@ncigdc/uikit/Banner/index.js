@@ -28,6 +28,7 @@ type BannerProps = {
 };
 
 const Banner = ({
+  dismissed,
   dismissible,
   handleOnDismiss,
   isSectionHeader,
@@ -47,7 +48,9 @@ const Banner = ({
     {level !== 'none' && levelToIcon[level.toLowerCase()]}
 
     {message && (
-      <span className="message">
+      <span
+        className="message"
+        >
         {!reactElement ? (
           <Markdown
             renderers={{
@@ -62,14 +65,16 @@ const Banner = ({
     )}
 
     {dismissible && (
-      <span
-        className="header-banner-dismiss"
+      <button
+        aria-disabled={dismissed}
+        className="header-banner-dismiss-button"
         onClick={handleOnDismiss}
+        type="button"
         >
         Dismiss
         {' '}
         <i className="fa fa-times" />
-      </span>
+      </button>
     )}
   </Row>
 );
@@ -77,6 +82,7 @@ const Banner = ({
 const styles = {
   dismissed: {
     borderBottom: 0,
+    fontSize: 0,
     height: 0,
     lineHeight: 0,
     opacity: 0,
@@ -119,7 +125,6 @@ export default compose(
           : {
             ...styles.show,
             ...verticalPadding(isSectionHeader ? '0.5' : '1'),
-            color: `${isSectionHeader ? '#3a3a3a' : '#fff'}`,
           }),
       },
     }),

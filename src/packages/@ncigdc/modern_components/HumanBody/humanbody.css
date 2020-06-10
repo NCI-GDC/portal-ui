@@ -25,11 +25,12 @@
   position: absolute;
 }
 #human-body-root #title {
-  color: #000;
+  color: #FFF;
   font-size: 1.1em;
+  font-weight: 700;
   position: absolute;
-  width: 200px;
-  left: 419px;
+  width: 225px;
+  left: 400px;
   top: -5px;
 }
 #human-body-root #male {

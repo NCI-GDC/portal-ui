@@ -160,7 +160,7 @@ export default compose(
                     />
                 </Th>
               ) : (
-                <Th key="remove_from_cart" />
+                <Th key="remove_from_cart">Remove</Th>
               ),
               ...tableInfo.map(x => (
                 <x.th

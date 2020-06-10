@@ -100,12 +100,13 @@ export default (Component: ReactClass<*>) => compose(
                         key
                       }
                     }
-                    summary__experimental_strategies__experimental_strategy {
-                      buckets {
-                        doc_count
-                        key
-                      }
-                    }
+                    # prtl-3119 hide experimental strategy facet temporarily
+                    # summary__experimental_strategies__experimental_strategy {
+                    #   buckets {
+                    #     doc_count
+                    #     key
+                    #   }
+                    # }
                     samples__sample_type {
                       buckets {
                         doc_count,

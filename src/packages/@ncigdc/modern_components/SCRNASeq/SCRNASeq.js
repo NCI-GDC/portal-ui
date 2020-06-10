@@ -4,13 +4,14 @@
 import React from 'react';
 import {
   compose,
+  withHandlers,
   pure,
   setDisplayName,
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import SCRNASeqPlot from './SCRNASeqPlot';
-import { toolbarButtons } from './SCRNASeqPlot/utils';
+import { buttonList } from './SCRNASeqPlot/utils';
 import './styles.scss';
 import { DownloadButton } from './toolbar';
 
@@ -22,9 +23,14 @@ const dataTypes = Object.keys(stubData);
 const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
   pure,
+  withHandlers({
+    handleAnalysisClick: () => {
+      console.log('clicked analysis dropdown item');
+    },
+  }),
 );
 
-const SCRNASeq = () => (
+const SCRNASeq = ({ handleAnalysisClick }) => (
   <Row
     style={{
       margin: '10px 0',
@@ -50,7 +56,10 @@ const SCRNASeq = () => (
           >
           Single Cell RNA Sequencing
         </h1>
-        <DownloadButton {...toolbarButtons.download} />
+        <DownloadButton
+          onAnalysisClick={handleAnalysisClick}
+          {...buttonList.downloadAnalysis}
+          />
       </Row>
       <div className="scrnaseq-row">
         {dataTypes.map(dType => (

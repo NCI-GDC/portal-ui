@@ -199,6 +199,7 @@ const FileAggregations = ({
     {userSelectedFacets.map(facet => (
       <FacetWrapper
         aggregation={parsedFacets[facet.field]}
+        countLabel="Files"
         facet={facet}
         isRemovable
         key={facet.full}
@@ -212,7 +213,7 @@ const FileAggregations = ({
       description="Enter File UUID or name"
       field="files.file_id"
       setCollapsed={setFileIdCollapsed}
-      title="File"
+      title="Search Files"
       />
     <SuggestionFacet
       collapsed={fileIdCollapsed}
@@ -235,7 +236,6 @@ const FileAggregations = ({
       fieldNoDoctype="file_id"
       placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
       queryType="file"
-      style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
       title="File"
       />
     {_.reject(presetFacets, { full: 'files.file_id' }).map(facet => (
@@ -244,10 +244,11 @@ const FileAggregations = ({
         aggregation={
           aggregations[escapeForRelay(facet.field)]
         }
+        countLabel="Files"
         facet={facet}
+        greyHeader
         key={facet.full}
         relay={relay}
-        style={{ borderBottom: `1px solid ${theme.greyScale5}` }}
         title={facet.title}
         />
     ))}

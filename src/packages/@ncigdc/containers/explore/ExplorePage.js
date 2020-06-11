@@ -9,6 +9,7 @@ import {
   withState,
 } from 'recompose';
 
+import withControlledAccess from '@ncigdc/utils/withControlledAccess';
 import withRouter from '@ncigdc/utils/withRouter';
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
@@ -30,8 +31,14 @@ import Button from '@ncigdc/uikit/Button';
 import ResizeDetector from 'react-resize-detector';
 import SummaryPage from '@ncigdc/components/Explore/SummaryPage';
 import withFacetData from '@ncigdc/modern_components/IntrospectiveType/Introspective.relay';
+import { CaseLimitMessages } from '@ncigdc/modern_components/RestrictionMessage';
+import ControlledAccessSwitch from '@ncigdc/components/ControlledAccessSwitch';
 
-import { DISPLAY_SUMMARY_PAGE } from '@ncigdc/utils/constants';
+import {
+  CASE_LIMIT_API,
+  DISPLAY_10K,
+  DISPLAY_SUMMARY_PAGE,
+} from '@ncigdc/utils/constants';
 
 export type TProps = {
   filters: {},
@@ -75,41 +82,6 @@ export type TProps = {
   push: Function,
 };
 
-function setVariables({ filters, relay }) {
-  relay.setVariables({
-    cosmicFilters: replaceFilters(
-      {
-        content: [
-          {
-            content: {
-              field: 'cosmic_id',
-              value: ['MISSING'],
-            },
-            op: 'not',
-          },
-        ],
-        op: 'and',
-      },
-      filters,
-    ),
-    dbsnpRsFilters: replaceFilters(
-      {
-        content: [
-          {
-            content: {
-              field: 'consequence.transcript.annotation.dbsnp_rs',
-              value: ['MISSING'],
-            },
-            op: 'not',
-          },
-        ],
-        op: 'and',
-      },
-      filters,
-    ),
-  });
-}
-
 const ClinicalAggregationsWithFacetData = withFacetData(props => (
   <ClinicalAggregations
     data={props.introspectiveType}
@@ -119,24 +91,11 @@ const ClinicalAggregationsWithFacetData = withFacetData(props => (
     />
 ));
 
-const enhance = compose(
-  setDisplayName('EnhancedExplorePageComponent'),
-  withRouter,
-  withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
-  lifecycle({
-    componentDidMount() {
-      setVariables(this.props);
-    },
-    componentWillReceiveProps(nextProps) {
-      const { filters } = this.props;
-      if (!isEqual(filters, nextProps.filters)) {
-        setVariables(nextProps);
-      }
-    },
-  })
-);
-
 const ExplorePageComponent = ({
+  controlledAccessProps: {
+    controlledStudies,
+    showControlledAccessModal,
+  } = {},
   filters,
   maxFacetsPanelHeight,
   push,
@@ -148,9 +107,18 @@ const ExplorePageComponent = ({
   const hasGeneHits = get(viewer, 'explore.genes.hits.total', 0);
   const hasSsmsHits = get(viewer, 'explore.ssms.hits.total', 0);
 
+  const isCaseLimitExceeded = DISPLAY_10K && hasCaseHits > CASE_LIMIT_API;
+
   return (
     <SearchPage
       className="test-explore-page"
+      ControlledAccess={controlledStudies && [
+        <ControlledAccessSwitch
+          key="ControlledAccessSwitch"
+          studies={controlledStudies}
+          switchHandler={showControlledAccessModal}
+          />,
+      ]}
       facetTabs={[
         {
           component: (
@@ -210,49 +178,9 @@ const ExplorePageComponent = ({
           <ResizeDetector
             handleHeight
             onResize={(width, height) =>
-              setMaxFacetsPanelHeight(height < 600 ? 600 : height)
-            }
+              setMaxFacetsPanelHeight(height < 600 ? 600 : height)}
             />
-          <Row>
-            {filters ? (
-              <CreateExploreCaseSetButton
-                disabled={!hasCaseHits}
-                filters={filters}
-                onComplete={setId => {
-                  push({
-                    pathname: '/repository',
-                    query: {
-                      filters: stringifyJSONParam({
-                        content: [
-                          {
-                            content: {
-                              field: 'cases.case_id',
-                              value: [`set_id:${setId}`],
-                            },
-                            op: 'IN',
-                          },
-                        ],
-                        op: 'AND',
-                      }),
-                    },
-                  });
-                }}
-                style={{ marginBottom: '2rem' }}
-                >
-                  View Files in Repository
-              </CreateExploreCaseSetButton>
-              ) : (
-                <Button
-                  disabled={!hasCaseHits}
-                  onClick={() => push({
-                    pathname: '/repository',
-                  })}
-                  style={{ marginBottom: '2rem' }}
-                  >
-                  View Files in Repository
-                </Button>
-              )}
-          </Row>
+
           <TabbedLinks
             defaultIndex={0}
             links={[
@@ -271,8 +199,9 @@ const ExplorePageComponent = ({
                 },
               ]),
               {
-                component: hasCaseHits ? (
-                  <CasesTab />
+                component: hasCaseHits
+                  ? (
+                    <CasesTab />
                   ) : (
                     <NoResultsMessage>No Cases Found.</NoResultsMessage>
                   ),
@@ -280,33 +209,103 @@ const ExplorePageComponent = ({
                 text: `Cases (${hasCaseHits.toLocaleString()})`,
               },
               {
-                component: hasGeneHits ? (
-                  <GenesTab viewer={viewer} />
-                  ) : (
-                    <NoResultsMessage>No Genes Found.</NoResultsMessage>
-                  ),
+                component: isCaseLimitExceeded || controlledStudies
+                  ? (
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
+                  )
+                  : hasGeneHits
+                    ? (
+                      <GenesTab viewer={viewer} />
+                    )
+                    : (
+                      <NoResultsMessage>No Genes Found.</NoResultsMessage>
+                    ),
                 id: 'genes',
-                text: `Genes (${hasGeneHits.toLocaleString()})`,
+                text: `Genes${isCaseLimitExceeded
+                  ? ''
+                  : ` (${hasGeneHits.toLocaleString()})`}`,
               },
               {
-                component: hasSsmsHits ? (
-                  <MutationsTab
-                    totalNumCases={hasCaseHits}
-                    viewer={viewer}
-                    />
-                  ) : (
-                    <NoResultsMessage>No Mutations Found.</NoResultsMessage>
-                  ),
+                component: isCaseLimitExceeded || controlledStudies
+                  ? (
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
+                  )
+                  : hasSsmsHits
+                    ? (
+                      <MutationsTab
+                        totalNumCases={hasCaseHits}
+                        viewer={viewer}
+                        />
+                    )
+                    : (
+                      <NoResultsMessage>No Mutations Found.</NoResultsMessage>
+                    ),
                 id: 'mutations',
-                text: `Mutations (${hasSsmsHits.toLocaleString()})`,
+                text: `Mutations${isCaseLimitExceeded
+                  ? ''
+                  : ` (${hasSsmsHits.toLocaleString()})`}`,
               },
               {
-                component: <OncogridTab />,
+                component: isCaseLimitExceeded || controlledStudies
+                  ? (
+                    <CaseLimitMessages
+                      isCaseLimitExceeded={isCaseLimitExceeded}
+                      />
+                  )
+                  : (
+                    <OncogridTab />
+                  ),
                 id: 'oncogrid',
                 text: 'OncoGrid',
               },
             ]}
             queryParam="searchTableTab"
+            tabToolbar={(
+              <Row>
+                {filters
+                  ? (
+                    <CreateExploreCaseSetButton
+                      disabled={!hasCaseHits}
+                      filters={filters}
+                      onComplete={setId => {
+                        push({
+                          pathname: '/repository',
+                          query: {
+                            filters: stringifyJSONParam({
+                              content: [
+                                {
+                                  content: {
+                                    field: 'cases.case_id',
+                                    value: [`set_id:${setId}`],
+                                  },
+                                  op: 'IN',
+                                },
+                              ],
+                              op: 'AND',
+                            }),
+                          },
+                        });
+                      }}
+                      >
+                      View Files in Repository
+                    </CreateExploreCaseSetButton>
+                  )
+                : (
+                  <Button
+                    disabled={!hasCaseHits}
+                    onClick={() => push({
+                      pathname: '/repository',
+                    })}
+                    >
+                    View Files in Repository
+                  </Button>
+                )}
+              </Row>
+            )}
             />
         </span>
       )}
@@ -315,23 +314,6 @@ const ExplorePageComponent = ({
 };
 
 export const ExplorePageQuery = {
-  initialVariables: {
-    cases_offset: null,
-    cases_size: null,
-    cases_sort: null,
-    cases_score: 'gene.gene_id',
-    genes_offset: null,
-    genes_size: null,
-    genes_sort: null,
-    ssms_offset: null,
-    ssms_size: null,
-    ssms_sort: null,
-    filters: null,
-    idAutocompleteSsms: null,
-    runAutocompleteSsms: false,
-    dbsnpRsFilters: null,
-    cosmicFilters: null,
-  },
   fragments: {
     viewer: () => Relay.QL`
       fragment on Root {
@@ -380,10 +362,78 @@ export const ExplorePageQuery = {
       }
     `,
   },
+  initialVariables: {
+    cases_score: 'gene.gene_id',
+    cases_offset: null,
+    cases_size: null,
+    cases_sort: null,
+    cosmicFilters: null,
+    dbsnpRsFilters: null,
+    filters: null,
+    genes_offset: null,
+    genes_size: null,
+    genes_sort: null,
+    idAutocompleteSsms: null,
+    runAutocompleteSsms: false,
+    ssms_offset: null,
+    ssms_size: null,
+    ssms_sort: null,
+  },
+};
+
+const setVariables = ({ filters, relay }) => {
+  relay.setVariables({
+    cosmicFilters: replaceFilters(
+      {
+        content: [
+          {
+            content: {
+              field: 'cosmic_id',
+              value: ['MISSING'],
+            },
+            op: 'not',
+          },
+        ],
+        op: 'and',
+      },
+      filters,
+    ),
+    dbsnpRsFilters: replaceFilters(
+      {
+        content: [
+          {
+            content: {
+              field: 'consequence.transcript.annotation.dbsnp_rs',
+              value: ['MISSING'],
+            },
+            op: 'not',
+          },
+        ],
+        op: 'and',
+      },
+      filters,
+    ),
+  });
 };
 
 const ExplorePage = Relay.createContainer(
-  enhance(ExplorePageComponent),
+  compose(
+    setDisplayName('EnhancedExplorePageComponent'),
+    withRouter,
+    withControlledAccess,
+    withState('maxFacetsPanelHeight', 'setMaxFacetsPanelHeight', 0),
+    lifecycle({
+      componentDidMount() {
+        setVariables(this.props);
+      },
+      componentWillReceiveProps(nextProps) {
+        const { filters } = this.props;
+        if (!isEqual(filters, nextProps.filters)) {
+          setVariables(nextProps);
+        }
+      },
+    }),
+  )(ExplorePageComponent),
   ExplorePageQuery,
 );
 

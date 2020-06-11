@@ -77,26 +77,28 @@ const FacetWrapperDiv = styled.div({
   position: 'relative',
 });
 export const WrapperComponent = compose(withTheme)(({
-  setShowingValueSearch,
-  showingValueSearch,
-  collapsed,
-  isMatchingSearchValue,
-  setCollapsed,
-  facet,
-  title,
-  aggregation = { buckets: [] },
-  handleRequestRemove,
-  style,
-  headerStyle,
-  isRemovable,
   additionalProps,
-  maxShowing = 5,
-  searchValue,
+  aggregation = { buckets: [] },
   category,
+  collapsed,
+  countLabel,
+  DescriptionComponent = null,
   dispatch,
   expandedAll,
-  DescriptionComponent = null,
-  theme
+  facet,
+  greyHeader = false,
+  handleRequestRemove,
+  headerStyle,
+  isMatchingSearchValue,
+  isRemovable,
+  maxShowing = 5,
+  searchValue,
+  setCollapsed,
+  setShowingValueSearch,
+  showingValueSearch,
+  style,
+  theme,
+  title,
 }: any) => {
   const facetType = getFacetType(facet);
   const displayTitle = title || fieldNameToTitle(facet.field);
@@ -133,6 +135,7 @@ export const WrapperComponent = compose(withTheme)(({
     ),
     terms: () => (
       <TermAggregation
+        countLabel={countLabel}
         field={facet.full}
         {...commonProps}
         buckets={(aggregation || { buckets: [] }).buckets}
@@ -150,7 +153,13 @@ export const WrapperComponent = compose(withTheme)(({
       .length >= 20;
 
   return (
-    <FacetWrapperDiv className="test-facet" style={{...style, borderTop: `1px solid ${theme.greyScale5}` }}>
+    <FacetWrapperDiv
+      className="test-facet"
+      style={{
+        ...style,
+        borderTop: `1px solid ${theme.greyScale5}`,
+      }}
+      >
       <FacetHeader
         collapsed={collapsed}
         DescriptionComponent={
@@ -159,6 +168,7 @@ export const WrapperComponent = compose(withTheme)(({
           (facet.description || 'No description available')
         }
         field={facet.full}
+        greyHeader={greyHeader}
         handleRequestRemove={handleRequestRemove}
         hasValueSearch={!DescriptionComponent && hasValueSearch}
         isRemovable={isRemovable}

@@ -4,7 +4,6 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
 import { compose, setDisplayName } from 'recompose';
-import { Row } from '@ncigdc/uikit/Flex';
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
@@ -13,9 +12,7 @@ import CaseAggregations from '@ncigdc/modern_components/CaseAggregations';
 import FileAggregations from '@ncigdc/modern_components/FileAggregations';
 
 import FilesTable from '@ncigdc/modern_components/FilesTable';
-import { SaveIcon } from '@ncigdc/theme/icons';
 import withFilters from '@ncigdc/utils/withFilters';
-import formatFileSize from '@ncigdc/utils/formatFileSize';
 import RepoCasesPies from '@ncigdc/components/TabPieCharts/RepoCasesPies';
 import RepoFilesPies from '@ncigdc/components/TabPieCharts/RepoFilesPies';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -86,11 +83,6 @@ export const RepositoryPageComponent = (props: TProps) => {
   return (
     <div className="test-repository-page">
       <SearchPage
-        filtersLinkProps={{
-          hideLinkOnEmpty: false,
-          linkPathname: '/query',
-          linkText: 'Advanced Search',
-        }}
         facetTabs={[
           {
             id: 'files',
@@ -103,62 +95,60 @@ export const RepositoryPageComponent = (props: TProps) => {
             component: <CaseAggregations relay={props.relay} />,
           },
         ]}
-        results={
-          <span>
-            <ActionsRow
-              totalCases={caseCount}
-              totalFiles={fileCount}
-              filters={props.filters}
-            />
-            <TabbedLinks
-              queryParam="searchTableTab"
-              defaultIndex={0}
-              tabToolbar={
-                <Row spacing="2rem" style={{ alignItems: 'center' }}>
-                  <span style={{ flex: 'none' }}>
-                    <SaveIcon style={{ marginRight: 5 }} />{' '}
-                    <strong>{formatFileSize(fileSize)}</strong>
-                  </span>
-                </Row>
-              }
-              links={[
-                {
-                  id: 'files',
-                  text: `Files (${fileCount.toLocaleString()})`,
-                  component: !!props.viewer.repository.files.hits.total ? (
-                    <div>
-                      <RepoFilesPies
-                        aggregations={props.viewer.repository.files.pies}
+        filtersLinkProps={{
+          hideLinkOnEmpty: false,
+          linkPathname: '/query',
+          linkText: 'Advanced Search',
+        }}
+        pageName="repository"
+        results={(
+          <TabbedLinks
+            defaultIndex={0}
+            links={[
+              {
+                id: 'files',
+                text: `Files (${fileCount.toLocaleString()})`,
+                component: props.viewer.repository.files.hits.total ? (
+                  <div>
+                    <RepoFilesPies
+                      aggregations={props.viewer.repository.files.pies}
                       />
-                      <FilesTable />
-                    </div>
-                  ) : (
-                    <NoResultsMessage>
-                      No results found using those filters.
-                    </NoResultsMessage>
-                  ),
-                },
-                {
-                  id: 'cases',
-                  text: `Cases (${caseCount.toLocaleString()})`,
-                  component: !!props.viewer.repository.cases.hits.total ? (
-                    <div>
-                      <RepoCasesPies
-                        aggregations={props.viewer.repository.cases.pies}
+                    <FilesTable fileSize={fileSize} />
+                  </div>
+                ) : (
+                  <NoResultsMessage>
+                    No results found using those filters.
+                  </NoResultsMessage>
+                ),
+              },
+              {
+                id: 'cases',
+                text: `Cases (${caseCount.toLocaleString()})`,
+                component: props.viewer.repository.cases.hits.total ? (
+                  <div>
+                    <RepoCasesPies
+                      aggregations={props.viewer.repository.cases.pies}
                       />
-                      <RepoCasesTable />
-                    </div>
-                  ) : (
-                    <NoResultsMessage>
-                      No results found using those filters.
-                    </NoResultsMessage>
-                  ),
-                },
-              ]}
+                    <RepoCasesTable />
+                  </div>
+                ) : (
+                  <NoResultsMessage>
+                    No results found using those filters.
+                  </NoResultsMessage>
+                ),
+              },
+            ]}
+            queryParam="searchTableTab"
+            tabToolbar={(
+              <ActionsRow
+                filters={props.filters}
+                totalCases={caseCount}
+                totalFiles={fileCount}
+                />
+            )}
             />
-          </span>
-        }
-      />
+        )}
+        />
     </div>
   );
 };

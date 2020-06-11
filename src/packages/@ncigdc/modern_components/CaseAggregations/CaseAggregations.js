@@ -227,6 +227,7 @@ const CaseAggregationsComponent = (props: TProps) => (
     {props.userSelectedFacets.map(facet => (
       <FacetWrapper
         aggregation={props.parsedFacets[facet.field]}
+        countLabel="Cases"
         facet={facet}
         isRemovable
         key={facet.full}
@@ -241,7 +242,7 @@ const CaseAggregationsComponent = (props: TProps) => (
       description="Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot"
       field="cases.case_id"
       setCollapsed={props.setCaseIdCollapsed}
-      title="Case"
+      title="Search Cases"
       />
 
     <SuggestionFacet
@@ -275,7 +276,6 @@ const CaseAggregationsComponent = (props: TProps) => (
       idField="cases.case_id"
       style={{
         width: '100%',
-        borderBottom: `1px solid ${props.theme.greyScale5}`,
         padding: '0 1.2rem 1rem',
       }}
       type="case"
@@ -290,9 +290,11 @@ const CaseAggregationsComponent = (props: TProps) => (
         aggregation={
           props.viewer.repository.cases.aggregations[
             escapeForRelay(facet.field)
-        ]
+          ]
         }
+        countLabel="Cases"
         facet={facet}
+        greyHeader
         key={facet.full}
         relay={props.relay}
         title={facet.title}

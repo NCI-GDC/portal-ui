@@ -6,8 +6,11 @@ import { withTheme } from '@ncigdc/theme';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { TSetTypes } from '@ncigdc/dux/sets';
 import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
-import { DISPLAY_GENE_EXPRESSION } from '@ncigdc/utils/constants';
+import { DISPLAY_GENE_EXPRESSION, DISPLAY_SCRNA_SEQ } from '@ncigdc/utils/constants';
 import GeneExpressionContainer from '@ncigdc/modern_components/GeneExpression';
+import SCRNASeq from '@ncigdc/theme/icons/SCRNASeq';
+import SCRNASeqContainer from '@ncigdc/modern_components/SCRNASeq';
+import GeneExpression from '@ncigdc/theme/icons/GeneExpression';
 import Demo from './Demo';
 import SetOperations from './SetOperations';
 import defaultVariables from './defaultCDAVEvariables';
@@ -91,7 +94,7 @@ const availableAnalysis: [TAnalysis] = [
           ],
           op: 'and',
         },
-        'demo-bladder-high-varscan': {
+        'demo-bladder-high-varscan2': {
           content: [
             {
               content: {
@@ -111,7 +114,7 @@ const availableAnalysis: [TAnalysis] = [
               content: {
                 field:
                   'ssms.occurrence.case.observation.variant_calling.variant_caller',
-                value: ['varscan'],
+                value: ['varscan2'],
               },
               op: 'in',
             },
@@ -125,7 +128,7 @@ const availableAnalysis: [TAnalysis] = [
         ssm: {
           'demo-bladder-high-muse': 'Bladder, High impact, Muse',
           'demo-bladder-high-mutect2': 'Bladder, High impact, Mutect2',
-          'demo-bladder-high-varscan': 'Bladder, High impact, Varscan',
+          'demo-bladder-high-varscan2': 'Bladder, High impact, Varscan2',
         },
       },
       type: 'set_operations',
@@ -392,15 +395,17 @@ const availableAnalysis: [TAnalysis] = [
         },
         type: 'gene_expression',
       },
-      description: ' ',
+      description: 'Display the gene expression heatmap for your selected set of cases and genes.',
       Icon: withTheme(({ style }) => (
-        <div
-          style={{
-            height: 80,
-            width: 80,
-            ...style,
-          }}
-          />
+        <div>
+          <GeneExpression
+            style={{
+              width: 80,
+              height: 80,
+              ...style,
+            }}
+            />
+        </div>
       )),
       label: 'Gene Expression',
       ResultComponent: props => (
@@ -411,6 +416,61 @@ const availableAnalysis: [TAnalysis] = [
       setInstructions: 'Select a case set',
       setTypes: ['case'],
       type: 'gene_expression',
+      validateSets: sets => sets &&
+      ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
+    },
+  ],
+  ...DISPLAY_SCRNA_SEQ &&
+  // copied from clinical analysis and lightly modified
+  // TODO: replace with real demoData, a real icon, etc
+  [
+    {
+      demoData: {
+        displayVariables: { ...defaultVariables },
+        filters: {
+          'demo-pancreas': {
+            content: [
+              {
+                content: {
+                  field: 'cases.primary_site',
+                  value: ['Pancreas'],
+                },
+                op: 'in',
+              },
+            ],
+            op: 'and',
+          },
+        },
+        message: 'Demo',
+        name: 'Demo SCRNA-SEQ',
+        sets: {
+          case: {
+            'demo-pancreas': 'Pancreas',
+          },
+        },
+        type: 'scrna_seq',
+      },
+      description: 'Display different types of clustering visualizations for your selected single-cell RNA sequencing experiment.',
+      Icon: withTheme(({ style }) => (
+        <div>
+          <SCRNASeq
+            style={{
+              width: 80,
+              height: 80,
+              ...style,
+            }}
+            />
+        </div>
+      )),
+      label: 'Single Cell RNA Sequencing',
+      ResultComponent: props => (
+        <SCRNASeqContainer
+          {...props}
+          />
+      ),
+      setInstructions: 'Select a case set',
+      setTypes: ['case'],
+      type: 'scrna_seq',
       validateSets: sets => sets &&
       ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
     },

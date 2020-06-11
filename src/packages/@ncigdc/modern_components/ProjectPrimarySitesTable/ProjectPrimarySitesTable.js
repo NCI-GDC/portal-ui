@@ -12,7 +12,7 @@ import {
 import { connect } from 'react-redux';
 import { Row } from '@ncigdc/uikit/Flex';
 import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
-import tableModels from '@ncigdc/tableModels';
+import Hidden from '@ncigdc/components/Hidden';
 import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 import styled from '@ncigdc/theme/styled';
 import SearchIcon from 'react-icons/lib/fa/search';
@@ -27,21 +27,14 @@ const Header = styled(Row, {
   fontSize: '1.7rem',
 });
 
-const PrimarySitesTable = ({ data, tableInfo, projectId }) => (
+const PrimarySitesTable = ({ data, projectId, tableInfo }) => (
   <Table
-    id="project-primary-site-table"
-    headings={tableInfo
-      .filter(x => !x.subHeading)
-      .map(x => <x.th key={x.id} />)}
-    subheadings={tableInfo
-      .filter(x => x.subHeading)
-      .map(x => <x.th key={x.id} />)}
-    body={
+    body={(
       <tbody>
         {data.length >= 1 ? (
           data.map((primarySite, i) => {
             return (
-              <Tr key={i} index={i}>
+              <Tr index={i} key={i}>
                 {tableInfo
                   .filter(x => x.td)
                   .map(x => (
@@ -49,7 +42,7 @@ const PrimarySitesTable = ({ data, tableInfo, projectId }) => (
                       key={x.id}
                       primarySite={primarySite}
                       projectId={projectId}
-                    />
+                      />
                   ))}
               </Tr>
             );
@@ -62,8 +55,15 @@ const PrimarySitesTable = ({ data, tableInfo, projectId }) => (
           </Tr>
         )}
       </tbody>
-    }
-  />
+    )}
+    headings={tableInfo
+      .filter(x => !x.subHeading)
+      .map(x => <x.th key={x.id} />)}
+    id="project-primary-site-table"
+    subheadings={tableInfo
+      .filter(x => x.subHeading)
+      .map(x => <x.th key={x.id} />)}
+    />
 );
 
 export default compose(
@@ -72,7 +72,7 @@ export default compose(
     ({ viewer }) =>
       !viewer.projects.hits.edges ||
       viewer.projects.hits.edges[0].node.primary_site.length < 2,
-    () => renderNothing()
+    () => renderNothing(),
   ),
   withTheme,
   withState('searchValue', 'setSearchValue', ''),
@@ -82,18 +82,18 @@ export default compose(
   mapProps(props => ({
     ...props,
     edges: props.viewer.projects.hits.edges,
-  }))
+  })),
 )(
   ({
     edges,
     entityType = 'projectPrimarySites',
-    tableColumns,
-    tableHeader = 'Primary Sites',
+    loading,
     projectId,
     searchValue,
     setSearchValue,
+    tableColumns,
+    tableHeader = 'Primary Sites',
     theme,
-    loading,
   }) => {
     const project = edges[0].node;
     const tableInfo = tableColumns.slice().filter(x => !x.hidden);
@@ -111,7 +111,7 @@ export default compose(
             justifyContent: 'space-between',
             alignItems: 'flex-end',
           }}
-        />
+          />
         <Row>
           <div
             style={{
@@ -123,7 +123,7 @@ export default compose(
               backgroundColor: 'white',
               padding: '1rem 1rem 0 1rem',
             }}
-          >
+            >
             <Row>{tableHeader && <Header>{tableHeader}</Header>}</Row>
             <Row>
               <label htmlFor="filter-input">
@@ -141,14 +141,19 @@ export default compose(
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
-                >
+                  >
                   <SearchIcon size={14} />
                 </div>
+                <Hidden>Search</Hidden>
               </label>
               <Input
                 disabled={loading}
                 id="filter-input"
-                value={searchValue}
+                onChange={e => {
+                  const trimmed = trim(e.target.value);
+                  setSearchValue(trimmed);
+                }}
+                placeholder="Search"
                 style={{
                   fontSize: '14px',
                   paddingLeft: '1rem',
@@ -156,15 +161,14 @@ export default compose(
                   width: '25rem',
                   borderRadius: '0 4px 4px 0',
                 }}
-                placeholder={'Search'}
-                onChange={e => {
-                  const trimmed = trim(e.target.value);
-                  setSearchValue(trimmed);
-                }}
                 type="text"
-              />
+                value={searchValue}
+                />
               {!!searchValue.length && (
                 <CloseIcon
+                  onClick={() => {
+                    setSearchValue('');
+                  }}
                   style={{
                     position: 'absolute',
                     right: 0,
@@ -174,22 +178,19 @@ export default compose(
                     outline: 0,
                     cursor: 'pointer',
                   }}
-                  onClick={() => {
-                    setSearchValue('');
-                  }}
-                />
+                  />
               )}
             </Row>
           </div>
         </Row>
         <LocalPaginationTable
+          customDefaultSize={10}
           data={primarySiteData}
           prefix={paginationPrefix}
-          customDefaultSize={10}
-        >
-          <PrimarySitesTable tableInfo={tableInfo} projectId={projectId} />
+          >
+          <PrimarySitesTable projectId={projectId} tableInfo={tableInfo} />
         </LocalPaginationTable>
       </div>
     );
-  }
+  },
 );

@@ -1,9 +1,8 @@
-/* @flow */
-
 import React from 'react';
 import _ from 'lodash';
 import { NavLink as Link } from 'react-router-dom';
 import { stringify } from 'query-string';
+
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
 import validAttributes from '@ncigdc/theme/utils/validAttributes';
@@ -22,10 +21,15 @@ const reactRouterLinkProps = [
 ];
 
 const InternalLink = ({
-  pathname,
-  query,
+  className = 'unnamed-link',
   deepLink,
+  disabled,
+  pathname = '',
+  query,
   search,
+  state,
+  style = {},
+  testTag = 'untagged-link',
   ...rest
 }: TLinkProps) => {
   const q0 = query || {};
@@ -41,11 +45,21 @@ const InternalLink = ({
   const validAttrProps = validAttributes(rest);
   const validLinkProps = _.pick(rest, reactRouterLinkProps);
 
+  const isLinkDisabled = disabled
+    ? {
+      cursor: 'default',
+      pointerEvents: 'none',
+    }
+    : {};
+
   return (
     <Link
+      className={`${className}${disabled ? ' disabled' : ''}`}
+      data-test={testTag}
       to={{
         pathname,
         search: search || stringify(q),
+        state,
       }}
       {...validAttrProps}
       {...validLinkProps}
@@ -57,7 +71,13 @@ const InternalLink = ({
           scrollToId(deepLink);
         }
       }}
-    />
+      style={{
+        ...style,
+        ...isLinkDisabled,
+      }}
+      >
+      {validAttrProps.children}
+    </Link>
   );
 };
 

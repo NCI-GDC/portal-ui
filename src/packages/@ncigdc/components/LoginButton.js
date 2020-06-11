@@ -14,24 +14,27 @@ import { setModal } from '@ncigdc/dux/modal';
 /*----------------------------------------------------------------------------*/
 
 const Link = styled.a({
+  cursor: 'pointer',
   textDecoration: 'none',
   transition: 'background-color 0.2s ease',
-  cursor: 'pointer',
 });
 
-const styles = {
-  marginLeft: {
-    marginLeft: '0.7rem',
-  },
-};
-
-const LoginButton = ({ children, dispatch, user }) => (
+const LoginButton = ({
+  children,
+  className,
+  dispatch,
+  keepModalOpen = false,
+  testTag = 'login-button',
+}) => (
   <LocationSubscriber>
     {({ pathname, push }) => (
       <Link
-        className="test-login-button"
+        className={`login-button${className ? ` ${className}` : ''}`}
+        data-test={testTag}
         onClick={async () => {
-          await dispatch(setModal(null));
+          if (!keepModalOpen) {
+            await dispatch(setModal(null));
+          }
           await openAuthWindow({
             name: 'NIH',
           });
@@ -39,14 +42,10 @@ const LoginButton = ({ children, dispatch, user }) => (
           await dispatch(fetchNotifications());
         }}
         >
-
         {children || (
           <span>
             <LoginIcon />
-            <span
-              className="header-hidden-sm header-hidden-md"
-              style={styles.marginLeft}
-              >
+            <span className="header-hidden-sm header-hidden-md">
               Login
             </span>
           </span>

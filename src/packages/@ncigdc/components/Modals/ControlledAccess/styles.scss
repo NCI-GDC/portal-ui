@@ -1,0 +1,25 @@
+.action-button {
+  align-items: center;
+  background-color: rgb(0, 80, 131);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  font-size: 14px;
+  justify-content: center;
+  outline: none;
+  padding: 6px 12px;
+  position: relative;
+  text-decoration: none;
+  transition: 0.25s ease;
+
+  &.disabled {
+    background-color: rgba(0, 80, 131, 0.5);
+    color: #eee;
+  }
+
+  &:hover {
+    background-color: rgb(0, 138, 224);
+  }
+};

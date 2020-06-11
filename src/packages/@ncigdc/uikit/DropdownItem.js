@@ -4,8 +4,8 @@ import { css } from 'glamor';
 import Row from './Flex/Row';
 
 const itemStyle = {
-  padding: '0.2rem 0.5rem',
   textDecoration: 'none',
+  padding: '0.2rem 0.5rem',
   width: '100%',
   ':hover': {
     color: '#262626',

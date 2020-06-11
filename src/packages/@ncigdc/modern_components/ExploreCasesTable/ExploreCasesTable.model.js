@@ -9,7 +9,9 @@ import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
-import { Th, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
+import {
+  Th, Td, TdNum, ThNum,
+} from '@ncigdc/uikit/Table';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -34,7 +36,7 @@ const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
   c: { age_at_diagnosis: number },
 ): { age_at_diagnosis: number } =>
-  c.age_at_diagnosis < p.age_at_diagnosis ? c : p;
+  (c.age_at_diagnosis < p.age_at_diagnosis ? c : p);
 
 const dataCategoryColumns = createDataCategoryColumns({
   title: 'Available Files per Data Category',
@@ -50,20 +52,26 @@ const dataCategoryColumns = createDataCategoryColumns({
 });
 
 const FilesLink = ({ node, fields = [], children }) =>
-  children === '0' ? (
+  (children === '0' ? (
     <span>0</span>
   ) : (
     <RepositoryFilesLink
       query={{
         filters: makeFilter(
-          [{ field: 'cases.case_id', value: [node.case_id] }, ...fields],
+          [
+            {
+              field: 'cases.case_id',
+              value: [node.case_id],
+            },
+            ...fields,
+          ],
           false,
         ),
       }}
-    >
+      >
       {children}
     </RepositoryFilesLink>
-  );
+  ));
 
 const getProjectIdFilter = projects =>
   makeFilter(
@@ -77,7 +85,10 @@ const getProjectIdFilter = projects =>
   );
 
 const casesTableModel = [
-  createSelectColumn({ idField: 'case_id', headerRowSpan: 2 }),
+  createSelectColumn({
+    idField: 'case_id',
+    headerRowSpan: 2,
+  }),
   {
     name: 'Case UUID',
     id: 'case_id',
@@ -101,14 +112,14 @@ const casesTableModel = [
         {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
-    td: ({ node, index }) => (
+    td: ({ index, node }) => (
       <Td>
         <CaseLink
-          uuid={node.case_id}
           id={`row-${index}-case-link`}
           merge
+          uuid={node.case_id}
           whitelist={['filters']}
-        >
+          >
           {node.submitter_id}
         </CaseLink>
       </Td>
@@ -125,12 +136,12 @@ const casesTableModel = [
         {sorted && <ArrowIcon sorted={sorted} />}
       </Th>
     ),
-    td: ({ node, index }) => (
+    td: ({ index, node }) => (
       <Td>
         <ProjectLink
-          uuid={node.project.project_id}
           id={`row-${index}-project-link`}
-        />
+          uuid={node.project.project_id}
+          />
       </Td>
     ),
   },
@@ -146,7 +157,13 @@ const casesTableModel = [
       </Th>
     ),
     td: ({ node }) => (
-      <Td key="primary_site" style={{ maxWidth: 130, overflow: 'hidden' }}>
+      <Td
+        key="primary_site"
+        style={{
+          maxWidth: 130,
+          overflow: 'hidden',
+        }}
+        >
         <OverflowTooltippedLabel>{node.primary_site}</OverflowTooltippedLabel>
       </Td>
     ),
@@ -192,7 +209,7 @@ const casesTableModel = [
           query={{
             filters: query.filters ? getProjectIdFilter(hits) : null,
           }}
-        >
+          >
           {hits.edges
             .reduce((acc, val) => acc + val.node.summary.case_count, 0)
             .toLocaleString()}
@@ -216,16 +233,23 @@ const casesTableModel = [
         </Tooltip>
       </ThNum>
     ),
-    td: ({ ssmCountsLoading, ssmCount, node, filters }) => (
+    td: ({
+      filters, node, ssmCount, ssmCountsLoading,
+    }) => (
       <Td style={{ textAlign: 'right' }}>
         <MutationsCount
-          isLoading={ssmCountsLoading}
-          ssmCount={ssmCount}
           filters={replaceFilters(
-            makeFilter([{ field: 'cases.case_id', value: [node.case_id] }]),
+            makeFilter([
+              {
+                field: 'cases.case_id',
+                value: [node.case_id],
+              },
+            ]),
             filters,
           )}
-        />
+          isLoading={ssmCountsLoading}
+          ssmCount={ssmCount}
+          />
       </Td>
     ),
   },
@@ -244,19 +268,24 @@ const casesTableModel = [
         {sorted && <ArrowIcon sorted={sorted} />}
       </ThNum>
     ),
-    td: ({ node, filters }) => (
+    td: ({ filters, node }) => (
       <Td style={{ textAlign: 'right' }}>
         {node.score > 0 ? (
           <ExploreSSMLink
-            searchTableTab={'genes'}
             filters={replaceFilters(
               makeFilter(
-                [{ field: 'cases.case_id', value: [node.case_id] }],
+                [
+                  {
+                    field: 'cases.case_id',
+                    value: [node.case_id],
+                  },
+                ],
                 false,
               ),
               filters,
             )}
-          >
+            searchTableTab="genes"
+            >
             {(node.score || 0).toLocaleString()}
           </ExploreSSMLink>
         ) : (
@@ -288,25 +317,29 @@ const casesTableModel = [
               </ForTsvExport>,
               slideCount ? (
                 <Tooltip
-                  key={`view-image-${node.case_id}`}
                   Component="View Slide Image"
-                >
+                  key={`view-image-${node.case_id}`}
+                  >
                   <ImageViewerLink
                     isIcon
                     query={{
                       filters: makeFilter([
-                        { field: 'cases.case_id', value: node.case_id },
+                        {
+                          field: 'cases.case_id',
+                          value: node.case_id,
+                        },
                       ]),
                     }}
-                  >
-                    <MicroscopeIcon style={{ maxWidth: '20px' }} /> ({slideCount})
+                    >
+                    <MicroscopeIcon style={{ maxWidth: '20px' }} />
+                    {` (${slideCount})`}
                   </ImageViewerLink>
                 </Tooltip>
               ) : (
                 <Tooltip
-                  key="no-slide-images"
                   Component="No slide images to view."
-                >
+                  key="no-slide-images"
+                  >
                   --
                 </Tooltip>
               ),

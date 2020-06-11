@@ -18,5 +18,17 @@ export const ExploreMutationsLink = makeListLink({
 
 export default makeListLink({
   children: 'exploration',
+  dropDownElements: [
+    {
+      description: 'Explore Open Data',
+    },
+    {
+      description: 'Explore Controlled & Open Data',
+      onClick: (event, dispatch, { showControlledAccessModal }) => {
+        event.preventDefault();
+        showControlledAccessModal();
+      },
+    },
+  ],
   pathname: '/exploration',
 });

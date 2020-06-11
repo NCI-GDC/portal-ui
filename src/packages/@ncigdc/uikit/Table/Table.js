@@ -19,22 +19,31 @@ const Table = ({
   style = {},
   body,
   headings = [],
+  showHeadings = true,
   subheadings = [],
   ...props
 }) => (
-  <table style={{ ...styles.table, ...style }} {...props}>
-    <thead>
-      <Tr>
-        {headings.map(x => (typeof x === 'string' ? <Th key={x}>{x}</Th> : x))}
-      </Tr>
-      {!!subheadings.length && (
+  <table
+    style={{
+      ...styles.table,
+      ...style,
+    }}
+    {...props}
+    >
+    {showHeadings && (
+      <thead>
         <Tr>
-          {subheadings.map(
-            x => (typeof x === 'string' ? <Th key={x}>{x}</Th> : x)
-          )}
+          {headings.map(x => (typeof x === 'string' ? <Th key={x}>{x}</Th> : x))}
         </Tr>
-      )}
-    </thead>
+        {!!subheadings.length && (
+          <Tr>
+            {subheadings.map(
+              x => (typeof x === 'string' ? <Th key={x}>{x}</Th> : x),
+            )}
+          </Tr>
+        )}
+      </thead>
+    )}
     {body}
   </table>
 );

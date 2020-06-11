@@ -16,6 +16,7 @@ import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import removeEmptyKeys from '@ncigdc/utils/removeEmptyKeys';
+import MutationIcon from '@ncigdc/theme/icons/Mutation';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const styles = {
@@ -67,7 +68,7 @@ export default compose(
           loading: false,
         }));
       },
-    })
+    }),
   ),
   withPropsOnChange(['filters'], ({ updateData }) => {
     updateData();
@@ -81,7 +82,7 @@ export default compose(
             field: 'ssms.ssm_id',
             value: [ssm.ssm_id],
           },
-        ])
+        ]),
       );
       push({
         pathname: '/exploration',
@@ -91,7 +92,7 @@ export default compose(
         }),
       });
     },
-  })
+  }),
 )(
   ({
     defaultSurvivalData,
@@ -109,8 +110,15 @@ export default compose(
           padding: '1rem',
         }}
         >
-        <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
-        Somatic Mutations
+        <MutationIcon color="#3a3a3a" height={20} width={16} />
+        <span
+          style={{
+            display: 'inline-block',
+            paddingLeft: 10,
+          }}
+          >
+          Somatic Mutations
+        </span>
       </h1>
 
       <Row>
@@ -136,12 +144,12 @@ export default compose(
         context="Cohort"
         defaultFilters={filters}
         hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
-          defaultSurvivalData.rawData
+          defaultSurvivalData.rawData,
         )}
         selectedSurvivalData={selectedSurvivalData}
         setSelectedSurvivalData={setSelectedSurvivalData}
         showSurvivalPlot
         />
     </Column>
-  )
+  ),
 );

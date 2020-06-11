@@ -11,6 +11,7 @@ import CurrentFilters from '@ncigdc/components/CurrentFilters';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 import { DoubleArrowLeftIcon, DoubleArrowRightIcon } from '@ncigdc/theme/icons';
+import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 
 const sidePadding = '2.5rem';
 
@@ -50,22 +51,24 @@ type TProps = {
 
 const enhance = compose(
   setDisplayName('EnhancedSearchPage'),
-  withState('showFacets', 'setShowFacets', true)
+  withState('showFacets', 'setShowFacets', true),
 );
 
-const SearchPage = (
-  {
-    className,
-    facetTabs = [],
-    results = <span />,
-    showFacets,
-    setShowFacets,
-    filtersLinkProps,
-  }: TProps = {},
-) => (
+const SearchPage = ({
+  className,
+  ControlledAccess,
+  facetTabs = [],
+  pageName,
+  results = <span />,
+  showFacets,
+  setShowFacets,
+  filtersLinkProps,
+}: TProps = {}) => (
   <Container className={`${className} test-search-page`}>
     {showFacets && (
       <FacetsPanel>
+        {ControlledAccess}
+
         <TabbedLinks
           defaultIndex={0}
           hideTabs={facetTabs.length <= 1}
@@ -89,16 +92,31 @@ const SearchPage = (
           />
       </FacetsPanel>
     )}
+
     <Content>
-      <Row style={{ marginBottom: '2rem' }}>
-        {showFacets || (
-          <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
-            <DoubleArrowRightIcon />
-          </ShowFacetsButton>
+      <Column>
+        {pageName === 'repository' && (
+          <AnnotationsLink
+            style={{
+              marginBottom: 26,
+              marginLeft: 'auto',
+            }}
+            >
+            <i className="fa fa-edit" />
+            {' '}
+            Browse Annotations
+          </AnnotationsLink>
         )}
-        <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
-      </Row>
-      {typeof results === 'function' ? results({ showFacets }) : results}
+        <Row style={{ marginBottom: '2rem' }}>
+          {showFacets || (
+            <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
+              <DoubleArrowRightIcon />
+            </ShowFacetsButton>
+          )}
+          <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
+        </Row>
+        {typeof results === 'function' ? results({ showFacets }) : results}
+      </Column>
     </Content>
   </Container>
 );

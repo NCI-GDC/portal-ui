@@ -38,6 +38,10 @@ export const withLoader = (Component: ReactClass<*>) => ({
     position: 'relative',
     width: '100%',
   },
+  loaderProps: {
+    ignoreFirstLoad,
+    ...loaderProps
+  } = {},
   loading,
   firstLoad,
   ...props
@@ -50,8 +54,8 @@ export const withLoader = (Component: ReactClass<*>) => ({
       ...style,
     }}
     >
-    {!firstLoad && <Component loading={loading} {...props} />}
-    {loading && <Loader loading={loading} />}
+    {(firstLoad && !ignoreFirstLoad) || <Component loading={loading} {...props} />}
+    {loading && <Loader loading={loading} {...loaderProps} />}
   </div>
 );
 

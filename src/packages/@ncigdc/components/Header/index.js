@@ -1,5 +1,7 @@
 
 import React from 'react';
+import { isEqual } from 'lodash';
+import { connect } from 'react-redux';
 import {
   compose,
   lifecycle,
@@ -8,8 +10,6 @@ import {
   withHandlers,
   withState,
 } from 'recompose';
-import { connect } from 'react-redux';
-import { isEqual } from 'lodash';
 import ResizeObserver from 'resize-observer-polyfill';
 
 import { dismissNotification, removeNotification } from '@ncigdc/dux/bannerNotification';
@@ -30,27 +30,28 @@ import { forceLogout } from '@ncigdc/dux/auth';
 
 import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
 import withRouter from '@ncigdc/utils/withRouter';
+import withControlledAccess from '@ncigdc/utils/withControlledAccess';
 import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
 import { AnalysisIcon } from '@ncigdc/theme/icons';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
 import { Row } from '@ncigdc/uikit/Flex';
+import { DISPLAY_DAVE_CA } from '@ncigdc/utils/constants';
 
-import './Header.css';
+import SectionBanner from './SectionBanner';
+import './styles.scss';
 
 const styles = {
   activeNavLink: theme => ({
     backgroundColor: theme.greyScale2,
     color: theme.white,
   }),
-  iconPadding: {
-    paddingRight: '4px',
-  },
 };
 
 const Header = ({
   dispatch,
+  handleOnClick,
   headerHeight,
   isCollapsed,
   isInSearchMode,
@@ -74,126 +75,157 @@ const Header = ({
           />
       ))}
 
-      <div className="container-fluid">
-        <div className="navbar-header">
+      <div className="header-navbar">
+        <div className="navbar-mobile_items">
+          <HomeLink
+            className="navbar-brand"
+            tabIndex="0"
+            >
+            <img
+              alt="gdc-logo"
+              src={nciGdcLogo}
+              />
+            <Hidden>
+              <h1>GDC Home</h1>
+            </Hidden>
+          </HomeLink>
+
           <button
             className="navbar-toggle"
             onClick={() => setIsCollapsed(!isCollapsed)}
             type="button"
             >
             <span className="sr-only test-toggle-navigation">
-                Toggle navigation
+              Toggle navigation
             </span>
+
             <span className="icon-bar" />
             <span className="icon-bar" />
             <span className="icon-bar" />
           </button>
-
-          <HomeLink
-            className="navbar-brand"
-            style={{ padding: 0 }}
-            tabIndex="0"
-            >
-            <img alt="gdc-logo" src={nciGdcLogo} />
-            <Hidden>
-              <h1>GDC Home</h1>
-            </Hidden>
-          </HomeLink>
         </div>
 
         <nav
           aria-label="Site Navigation"
-          className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
+          className={`navbar-collapse${isCollapsed ? ' collapse' : ''}`}
           data-uib-collapse="hc.isCollapsed"
-          onClick={() => setIsCollapsed(true)}
           style={{ outline: 'none' }}
           tabIndex="-1"
           >
           <ul className="nav navbar-nav">
             <li>
-              <HomeLink activeStyle={styles.activeNavLink(theme)} exact>
-                <i className="fa fa-home" style={styles.iconPadding} />
+              <HomeLink
+                activeStyle={styles.activeNavLink(theme)}
+                exact
+                onClick={handleOnClick}
+                testTag="home-link"
+                >
+                <i className="fa fa-home" />
                 <span className="header-hidden-sm">Home</span>
                 <Hidden>Home</Hidden>
               </HomeLink>
             </li>
+
             <li>
-              <ProjectsLink activeStyle={styles.activeNavLink(theme)} exact>
-                <i className="icon-gdc-projects" style={styles.iconPadding} />
+              <ProjectsLink
+                activeStyle={styles.activeNavLink(theme)}
+                exact
+                onClick={handleOnClick}
+                testTag="projects-link"
+                >
+                <i className="icon-gdc-projects" />
                 <span className="header-hidden-sm">Projects</span>
                 <Hidden>Projects</Hidden>
               </ProjectsLink>
             </li>
+
             <li>
               <ExploreLink
                 activeStyle={styles.activeNavLink(theme)}
                 exact
+                isDropDown
+                onClick={handleOnClick}
                 query={defaultExploreQuery}
+                testTag="exploration-link"
                 >
-                <i className="icon-gdc-data" style={styles.iconPadding} />
+                <i className="icon-gdc-data" />
                 <span className="header-hidden-sm">Exploration</span>
                 <Hidden>Exploration</Hidden>
               </ExploreLink>
             </li>
+
             <li>
-              <AnalysisLink activeStyle={styles.activeNavLink(theme)} exact>
+              <AnalysisLink
+                activeStyle={styles.activeNavLink(theme)}
+                exact
+                onClick={handleOnClick}
+                testTag="analysis-link"
+                >
                 <Row
                     // needed for handling IE default svg style
                   style={{ alignItems: 'center' }}
                   >
-                  <AnalysisIcon style={styles.iconPadding} />
+                  <AnalysisIcon />
                   <span className="header-hidden-sm">Analysis</span>
                   <Hidden>Analysis</Hidden>
                 </Row>
               </AnalysisLink>
             </li>
+
             <li>
-              <RepositoryLink activeStyle={styles.activeNavLink(theme)} exact>
-                <DatabaseIcon style={styles.iconPadding} />
+              <RepositoryLink
+                activeStyle={styles.activeNavLink(theme)}
+                exact
+                onClick={handleOnClick}
+                testTag="repository-link"
+                >
+                <DatabaseIcon />
                 <span className="header-hidden-sm">Repository</span>
                 <Hidden>Repository</Hidden>
               </RepositoryLink>
             </li>
           </ul>
+
           <ul className="nav navbar-nav navbar-right">
             <li>
               <QuickSearch
                 isInSearchMode={isInSearchMode}
                 setIsInSearchMode={setIsInSearchMode}
                 tabIndex="0"
+                testTag="quicksearch"
                 />
             </li>
-            {!isInSearchMode && (
+
+            {isInSearchMode || (
               <React.Fragment>
                 <li>
-                  <ManageSetsLink activeStyle={styles.activeNavLink(theme)} />
+                  <ManageSetsLink
+                    activeStyle={styles.activeNavLink(theme)}
+                    onClick={handleOnClick}
+                    testTag="manageSet-link"
+                    />
                 </li>
 
-                {user
-                  ? (
-                    <li className="header-hidden-xs">
-                      <UserDropdown />
-                    </li>
-                  )
-                  : (
-                    <li>
-                      <LoginButton />
-                    </li>
-                  )}
                 <li>
-                  <CartLink>
+                  {user
+                    ? <UserDropdown testTag="user-link" />
+                    : <LoginButton testTag="login-link" />}
+                </li>
+
+                <li>
+                  <CartLink
+                    className="header-link"
+                    onClick={handleOnClick}
+                    testTag="cart-link"
+                    >
                     {count => (
                       <span>
-                        <i
-                          className="fa fa-shopping-cart"
-                          style={styles.iconPadding}
-                          />
-                        <span
-                          className="header-hidden-sm header-hidden-md"
-                          style={styles.iconPadding}
-                          >
-                            Cart
+                        <i className="fa fa-shopping-cart" />
+
+                        <span className="header-hidden-sm header-hidden-md">
+                          Cart
                         </span>
+
                         <span className="label label-primary">
                           {count.toLocaleString()}
                         </span>
@@ -203,13 +235,15 @@ const Header = ({
                 </li>
 
                 <li>
-                  <GDCAppsDropdown />
+                  <GDCAppsDropdown testTag="gdcApps-link" />
                 </li>
               </React.Fragment>
             )}
           </ul>
         </nav>
       </div>
+
+      {DISPLAY_DAVE_CA && <SectionBanner />}
     </header>
 
     <div
@@ -235,6 +269,7 @@ export default compose(
     notifications: state.bannerNotification,
     user: state.auth.user,
   })),
+  withControlledAccess,
   withHandlers({
     handleApiError: ({ dispatch }) => ({ status, user }) => {
       if (user && status === 401) {
@@ -242,6 +277,14 @@ export default compose(
         dispatch(setModal(<SessionExpiredModal />));
         dispatch(forceLogout());
       }
+    },
+    handleOnClick: ({
+      controlledAccessProps,
+      dispatch,
+      setIsCollapsed,
+    }) => (event, elementOnClick) => {
+      setIsCollapsed(true);
+      elementOnClick && elementOnClick(event, dispatch, controlledAccessProps);
     },
     resizeObserver: ({ setHeaderHeight }) => () =>
       new ResizeObserver(([{ target }]) => { // the target here will be the header itself

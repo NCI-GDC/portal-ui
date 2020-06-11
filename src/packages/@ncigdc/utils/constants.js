@@ -343,8 +343,12 @@ export const IMPACT_SHORT_FORMS = {
   },
 };
 
-export const FAKE_USER =
-  localStorage.REACT_APP_ALLOW_FAKE_USER || process.env.REACT_APP_ALLOW_FAKE_USER
+export const IS_DEV = process.env.NODE_ENV === 'development';
+
+export const DEV_USER =
+  localStorage.REACT_APP_ALLOW_FAKE_USER ||
+  localStorage.REACT_APP_ALLOW_DEV_USER ||
+  process.env.REACT_APP_ALLOW_DEV_USER
     ? {
       projects: {
         gdc_ids: {
@@ -381,7 +385,16 @@ export const FAKE_USER =
     }
     : null;
 
-export const IS_DEV = process.env.NODE_ENV === 'development';
+export const DEV_USER_CA = [ // controlled access mock
+  {
+    programs: [
+      {
+        name: 'FM',
+        projects: ['FM-AD'],
+      },
+    ],
+  },
+];
 
 // Example feature flag
 // export const DISPLAY_CDAVE =
@@ -486,4 +499,19 @@ export const DISPLAY_SUMMARY_PAGE = localStorage.REACT_APP_DISPLAY_SUMMARY_PAGE 
 
 export const DISPLAY_GENE_EXPRESSION = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION ||
   process.env.REACT_APP_DISPLAY_GENE_EXPRESSION ||
+  false;
+
+export const DISPLAY_10K = localStorage.REACT_APP_DISPLAY_10K ||
+  process.env.REACT_APP_DISPLAY_10K ||
+  false;
+
+// placeholder until we have an API
+export const CASE_LIMIT_API = 10000;
+
+export const DISPLAY_DAVE_CA = localStorage.REACT_APP_DISPLAY_DAVE_CA ||
+  process.env.REACT_APP_DISPLAY_DAVE_CA ||
+  false;
+
+export const DISPLAY_SCRNA_SEQ = localStorage.REACT_APP_DISPLAY_SCRNA_SEQ ||
+  process.env.REACT_APP_DISPLAY_SCRNA_SEQ ||
   false;

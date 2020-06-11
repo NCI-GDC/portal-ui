@@ -3,9 +3,12 @@ import { handleActions } from 'redux-actions';
 
 import { saveAs } from 'filesaver.js';
 import { fetchAuth } from '@ncigdc/utils/ajax';
-import { FAKE_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
+import { DEV_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
+
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
+const USER_CA_CLEAR = 'gdc/USER_CONTROLLED_ACCESS_CLEAR';
+const USER_CA_SUCCESS = 'gdc/USER_CONTROLLED_ACCESS_SUCCESS';
 const USER_REQUEST = 'gdc/USER_REQUEST';
 const USER_SUCCESS = 'gdc/USER_SUCCESS';
 const USER_FAILURE = 'gdc/USER_FAILURE';
@@ -15,30 +18,26 @@ const TOKEN_SUCCESS = 'gdc/TOKEN_SUCCESS';
 const TOKEN_FAILURE = 'gdc/TOKEN_FAILURE';
 const TOKEN_CLEAR = 'gdc/TOKEN_CLEAR';
 
-export function fetchUser() {
-  if (IS_DEV) {
-    return {
-      type: USER_SUCCESS,
-      payload: FAKE_USER,
-    };
-  }
-
-  return fetchAuth({
-    types: [
-      USER_REQUEST,
-      {
-        type: USER_SUCCESS,
-        payload: async (action, state, res) => {
-          const text = await res.text();
-          const json = JSON.parse(text);
-          return json;
-        },
-      },
-      USER_FAILURE,
-    ],
-    endpoint: 'user',
-  });
+export const fetchUser = () => ((IS_DEV || DEV_USER)
+? {
+  payload: DEV_USER,
+  type: USER_SUCCESS,
 }
+: fetchAuth({
+  endpoint: 'user',
+  types: [
+    USER_REQUEST,
+    {
+      payload: async (action, state, res) => {
+        const text = await res.text();
+        const json = JSON.parse(text);
+        return json;
+      },
+      type: USER_SUCCESS,
+    },
+    USER_FAILURE,
+  ],
+}));
 
 export function forceLogout(): Action {
   return {
@@ -64,7 +63,7 @@ export function fetchToken() {
           const token = await res.text();
           saveAs(
             new Blob([token], { type: 'text/plain;charset=us-ascii' }),
-            `gdc-user-token.${new Date().toISOString()}.txt`
+            `gdc-user-token.${new Date().toISOString()}.txt`,
           );
 
           return token;
@@ -84,10 +83,25 @@ const initialState: State = {
   isFetchingToken: false,
   token: undefined,
   failed: false,
+  userControlledAccess: {
+    fetched: false,
+    studies: {},
+  },
 };
 
 export default handleActions(
   {
+    [USER_CA_CLEAR]: state => ({
+      ...state,
+      userControlledAccess: initialState.userControlledAccess,
+    }),
+    [USER_CA_SUCCESS]: (state, action) => ({
+      ...state,
+      userControlledAccess: {
+        fetched: true,
+        studies: action.payload,
+      },
+    }),
     [USER_REQUEST]: state => ({
       ...state,
       isFetching: true,
@@ -130,5 +144,5 @@ export default handleActions(
       token: undefined,
     }),
   },
-  initialState
+  initialState,
 );

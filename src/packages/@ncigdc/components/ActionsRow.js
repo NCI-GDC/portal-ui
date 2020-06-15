@@ -70,9 +70,10 @@ export default compose(
             >
             Add All Files to Cart
           </Button>
+
           <DownloadManifestButton fileCount={totalFiles} filters={filters} style={{ margin: '5px 2px 0px 3px' }} />
-          {!AWG ? (
-            filters ? (
+          {AWG || (filters
+            ? (
               <CreateRepositoryCaseSetButton
                 disabled={!totalCases}
                 filters={filters}
@@ -97,12 +98,7 @@ export default compose(
                 }}
                 style={{ margin: '5px 2px 0px 3px' }}
                 >
-                View
-                {totalCases.toLocaleString()}
-                {' '}
-                {pluralize(' Case', totalCases)}
-                {' '}
-                 in Exploration
+                {`View ${totalCases.toLocaleString()} ${pluralize(' Case', totalCases)} in Exploration`}
               </CreateRepositoryCaseSetButton>
             ) : (
               <Button
@@ -113,16 +109,9 @@ export default compose(
                   })}
                 style={{ margin: '5px 2px 0px 3px' }}
                 >
-                View
-                {' '}
-                {totalCases.toLocaleString()}
-                {' '}
-                {pluralize(' Case', totalCases)}
-                {' '}
-                 in Exploration
+                {`View ${totalCases.toLocaleString()} ${pluralize(' Case', totalCases)} in Exploration`}
               </Button>
-            )
-          ) : null}
+            ))}
 
           {DISPLAY_SLIDES && (
             <div style={{ margin: '11px 2px 0px 3px' }}>

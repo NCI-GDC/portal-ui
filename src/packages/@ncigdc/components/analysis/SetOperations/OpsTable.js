@@ -12,7 +12,6 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import GreyBox from '@ncigdc/uikit/GreyBox';
-
 import { withTheme } from '@ncigdc/theme';
 import download from '@ncigdc/utils/download';
 import DownloadIcon from '@ncigdc/theme/icons/Download';

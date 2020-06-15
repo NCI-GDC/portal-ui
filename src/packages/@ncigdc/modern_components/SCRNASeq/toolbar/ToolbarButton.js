@@ -32,7 +32,7 @@ export default class ToolbarButton extends Component {
           data-val={val}
           onClick={this.handleClick}
           style={{
-            ...visualizingButton,
+            ...name === 'downloadAnalysis' ? {} : visualizingButton,
             marginLeft: 6,
           }}
           >
@@ -42,8 +42,10 @@ export default class ToolbarButton extends Component {
               className={`fa ${faClass}`}
               />
           )}
-          {label === 'Fullscreen' && <FullScreenIcon />}
-          <Hidden>{label}</Hidden>
+          {name === 'fullscreen' && <FullScreenIcon />}
+          {name === 'downloadAnalysis'
+            ? <span style={{ marginLeft: 6 }}>{label}</span>
+            : <Hidden>{label}</Hidden>}
         </Button>
       </Tooltip>
     );

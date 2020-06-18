@@ -19,17 +19,24 @@ export const buttonBaseStyles = {
   fontSize: '14px',
   borderRadius: '4px',
   border: '1px solid transparent',
-  backgroundColor: ({ disabled, theme }) => (disabled ? theme.greyScale4 : theme.primary),
-  color: 'white',
+  // ({ disabled, theme }) => (disabled
+  //   ? `1px solid ${theme.greyScale3}`
+  //   : `1px solid ${theme.primary}`),
+  backgroundColor: ({ disabled, theme }) => (disabled
+    ? theme.greyScale8
+    : theme.primary),
+  color: ({ disabled, theme }) => (disabled
+    ? 'white'
+    : 'white'),
   outline: 'none',
   transition: '0.25s ease',
   ':hover': {
     backgroundColor: ({ disabled, theme }) => (disabled
-        ? theme.greyScale4
-        : Color(theme.primary)
-          .lighten(0.7)
-          .rgbString()),
-    color: 'white',
+      ? theme.greyScale5
+      : Color(theme.primary)
+        .lighten(0.7)
+        .rgbString()),
+    // color: 'white',
   },
 };
 

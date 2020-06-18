@@ -8,6 +8,9 @@ export interface IThemeProps {
   secondaryHighContrast: string;
   textShadow: string;
   white: string;
+
+  greyScale9: string;
+  greyScale8: string;
   greyScale7: string;
   greyScale6: string;
   greyScale5: string;
@@ -67,6 +70,8 @@ const theme: IThemeProps = {
 
   // greyscale
 
+  greyScale9: '#707070', // min contrast on rgb(245,245,245)
+  greyScale8: '#757575', // min contrast for 14px white text on grey bg
   greyScale7: 'rgb(107,98,98)',
   greyScale6: 'rgb(245,245,245)',
   greyScale5: 'rgb(222,222,222)',
@@ -120,6 +125,6 @@ const theme: IThemeProps = {
   spacing: '2rem',
 };
 
-export const globalRules = ``;
+export const globalRules = '';
 
 export default theme;

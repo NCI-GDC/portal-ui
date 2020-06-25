@@ -93,3 +93,16 @@ export const isUUID: TIsUuid = query =>
 
 export const createFacetFieldString: TCreateFacetFieldString = fieldName =>
   fieldName.replace(/\./g, '__');
+
+export const commaSeparatedList = (
+  list :string | string[],
+  oxford :string | boolean = false,
+) :string => (
+  Array.isArray(list)
+    ? list.reduce((finalString, word, count) => (
+      finalString.concat(count
+        ? `, ${oxford && list.length === count + 1 ? 'and ' : ''}${word}`
+        : word)
+    ), '')
+    : list
+);

@@ -57,6 +57,11 @@ class GeneExpression extends Component {
     this.setState({ data });
   };
 
+  componentDidMount() {
+    // console.log('case count', Object.keys(this.state.data.data.feature_names.nodes).length)
+    console.log('case count', this.state.data.data.feature_names.length)
+  }
+
   render() {
     const { data } = this.state;
 

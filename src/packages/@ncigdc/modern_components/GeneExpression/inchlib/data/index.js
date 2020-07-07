@@ -7,7 +7,7 @@
 // import data100x1000 from './100x1000';
 // import datax from './100x1100';
 // import datax from './100x1200';
-import datax from './100x2500';
+import datax from './100x5000';
 // import data100x1500 from './100x1500';
 // import data2000x50compressed500 from './2000x50_compressed_500';
 // import data2000x50compressed1000 from './2000x50_compressed_1000';

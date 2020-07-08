@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import {
   capitalize,
@@ -7,157 +6,144 @@ import {
   set,
   truncate,
 } from 'lodash';
+import countComponents from '@ncigdc/modern_components/Counts';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { connect } from 'react-redux';
 import { compose, withState, pure } from 'recompose';
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import countComponents from '@ncigdc/modern_components/Counts';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Button from '@ncigdc/uikit/Button';
-import ExploreLink, { defaultExploreQuery } from '@ncigdc/components/Links/ExploreLink';
 import { theme } from '@ncigdc/theme/index';
-import { TSetTypes } from '@ncigdc/dux/sets';
 import DemoButton from './DemoButton';
+import SetTable from './SetTable';
+import ValidateGeneExpression from './ValidateGeneExpression';
 
-type TProps = {
-  sets: { [TSetTypes]: string },
-  selectedSets: { [TSetTypes]: string },
-  setSelectedSets: Function,
-  setDisabledMessage: Function,
-  label: string,
-  setInstructions: string,
-  onCancel: Function,
-  onRun: Function,
-  validateSets: Function,
-  description: string,
-  Icon: Function,
-  setTypes: Array<string>,
-  type: string,
-  demoData: {},
-};
 const styles = {
   rowStyle: {
-    marginTop: 'auto',
-    padding: '1rem 2.5rem 1rem',
     borderBottom: `1px solid ${theme.greyScale5}`,
+    marginTop: 'auto',
     maxWidth: 1100,
+    padding: '1rem 2.5rem 1rem',
   },
 };
+
 const enhance = compose(
   connect(({ sets }) => ({ sets })),
   withState('selectedSets', 'setSelectedSets', {}),
   pure,
 );
 
-const SetTable = ({
-  demoData,
-  description,
-  Icon,
-  label,
+const SelectSet = ({
+  analysisProps: {
+    demoData,
+    description,
+    Icon,
+    label,
+    setDisabledMessage = () => {},
+    setInstructions,
+    setTypes,
+    type,
+    validateSets,
+  },
   onCancel,
   onRun,
   selectedSets,
-  setDisabledMessage = () => {},
-  setInstructions,
-  sets,
+  sets = {},
   setSelectedSets,
-  setTypes,
-  type,
-  validateSets,
-}: TProps) => {
+}) => {
   const isClinical = type === 'clinical_data';
-  const headings = [
-    {
-      key: 'select',
-      title: 'Select',
-    },
-    {
-      key: 'type',
-      title: 'Type',
-    },
-    {
-      key: 'name',
-      title: isClinical ? 'Case Set Name' : 'Name',
-    },
-    {
-      key: 'count',
-      title: isClinical ? '#Cases' : 'Items',
-      style: { textAlign: 'right' },
-    },
-  ];
-  if (isClinical) {
-    headings.splice(1, 1);
-  }
+  const isGeneExpression = type === 'gene_expression';
 
-  const setData = Object.entries(sets)
-    .filter(([setType]) => setTypes.includes(setType))
+  const setsData = specificType => Object.entries(sets)
+    .filter(([setType]) => (specificType
+      ? setType === specificType
+      : setTypes.includes(setType)
+    ))
     .map(([setType, mappedSets]) => {
       const CountComponent = countComponents[setType];
-      return Object.entries(mappedSets).map(([setId, l]: [string, any]) => {
-        const id = `set-table-${setType}-${setId}-select`;
-        const checked = get(selectedSets, `${setType}.${setId}`, false);
-        const msg =
-          !checked && setDisabledMessage({
+
+      return Object.entries(mappedSets)
+        .map(([setId, l]: [string, any]) => {
+          const id = `set-table-${setType}-${setId}-select`;
+          const checked = get(selectedSets, `${setType}.${setId}`, false);
+          const msg = !checked && setDisabledMessage({
             sets: selectedSets,
             type: setType,
           });
 
-        return {
-          select: (
-            <Tooltip
-              Component={msg}
-              style={{
-                cursor: msg ? 'not-allowed' : 'initial',
-              }}
-              >
-              <input
-                checked={checked}
-                disabled={msg}
-                id={id}
-                onChange={e => {
-                  const targetId = e.target.value;
-                  const setIdPath = [setType, targetId];
-                  setSelectedSets(
-                    get(selectedSets, setIdPath)
-                      ? Object.keys(omit(selectedSets[setType], setIdPath)).length !== 0
-                        ? { [setType]: omit(selectedSets[setType], setIdPath) }
-                        : {}
-                      : set(isClinical ? {} : { ...selectedSets }, setIdPath, mappedSets[targetId]),
-                  );
+          return {
+            count: (
+              <CountComponent
+                filters={{
+                  content: {
+                    field: `${setType}s.${setType}_id`,
+                    value: `set_id:${setId}`,
+                  },
+                  op: '=',
                 }}
-                style={{
-                  marginLeft: 3,
-                  pointerEvents: msg ? 'none' : 'initial',
-                }}
-                type={isClinical ? 'radio' : 'checkbox'}
-                value={setId}
                 />
-            </Tooltip>
-          ),
-          type: capitalize(setType === 'ssm' ? 'mutations' : `${setType}s`),
-          name: <label htmlFor={id}>{truncate(l, { length: 70 })}</label>,
-          count: (
-            <CountComponent
-              filters={{
-                op: '=',
-                content: {
-                  field: `${setType}s.${setType}_id`,
-                  value: `set_id:${setId}`,
-                },
-              }}
-              />
-          ),
-        };
-      });
+            ),
+            name: <label htmlFor={id}>{truncate(l, { length: 70 })}</label>,
+            select: (
+              <Tooltip
+                Component={msg}
+                style={{
+                  cursor: msg ? 'not-allowed' : 'initial',
+                }}
+                >
+                <input
+                  checked={checked}
+                  disabled={msg}
+                  id={id}
+                  onChange={({ target }) => {
+                    const targetId = target.value;
+                    const setIdPath = [setType, targetId];
+
+                    setSelectedSets(
+                      isClinical || isGeneExpression //  for radio buttons
+                        ? set( // switch the radio button
+                          omit({ ...selectedSets }, setType), // keep only the sets of other types
+                          setIdPath,
+                          mappedSets[targetId], // then add the one selected set
+                        )
+                        : get(selectedSets, setIdPath) // for checkboxes
+                          // is it checked?
+                          ? Object.keys(omit({ ...selectedSets[setType] }, setIdPath)).length
+                            // if it is not the only set of its type
+                            ? { // remove the selected set
+                              ...selectedSets,
+                              [setType]: omit({ ...selectedSets[setType] }, setIdPath),
+                            }
+                            // else, remove the empty set type
+                            : omit({ ...selectedSets }, setType)
+                          // else, check it
+                          : set(
+                            { ...selectedSets },
+                            setIdPath,
+                            mappedSets[targetId],
+                          ),
+                    );
+                  }}
+                  style={{
+                    marginLeft: 3,
+                    pointerEvents: msg ? 'none' : 'initial',
+                  }}
+                  type={isClinical || isGeneExpression ? 'radio' : 'checkbox'}
+                  value={setId}
+                  />
+              </Tooltip>
+            ),
+            type: capitalize(setType === 'ssm' ? 'mutations' : `${setType}s`),
+          };
+        });
     })
     .reduce((acc, rows) => acc.concat(rows), []);
 
   return (
     <Column
       style={{
-        width: '70%',
         paddingLeft: '1rem',
         paddingTop: '2rem',
+        width: '70%',
       }}
       >
       <Row
@@ -179,39 +165,37 @@ const SetTable = ({
           </Row>
         </Column>
       </Row>
-      <Row style={styles.rowStyle}>
-        <Column style={{ flex: 1 }}>
-          <h2
-            style={{
-              color: '#c7254e',
-              fontSize: '1.8rem',
-            }}
-            >
-            {setData.length > 0
-                  ? setInstructions
-                  : 'You have not saved any sets yet.'}
-          </h2>
 
-          <div style={{ marginBottom: 15 }}>
-            You can create and save case, gene and mutation sets of interest from the
-            {' '}
-            <ExploreLink query={defaultExploreQuery}>Exploration Page</ExploreLink>
-            .
-          </div>
-          {setData && setData.length > 0 && (
-            <EntityPageHorizontalTable
-              data={setData}
-              headings={headings}
+      {isGeneExpression
+        ? setTypes
+          .map((setType, typeStep) => (
+            <SetTable
+              analysisType={type}
+              key={setType}
+              setInstructions={setInstructions}
+              setsData={setsData(setType)}
+              setType={setType}
+              step={typeStep + 1}
+              styles={styles}
               />
-          )}
+          ))
+          .concat(
+            <ValidateGeneExpression
+              key="validation"
+              selectedSets={selectedSets}
+              styles={styles}
+              />,
+          )
+        : (
+          <SetTable
+            isClinical={isClinical}
+            setInstructions={setInstructions}
+            setsData={setsData()}
+            setType={setTypes.length > 1 ? setTypes : setTypes[0]}
+            styles={styles}
+            />
+        )}
 
-          {setData && setData.length === 0 && (
-            <Row>
-              <strong>You have not saved any sets yet.</strong>
-            </Row>
-          )}
-        </Column>
-      </Row>
       <Row
         style={{
           ...styles.rowStyle,
@@ -219,6 +203,17 @@ const SetTable = ({
           justifyContent: 'flex-end',
         }}
         >
+        {isGeneExpression && (
+          <Button
+            disabled={!validateSets(selectedSets)}
+            onClick={() => onRun(selectedSets)}
+            style={{
+              marginRight: 5,
+            }}
+            >
+            Check Data
+          </Button>
+        )}
         <Button
           disabled={!validateSets(selectedSets)}
           onClick={() => onRun(selectedSets)}
@@ -230,4 +225,4 @@ const SetTable = ({
   );
 };
 
-export default enhance(SetTable);
+export default enhance(SelectSet);

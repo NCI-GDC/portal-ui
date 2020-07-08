@@ -72,46 +72,50 @@ export default compose(
           </Button>
 
           <DownloadManifestButton fileCount={totalFiles} filters={filters} style={{ margin: '5px 2px 0px 3px' }} />
-          {AWG || (filters
-            ? (
-              <CreateRepositoryCaseSetButton
-                disabled={!totalCases}
-                filters={filters}
-                onComplete={(setId: String) => {
-                  push({
-                    pathname: '/exploration',
-                    query: {
-                      filters: stringifyJSONParam({
-                        content: [
-                          {
-                            content: {
-                              field: 'cases.case_id',
-                              value: [`set_id:${setId}`],
+
+          {!AWG && (
+            filters
+              ? (
+                <CreateRepositoryCaseSetButton
+                  disabled={!totalCases}
+                  filters={filters}
+                  onComplete={(setId: String) => {
+                    push({
+                      pathname: '/exploration',
+                      query: {
+                        filters: stringifyJSONParam({
+                          content: [
+                            {
+                              content: {
+                                field: 'cases.case_id',
+                                value: [`set_id:${setId}`],
+                              },
+                              op: 'IN',
                             },
-                            op: 'IN',
-                          },
-                        ],
-                        op: 'AND',
-                      }),
-                    },
-                  });
-                }}
-                style={{ margin: '5px 2px 0px 3px' }}
-                >
-                {`View ${totalCases.toLocaleString()} ${pluralize(' Case', totalCases)} in Exploration`}
-              </CreateRepositoryCaseSetButton>
-            ) : (
-              <Button
-                disabled={!totalCases}
-                onClick={() =>
-                  push({
-                    pathname: '/exploration',
-                  })}
-                style={{ margin: '5px 2px 0px 3px' }}
-                >
-                {`View ${totalCases.toLocaleString()} ${pluralize(' Case', totalCases)} in Exploration`}
-              </Button>
-            ))}
+                          ],
+                          op: 'AND',
+                        }),
+                      },
+                    });
+                  }}
+                  style={{ margin: '5px 2px 0px 3px' }}
+                  >
+                  {`View ${totalCases.toLocaleString()} ${pluralize(' Case', totalCases)} in Exploration`}
+                </CreateRepositoryCaseSetButton>
+              )
+              : (
+                <Button
+                  disabled={!totalCases}
+                  onClick={() =>
+                    push({
+                      pathname: '/exploration',
+                    })}
+                  style={{ margin: '5px 2px 0px 3px' }}
+                  >
+                  {`View ${totalCases.toLocaleString()} ${pluralize(' Case', totalCases)} in Exploration`}
+                </Button>
+              )
+          )}
 
           {DISPLAY_SLIDES && (
             <div style={{ margin: '11px 2px 0px 3px' }}>

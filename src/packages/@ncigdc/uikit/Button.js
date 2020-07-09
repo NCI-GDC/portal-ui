@@ -23,7 +23,7 @@ export const buttonBaseStyles = {
   //   ? `1px solid ${theme.greyScale3}`
   //   : `1px solid ${theme.primary}`),
   backgroundColor: ({ disabled, theme }) => (disabled
-    ? theme.greyScale8
+    ? theme.greyScaleNci
     : theme.primary),
   color: ({ disabled, theme }) => (disabled
     ? 'white'
@@ -32,7 +32,7 @@ export const buttonBaseStyles = {
   transition: '0.25s ease',
   ':hover': {
     backgroundColor: ({ disabled, theme }) => (disabled
-      ? theme.greyScale5
+      ? theme.greyScaleNci
       : Color(theme.primary)
         .lighten(0.7)
         .rgbString()),

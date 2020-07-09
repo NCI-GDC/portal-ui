@@ -9,6 +9,7 @@ export interface IThemeProps {
   textShadow: string;
   white: string;
 
+  greyScaleNci: string;
   greyScale9: string;
   greyScale8: string;
   greyScale7: string;
@@ -70,6 +71,7 @@ const theme: IThemeProps = {
 
   // greyscale
 
+  greyScaleNci: '#706f6f',
   greyScale9: '#707070', // min contrast on rgb(245,245,245)
   greyScale8: '#757575', // min contrast for 14px white text on grey bg
   greyScale7: 'rgb(107,98,98)',

@@ -1,73 +1,4 @@
 const data = {
-  column_metadata: {
-    features: [
-      [
-        'female',
-        'female',
-        'male',
-        'male',
-        'female',
-      ],
-      [
-        'native_hawaiian_or_other_pacific_islander',
-        'asian',
-        'not_reported',
-        'american_indian_or_alaska_native',
-        'white',
-      ],
-      [
-        'hispanic_or_latino',
-        'hispanic_or_latino',
-        'not_hispanic_or_latino',
-        'not_reported',
-        'not_reported',
-      ],
-      [
-        '50',
-        '20',
-        '90',
-        '70',
-        '65',
-      ],
-      [
-        'alive',
-        'dead',
-        'dead',
-        'alive',
-        'dead',
-      ],
-      [
-        '1500',
-        '3000',
-        '500',
-        '1000',
-        '2000',
-      ],
-    ],
-    feature_names: [
-      'Gender',
-      'Race',
-      'Ethnicity',
-      'Age at Diagnosis',
-      'Vital Status',
-      'Days to Death',
-    ],
-  },
-  metadata: {
-    nodes: {
-      0: ['ENSG00000163539', 'CLASP2'],
-      1: ['ENSG00000170275', 'CRTAP'],
-      2: ['ENSG00000153560', 'UBP1'],
-      3: ['ENSG00000173705', 'SUSD5'],
-      4: ['ENSG00000188167', 'TMPPE'],
-      5: ['ENSG00000170266', 'GLB1'],
-      6: ['ENSG00000153558', 'FBXL2'],
-      7: ['ENSG00000206557', 'TRIM71'],
-      8: ['ENSG00000153560', 'UBP1'],
-      9: ['ENSG00000162510', 'MATN1'],
-    },
-    feature_names: ['gene_ensembl', 'gene_symbol'],
-  },
   data: {
     nodes: {
       0: {
@@ -271,6 +202,21 @@ const data = {
       'TCGA-EO-A22R_508bf716-46f9-44dc-8e39-09261dfb073e',
     ],
   },
+  metadata: {
+    nodes: {
+      0: ['ENSG00000163539', 'CLASP2'],
+      1: ['ENSG00000170275', 'CRTAP'],
+      2: ['ENSG00000153560', 'UBP1'],
+      3: ['ENSG00000173705', 'SUSD5'],
+      4: ['ENSG00000188167', 'TMPPE'],
+      5: ['ENSG00000170266', 'GLB1'],
+      6: ['ENSG00000153558', 'FBXL2'],
+      7: ['ENSG00000206557', 'TRIM71'],
+      8: ['ENSG00000153560', 'UBP1'],
+      9: ['ENSG00000162510', 'MATN1'],
+    },
+    feature_names: ['gene_ensembl', 'gene_symbol'],
+  },
   column_dendrogram: {
     nodes: {
       0: {
@@ -326,6 +272,60 @@ const data = {
         right_child: 7,
       },
     },
+  },
+  column_metadata: {
+    features: [
+      [
+        'female',
+        'female',
+        'male',
+        'male',
+        'female',
+      ],
+      [
+        'native_hawaiian_or_other_pacific_islander',
+        'asian',
+        'not_reported',
+        'american_indian_or_alaska_native',
+        'white',
+      ],
+      [
+        'hispanic_or_latino',
+        'hispanic_or_latino',
+        'not_hispanic_or_latino',
+        'not_reported',
+        'not_reported',
+      ],
+      [
+        '50',
+        '20',
+        '90',
+        '70',
+        '65',
+      ],
+      [
+        'alive',
+        'dead',
+        'dead',
+        'alive',
+        'dead',
+      ],
+      [
+        '1500',
+        '3000',
+        '500',
+        '1000',
+        '2000',
+      ],
+    ],
+    feature_names: [
+      'Gender',
+      'Race',
+      'Ethnicity',
+      'Age at Diagnosis',
+      'Vital Status',
+      'Days to Death',
+    ],
   },
 };
 

@@ -3472,7 +3472,7 @@ fieldset[disabled] .navbar-default .btn-link:focus {
 .pagination > .disabled > a,
 .pagination > .disabled > a:hover,
 .pagination > .disabled > a:focus {
-  color: #767676;
+  color: #706f6f;
   background-color: #fff;
   border-color: #ddd;
   cursor: not-allowed;
@@ -3543,7 +3543,7 @@ fieldset[disabled] .navbar-default .btn-link:focus {
 .pager .disabled > a:hover,
 .pager .disabled > a:focus,
 .pager .disabled > span {
-  color: #767676;
+  color: #706f6f;
   background-color: #fff;
   cursor: not-allowed;
 }
@@ -3965,7 +3965,7 @@ button.list-group-item {
 .list-group-item.disabled:hover,
 .list-group-item.disabled:focus {
   background-color: #eeeeee;
-  color: #767676;
+  color: #706f6f;
   cursor: not-allowed;
 }
 .list-group-item.disabled .list-group-item-heading,
@@ -3976,7 +3976,7 @@ button.list-group-item {
 .list-group-item.disabled .list-group-item-text,
 .list-group-item.disabled:hover .list-group-item-text,
 .list-group-item.disabled:focus .list-group-item-text {
-  color: #767676;
+  color: #706f6f;
 }
 .list-group-item.active,
 .list-group-item.active:hover,

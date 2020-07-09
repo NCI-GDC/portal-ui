@@ -4,7 +4,7 @@
 import $ from 'jquery';
 import Konva from 'konva';
 import Color from 'color';
-import { each, round } from 'lodash';
+import { capitalize, each, round } from 'lodash';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -2118,7 +2118,7 @@ import { each, round } from 'lodash';
     }
     // add the category name
     text = self.objects_ref.heatmap_value.clone({
-      text: title,
+      text: self._format_category_name(title),
       fontSize: self.options.font.size,
     });
 
@@ -2130,6 +2130,12 @@ import { each, round } from 'lodash';
     row.add(text);
 
     return row;
+  };
+
+  InCHlib.prototype._format_category_name = function (title) {
+    return title.split('_').map(word => 
+      word === 'at' || word === 'to' ? word : capitalize(word)
+    ).join(' ');
   };
 
   InCHlib.prototype._bind_row_events = function (row) {
@@ -3707,7 +3713,8 @@ import { each, round } from 'lodash';
 
     const header_text = self.heatmap_header.includes(header_value)
       ? `Case: ${header_value.split('_')[0]}, Gene: ${attrs.hgnc_id}`
-      : header_value;
+      // below: column_metadata tooltip
+      : self._format_category_name(header_value);
 
     const tooltip_value = typeof value === 'undefined'
       ? name.split('_').join(' ')

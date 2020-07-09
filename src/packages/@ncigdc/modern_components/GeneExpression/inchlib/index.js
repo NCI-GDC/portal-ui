@@ -2215,9 +2215,9 @@ import { each, round } from 'lodash';
         if (skip_column) {
           continue;
         }
-        // TODO this is not great. we should ask backend devs to provide
-        // id and uuid in an object.
-        const [ case_id, case_uuid ] = current_headers[i].split('_');
+        const case_uuid = current_headers[i];
+        // TODO: need some kind of display identifier for cases.
+        const case_id = `CASE_ID_${i}`;
         const x = (self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2) + 5;
         const column_header = self.objects_ref.column_header.clone({
           fill: self.hover_fill,

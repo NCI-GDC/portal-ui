@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "portal-ui.fullname" . }}
+  name: {{ include "portal-ui.proxy.fullname" . }}
   labels:
     {{- include "portal-ui.labels" . | nindent 4 }}
 spec:
 {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.proxy.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
-      {{- include "portal-ui.selectorLabels" . | nindent 6 }}
+      {{- include "portal-ui.proxy.selectorLabels" . | nindent 6 }}
   template:
     metadata:
     {{- with .Values.podAnnotations }}
@@ -18,7 +18,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        {{- include "portal-ui.selectorLabels" . | nindent 8 }}
+        {{- include "portal-ui.proxy.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -31,7 +31,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.proxy.image.repository }}:{{ .Values.proxy.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -46,15 +46,21 @@ spec:
               path: /
               port: http
           volumeMounts:
+            - mountPath: /etc/nginx/proxy_params
+              name: nginx-proxyparams
+              subPath: proxy_params
             - mountPath: /etc/nginx/conf.d/ # mount nginx-conf volumn to /etc/nginx/conf.d
               readOnly: true
               name: nginx-conf
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.proxy.resources | nindent 12 }}
       volumes:
+        - name: nginx-proxyparams
+          configMap: 
+            name: {{ include "portal-ui.proxy.fullname" . }}-nginx-proxy-params
         - name: nginx-conf
           configMap:
-            name: {{ include "portal-ui.fullname" . }}-nginx-config
+            name: {{ include "portal-ui.proxy.fullname" . }}-nginx-config
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -31,29 +31,38 @@ const CaseRoute = LoadableWithLoading({
   loader: () => import('@ncigdc/routes/CaseRoute/CaseRoute'),
 });
 
-export default () => (
+const ImageViewerRoute = LoadableWithLoading({
+  loader: () => import('@ncigdc/routes/ImageViewerRoute/ImageViewerRoute'),
+});
+
+const AWGRoutes = () => (
   <span>
-    <Route children={p => <Head title={p.location.pathname.split('/')[1]} />} />
+    <Route>
+      {({ location: { pathname } }) => <Head title={pathname.split('/')[1]} />}
+    </Route>
     <Switch>
       <AuthRoute
+        component={() => <Redirect to="/repository" />}
         exact
         path="/"
-        component={() => <Redirect to={'/repository'} />}
-      />
-      <AuthRoute exact path="/cart" component={CartRoute} />
-      <AuthRoute exact path="/repository" component={RepositoryRoute} />
-      <AuthRoute exact path="/projects" component={ProjectsRoute} />
-      <AuthRoute exact path="/annotations" component={AnnotationsRoute} />
-      <AuthRoute path="/projects/:id" component={ProjectRoute} />
-      <AuthRoute path="/files/:id" component={FileRoute} />
-      <AuthRoute path="/cases/:id" component={CaseRoute} />
+        />
+      <AuthRoute component={CartRoute} exact path="/cart" />
+      <AuthRoute component={RepositoryRoute} exact path="/repository" />
+      <AuthRoute component={ProjectsRoute} exact path="/projects" />
+      <AuthRoute component={AnnotationsRoute} exact path="/annotations" />
+      <AuthRoute component={ProjectRoute} path="/projects/:id" />
+      <AuthRoute component={FileRoute} path="/files/:id" />
+      <AuthRoute component={CaseRoute} path="/cases/:id" />
       <AuthRoute
-        path="/annotations/:id"
         component={({ match, annotationId = match.params.id }) => (
           <AnnotationSummary annotationId={annotationId} />
         )}
-      />
+        path="/annotations/:id"
+        />
+      <AuthRoute component={ImageViewerRoute} path="/image-viewer" />
       <Route component={NotFound} />
     </Switch>
   </span>
 );
+
+export default AWGRoutes;

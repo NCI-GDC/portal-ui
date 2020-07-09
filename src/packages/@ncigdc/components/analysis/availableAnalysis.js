@@ -359,16 +359,14 @@ const availableAnalysis: [TAnalysis] = [
           />
       )
     ),
-    setInstructions: 'Select a case set',
     setTypes: ['case'],
     type: 'clinical_data',
     validateSets: sets => sets &&
       ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
   },
-  ...DISPLAY_GENE_EXPRESSION &&
-  // copied from clinical analysis and lightly modified
-  // TODO: replace with real demoData, a real icon, etc
-  [
+  ...DISPLAY_GENE_EXPRESSION && [
+    // copied from clinical analysis and lightly modified
+    // TODO: replace with real demoData, etc
     {
       demoData: {
         displayVariables: { ...defaultVariables },
@@ -395,7 +393,7 @@ const availableAnalysis: [TAnalysis] = [
         },
         type: 'gene_expression',
       },
-      description: 'Display the gene expression heatmap for your selected set of cases and genes.',
+      description: 'Display the gene expression heatmap for sets of cases and genes of your choice.',
       Icon: withTheme(({ style }) => (
         <div>
           <GeneExpression
@@ -413,17 +411,15 @@ const availableAnalysis: [TAnalysis] = [
           {...props}
           />
       ),
-      setInstructions: 'Select a case set',
-      setTypes: ['case'],
+      setTypes: ['case', 'gene'],
       type: 'gene_expression',
       validateSets: sets => sets &&
-      ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
+        ['case', 'gene'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
     },
   ],
-  ...DISPLAY_SCRNA_SEQ &&
-  // copied from clinical analysis and lightly modified
-  // TODO: replace with real demoData, a real icon, etc
-  [
+  ...DISPLAY_SCRNA_SEQ && [
+    // copied from clinical analysis and lightly modified
+    // TODO: replace with real demoData, a real icon, etc
     {
       demoData: {
         displayVariables: { ...defaultVariables },
@@ -468,7 +464,6 @@ const availableAnalysis: [TAnalysis] = [
           {...props}
           />
       ),
-      setInstructions: 'Select a case set',
       setTypes: ['case'],
       type: 'scrna_seq',
       validateSets: sets => sets &&

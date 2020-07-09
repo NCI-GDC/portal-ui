@@ -259,8 +259,8 @@ import { each, round } from 'lodash';
     }
 
     self.legend_id = `legend_${self._name}`;
-    self.legend_continuous_categories = ['Age at Diagnosis', 'Days to Death'];
-    self.legend_horizontal_categories = ['Gender', 'Vital Status'];
+    self.legend_continuous_categories = ['age_at_diagnosis', 'days_to_death'];
+    self.legend_horizontal_categories = ['gender', 'vital_status'];
     self.legend_headings = [
       ...Object.keys(self.options.categories.colors),
       ...self.legend_continuous_categories
@@ -278,7 +278,7 @@ import { each, round } from 'lodash';
       },
     }
 
-    self.legend_gradient_upper_value = name => name === 'Age at Diagnosis'
+    self.legend_gradient_upper_value = name => name === 'age_at_diagnosis'
       ? self.MAX_AGE_AT_DIAGNOSIS
       : self.MAX_DAYS_TO_DEATH;
 
@@ -2067,13 +2067,17 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._get_column_metadata_color = function (title, text_value) {
     const self = this;
-    return title === 'Days to Death'
+    return title === 'days_to_death'
       ? self.get_days_to_death_color(text_value)
-      : title === 'Age at Diagnosis'
+      : title === 'age_at_diagnosis'
         ? self.get_age_at_diagnosis_color(text_value)
-        : self.options.categories.colors[title][text_value] ||
+        : self.options.categories.colors[title][self._normalize(text_value)] ||
           self.invalid_column_metadata_color;
   };
+
+  InCHlib.prototype._normalize = function (name) {
+    return name.toLowerCase().split('_').join(' ');
+  }
 
   InCHlib.prototype._draw_column_metadata_row = function (data, title, row_index, x1, y1) {
     const self = this;
@@ -3338,7 +3342,7 @@ import { each, round } from 'lodash';
         });
 
         const gradient = new Konva.Rect({
-          fillLinearGradientColorStops: heading === 'Age at Diagnosis'
+          fillLinearGradientColorStops: heading === 'age_at_diagnosis'
             ? [0, self.legend_gradients.age.min, 1, self.legend_gradients.age.max]
             : [0, self.legend_gradients.days.min, 1, self.legend_gradients.days.max],
           fillLinearGradientEndPoint: {

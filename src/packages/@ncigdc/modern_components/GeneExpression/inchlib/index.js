@@ -313,20 +313,20 @@ import { capitalize, each, round } from 'lodash';
         * @name InCHlib#heatmap_header_onclick
         * @event
         * @param {function} function() callback function for click on the heatmap header event
-        * @eventData {string} case_uuid, used to create a link to the case page
+        * @eventData {string} case_id, used to create a link to the case page
 
         * @example
         * instance.events.heatmap_header_onclick = (
-        *    function(case_uuid) {
-        *       alert(case_uuid);
+        *    function(case_id) {
+        *       alert(case_id);
         *    }
         * );
         *
         */
-       heatmap_header_onclick(case_uuid) {
+       heatmap_header_onclick(case_id) {
         const clickInchlibLink = new CustomEvent('clickInchlibLink', {
           detail: {
-            case_uuid
+            case_id
           },
         });
         self.element.dispatchEvent(clickInchlibLink);
@@ -2221,9 +2221,9 @@ import { capitalize, each, round } from 'lodash';
         if (skip_column) {
           continue;
         }
-        const case_uuid = current_headers[i];
+        const case_id = current_headers[i];
         // TODO: need some kind of display identifier for cases.
-        const case_id = `CASE_ID_${i}`;
+        const submitter_id = `SUB_ID_${i}`;
         const x = (self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2) + 5;
         const column_header = self.objects_ref.column_header.clone({
           fill: self.hover_fill,
@@ -2232,7 +2232,7 @@ import { capitalize, each, round } from 'lodash';
           fontStyle: '500',
           position_index: i,
           rotation,
-          text: case_id,
+          text: submitter_id,
           x,
           y,
         });
@@ -2240,7 +2240,7 @@ import { capitalize, each, round } from 'lodash';
         const rect_x = self.heatmap_distance + (self.pixels_for_dimension * distance_step);
         const rect_y = y - 5;
         var rect = new Konva.Rect({
-          case_uuid,
+          case_id,
           width: self.pixels_for_dimension,
           height: rect_height,
           fill: '#fff',
@@ -2254,8 +2254,8 @@ import { capitalize, each, round } from 'lodash';
 
       self.stage.add(self.header_layer);
 
-      self.header_layer.on('click', ({ target: { attrs: { case_uuid }}}) => {
-        self.events.heatmap_header_onclick(case_uuid);
+      self.header_layer.on('click', ({ target: { attrs: { case_id }}}) => {
+        self.events.heatmap_header_onclick(case_id);
       });
 
       self.header_layer.on('mouseover', function (evt) {
@@ -2280,12 +2280,12 @@ import { capitalize, each, round } from 'lodash';
 
   InCHlib.prototype._draw_col_overlay_for_header = function(evt) {
     const self = this;
-    const { case_uuid, x, y } = evt.target.attrs;
+    const { case_id, x, y } = evt.target.attrs;
 
-    if (self.active_header_column !== case_uuid) {
+    if (self.active_header_column !== case_id) {
       const overlayX = x + (self.pixels_for_dimension / 2);
       self.column_overlay.destroy();
-      self.active_header_column = case_uuid;
+      self.active_header_column = case_id;
       self.column_overlay = self.objects_ref.heatmap_line.clone({
         points: [
           overlayX,

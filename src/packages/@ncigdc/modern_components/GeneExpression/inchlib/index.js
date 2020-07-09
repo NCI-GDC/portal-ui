@@ -291,20 +291,20 @@ import { each, round } from 'lodash';
         * @name InCHlib#row_onclick
         * @event
         * @param {function} function() callback function for click on the heatmap row event
-        * @eventData {string} gene_ensembl, used to create a link to the gene page
+        * @eventData {string} ensembl_id, used to create a link to the gene page
 
         * @example
         * instance.events.row_onclick = (
-        *    function(gene_ensembl) {
-        *       alert(gene_ensembl);
+        *    function(ensembl_id) {
+        *       alert(ensembl_id);
         *    }
         * );
         *
         */
-      row_onclick(gene_ensembl) {
+      row_onclick(ensembl_id) {
         const clickInchlibLink = new CustomEvent('clickInchlibLink', {
           detail: {
-            gene_ensembl
+            ensembl_id
           },
         });
         self.element.dispatchEvent(clickInchlibLink);
@@ -1984,7 +1984,7 @@ import { each, round } from 'lodash';
     let text_value;
     let col_index;
   
-    const [ gene_ensembl, gene_symbol ] = self.metadata.nodes[node_id];
+    const [ ensembl_id, hgnc_id ] = self.metadata.nodes[node_id];
   
     // draw heatmap cells
     for (var i = 0, len = self.on_features.data.length; i < len; i++) {
@@ -2007,8 +2007,8 @@ import { each, round } from 'lodash';
           ],
           value: text_value,
           column: ['d', col_index].join('_'),
-          gene_symbol,
-          // gene_symbol for heatmap cell tooltip
+          hgnc_id,
+          // gene hgnc_id for heatmap cell tooltip
           strokeWidth: self.pixels_for_leaf,
         });
         row.add(line);
@@ -2023,23 +2023,23 @@ import { each, round } from 'lodash';
   
     if (self.current_draw_values) {
       text = self.objects_ref.heatmap_value.clone({
-        text: gene_symbol,
+        text: hgnc_id,
         fontSize: self.options.font.size,
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
       
       line = self.objects_ref.heatmap_line.clone({
-        // gene_ensembl for creating links
-        gene_ensembl,
+        // gene ensembl_id for creating links
+        ensembl_id,
         points: [
           x1,
           y1,
           x2,
           y2,
         ],
-        // gene_symbol for gene column tooltip
-        name: gene_symbol,
+        // gene hgnc_id for gene column tooltip
+        name: hgnc_id,
         column: ['m', 1].join('_'),
         strokeWidth: self.pixels_for_leaf,
         opacity: 1 - self.hover_opacity_off,
@@ -2054,9 +2054,9 @@ import { each, round } from 'lodash';
         y,
       });
       row.add(text, line);
-      row.on('click', ({ target: { attrs: { gene_ensembl = '' }}}) => {
-        if (gene_ensembl !== '') {
-          self.events.row_onclick(gene_ensembl);
+      row.on('click', ({ target: { attrs: { ensembl_id = '' }}}) => {
+        if (ensembl_id !== '') {
+          self.events.row_onclick(ensembl_id);
         }
       });
     }
@@ -2140,8 +2140,8 @@ import { each, round } from 'lodash';
 
     row.on('mouseover', (evt) => {
       const { target: { attrs: { column = '' }}} = evt;
-      const is_gene_symbol_column = column === 'm_1';
-      if (is_gene_symbol_column) {
+      const is_hgnc_id_column = column === 'm_1';
+      if (is_hgnc_id_column) {
         evt.target.opacity(1 - self.hover_opacity_on);
         self.heatmap_layer.draw();
         self._cursor_mouseover();
@@ -2151,8 +2151,8 @@ import { each, round } from 'lodash';
 
     row.on('mouseout', (evt) => {
       const { target: { attrs: { column = '' }}} = evt;
-      const is_gene_symbol_column = column === 'm_1';
-      if (is_gene_symbol_column) {
+      const is_hgnc_id_column = column === 'm_1';
+      if (is_hgnc_id_column) {
         evt.target.opacity(1 - self.hover_opacity_off);
         self.heatmap_layer.draw();
         self._cursor_mouseout();
@@ -2206,7 +2206,7 @@ import { each, round } from 'lodash';
       const max_text_length = self._get_max_length(current_headers);
 
       for (var i = 0, len = current_headers.length; i < len; i++) {
-        const skip_column = ['gene_ensembl', 'gene_symbol']
+        const skip_column = ['ensembl_id', 'hgnc_id']
           .includes(current_headers[i]);
         if (skip_column) {
           continue;
@@ -3664,7 +3664,7 @@ import { each, round } from 'lodash';
     let line;
     const { attrs } = evt.target;
     const { column: original_column, points } = attrs;
-    const is_gene_symbol_column = original_column === 'm_1';
+    const is_hgnc_id_column = original_column === 'm_1';
     const x = self._hack_round((points[0] + points[2]) / 2);
     const y = points[1] - 0.5 * self.pixels_for_leaf;
     const column = original_column.split('_');
@@ -3692,7 +3692,7 @@ import { each, round } from 'lodash';
         ],
         strokeWidth: self.pixels_for_dimension,
         stroke: '#fff',
-        opacity: 0.3 * !is_gene_symbol_column,
+        opacity: 0.3 * !is_hgnc_id_column,
         listening: false,
         id: 'column_overlay',
       });
@@ -3702,7 +3702,7 @@ import { each, round } from 'lodash';
     const { name, value } = attrs;
 
     const header_text = self.heatmap_header.includes(header_value)
-      ? `Case: ${header_value.split('_')[0]}, Gene: ${attrs.gene_symbol}`
+      ? `Case: ${header_value.split('_')[0]}, Gene: ${attrs.hgnc_id}`
       : header_value;
 
     const tooltip_value = typeof value === 'undefined'
@@ -3715,12 +3715,12 @@ import { each, round } from 'lodash';
       x,
       y,
       id: 'col_label',
-      opacity: + !is_gene_symbol_column,
+      opacity: + !is_hgnc_id_column,
     });
 
     tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
 
-    if (is_gene_symbol_column) {
+    if (is_hgnc_id_column) {
       self._cursor_mouseover();
     }
 

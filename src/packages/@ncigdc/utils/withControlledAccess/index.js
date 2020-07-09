@@ -32,13 +32,17 @@ import {
 
 export default compose(
   setDisplayName('withControlledAccess'),
+  withRouter,
   connect(state => ({
     token: state.auth.token,
     user: state.auth.user,
     userControlledAccess: state.auth.userControlledAccess,
   })),
-  withRouter,
-  withState('studiesSummary', 'setStudiesSummary', {}),
+  withState('studiesSummary', 'setStudiesSummary', {
+    controlled: [],
+    in_process: [],
+    open: [],
+  }),
   withHandlers({
     clearUserAccess: ({
       dispatch,
@@ -70,6 +74,15 @@ export default compose(
       });
     },
   }),
+  lifecycle({
+    componentDidMount() {
+      const {
+        fetchStudiesList,
+      } = this.props;
+
+      DISPLAY_DAVE_CA && fetchStudiesList();
+    },
+  }),
   withPropsOnChange(
     (
       {
@@ -86,7 +99,7 @@ export default compose(
       storeUserAccess,
       user,
       userControlledAccess,
-    }) => (user
+    }) => (user && DISPLAY_DAVE_CA
       ? userControlledAccess.fetched || (
         IS_DEV || DEV_USER
           ? storeUserAccess(DEV_USER_CA)
@@ -173,29 +186,22 @@ export default compose(
         ),
       });
 
-      return DISPLAY_DAVE_CA && {
-        controlledAccessProps: {
-          controlledStudies,
-          showControlledAccessModal: () => {
-            dispatch(setModal(
-              <ControlledAccessModal
-                activeControlledPrograms={controlledStudies}
-                closeModal={() => dispatch(setModal(null))}
-                studiesSummary={studiesSummary}
-                />,
-            ));
-          },
-        },
+      return {
+        controlledAccessProps: DISPLAY_DAVE_CA
+          ? {
+            controlledStudies,
+            showControlledAccessModal: () => {
+              dispatch(setModal(
+                <ControlledAccessModal
+                  activeControlledPrograms={controlledStudies}
+                  closeModal={() => dispatch(setModal(null))}
+                  studiesSummary={studiesSummary}
+                  />,
+              ));
+            },
+          }
+          : {},
       };
     },
   ),
-  lifecycle({
-    componentDidMount() {
-      const {
-        fetchStudiesList,
-      } = this.props;
-
-      fetchStudiesList();
-    },
-  }),
 );

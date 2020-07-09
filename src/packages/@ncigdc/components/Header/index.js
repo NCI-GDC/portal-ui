@@ -263,13 +263,13 @@ export default compose(
   withState('headerHeight', 'setHeaderHeight', 0),
   withState('isCollapsed', 'setIsCollapsed', true),
   withState('isInSearchMode', 'setIsInSearchMode', false),
+  withControlledAccess,
   withRouter,
   connect(state => ({
     error: state.error,
     notifications: state.bannerNotification,
     user: state.auth.user,
   })),
-  withControlledAccess,
   withHandlers({
     handleApiError: ({ dispatch }) => ({ status, user }) => {
       if (user && status === 401) {

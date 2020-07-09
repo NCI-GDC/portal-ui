@@ -26,13 +26,13 @@ const sectionTitles = {
 
 export default compose(
   setDisplayName('EnhancedSectionHeader'),
-  withRouter,
   withControlledAccess,
+  withRouter,
   withPropsOnChange(
     ({
       controlledAccessProps: {
         controlledStudies,
-      },
+      } = {},
       location: {
         pathname,
         state,
@@ -40,7 +40,7 @@ export default compose(
     }, {
       controlledAccessProps: {
         controlledStudies: nextControlledStudies,
-      },
+      } = {},
       location: {
         pathname: nextPathname,
         state: nextState,
@@ -52,8 +52,8 @@ export default compose(
     ),
     ({
       controlledAccessProps: {
-        controlledStudies,
-      },
+        controlledStudies = [],
+      } = {},
       location: {
         pathname,
         state: {

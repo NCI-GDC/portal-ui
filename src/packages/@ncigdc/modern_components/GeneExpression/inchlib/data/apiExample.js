@@ -2,7 +2,7 @@ const data = {
   inchlib: {
     data: {
       nodes: {
-        ENSG00000099250: {
+        ensembl_id_0: {
           count: 1,
           distance: 1,
           features: [
@@ -14,10 +14,10 @@ const data = {
           ],
           parent: 'node-10',
           objects: [
-            'ENSG00000099250',
+            'ensembl_id_0',
           ],
         },
-        ENSG00000099204: {
+        ensembl_id_1: {
           count: 1,
           distance: 1,
           features: [
@@ -29,10 +29,10 @@ const data = {
           ],
           parent: 'node-14',
           objects: [
-            'ENSG00000099204',
+            'ensembl_id_1',
           ],
         },
-        ENSG00000097033: {
+        ensembl_id_2: {
           count: 1,
           distance: 1,
           features: [
@@ -44,10 +44,10 @@ const data = {
           ],
           parent: 'node-17',
           objects: [
-            'ENSG00000097033',
+            'ensembl_id_2',
           ],
         },
-        ENSG00000099219: {
+        ensembl_id_3: {
           count: 1,
           distance: 1,
           features: [
@@ -59,10 +59,10 @@ const data = {
           ],
           parent: 'node-16',
           objects: [
-            'ENSG00000099219',
+            'ensembl_id_3',
           ],
         },
-        ENSG00000097096: {
+        ensembl_id_4: {
           count: 1,
           distance: 1,
           features: [
@@ -74,10 +74,10 @@ const data = {
           ],
           parent: 'node-18',
           objects: [
-            'ENSG00000097096',
+            'ensembl_id_4',
           ],
         },
-        ENSG00000097046: {
+        ensembl_id_5: {
           count: 1,
           distance: 1,
           features: [
@@ -89,10 +89,10 @@ const data = {
           ],
           parent: 'node-10',
           objects: [
-            'ENSG00000097046',
+            'ensembl_id_5',
           ],
         },
-        ENSG00000099246: {
+        ensembl_id_6: {
           count: 1,
           distance: 1,
           features: [
@@ -104,10 +104,10 @@ const data = {
           ],
           parent: 'node-12',
           objects: [
-            'ENSG00000099246',
+            'ensembl_id_6',
           ],
         },
-        ENSG00000099194: {
+        ensembl_id_7: {
           count: 1,
           distance: 1,
           features: [
@@ -119,10 +119,10 @@ const data = {
           ],
           parent: 'node-15',
           objects: [
-            'ENSG00000099194',
+            'ensembl_id_7',
           ],
         },
-        ENSG00000099203: {
+        ensembl_id_8: {
           count: 1,
           distance: 1,
           features: [
@@ -134,10 +134,10 @@ const data = {
           ],
           parent: 'node-11',
           objects: [
-            'ENSG00000099203',
+            'ensembl_id_8',
           ],
         },
-        ENSG00000099139: {
+        ensembl_id_9: {
           count: 1,
           distance: 1,
           features: [
@@ -149,78 +149,78 @@ const data = {
           ],
           parent: 'node-13',
           objects: [
-            'ENSG00000099139',
+            'ensembl_id_9',
           ],
         },
         'node-10': {
           count: 2,
           distance: 5427530.836972801,
-          left_child: 'ENSG00000097046',
-          right_child: 'ENSG00000099250',
+          left_child: 'ensembl_id_5',
+          right_child: 'ensembl_id_0',
           parent: 'node-11',
         },
         'node-11': {
           count: 3,
           distance: 5445150.130053867,
-          left_child: 'ENSG00000099203',
+          left_child: 'ensembl_id_8',
           right_child: 'node-10',
           parent: 'node-12',
         },
         'node-12': {
           count: 4,
           distance: 5683608.616648939,
-          left_child: 'ENSG00000099246',
+          left_child: 'ensembl_id_6',
           right_child: 'node-11',
           parent: 'node-13',
         },
         'node-13': {
           count: 5,
           distance: 5725842.121959146,
-          left_child: 'ENSG00000099139',
+          left_child: 'ensembl_id_9',
           right_child: 'node-12',
           parent: 'node-14',
         },
         'node-14': {
           count: 6,
           distance: 5758360.42559455,
-          left_child: 'ENSG00000099204',
+          left_child: 'ensembl_id_1',
           right_child: 'node-13',
           parent: 'node-15',
         },
         'node-15': {
           count: 7,
           distance: 5849079.856825955,
-          left_child: 'ENSG00000099194',
+          left_child: 'ensembl_id_7',
           right_child: 'node-14',
           parent: 'node-16',
         },
         'node-16': {
           count: 8,
           distance: 5903096.115669005,
-          left_child: 'ENSG00000099219',
+          left_child: 'ensembl_id_3',
           right_child: 'node-15',
           parent: 'node-17',
         },
         'node-17': {
           count: 9,
           distance: 5939172.300020324,
-          left_child: 'ENSG00000097033',
+          left_child: 'ensembl_id_2',
           right_child: 'node-16',
           parent: 'node-18',
         },
         'node-18': {
           count: 10,
           distance: 5939172.300020324,
-          left_child: 'ENSG00000097096',
+          left_child: 'ensembl_id_4',
           right_child: 'node-17',
         },
       },
       feature_names: [
-        '1005ccb2-10ef-4e37-950e-ad72393db03c',
-        '115b754d-8559-4f1d-af44-fcd8c2cef86a',
-        '251b5341-405f-4f16-8334-475f2d358c25',
-        '8b119d1c-6d21-4bbd-8a00-12da7b97d6c4',
-        'acb3b9db-16e9-40f5-87a9-9df9d4ceee54',
+        'case_id_3',
+        'case_id_2',
+        'case_id_1',
+        'case_id_4',
+        'case_id_0',
       ],
     },
     metadata: {
@@ -229,71 +229,71 @@ const data = {
         'hgnc_id',
       ],
       nodes: {
-        ENSG00000099250: [
-          'ENSG00000099250',
-          'None',
+        ensembl_id_0: [
+          'ensembl_id_0',
+          'hgdc_id_0',
         ],
-        ENSG00000099204: [
-          'ENSG00000099204',
-          'None',
+        ensembl_id_1: [
+          'ensembl_id_1',
+          'hgdc_id_1',
         ],
-        ENSG00000097033: [
-          'ENSG00000097033',
-          'None',
+        ensembl_id_2: [
+          'ensembl_id_2',
+          'hgdc_id_2',
         ],
-        ENSG00000099219: [
-          'ENSG00000099219',
-          'None',
+        ensembl_id_3: [
+          'ensembl_id_3',
+          'hgdc_id_3',
         ],
-        ENSG00000097096: [
-          'ENSG00000097096',
-          'None',
+        ensembl_id_4: [
+          'ensembl_id_4',
+          'hgdc_id_4',
         ],
-        ENSG00000097046: [
-          'ENSG00000097046',
-          'None',
+        ensembl_id_5: [
+          'ensembl_id_5',
+          'hgdc_id_5',
         ],
-        ENSG00000099246: [
-          'ENSG00000099246',
-          'None',
+        ensembl_id_6: [
+          'ensembl_id_6',
+          'hgdc_id_6',
         ],
-        ENSG00000099194: [
-          'ENSG00000099194',
-          'None',
+        ensembl_id_7: [
+          'ensembl_id_7',
+          'hgdc_id_7',
         ],
-        ENSG00000099203: [
-          'ENSG00000099203',
-          'None',
+        ensembl_id_8: [
+          'ensembl_id_8',
+          'hgdc_id_8',
         ],
-        ENSG00000099139: [
-          'ENSG00000099139',
-          'None',
+        ensembl_id_9: [
+          'ensembl_id_9',
+          'hgdc_id_9',
         ],
       },
     },
     column_dendrogram: {
       nodes: {
-        'acb3b9db-16e9-40f5-87a9-9df9d4ceee54': {
+        'case_id_0': {
           count: 1,
           distance: 0,
           parent: 'node-6',
         },
-        '251b5341-405f-4f16-8334-475f2d358c25': {
+        'case_id_1': {
           count: 1,
           distance: 0,
           parent: 'node-5',
         },
-        '115b754d-8559-4f1d-af44-fcd8c2cef86a': {
+        'case_id_2': {
           count: 1,
           distance: 0,
           parent: 'node-5',
         },
-        '1005ccb2-10ef-4e37-950e-ad72393db03c': {
+        'case_id_3': {
           count: 1,
           distance: 0,
           parent: 'node-7',
         },
-        '8b119d1c-6d21-4bbd-8a00-12da7b97d6c4': {
+        'case_id_4': {
           count: 1,
           distance: 0,
           parent: 'node-8',
@@ -301,28 +301,28 @@ const data = {
         'node-5': {
           count: 2,
           distance: 3830485.8379226765,
-          left_child: '115b754d-8559-4f1d-af44-fcd8c2cef86a',
-          right_child: '251b5341-405f-4f16-8334-475f2d358c25',
+          left_child: 'case_id_2',
+          right_child: 'case_id_1',
           parent: 'node-6',
         },
         'node-6': {
           count: 3,
           distance: 4235573.998643278,
-          left_child: 'acb3b9db-16e9-40f5-87a9-9df9d4ceee54',
+          left_child: 'case_id_0',
           right_child: 'node-5',
           parent: 'node-7',
         },
         'node-7': {
           count: 4,
           distance: 4290704.062202036,
-          left_child: '1005ccb2-10ef-4e37-950e-ad72393db03c',
+          left_child: 'case_id_3',
           right_child: 'node-6',
           parent: 'node-8',
         },
         'node-8': {
           count: 5,
           distance: 4290704.062202036,
-          left_child: '8b119d1c-6d21-4bbd-8a00-12da7b97d6c4',
+          left_child: 'case_id_4',
           right_child: 'node-7',
         },
       },
@@ -337,11 +337,11 @@ const data = {
           '65',
         ],
         // [
-        //   'acb3b9db-16e9-40f5-87a9-9df9d4ceee54',
-        //   '251b5341-405f-4f16-8334-475f2d358c25',
-        //   '115b754d-8559-4f1d-af44-fcd8c2cef86a',
-        //   '1005ccb2-10ef-4e37-950e-ad72393db03c',
-        //   '8b119d1c-6d21-4bbd-8a00-12da7b97d6c4',
+        //   'case_id_0',
+        //   'case_id_1',
+        //   'case_id_2',
+        //   'case_id_3',
+        //   'case_id_4',
         // ],
         [
           '1000',
@@ -372,11 +372,11 @@ const data = {
           'not reported',
         ],
         // [
-        //   'None',
-        //   'None',
-        //   'None',
-        //   'None',
-        //   'None',
+        //   'submitter_id_0',
+        //   'submitter_id_1',
+        //   'submitter_id_2',
+        //   'submitter_id_3',
+        //   'submitter_id_4',
         // ],
         [
           'Alive',

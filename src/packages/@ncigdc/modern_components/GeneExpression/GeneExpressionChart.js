@@ -14,6 +14,7 @@ const options = {
   categories: {
     colors: CATEGORY_COLORS,
   },
+  case_metadata_fields: ['case_id', 'submitter_id'],
   max_width: 1200,
   tooltip: {
     fill: '#fff',

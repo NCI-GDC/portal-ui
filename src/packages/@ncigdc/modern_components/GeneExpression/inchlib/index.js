@@ -140,6 +140,7 @@ import { capitalize, each, round } from 'lodash';
   const plugin_name = 'InCHlib';
 
   const defaults = {
+    case_metadata_fields: [],
     categories: {
       colors: {},
       defaults: [],
@@ -1081,7 +1082,31 @@ import { capitalize, each, round } from 'lodash';
       options.column_dendrogram = false;
     }
     if (json.column_metadata !== undefined) {
-      self.column_metadata = json.column_metadata;
+      self.case_metadata = {};
+      self.column_metadata = {};
+
+      json.column_metadata.feature_names.map((feature, i) => {
+        if (self.options.case_metadata_fields.includes(feature)) {
+          self.case_metadata[feature] = json.column_metadata.features[i]
+        }
+      });
+
+      self.column_metadata = json.column_metadata.feature_names
+        .reduce((acc, curr, idx) => {
+          console.log(self.options.case_metadata_fields.includes(curr))
+          return self.options.case_metadata_fields.includes(curr)
+            ? acc
+            : ({
+                feature_names: [
+                  curr,
+                  ...acc.feature_names
+                ] ,
+                features: [
+                  json.column_metadata.features[idx],
+                  ...acc.features
+                ],
+              })}, { features: [], feature_names: [] })
+
       self.column_metadata.visible = Array(self.column_metadata.features.length)
         .fill(true);
       options.column_metadata = true;

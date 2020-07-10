@@ -41,7 +41,6 @@ class GeneExpression extends Component {
       },
     },
   ) => {
-    console.log({ case_id, ensembl_id });
     const nextPage = ensembl_id === ''
       ? `/cases/${case_id}`
       : `/genes/${ensembl_id}`;

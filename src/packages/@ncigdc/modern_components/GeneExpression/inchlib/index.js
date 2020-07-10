@@ -986,7 +986,7 @@ import { capitalize, each, round } from 'lodash';
           const checked = self.column_metadata.visible[i]
             ? ' checked'
             : '';
-          return `<li class="inchlib-modal_categories-form_list-item"><input type='checkbox' id='${id}' class='inchlib-modal_categories-form_input' name='inchlib-edit-categories' value='${category}'${checked}/><label for='${id}' class='inchlib-modal_categories-form_label'>${category}</label></li>`;
+          return `<li class="inchlib-modal_categories-form_list-item"><input type='checkbox' id='${id}' class='inchlib-modal_categories-form_input' name='inchlib-edit-categories' value='${category}'${checked}/><label for='${id}' class='inchlib-modal_categories-form_label'>${self._format_category_name(category)}</label></li>`;
         })
       )
       .concat('</ul>')

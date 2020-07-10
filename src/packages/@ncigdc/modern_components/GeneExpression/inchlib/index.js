@@ -1111,7 +1111,9 @@ import { capitalize, each, round } from 'lodash';
         .map(feature => feature
           .map(value => typeof value === 'string'
             ? value.toLowerCase()
-            : value
+            : typeof value === 'number'
+                ? value.toString()
+                : value
           ));
 
       self.column_metadata.visible = Array(self.column_metadata.features.length)

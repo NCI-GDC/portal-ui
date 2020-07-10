@@ -42,6 +42,7 @@ class GeneExpressionChart extends Component {
     };
     // this doesn't work if jquery is imported
     // in this file. ignore the eslint error
+    // about the $ symbol on the line below
     this.$el = $(this.el);
     this.$el.InCHlib(this.options);
     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);

@@ -36,14 +36,15 @@ class GeneExpression extends Component {
   handleClickInchlibLink = (
     {
       detail: {
-        case_uuid = '',
-        gene_ensembl = '',
+        case_id = '',
+        ensembl_id = '',
       },
     },
   ) => {
-    const nextPage = gene_ensembl === ''
-      ? `/cases/${case_uuid}`
-      : `/genes/${gene_ensembl}`;
+    console.log({ case_id, ensembl_id });
+    const nextPage = ensembl_id === ''
+      ? `/cases/${case_id}`
+      : `/genes/${ensembl_id}`;
     // This opens the link in a new tab
     Object.assign(document.createElement('a'), {
       href: nextPage,

@@ -3216,8 +3216,8 @@ import { capitalize, each, round } from 'lodash';
       .concat(self.legend_headings
         .map(name => {
           if (self.legend_continuous_categories.includes(name)) {
-            return `<li class="inchlib-legend_list-item"><strong>${name}</strong>
-            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.toLowerCase().split(' ')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
+            return `<li class="inchlib-legend_list-item"><strong>${self._format_category_name(name)}</strong>
+            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.split('_')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
           } else {
             const legend_list = Object.keys(self.options.categories.colors[name])
               .map(value => `<li class="inchlib-legend_sublist-item${
@@ -3227,7 +3227,7 @@ import { capitalize, each, round } from 'lodash';
                     : ''
                 }"><span class='inchlib-legend_square' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
               .join('');
-            return `<li class="inchlib-legend_list-item"><strong>${name}</strong><ul class="inchlib-legend_sublist">${legend_list}</ul></li>`;
+            return `<li class="inchlib-legend_list-item"><strong>${self._format_category_name(name)}</strong><ul class="inchlib-legend_sublist">${legend_list}</ul></li>`;
           }
         })
       )
@@ -3371,7 +3371,7 @@ import { capitalize, each, round } from 'lodash';
         fill: self.hover_fill,
         fontFamily: self.options.font.family,
         fontStyle: '500',
-        text: heading,
+        text: self._format_category_name(heading),
         x,
         y,
       });

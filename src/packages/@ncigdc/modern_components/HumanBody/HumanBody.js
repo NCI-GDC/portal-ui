@@ -104,7 +104,22 @@ export default compose(
                       field: 'cases.primary_site',
                       value: datum.allPrimarySites,
                     },
-                  ]),
+                    ...[
+                      d.key === 'Lung'
+                      ? {
+                        field: 'cases.diagnoses.tissue_or_organ_of_origin',
+                        value: [
+                          'lower lobe, lung',
+                          'lung, nos',
+                          'main bronchus',
+                          'middle lobe, lung',
+                          'overlapping lesion of lung',
+                          'upper lobe, lung',
+                        ],
+                      }
+                      : null,
+                    ],
+                  ], d.key === 'Lung' ? 'or' : null),
                 ),
               };
               push({

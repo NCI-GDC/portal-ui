@@ -1083,29 +1083,36 @@ import { capitalize, each, round } from 'lodash';
     }
     if (json.column_metadata !== undefined) {
       self.case_metadata = {};
-      self.column_metadata = {};
 
+      // get case_id & submitter_id
       json.column_metadata.feature_names.map((feature, i) => {
         if (self.options.case_metadata_fields.includes(feature)) {
           self.case_metadata[feature] = json.column_metadata.features[i]
         }
       });
 
+      // get category tracks
       self.column_metadata = json.column_metadata.feature_names
-        .reduce((acc, curr, idx) => {
-          console.log(self.options.case_metadata_fields.includes(curr))
-          return self.options.case_metadata_fields.includes(curr)
+        .reduce((acc, curr, idx) =>
+          self.options.case_metadata_fields.includes(curr)
             ? acc
             : ({
                 feature_names: [
+                  ...acc.feature_names,
                   curr,
-                  ...acc.feature_names
                 ] ,
                 features: [
+                  ...acc.features,
                   json.column_metadata.features[idx],
-                  ...acc.features
                 ],
-              })}, { features: [], feature_names: [] })
+              }), { features: [], feature_names: [] });
+
+      self.column_metadata.features = self.column_metadata.features
+        .map(feature => feature
+          .map(value => typeof value === 'string'
+            ? value.toLowerCase()
+            : value
+          ));
 
       self.column_metadata.visible = Array(self.column_metadata.features.length)
         .fill(true);
@@ -2247,8 +2254,7 @@ import { capitalize, each, round } from 'lodash';
           continue;
         }
         const case_id = current_headers[i];
-        // TODO: need some kind of display identifier for cases.
-        const submitter_id = `SUB_ID_${i}`;
+        const submitter_id = self._get_submitter_id(case_id);
         const x = (self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2) + 5;
         const column_header = self.objects_ref.column_header.clone({
           fill: self.hover_fill,
@@ -2302,6 +2308,12 @@ import { capitalize, each, round } from 'lodash';
       });
     }
   };
+
+  InCHlib.prototype._get_submitter_id = function (case_id) {
+    const self = this;
+    const case_id_index = self.case_metadata.case_id.indexOf(case_id);
+    return self.case_metadata.submitter_id[case_id_index];
+  }
 
   InCHlib.prototype._draw_col_overlay_for_header = function(evt) {
     const self = this;
@@ -3737,7 +3749,7 @@ import { capitalize, each, round } from 'lodash';
     const { name, value } = attrs;
 
     const header_text = self.heatmap_header.includes(header_value)
-      ? `Case: ${header_value.split('_')[0]}, Gene: ${attrs.hgnc_id}`
+      ? `Case: ${self._get_submitter_id(header_value)}, Gene: ${attrs.hgnc_id}`
       // below: column_metadata tooltip
       : self._format_category_name(header_value);
 

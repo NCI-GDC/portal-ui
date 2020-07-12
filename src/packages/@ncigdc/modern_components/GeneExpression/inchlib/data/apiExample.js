@@ -226,48 +226,48 @@ const data = {
     metadata: {
       feature_names: [
         'ensembl_id',
-        'hgnc_id',
+        'hgnc_symbol',
       ],
       nodes: {
         ensembl_id_0: [
           'ensembl_id_0',
-          'hgdc_id_0',
+          'hgnc_symbol_0',
         ],
         ensembl_id_1: [
           'ensembl_id_1',
-          'hgdc_id_1',
+          'hgnc_symbol_1',
         ],
         ensembl_id_2: [
           'ensembl_id_2',
-          'hgdc_id_2',
+          'hgnc_symbol_2',
         ],
         ensembl_id_3: [
           'ensembl_id_3',
-          'hgdc_id_3',
+          'hgnc_symbol_3',
         ],
         ensembl_id_4: [
           'ensembl_id_4',
-          'hgdc_id_4',
+          'hgnc_symbol_4',
         ],
         ensembl_id_5: [
           'ensembl_id_5',
-          'hgdc_id_5',
+          'hgnc_symbol_5',
         ],
         ensembl_id_6: [
           'ensembl_id_6',
-          'hgdc_id_6',
+          'hgnc_symbol_6',
         ],
         ensembl_id_7: [
           'ensembl_id_7',
-          'hgdc_id_7',
+          'hgnc_symbol_7',
         ],
         ensembl_id_8: [
           'ensembl_id_8',
-          'hgdc_id_8',
+          'hgnc_symbol_8',
         ],
         ensembl_id_9: [
           'ensembl_id_9',
-          'hgdc_id_9',
+          'hgnc_symbol_9',
         ],
       },
     },

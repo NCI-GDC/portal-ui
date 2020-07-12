@@ -2018,7 +2018,7 @@ import { capitalize, each, round } from 'lodash';
     let text_value;
     let col_index;
   
-    const [ ensembl_id, hgnc_id ] = self.metadata.nodes[node_id];
+    const [ ensembl_id, hgnc_symbol ] = self.metadata.nodes[node_id];
   
     // draw heatmap cells
     for (var i = 0, len = self.on_features.data.length; i < len; i++) {
@@ -2041,8 +2041,8 @@ import { capitalize, each, round } from 'lodash';
           ],
           value: text_value,
           column: ['d', col_index].join('_'),
-          hgnc_id,
-          // gene hgnc_id for heatmap cell tooltip
+          hgnc_symbol,
+          // gene hgnc_symbol for heatmap cell tooltip
           strokeWidth: self.pixels_for_leaf,
         });
         row.add(line);
@@ -2057,7 +2057,7 @@ import { capitalize, each, round } from 'lodash';
   
     if (self.current_draw_values) {
       text = self.objects_ref.heatmap_value.clone({
-        text: hgnc_id,
+        text: hgnc_symbol,
         fontSize: self.options.font.size,
       });
       const width = text.getWidth();
@@ -2072,8 +2072,8 @@ import { capitalize, each, round } from 'lodash';
           x2,
           y2,
         ],
-        // gene hgnc_id for gene column tooltip
-        name: hgnc_id,
+        // gene hgnc_symbol for gene column tooltip
+        name: hgnc_symbol,
         column: ['m', 1].join('_'),
         strokeWidth: self.pixels_for_leaf,
         opacity: 1 - self.hover_opacity_off,
@@ -2184,8 +2184,8 @@ import { capitalize, each, round } from 'lodash';
 
     row.on('mouseover', (evt) => {
       const { target: { attrs: { column = '' }}} = evt;
-      const is_hgnc_id_column = column === 'm_1';
-      if (is_hgnc_id_column) {
+      const is_hgnc_symbol_column = column === 'm_1';
+      if (is_hgnc_symbol_column) {
         evt.target.opacity(1 - self.hover_opacity_on);
         self.heatmap_layer.draw();
         self._cursor_mouseover();
@@ -2195,8 +2195,8 @@ import { capitalize, each, round } from 'lodash';
 
     row.on('mouseout', (evt) => {
       const { target: { attrs: { column = '' }}} = evt;
-      const is_hgnc_id_column = column === 'm_1';
-      if (is_hgnc_id_column) {
+      const is_hgnc_symbol_column = column === 'm_1';
+      if (is_hgnc_symbol_column) {
         evt.target.opacity(1 - self.hover_opacity_off);
         self.heatmap_layer.draw();
         self._cursor_mouseout();
@@ -2250,7 +2250,7 @@ import { capitalize, each, round } from 'lodash';
       const max_text_length = self._get_max_length(current_headers);
 
       for (var i = 0, len = current_headers.length; i < len; i++) {
-        const skip_column = ['ensembl_id', 'hgnc_id']
+        const skip_column = ['ensembl_id', 'hgnc_symbol']
           .includes(current_headers[i]);
         if (skip_column) {
           continue;
@@ -3713,7 +3713,7 @@ import { capitalize, each, round } from 'lodash';
     let line;
     const { attrs } = evt.target;
     const { column: original_column, points } = attrs;
-    const is_hgnc_id_column = original_column === 'm_1';
+    const is_hgnc_symbol_column = original_column === 'm_1';
     const x = self._hack_round((points[0] + points[2]) / 2);
     const y = points[1] - 0.5 * self.pixels_for_leaf;
     const column = original_column.split('_');
@@ -3741,7 +3741,7 @@ import { capitalize, each, round } from 'lodash';
         ],
         strokeWidth: self.pixels_for_dimension,
         stroke: '#fff',
-        opacity: 0.3 * !is_hgnc_id_column,
+        opacity: 0.3 * !is_hgnc_symbol_column,
         listening: false,
         id: 'column_overlay',
       });
@@ -3751,7 +3751,7 @@ import { capitalize, each, round } from 'lodash';
     const { name, value } = attrs;
 
     const header_text = self.heatmap_header.includes(header_value)
-      ? `Case: ${self._get_submitter_id(header_value)}, Gene: ${attrs.hgnc_id}`
+      ? `Case: ${self._get_submitter_id(header_value)}, Gene: ${attrs.hgnc_symbol}`
       // below: column_metadata tooltip
       : self._format_category_name(header_value);
 
@@ -3765,12 +3765,12 @@ import { capitalize, each, round } from 'lodash';
       x,
       y,
       id: 'col_label',
-      opacity: + !is_hgnc_id_column,
+      opacity: + !is_hgnc_symbol_column,
     });
 
     tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
 
-    if (is_hgnc_id_column) {
+    if (is_hgnc_symbol_column) {
       self._cursor_mouseover();
     }
 

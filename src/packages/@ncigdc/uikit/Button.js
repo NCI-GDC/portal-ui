@@ -22,9 +22,7 @@ export const buttonBaseStyles = {
   backgroundColor: ({ disabled, theme }) => (disabled
     ? theme.greyScaleNci
     : theme.primary),
-  color: ({ disabled, theme }) => (disabled
-    ? 'white'
-    : 'white'),
+  color: 'white',
   outline: 'none',
   transition: '0.25s ease',
   ':hover': {

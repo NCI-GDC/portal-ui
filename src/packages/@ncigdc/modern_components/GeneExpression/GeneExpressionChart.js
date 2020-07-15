@@ -14,6 +14,7 @@ const options = {
   categories: {
     colors: CATEGORY_COLORS,
   },
+  case_metadata_fields: ['case_id', 'submitter_id'],
   max_width: 1200,
   tooltip: {
     fill: '#fff',
@@ -39,8 +40,6 @@ class GeneExpressionChart extends Component {
       ...options,
       data,
     };
-    // this doesn't work if jquery is imported
-    // in this file. ignore the eslint error
     this.$el = $(this.el);
     this.$el.InCHlib(this.options);
     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);

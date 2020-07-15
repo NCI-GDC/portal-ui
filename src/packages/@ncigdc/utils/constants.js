@@ -470,26 +470,26 @@ export const capitalisedTerms = {
 };
 
 export const CATEGORY_COLORS = {
-  Ethnicity: {
-    hispanic_or_latino: 'rgb(255,150,148)', // pink
-    not_hispanic_or_latino: 'rgb(215,40,40)', // red
-    not_reported: 'rgb(255,189,122)', // yellow
+  'ethnicity': {
+    'hispanic or latino': 'rgb(255,150,148)', // pink
+    'not hispanic or latino': 'rgb(215,40,40)', // red
+    'not reported': 'rgb(255,189,122)', // yellow
   },
-  Gender: {
-    female: 'rgb(220,96,156)', // pink
-    male: 'rgb(67,6,147)', // purple
+  'gender': {
+    'female': 'rgb(220,96,156)', // pink
+    'male': 'rgb(67,6,147)', // purple
   },
-  Race: {
-    american_indian_or_alaska_native: 'rgb(153, 223, 139)', // light green
-    asian: 'rgb(30, 117, 179)', // dark blue
-    black_or_african_american: 'rgb(175, 200, 233)', // light blue
-    native_hawaiian_or_other_pacific_islander: 'rgb(44, 160, 44)', // dark green
-    not_reported: 'rgb(255, 189, 122)', // light orange
-    white: 'rgb(255, 127, 15)', // dark orange
+  'race': {
+    'american indian or alaska native': 'rgb(153, 223, 139)', // light green
+    'asian': 'rgb(30, 117, 179)', // dark blue
+    'black or african american': 'rgb(175, 200, 233)', // light blue
+    'native hawaiian or other pacific islander': 'rgb(44, 160, 44)', // dark green
+    'not reported': 'rgb(255, 189, 122)', // light orange
+    'white': 'rgb(255, 127, 15)', // dark orange
   },
-  'Vital Status': {
-    alive: 'rgb(22,147,192)', // blue
-    dead: 'rgb(138,0,0)', // red
+  'vital_status': {
+    'alive': 'rgb(22,147,192)', // blue
+    'dead': 'rgb(138,0,0)', // red
   },
 };
 

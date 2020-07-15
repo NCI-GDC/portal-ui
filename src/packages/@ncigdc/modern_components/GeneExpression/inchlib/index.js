@@ -1109,11 +1109,9 @@ import { capitalize, each, round } from 'lodash';
 
       self.column_metadata.features = self.column_metadata.features
         .map(feature => feature
-          .map(value => typeof value === 'string'
-            ? value.toLowerCase()
-            : typeof value === 'number'
-                ? value.toString()
-                : value
+          .map(value => typeof value === 'number'
+              ? value.toString()
+              : value.toLowerCase()
           ));
 
       self.column_metadata.visible = Array(self.column_metadata.features.length)

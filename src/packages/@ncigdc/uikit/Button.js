@@ -19,17 +19,18 @@ export const buttonBaseStyles = {
   fontSize: '14px',
   borderRadius: '4px',
   border: '1px solid transparent',
-  backgroundColor: ({ disabled, theme }) => (disabled ? theme.greyScale4 : theme.primary),
+  backgroundColor: ({ disabled, theme }) => (disabled
+    ? theme.greyScaleNci
+    : theme.primary),
   color: 'white',
   outline: 'none',
   transition: '0.25s ease',
   ':hover': {
     backgroundColor: ({ disabled, theme }) => (disabled
-        ? theme.greyScale4
-        : Color(theme.primary)
-          .lighten(0.7)
-          .rgbString()),
-    color: 'white',
+      ? theme.greyScaleNci
+      : Color(theme.primary)
+        .lighten(0.7)
+        .rgbString()),
   },
 };
 

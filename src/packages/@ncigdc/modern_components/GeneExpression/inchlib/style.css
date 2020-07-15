@@ -42,14 +42,14 @@
 }
 
 .inchlib-toolbar_btn-disabled {
-  background-color: #c8c8c8;
-  border-color: #d8d8d8;
+  background-color: #706f6f;
+  border-color: #706f6f;
   color: #fff;
 }
 
 .inchlib-toolbar_btn-disabled:hover {
-  background-color: #c8c8c8;
-  border-color: #d8d8d8;
+  background-color: #706f6f;
+  border-color: #706f6f;
   color: #fff;
 }
 

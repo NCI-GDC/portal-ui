@@ -2105,11 +2105,11 @@ import { capitalize, each, round } from 'lodash';
       ? self.get_days_to_death_color(text_value)
       : title === 'age_at_diagnosis'
         ? self.get_age_at_diagnosis_color(text_value)
-        : self.options.categories.colors[title][self._normalize(text_value)] ||
+        : self.options.categories.colors[title][self._format_category_value(text_value)] ||
           self.invalid_column_metadata_color;
   };
 
-  InCHlib.prototype._normalize = function (name) {
+  InCHlib.prototype._format_category_value = function (name) {
     return name.toLowerCase().split('_').join(' ');
   }
 
@@ -3225,7 +3225,7 @@ import { capitalize, each, round } from 'lodash';
                   .includes(name) 
                     ? ' inchlib-legend_sublist-item-horizontal'
                     : ''
-                }"><span class='inchlib-legend_square' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
+                }"><span class='inchlib-legend_square' style='background: ${self.options.categories.colors[name][value]}'></span> ${self._format_category_value(value)}</li>`)
               .join('');
             return `<li class="inchlib-legend_list-item"><strong>${self._format_category_name(name)}</strong><ul class="inchlib-legend_sublist">${legend_list}</ul></li>`;
           }
@@ -3418,7 +3418,7 @@ import { capitalize, each, round } from 'lodash';
         
         for (let n = 0; n < legend_list.length; n++) {
           const value = legend_list[n];
-          const text = value.split('_').join(' ');
+          const text = self._format_category_value(value);
           const legend_square = new Konva.Rect({
             fill: self.options.categories.colors[heading][value],
             height: 12,
@@ -3756,7 +3756,7 @@ import { capitalize, each, round } from 'lodash';
       : self._format_category_name(header_value);
 
     const tooltip_value = typeof value === 'undefined'
-      ? name.split('_').join(' ')
+      ? self._format_category_value(name)
       : value;
 
     const tooltip_text = [header_text, tooltip_value].join('\n');

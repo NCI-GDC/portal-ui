@@ -48,9 +48,12 @@ const ExternalLink = ({
 }) => (
   <ELink
     hasExternalIcon={hasExternalIcon}
-    style={{ ...styles.link, ...style }}
+    style={{
+      ...styles.link,
+      ...style,
+    }}
     {...props}
-  >
+    >
     {children}
   </ELink>
 );
@@ -60,18 +63,18 @@ export default compose(
   withTheme,
 )(
   ({
-    theme,
-    uiVersion,
-    uiCommitHash,
-    apiVersion,
     apiCommitHash,
+    apiVersion,
     dataRelease,
+    theme,
+    uiCommitHash,
+    uiVersion,
   }) => (
     <footer
-      style={styles.footer(theme)}
       className="test-footer"
       role="contentinfo"
-    >
+      style={styles.footer(theme)}
+      >
       <div style={styles.outerContainer}>
         <div style={styles.innerContainer}>
           <HomeLink style={styles.link}>Site Home</HomeLink>
@@ -111,13 +114,19 @@ export default compose(
           NIH... Turning Discovery Into Health ®
         </div>
         <div style={styles.innerContainer}>
-          <span> UI @ {uiVersion || (uiCommitHash || '').slice(0, 7)}</span>
+          <span title={`UI version: ${__VERSION__}${uiVersion ? `, tags: ${uiVersion}` : ''}`}>
+            {`UI v${__VERSION__}${uiCommitHash ? ` @ ${uiCommitHash.slice(0, 8)}` : ''}`}
+          </span>
 
-          <span>, API {apiVersion}</span>
-          {apiCommitHash && <span> @ {apiCommitHash.slice(0, 7)}</span>}
+          {', '}
+
+          <span title={`API version: ${apiVersion}`}>
+            {`API v${apiVersion}${apiCommitHash ? ` @ ${apiCommitHash.slice(0, 8)}` : ''}`}
+          </span>
+
+          {', '}
 
           <span>
-            ,{' '}
             <ExternalLink href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/">
               {dataRelease}
             </ExternalLink>

@@ -11,10 +11,10 @@ const blue = 'color: rgb(89, 139, 214);';
 const fontStyle = 'font-weight: bold;';
 
 const logVersionInfo = ({
-  uiVersion,
-  uiCommitHash,
   apiCommitHash,
   apiVersion,
+  uiCommitHash,
+  uiVersion,
 }) => {
   // UI info
   console.groupCollapsed(
@@ -62,7 +62,7 @@ export const VERSION_INFO_SUCCESS = 'gdc/VERSION_INFO_SUCCESS';
 // Action Creator
 export function fetchApiVersionInfo(): Function {
   return async (dispatch, getState) => {
-    const { tag, commit, data_release } = await fetchApi('status', {
+    const { commit, data_release, tag } = await fetchApi('status', {
       credentials: 'same-origin',
     });
     const apiVersionInfo = {
@@ -85,9 +85,18 @@ export function fetchApiVersionInfo(): Function {
   };
 }
 
+const uiTagsParser = (version = '') => {
+  const tagsList = version.split(',');
+  return (
+    tagsList.length > 1
+      ? tagsList.filter(tag => !tag.includes((/([rR][cC])/g)))
+      : tagsList
+  ).join(', ');
+};
+
 // Reducer
 const initialState = {
-  uiVersion: UI_VERSION,
+  uiVersion: uiTagsParser(UI_VERSION),
   uiCommitHash: UI_COMMIT_HASH,
   apiVersion: '',
   apiCommitHash: '',

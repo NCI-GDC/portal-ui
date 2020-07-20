@@ -1,7 +1,11 @@
 const { injectBabelPlugin } = require('react-app-rewired');
+const rewireDefinePlugin = require('react-app-rewire-define-plugin');
+const rewireProvidePlugin = require('react-app-rewire-provide-plugin');
 const rewireReactHotLoader = require('react-app-rewire-hot-loader');
 const rewireSass = require('react-app-rewire-scss');
 const WebpackNotifierPlugin = require('webpack-notifier');
+
+const { version } = require('./package.json');
 
 module.exports = function override(config, env) {
   config = injectBabelPlugin(
@@ -26,6 +30,18 @@ module.exports = function override(config, env) {
     config,
   );
 
+  config = rewireDefinePlugin(config, env, {
+    __VERSION__: JSON.stringify(version),
+  });
+
+  config = rewireProvidePlugin(config, env, {
+    React: 'react',
+  });
+
+  config.plugins = config.plugins.concat(
+    new WebpackNotifierPlugin(),
+  );
+
   config = rewireSass(config, env);
   // config = rewireSass.withLoaderOptions(someLoaderOptions)(config, env);
 
@@ -38,8 +54,6 @@ module.exports = function override(config, env) {
 
   env === 'development' && (config.devtool = 'eval-source-map');
   config = rewireReactHotLoader(config, env);
-
-  config.plugins = config.plugins.concat(new WebpackNotifierPlugin());
 
   return config;
 };

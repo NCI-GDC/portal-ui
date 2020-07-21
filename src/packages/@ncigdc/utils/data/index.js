@@ -77,3 +77,5 @@ export const buildProteinLolliplotData = (
     description: protein.description,
   })),
 });
+
+export * from './xsvToJSON';

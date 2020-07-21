@@ -1,3 +1,6 @@
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commitlogoColor=white)](https://github.com/pre-commit/pre-commit)
+
+---
 <p align="center">
 	<a href="https://portal.gdc.cancer.gov/">
 		<img src="http://i.imgur.com/b6arSwT.png" width="456" alt="GDC Data Portal">
@@ -68,6 +71,30 @@ localStorage.REACT_APP_API = 'https://api.gdc.cancer.gov/v0/'
 ```
 
 <img src="http://i.imgur.com/5dQYvoW.png" />
+
+
+    
+## Setup pre-commit hook to check for secrets
+
+We use [pre-commit](https://pre-commit.com/) to setup pre-commit hooks for this repo.
+We use [detect-secrets](https://github.com/Yelp/detect-secrets) to search for secrets being committed into the repo. 
+
+To install the pre-commit hook, run
+```
+pre-commit install
+```
+
+To update the .secrets.baseline file run
+```
+detect-secrets scan --update .secrets.baseline
+```
+
+`.secrets.baseline` contains all the string that were caught by detect-secrets but are not stored in plain text. Audit the baseline to view the secrets . 
+
+```
+detect-secrets audit .secrets.baseline
+```
+
 
 ## Contributing
 

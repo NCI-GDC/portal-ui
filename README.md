@@ -32,6 +32,17 @@
 - [Jest](https://facebook.github.io/jest/) - Delightful JavaScript testing
 - [d3](https://d3js.org/) - Data-Driven Documents
 
+<!--ts-->
+      * [Technologies](#technologies)
+      * [Installation](#installation)
+      * [Tests](#tests)
+      * [Development](#development)
+      * [Setup pre-commit hook to check for secrets](#setup-pre-commit-hook-to-check-for-secrets)
+      * [Contributing](#contributing)
+
+<!-- Added by: qiaoqiao, at: Tue Jul 21 11:32:07 CDT 2020 -->
+
+<!--te-->
 ## Installation
 
 Install Watchman

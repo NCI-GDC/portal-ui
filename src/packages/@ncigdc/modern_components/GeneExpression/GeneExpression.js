@@ -28,6 +28,7 @@ export default compose(
   withState('visualizationData', 'setVisualizationData', null),
   withHandlers({
     fetchVisualizationData: ({ setVisualizationData }) => () => {
+      // dev env only
       fetchApi('gene-expression/visualize', {
         method: 'POST'
       })

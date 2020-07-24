@@ -1,8 +1,8 @@
 
-import apiExample from './apiExample';
+import apiExampleSmall from './apiExampleSmall';
 
 const data = {
-  apiExample,
+  apiExampleSmall,
 };
 
 export default data;

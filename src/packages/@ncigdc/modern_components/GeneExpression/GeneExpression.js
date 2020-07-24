@@ -30,7 +30,7 @@ const enhance = compose(
 
 class GeneExpression extends Component {
   state = {
-    data: dataObj.apiExample.inchlib, // for viz demo
+    data: dataObj.apiExampleSmall.inchlib, // for viz demo
   };
 
   handleClickInchlibLink = (

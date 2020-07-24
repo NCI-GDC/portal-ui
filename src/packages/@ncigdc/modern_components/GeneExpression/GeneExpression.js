@@ -62,8 +62,8 @@ export default compose(
         <h1 style={{ margin: '0 0 20px' }}>Gene Expression</h1>
         {visualizationData && (
           <GeneExpressionChart
-            data={visualizationData}
             handleClickInchlibLink={helper.handleClickInchlibLink}
+            visualizationData={visualizationData}
             />
         )}
       </Column>

@@ -1107,11 +1107,15 @@ import { capitalize, each, round } from 'lodash';
                 ],
               }), { features: [], feature_names: [] });
 
+      console.log(self.column_metadata.features)
+
       self.column_metadata.features = self.column_metadata.features
         .map(feature => feature
           .map(value => typeof value === 'number'
               ? value.toString()
-              : value.toLowerCase()
+              : typeof value === 'string'
+                ? value.toLowerCase()
+                : value
           ));
 
       self.column_metadata.visible = Array(self.column_metadata.features.length)

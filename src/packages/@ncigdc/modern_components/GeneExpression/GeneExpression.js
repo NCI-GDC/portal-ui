@@ -16,11 +16,15 @@ import withRouter from '@ncigdc/utils/withRouter';
 
 import GeneExpressionChart from './GeneExpressionChart';
 
-import dataObj from './inchlib/data';
+import mockData from './inchlib/data';
 import * as helper from './helpers';
 
 export default compose(
   setDisplayName('EnhancedGeneExpression'),
+  // optional: small, local dataset for working on UI,
+  // because the mock API endpoint result is large (120k data points).
+  // can be removed when the full API is available.
+  // withState('visualizationData', 'setVisualizationData', mockData.inchlib),
   withState('visualizationData', 'setVisualizationData', null),
   withHandlers({
     fetchVisualizationData: ({ setVisualizationData }) => () => {

@@ -4,7 +4,7 @@
 import $ from 'jquery';
 import Konva from 'konva';
 import Color from 'color';
-import { each, round } from 'lodash';
+import { capitalize, each, round } from 'lodash';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -140,6 +140,7 @@ import { each, round } from 'lodash';
   const plugin_name = 'InCHlib';
 
   const defaults = {
+    case_metadata_fields: [],
     categories: {
       colors: {},
       defaults: [],
@@ -259,8 +260,8 @@ import { each, round } from 'lodash';
     }
 
     self.legend_id = `legend_${self._name}`;
-    self.legend_continuous_categories = ['Age at Diagnosis', 'Days to Death'];
-    self.legend_horizontal_categories = ['Gender', 'Vital Status'];
+    self.legend_continuous_categories = ['age_at_diagnosis', 'days_to_death'];
+    self.legend_horizontal_categories = ['gender', 'vital_status'];
     self.legend_headings = [
       ...Object.keys(self.options.categories.colors),
       ...self.legend_continuous_categories
@@ -278,7 +279,7 @@ import { each, round } from 'lodash';
       },
     }
 
-    self.legend_gradient_upper_value = name => name === 'Age at Diagnosis'
+    self.legend_gradient_upper_value = name => name === 'age_at_diagnosis'
       ? self.MAX_AGE_AT_DIAGNOSIS
       : self.MAX_DAYS_TO_DEATH;
 
@@ -291,20 +292,20 @@ import { each, round } from 'lodash';
         * @name InCHlib#row_onclick
         * @event
         * @param {function} function() callback function for click on the heatmap row event
-        * @eventData {string} gene_ensembl, used to create a link to the gene page
+        * @eventData {string} ensembl_id, used to create a link to the gene page
 
         * @example
         * instance.events.row_onclick = (
-        *    function(gene_ensembl) {
-        *       alert(gene_ensembl);
+        *    function(ensembl_id) {
+        *       alert(ensembl_id);
         *    }
         * );
         *
         */
-      row_onclick(gene_ensembl) {
+      row_onclick(ensembl_id) {
         const clickInchlibLink = new CustomEvent('clickInchlibLink', {
           detail: {
-            gene_ensembl
+            ensembl_id
           },
         });
         self.element.dispatchEvent(clickInchlibLink);
@@ -313,20 +314,20 @@ import { each, round } from 'lodash';
         * @name InCHlib#heatmap_header_onclick
         * @event
         * @param {function} function() callback function for click on the heatmap header event
-        * @eventData {string} case_uuid, used to create a link to the case page
+        * @eventData {string} case_id, used to create a link to the case page
 
         * @example
         * instance.events.heatmap_header_onclick = (
-        *    function(case_uuid) {
-        *       alert(case_uuid);
+        *    function(case_id) {
+        *       alert(case_id);
         *    }
         * );
         *
         */
-       heatmap_header_onclick(case_uuid) {
+       heatmap_header_onclick(case_id) {
         const clickInchlibLink = new CustomEvent('clickInchlibLink', {
           detail: {
-            case_uuid
+            case_id
           },
         });
         self.element.dispatchEvent(clickInchlibLink);
@@ -985,7 +986,7 @@ import { each, round } from 'lodash';
           const checked = self.column_metadata.visible[i]
             ? ' checked'
             : '';
-          return `<li class="inchlib-modal_categories-form_list-item"><input type='checkbox' id='${id}' class='inchlib-modal_categories-form_input' name='inchlib-edit-categories' value='${category}'${checked}/><label for='${id}' class='inchlib-modal_categories-form_label'>${category}</label></li>`;
+          return `<li class="inchlib-modal_categories-form_list-item"><input type='checkbox' id='${id}' class='inchlib-modal_categories-form_input' name='inchlib-edit-categories' value='${category}'${checked}/><label for='${id}' class='inchlib-modal_categories-form_label'>${self._format_category_name(category)}</label></li>`;
         })
       )
       .concat('</ul>')
@@ -1081,7 +1082,38 @@ import { each, round } from 'lodash';
       options.column_dendrogram = false;
     }
     if (json.column_metadata !== undefined) {
-      self.column_metadata = json.column_metadata;
+      self.case_metadata = {};
+
+      // get case_id & submitter_id
+      json.column_metadata.feature_names.map((feature, i) => {
+        if (self.options.case_metadata_fields.includes(feature)) {
+          self.case_metadata[feature] = json.column_metadata.features[i]
+        }
+      });
+
+      // get category tracks
+      self.column_metadata = json.column_metadata.feature_names
+        .reduce((acc, curr, idx) =>
+          self.options.case_metadata_fields.includes(curr)
+            ? acc
+            : ({
+                feature_names: [
+                  ...acc.feature_names,
+                  curr,
+                ] ,
+                features: [
+                  ...acc.features,
+                  json.column_metadata.features[idx],
+                ],
+              }), { features: [], feature_names: [] });
+
+      self.column_metadata.features = self.column_metadata.features
+        .map(feature => feature
+          .map(value => typeof value === 'number'
+              ? value.toString()
+              : value.toLowerCase()
+          ));
+
       self.column_metadata.visible = Array(self.column_metadata.features.length)
         .fill(true);
       options.column_metadata = true;
@@ -1984,7 +2016,7 @@ import { each, round } from 'lodash';
     let text_value;
     let col_index;
   
-    const [ gene_ensembl, gene_symbol ] = self.metadata.nodes[node_id];
+    const [ ensembl_id, hgnc_symbol ] = self.metadata.nodes[node_id];
   
     // draw heatmap cells
     for (var i = 0, len = self.on_features.data.length; i < len; i++) {
@@ -2007,8 +2039,8 @@ import { each, round } from 'lodash';
           ],
           value: text_value,
           column: ['d', col_index].join('_'),
-          gene_symbol,
-          // gene_symbol for heatmap cell tooltip
+          hgnc_symbol,
+          // gene hgnc_symbol for heatmap cell tooltip
           strokeWidth: self.pixels_for_leaf,
         });
         row.add(line);
@@ -2023,23 +2055,23 @@ import { each, round } from 'lodash';
   
     if (self.current_draw_values) {
       text = self.objects_ref.heatmap_value.clone({
-        text: gene_symbol,
+        text: hgnc_symbol,
         fontSize: self.options.font.size,
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
       
       line = self.objects_ref.heatmap_line.clone({
-        // gene_ensembl for creating links
-        gene_ensembl,
+        // gene ensembl_id for creating links
+        ensembl_id,
         points: [
           x1,
           y1,
           x2,
           y2,
         ],
-        // gene_symbol for gene column tooltip
-        name: gene_symbol,
+        // gene hgnc_symbol for gene column tooltip
+        name: hgnc_symbol,
         column: ['m', 1].join('_'),
         strokeWidth: self.pixels_for_leaf,
         opacity: 1 - self.hover_opacity_off,
@@ -2054,9 +2086,9 @@ import { each, round } from 'lodash';
         y,
       });
       row.add(text, line);
-      row.on('click', ({ target: { attrs: { gene_ensembl = '' }}}) => {
-        if (gene_ensembl !== '') {
-          self.events.row_onclick(gene_ensembl);
+      row.on('click', ({ target: { attrs: { ensembl_id = '' }}}) => {
+        if (ensembl_id !== '') {
+          self.events.row_onclick(ensembl_id);
         }
       });
     }
@@ -2067,9 +2099,9 @@ import { each, round } from 'lodash';
 
   InCHlib.prototype._get_column_metadata_color = function (title, text_value) {
     const self = this;
-    return title === 'Days to Death'
+    return title === 'days_to_death'
       ? self.get_days_to_death_color(text_value)
-      : title === 'Age at Diagnosis'
+      : title === 'age_at_diagnosis'
         ? self.get_age_at_diagnosis_color(text_value)
         : self.options.categories.colors[title][text_value] ||
           self.invalid_column_metadata_color;
@@ -2114,7 +2146,7 @@ import { each, round } from 'lodash';
     }
     // add the category name
     text = self.objects_ref.heatmap_value.clone({
-      text: title,
+      text: self._format_category_name(title),
       fontSize: self.options.font.size,
     });
 
@@ -2126,6 +2158,12 @@ import { each, round } from 'lodash';
     row.add(text);
 
     return row;
+  };
+
+  InCHlib.prototype._format_category_name = function (title) {
+    return title.split('_').map(word => 
+      word === 'at' || word === 'to' ? word : capitalize(word)
+    ).join(' ');
   };
 
   InCHlib.prototype._bind_row_events = function (row) {
@@ -2140,8 +2178,8 @@ import { each, round } from 'lodash';
 
     row.on('mouseover', (evt) => {
       const { target: { attrs: { column = '' }}} = evt;
-      const is_gene_symbol_column = column === 'm_1';
-      if (is_gene_symbol_column) {
+      const is_hgnc_symbol_column = column === 'm_1';
+      if (is_hgnc_symbol_column) {
         evt.target.opacity(1 - self.hover_opacity_on);
         self.heatmap_layer.draw();
         self._cursor_mouseover();
@@ -2151,8 +2189,8 @@ import { each, round } from 'lodash';
 
     row.on('mouseout', (evt) => {
       const { target: { attrs: { column = '' }}} = evt;
-      const is_gene_symbol_column = column === 'm_1';
-      if (is_gene_symbol_column) {
+      const is_hgnc_symbol_column = column === 'm_1';
+      if (is_hgnc_symbol_column) {
         evt.target.opacity(1 - self.hover_opacity_off);
         self.heatmap_layer.draw();
         self._cursor_mouseout();
@@ -2206,14 +2244,13 @@ import { each, round } from 'lodash';
       const max_text_length = self._get_max_length(current_headers);
 
       for (var i = 0, len = current_headers.length; i < len; i++) {
-        const skip_column = ['gene_ensembl', 'gene_symbol']
+        const skip_column = ['ensembl_id', 'hgnc_symbol']
           .includes(current_headers[i]);
         if (skip_column) {
           continue;
         }
-        // TODO this is not great. we should ask backend devs to provide
-        // id and uuid in an object.
-        const [ case_id, case_uuid ] = current_headers[i].split('_');
+        const case_id = current_headers[i];
+        const submitter_id = self._get_submitter_id(case_id);
         const x = (self.heatmap_distance + distance_step * self.pixels_for_dimension + self.pixels_for_dimension / 2) + 5;
         const column_header = self.objects_ref.column_header.clone({
           fill: self.hover_fill,
@@ -2222,7 +2259,7 @@ import { each, round } from 'lodash';
           fontStyle: '500',
           position_index: i,
           rotation,
-          text: case_id,
+          text: submitter_id,
           x,
           y,
         });
@@ -2230,7 +2267,7 @@ import { each, round } from 'lodash';
         const rect_x = self.heatmap_distance + (self.pixels_for_dimension * distance_step);
         const rect_y = y - 5;
         var rect = new Konva.Rect({
-          case_uuid,
+          case_id,
           width: self.pixels_for_dimension,
           height: rect_height,
           fill: '#fff',
@@ -2244,8 +2281,8 @@ import { each, round } from 'lodash';
 
       self.stage.add(self.header_layer);
 
-      self.header_layer.on('click', ({ target: { attrs: { case_uuid }}}) => {
-        self.events.heatmap_header_onclick(case_uuid);
+      self.header_layer.on('click', ({ target: { attrs: { case_id }}}) => {
+        self.events.heatmap_header_onclick(case_id);
       });
 
       self.header_layer.on('mouseover', function (evt) {
@@ -2268,14 +2305,20 @@ import { each, round } from 'lodash';
     }
   };
 
+  InCHlib.prototype._get_submitter_id = function (case_id) {
+    const self = this;
+    const case_id_index = self.case_metadata.case_id.indexOf(case_id);
+    return self.case_metadata.submitter_id[case_id_index];
+  }
+
   InCHlib.prototype._draw_col_overlay_for_header = function(evt) {
     const self = this;
-    const { case_uuid, x, y } = evt.target.attrs;
+    const { case_id, x, y } = evt.target.attrs;
 
-    if (self.active_header_column !== case_uuid) {
+    if (self.active_header_column !== case_id) {
       const overlayX = x + (self.pixels_for_dimension / 2);
       self.column_overlay.destroy();
-      self.active_header_column = case_uuid;
+      self.active_header_column = case_id;
       self.column_overlay = self.objects_ref.heatmap_line.clone({
         points: [
           overlayX,
@@ -3167,8 +3210,8 @@ import { each, round } from 'lodash';
       .concat(self.legend_headings
         .map(name => {
           if (self.legend_continuous_categories.includes(name)) {
-            return `<li class="inchlib-legend_list-item"><strong>${name}</strong>
-            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.toLowerCase().split(' ')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
+            return `<li class="inchlib-legend_list-item"><strong>${self._format_category_name(name)}</strong>
+            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.split('_')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
           } else {
             const legend_list = Object.keys(self.options.categories.colors[name])
               .map(value => `<li class="inchlib-legend_sublist-item${
@@ -3176,9 +3219,9 @@ import { each, round } from 'lodash';
                   .includes(name) 
                     ? ' inchlib-legend_sublist-item-horizontal'
                     : ''
-                }"><span class='inchlib-legend_square' style='background: ${self.options.categories.colors[name][value]}'></span> ${value.split('_').join(' ')}</li>`)
+                }"><span class='inchlib-legend_square' style='background: ${self.options.categories.colors[name][value]}'></span> ${value}</li>`)
               .join('');
-            return `<li class="inchlib-legend_list-item"><strong>${name}</strong><ul class="inchlib-legend_sublist">${legend_list}</ul></li>`;
+            return `<li class="inchlib-legend_list-item"><strong>${self._format_category_name(name)}</strong><ul class="inchlib-legend_sublist">${legend_list}</ul></li>`;
           }
         })
       )
@@ -3322,7 +3365,7 @@ import { each, round } from 'lodash';
         fill: self.hover_fill,
         fontFamily: self.options.font.family,
         fontStyle: '500',
-        text: heading,
+        text: self._format_category_name(heading),
         x,
         y,
       });
@@ -3338,7 +3381,7 @@ import { each, round } from 'lodash';
         });
 
         const gradient = new Konva.Rect({
-          fillLinearGradientColorStops: heading === 'Age at Diagnosis'
+          fillLinearGradientColorStops: heading === 'age_at_diagnosis'
             ? [0, self.legend_gradients.age.min, 1, self.legend_gradients.age.max]
             : [0, self.legend_gradients.days.min, 1, self.legend_gradients.days.max],
           fillLinearGradientEndPoint: {
@@ -3369,7 +3412,7 @@ import { each, round } from 'lodash';
         
         for (let n = 0; n < legend_list.length; n++) {
           const value = legend_list[n];
-          const text = value.split('_').join(' ');
+          const text = value;
           const legend_square = new Konva.Rect({
             fill: self.options.categories.colors[heading][value],
             height: 12,
@@ -3664,7 +3707,7 @@ import { each, round } from 'lodash';
     let line;
     const { attrs } = evt.target;
     const { column: original_column, points } = attrs;
-    const is_gene_symbol_column = original_column === 'm_1';
+    const is_hgnc_symbol_column = original_column === 'm_1';
     const x = self._hack_round((points[0] + points[2]) / 2);
     const y = points[1] - 0.5 * self.pixels_for_leaf;
     const column = original_column.split('_');
@@ -3692,7 +3735,7 @@ import { each, round } from 'lodash';
         ],
         strokeWidth: self.pixels_for_dimension,
         stroke: '#fff',
-        opacity: 0.3 * !is_gene_symbol_column,
+        opacity: 0.3 * !is_hgnc_symbol_column,
         listening: false,
         id: 'column_overlay',
       });
@@ -3702,11 +3745,12 @@ import { each, round } from 'lodash';
     const { name, value } = attrs;
 
     const header_text = self.heatmap_header.includes(header_value)
-      ? `Case: ${header_value.split('_')[0]}, Gene: ${attrs.gene_symbol}`
-      : header_value;
+      ? `Case: ${self._get_submitter_id(header_value)}, Gene: ${attrs.hgnc_symbol}`
+      // below: column_metadata tooltip
+      : self._format_category_name(header_value);
 
     const tooltip_value = typeof value === 'undefined'
-      ? name.split('_').join(' ')
+      ? name
       : value;
 
     const tooltip_text = [header_text, tooltip_value].join('\n');
@@ -3715,12 +3759,12 @@ import { each, round } from 'lodash';
       x,
       y,
       id: 'col_label',
-      opacity: + !is_gene_symbol_column,
+      opacity: + !is_hgnc_symbol_column,
     });
 
     tooltip.add(self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }), self.objects_ref.tooltip_text.clone({ text: tooltip_text }));
 
-    if (is_gene_symbol_column) {
+    if (is_hgnc_symbol_column) {
       self._cursor_mouseover();
     }
 

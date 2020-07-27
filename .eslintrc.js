@@ -16,6 +16,8 @@ module.exports = {
     PropTypes: false,
     React: false,
     uiVersion: false,
+    __VERSION__: false,
+    $: false,
   },
   parser: '@typescript-eslint/parser', // Specifies the ESLint parser to use TS.
   parserOptions: {  // provides extra rules.

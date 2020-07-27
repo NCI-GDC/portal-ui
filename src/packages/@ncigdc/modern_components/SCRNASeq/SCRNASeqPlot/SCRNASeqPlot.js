@@ -1,6 +1,3 @@
-/* eslint-disable camelcase */
-
-import React from 'react';
 import ModeBarButtons from 'plotly.js/src/components/modebar/buttons';
 import Plotly from 'plotly.js/lib/index-basic';
 import createPlotlyComponent from 'react-plotly.js/factory';
@@ -20,6 +17,8 @@ import {
   enterFullScreen,
   isFullScreen,
 } from '@ncigdc/utils/fullscreen';
+
+import { withLoader } from '@ncigdc/uikit/Loaders/Loader';
 import withSize from '@ncigdc/utils/withSize';
 
 import { DownloadButton, ToolbarButton } from '../toolbar';
@@ -132,5 +131,6 @@ export default compose(
       }
     },
   }),
+  withLoader,
   pure,
 )(SCRNASeqPlot);

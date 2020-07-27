@@ -1,11 +1,26 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: portal-nginx-conf
+    name: {{ include "portal-ui.fullname" . }}-nginx-config
     labels:
-        app.kubernetes.io/name: {{ include "k8s-service.name" . }}
-        helm.sh/chart: {{ include "k8s-service.chart" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        {{- include "portal-ui.labels" . | nindent 6 }}
 data:
-{{ (.Files.Glob "files/portal.conf").AsConfig | indent 4 }}
+{{ (tpl (.Files.Glob "files/portal.conf").AsConfig .) | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ include "portal-ui.proxy.fullname" . }}-nginx-config
+    labels:
+        {{- include "portal-ui.labels" . | nindent 6 }}
+data:
+{{ (tpl (.Files.Glob "files/proxy.conf").AsConfig .)| indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ include "portal-ui.proxy.fullname" . }}-nginx-proxy-params
+    labels:
+        {{- include "portal-ui.labels" . | nindent 6 }}
+data:
+{{ (tpl (.Files.Glob "files/proxy_params").AsConfig .)| indent 4 }}

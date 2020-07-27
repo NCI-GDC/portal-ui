@@ -42,7 +42,7 @@ const CreateAnalysis = ({
   return analysis
     ? (
       <SelectSet
-        {...analysis}
+        analysisProps={analysis}
         onCancel={() => setAnalysis(null)}
         onRun={sets => {
           const created = new Date().toISOString();
@@ -80,7 +80,6 @@ const CreateAnalysis = ({
         }}
         >
         {availableAnalysis.map(item => {
-          const isGeneExpression = item.type === 'gene_expression';
           const isSCRNASeq = item.type === 'scrna_seq';
 
           return (
@@ -100,8 +99,9 @@ const CreateAnalysis = ({
                 <h1 style={{ fontSize: '2rem' }}>{item.label}</h1>
                 <div style={{ marginBottom: 10 }}>{item.description}</div>
                 <Row spacing={5}>
-                  {(isGeneExpression || isSCRNASeq) ||
-                    (<Button onClick={() => setAnalysis(item)}>Select</Button>)}
+                  {isSCRNASeq || (
+                    <Button onClick={() => setAnalysis(item)}>Select</Button>
+                  )}
                   <DemoButton demoData={item.demoData} type={item.type} />
                 </Row>
               </div>

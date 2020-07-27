@@ -1,24 +1,22 @@
-/* tslint:disable */
-/* eslint-disable camelcase */
-
-import React from 'react';
+import { isEqual } from 'lodash';
 import {
   compose,
-  withHandlers,
+  lifecycle,
   pure,
   setDisplayName,
+  withHandlers,
+  withPropsOnChange,
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
+
 import SCRNASeqPlot from './SCRNASeqPlot';
 import { buttonList } from './SCRNASeqPlot/utils';
 import './styles.scss';
-import { DownloadButton } from './toolbar';
-
-// temporarily importing data
-import stubData from './stubData';
-
-const dataTypes = Object.keys(stubData);
+import {
+  DownloadButton,
+  // ToolbarButton,
+} from './toolbar';
 
 const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
@@ -28,9 +26,38 @@ const enhance = compose(
       console.log('clicked analysis dropdown item');
     },
   }),
+  withPropsOnChange(
+    (
+      {
+        plotsData,
+      },
+      {
+        plotsData: nextPlotsData,
+      },
+    ) => !(
+      isEqual(plotsData, nextPlotsData)
+    ),
+    ({ plotsData = {} }) => ({
+      plotsDataList: Object.values(plotsData),
+    }),
+  ),
+  lifecycle({
+    componentDidMount() {
+      const {
+        getWholeTsv,
+        plotsDataList,
+      } = this.props;
+
+      plotsDataList.some(plotData => plotData.data.length > 0) || getWholeTsv();
+    },
+  }),
 );
 
-const SCRNASeq = ({ handleAnalysisClick }) => (
+const SCRNASeq = ({
+  handleAnalysisClick,
+  loading,
+  plotsDataList,
+}) => (
   <Row
     style={{
       margin: '10px 0',
@@ -56,25 +83,39 @@ const SCRNASeq = ({ handleAnalysisClick }) => (
           >
           Single Cell RNA Sequencing
         </h1>
-        <DownloadButton
-          onAnalysisClick={handleAnalysisClick}
-          {...buttonList.downloadAnalysis}
-          />
+
+        <Row>
+          {/* <ToolbarButton
+          //   faClass="fa-angle-double-down"
+          //   label="Get TSV"
+          //   name="downloadAnalysis"
+          //   onToolbarClick={getWholeTsv}
+          //  />
+          */}
+
+          <DownloadButton
+            onAnalysisClick={handleAnalysisClick}
+            {...buttonList.downloadAnalysis}
+            />
+        </Row>
       </Row>
       <div className="scrnaseq-row">
-        {dataTypes.map(dType => (
-          <div
-            className="scrnaseq-column"
-            key={stubData[dType].name}
-            >
-            <div className="scrnaseq-card">
-              <SCRNASeqPlot
-                data={stubData[dType].data}
-                dataType={stubData[dType].name}
-                />
+        {plotsDataList.length > 0
+          ? plotsDataList.map(plot => (
+            <div
+              className="scrnaseq-column"
+              key={plot.name}
+              >
+              <div className="scrnaseq-card">
+                <SCRNASeqPlot
+                  data={plot.data}
+                  dataType={plot.name}
+                  loading={loading}
+                  />
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+          : 'No clustering plots available to be displayed'}
       </div>
     </Column>
   </Row>

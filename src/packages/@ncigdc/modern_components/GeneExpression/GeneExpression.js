@@ -29,7 +29,7 @@ export default compose(
   withHandlers({
     fetchVisualizationData: ({ setVisualizationData }) => () => {
       // dev env only
-      fetchApi('gene-expression/visualize', {
+      fetchApi('gene_expression/visualize', {
         method: 'POST'
       })
         .then(data => {

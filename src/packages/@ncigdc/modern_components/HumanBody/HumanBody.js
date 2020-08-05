@@ -1,6 +1,3 @@
-// @flow
-
-import React from 'react';
 import {
   compose,
   lifecycle,
@@ -11,27 +8,27 @@ import {
 import { connect } from 'react-redux';
 import sapien from '@oncojs/sapien';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
-import { Column, Row } from '@ncigdc/uikit/Flex';
+import { Column } from '@ncigdc/uikit/Flex';
 import withRouter from '@ncigdc/utils/withRouter';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import styled from '@ncigdc/theme/styled';
-import './humanbody.css';
 import {
-  HUMAN_BODY_SITES_MAP,
+  HUMAN_BODY_MAPPINGS,
+  HUMAN_BODY_TOOS_MAP,
   HUMAN_BODY_ALL_ALLOWED_SITES,
 } from '@ncigdc/utils/constants';
 import {
   groupBy,
   map,
-  maxBy,
-  floor,
 } from 'lodash';
+
+import './humanbody.css';
 
 const containerStyle = {
   flex: 1,
-  padding: '3rem',
   height: '50rem',
+  padding: '3rem',
   position: 'relative',
 };
 
@@ -45,34 +42,49 @@ export default compose(
   withTooltip,
   connect(state => ({ config: state.versionInfo })),
   withRouter,
-  withProps(({ viewer }) => ({
+  withProps(({
+    viewer: {
+      repository: {
+        cases,
+        files,
+      },
+    },
+  }) => ({
     groupedData: map(
       groupBy(
-        viewer.repository.cases.aggregations.primary_site.buckets,
-        b => HUMAN_BODY_SITES_MAP[b.key.toLowerCase()] || b.key,
+        cases.aggregations.diagnoses__tissue_or_organ_of_origin.buckets,
+        // cases.aggregations.primary_site.buckets,
+        b => HUMAN_BODY_TOOS_MAP[b.key.toLowerCase()] || b.key.toLowerCase(),
       ),
-      (group, majorPrimarySite) => ({
-        key: majorPrimarySite,
-        docCount: group.reduce((sum, { doc_count }) => sum + doc_count, 0),
-        fileCount: group.reduce(
-          (sumFiles, { key }) =>
-            (viewer.repository.files.aggregations.cases__primary_site.buckets.find(
-              f => f.key === key,
-            ) || { doc_count: 0 }).doc_count + sumFiles,
-          0,
-        ),
-        allPrimarySites: group.map(({ key }) => key),
-      }),
+      (group, majorPrimarySite) => {
+        const {
+          byPrimarySite: allPrimarySites,
+          byTissueOrOrganOfOrigin: allTissuesOrOrgansOfOrigin,
+        } = HUMAN_BODY_MAPPINGS[majorPrimarySite];
+
+        return ({
+          allPrimarySites,
+          allTissuesOrOrgansOfOrigin,
+          docCount: group.reduce((sum, { doc_count }) => sum + doc_count, 0),
+          fileCount: group.reduce(
+            (sumFiles, { key }) => (
+              files.aggregations.cases__diagnoses__tissue_or_organ_of_origin.buckets
+              // files.aggregations.cases__primary_site.buckets
+                .find(f => f.key === key) ||
+              { doc_count: 0 }
+            ).doc_count + sumFiles,
+            0,
+          ),
+          key: majorPrimarySite,
+        });
+      },
     ).filter(
-      ({ key }) =>
-        !['Other And Ill-Defined Sites', 'Not Reported'].includes(key) &&
-        HUMAN_BODY_ALL_ALLOWED_SITES.includes(key),
+      ({ key }) => HUMAN_BODY_ALL_ALLOWED_SITES.includes(key),
     ),
   })),
   lifecycle({
     async componentDidMount(): Promise<*> {
       const { groupedData, push, setTooltip } = this.props;
-      let factor;
 
       const data = groupedData.map(d => ({
         ...d,
@@ -96,30 +108,20 @@ export default compose(
           clickHandler: d => {
             const key = (d.key || d._key).replace(/-/g, ' ');
             const datum = data.find(x => x.key.toLowerCase() === key.toLowerCase());
+            const toLowerCaseAll = arr => arr.map(item => item.toLowerCase());
             if (datum) {
               const query = {
                 filters: stringifyJSONParam(
                   makeFilter([
                     {
                       field: 'cases.primary_site',
-                      value: datum.allPrimarySites,
+                      value: toLowerCaseAll(datum.allPrimarySites),
                     },
-                    ...[
-                      d.key === 'Lung'
-                      ? {
-                        field: 'cases.diagnoses.tissue_or_organ_of_origin',
-                        value: [
-                          'lower lobe, lung',
-                          'lung, nos',
-                          'main bronchus',
-                          'middle lobe, lung',
-                          'overlapping lesion of lung',
-                          'upper lobe, lung',
-                        ],
-                      }
-                      : null,
-                    ],
-                  ], d.key === 'Lung' ? 'or' : null),
+                    {
+                      field: 'cases.diagnoses.tissue_or_organ_of_origin',
+                      value: toLowerCaseAll(datum.allTissuesOrOrgansOfOrigin),
+                    },
+                  ]),
                 ),
               };
               push({

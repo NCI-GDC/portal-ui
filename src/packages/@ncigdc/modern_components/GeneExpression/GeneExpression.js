@@ -16,7 +16,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 
 import GeneExpressionChart from './GeneExpressionChart';
 
-import mockData from './inchlib/data';
+// import mockData from './inchlib/data';
 import * as helper from './helpers';
 
 export default compose(

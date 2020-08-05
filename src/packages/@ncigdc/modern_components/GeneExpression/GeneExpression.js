@@ -1,104 +1,72 @@
-/* tslint:disable */
 /* eslint-disable camelcase */
 
 import React, { Component } from 'react';
 import {
   compose,
+  lifecycle,
   pure,
   setDisplayName,
+  withHandlers,
+  withState,
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import { fetchApi } from '@ncigdc/utils/ajax';
 import withRouter from '@ncigdc/utils/withRouter';
 
 import GeneExpressionChart from './GeneExpressionChart';
 
-// start - for viz demo
-// import pre-made clustered data,
-// and use buttons to switch between datasets
-import dataObj from './inchlib/data';
+// import mockData from './inchlib/data';
+import * as helper from './helpers';
 
-const dataSizes = Object.keys(dataObj);
-const showDataButtons = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION_BUTTONS || false;
-// end - for viz demo
-
-const enhance = compose(
+export default compose(
   setDisplayName('EnhancedGeneExpression'),
+  // optional: small, local dataset for working on UI,
+  // because the mock API endpoint result is large (120k data points).
+  // can be removed when the full API is available.
+  // withState('visualizationData', 'setVisualizationData', mockData.inchlib),
+  withState('visualizationData', 'setVisualizationData', null),
+  withHandlers({
+    fetchVisualizationData: ({ setVisualizationData }) => () => {
+      // dev env only
+      fetchApi('gene_expression/visualize', {
+        method: 'POST'
+      })
+        .then(data => {
+          data && data.inchlib && setVisualizationData(data.inchlib);
+        })
+        .catch(error => console.error(error));
+    },
+  }),
+  lifecycle({
+    componentDidMount() {
+      const { fetchVisualizationData } = this.props;
+      fetchVisualizationData();
+    }
+  }),
   withRouter,
   pure,
-);
-
-class GeneExpression extends Component {
-  state = {
-    data: dataObj.apiExample.inchlib, // for viz demo
-  };
-
-  handleClickInchlibLink = (
-    {
-      detail: {
-        case_id = '',
-        ensembl_id = '',
-      },
-    },
-  ) => {
-    const nextPage = ensembl_id === ''
-      ? `/cases/${case_id}`
-      : `/genes/${ensembl_id}`;
-    // This opens the link in a new tab
-    Object.assign(document.createElement('a'), {
-      href: nextPage,
-      target: '_blank',
-    }).click();
-  }
-
-  handleDataButton = size => {
-    // for viz demo
-    const data = dataObj[size];
-    this.setState({ data });
-  };
-
-  render() {
-    const { data } = this.state;
-
-    return (
-      <Column style={{ marginBottom: '1rem' }}>
-        <Row
-          style={{
-            margin: '20px 0',
-            padding: '2rem 3rem',
-          }}
-          >
-          <Column
-            style={{
-              flex: '1 0 auto',
-            }}
-            >
-            <h1 style={{ margin: '0 0 20px' }}>Gene Expression</h1>
-            {showDataButtons && (
-              // for viz demo
-              <Row>
-                {dataSizes.map(size => (
-                  <button
-                    key={size}
-                    onClick={() => this.handleDataButton(size)}
-                    type="button"
-                    >
-                    {size.split('data')[1]}
-                  </button>
-                ))}
-              </Row>
-            )}
-            {data && (
-              <GeneExpressionChart
-                data={data}
-                handleClickInchlibLink={this.handleClickInchlibLink}
-                />
-            )}
-          </Column>
-        </Row>
+)(({ visualizationData }) => (
+  <Column style={{ marginBottom: '1rem' }}>
+    <Row
+      style={{
+        margin: '20px 0',
+        padding: '2rem 3rem',
+      }}
+      >
+      <Column
+        style={{
+          flex: '1 0 auto',
+        }}
+        >
+        <h1 style={{ margin: '0 0 20px' }}>Gene Expression</h1>
+        {visualizationData && (
+          <GeneExpressionChart
+            handleClickInchlibLink={helper.handleClickInchlibLink}
+            visualizationData={visualizationData}
+            />
+        )}
       </Column>
-    );
-  }
-}
-
-export default enhance(GeneExpression);
+    </Row>
+  </Column>
+));

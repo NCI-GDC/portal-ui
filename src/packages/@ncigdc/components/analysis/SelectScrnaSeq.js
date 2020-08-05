@@ -7,6 +7,10 @@ import Button from '@ncigdc/uikit/Button';
 import { styles } from './SelectSet';
 import DemoButton from './DemoButton';
 
+const workflowTypes = ['test', 'boop'];
+// TODO workflow types will be 10X chromium and smart-seq2
+// but not sure about the exact naming yet
+
 const enhance = compose(
   setDisplayName('EnhancedSelectScrnaSeq'),
   withState('selectedCase', 'setSelectedCase', null),

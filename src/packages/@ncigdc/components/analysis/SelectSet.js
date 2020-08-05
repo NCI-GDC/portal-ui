@@ -17,7 +17,7 @@ import DemoButton from './DemoButton';
 import SetTable from './SetTable';
 import ValidateGeneExpression from './ValidateGeneExpression';
 
-const styles = {
+export const styles = {
   rowStyle: {
     borderBottom: `1px solid ${theme.greyScale5}`,
     marginTop: 'auto',
@@ -187,13 +187,13 @@ const SelectSet = ({
               />,
           )
         : (
-          <SetTable
-            isClinical={isClinical}
-            setInstructions={setInstructions}
-            setsData={setsData()}
-            setType={setTypes.length > 1 ? setTypes : setTypes[0]}
-            styles={styles}
-            />
+            <SetTable
+              isClinical={isClinical}
+              setInstructions={setInstructions}
+              setsData={setsData()}
+              setType={setTypes.length > 1 ? setTypes : setTypes[0]}
+              styles={styles}
+              />
         )}
 
       <Row

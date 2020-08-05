@@ -65,8 +65,12 @@ function addFilter(query: Object, push: Function): Function {
   return (field, values) => {
     const newQuery = mergeQuery(
       {
+        cases_offset: 0,
         filters: makeFilter([
-          { field, value: Array.isArray(values) ? values : [values] },
+          {
+            field,
+            value: Array.isArray(values) ? values : [values],
+          },
         ]),
       },
       query,

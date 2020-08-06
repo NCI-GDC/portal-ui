@@ -51,9 +51,7 @@ const SelectSet = ({
   isReadyToValidate,
   onCancel,
   runHandler,
-  selectedSetsGroupName,
   setsData,
-  validationData,
   validationResults,
 }) => (
   <Column
@@ -188,7 +186,8 @@ export default compose(
         const validationResults = validationData[selectedSetsGroupName];
 
         return {
-          isReadyToRun: validationResults && validationResults.isReady === 'ready' &&
+          isReadyToRun: validationResults &&
+            ['ready'].includes(validationResults.status) &&
             enoughSetsSelected,
           isReadyToValidate: !validationResults && enoughSetsSelected,
           selectedSetsGroupName,

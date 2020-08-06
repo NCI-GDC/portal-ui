@@ -423,10 +423,10 @@ const availableAnalysis: [TAnalysis] = [
         availability: sets => (
           Object.keys(sets).length
             ? fetchApi(
-              'gene-expression/availability',
+              'gene_expression/availability',
               {
                 body: {
-                  case_set_id: Object.keys(sets.case)[0],
+                  case_set_id: localStorage.GE_SCENARIO || Object.keys(sets.case)[0],
                   gene_set_id: Object.keys(sets.gene)[0],
                 },
                 headers: {
@@ -434,49 +434,9 @@ const availableAnalysis: [TAnalysis] = [
                 },
               },
             )
-              // .then((response = {}) => validateGeneExpressionAvailability(response)
-              .then((response = {}) => {
-                // console.log('response', response, typeof response);
-                return validateGeneExpressionAvailability(
-                  { // mockaroooooo!
-                    cases: {
-                      with_gene_expression_count: localStorage.GE_CASES_YES ||
-                        Math.floor(Math.random() * (100 - 0)),
-                      without_gene_expression_count: localStorage.GE_CASES_NO ||
-                        Math.floor(Math.random() * (100 - 0)),
-                      // details: [
-                      //   {
-                      //     case_id: "dc809b76-71a5-4679-89ad-e70c7721518b",
-                      //     has_gene_expression_values: true
-                      //   },
-                      //   {
-                      //     case_id: "ed8dbec5-0d99-4ef2-8294-c5e04ee6cc41",
-                      //     has_gene_expression_values: false
-                      //   }
-                      // ]
-                    },
-                    genes: {
-                      with_gene_expression_count: localStorage.GE_GENES_YES ||
-                        Math.floor(Math.random() * (100 - 0)),
-                      without_gene_expression_count: localStorage.GE_GENES_NO ||
-                        Math.floor(Math.random() * (100 - 0)),
-                      // details: [
-                      //   {
-                      //     gene_id: "ENSG00000000003",
-                      //     has_gene_expression_values: false
-                      //   },
-                      //   {
-                      //     gene_id: "ENSG00000128923",
-                      //     has_gene_expression_values: true
-                      //   },
-                      // ]
-                    },
-                  },
-                );
-              })
-              // .catch(error => console.error(error))
+              .then(validateGeneExpressionAvailability)
               .catch(error => {
-                console.error(error);
+                console.error('Gene Expression Availability error', error);
               })
             : sets
         ),

@@ -1,5 +1,5 @@
 // current limit by InchLib rendering capabilities
-export const MAXDATAPOINTS = 120000;
+export const MAXDATAPOINTS = localStorage.GE_MAXDATAPOINTS || 120000;
 const MINCASES = localStorage.GE_MINCASES || 5;
 const MINGENES = localStorage.GE_MINGENES || 5;
 
@@ -12,21 +12,23 @@ export const validateGeneExpressionAvailability = ({
     with_gene_expression_count: genesWithGE,
     without_gene_expression_count: genesWithoutGE,
   },
+} = {
+  cases: {},
+  genes: {},
 }) => ({
-  analysis: casesWithGE && genesWithGE
-    ? (
-      casesWithGE <= MINCASES ||
-      genesWithGE <= MINGENES
-        ? 'notEnough'
-      : casesWithGE * genesWithGE > MAXDATAPOINTS
-        ? 'tooMany'
-      : genesWithoutGE > 0
-        ? 'some'
-      : 'ready'
-      )
-    : 'noData',
-  data: {
+  casesData: {
     withGE: casesWithGE,
     withoutGE: casesWithoutGE,
   },
+  geneCoverage: genesWithoutGE > 0 ? 'some' : 'all',
+  status: (
+    casesWithGE === undefined
+      ? 'error'
+    : casesWithGE <= MINCASES ||
+      genesWithGE <= MINGENES
+      ? 'notEnough'
+    : casesWithGE * genesWithGE > MAXDATAPOINTS
+      ? 'tooMany'
+    : 'ready'
+  ),
 });

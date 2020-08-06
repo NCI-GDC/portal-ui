@@ -26,48 +26,52 @@ const ValidationResults = ({
       </p>
 
       {validationResults && (
-        validationResults.analysis === 'tooMany'
+        validationResults.status === 'error'
           ? (
             <WarningBox>
-              The amount of gene expression data exceeds the display limit.
-              Please reduce your set sizes.
-            </WarningBox>
-          )
-        : validationResults.analysis === 'notEnough'
-          ? (
-            <WarningBox>
-              The amount of gene expression data does not meet the minimum required for display.
-              Please increase your set sizes.
+              There was an error with your query. Please try again later.
             </WarningBox>
           )
         : (
-          <ul className="results-list">
-            <li>
-              <i className="fa fa-check-circle green" />
-              <span className="numbers">{validationResults.data.withGE}</span>
-              {` case${
-                validationResults.data.withGE === 1 ? ' has' : 's have'
-                } expression data in ${
-                validationResults.analysis === 'some' ? 'some' : 'all'
-                } of the selected genes.`}
-            </li>
+          <React.Fragment>
+            <ul className="results-list">
+              {validationResults.casesData.withGE > 0 && (
+                <li>
+                  <i className="fa fa-check-circle green" />
+                  <span className="numbers">{validationResults.casesData.withGE}</span>
+                  {` case${
+                    validationResults.casesData.withGE === 1 ? ' has' : 's have'
+                    } expression data in ${
+                    validationResults.geneCoverage
+                    } of the selected genes.`}
+                </li>
+              )}
 
-            <li>
-              <i className="fa fa-exclamation-triangle yellow" />
-              <span className="numbers">{validationResults.data.withoutGE}</span>
-              {` case${
-                validationResults.data.withoutGE === 1 ? ' has' : 's have'
-                } expression data in none of the selected genes.`}
-              {/* {` case${
-                validationResults.withGE === 1 ? ' has' : 's have'
-                } no expression data in any of the selected genes.`} */}
-              {/* {` case${
-                  validationResults.withoutGE === 0
-                    ? 's have no'
-                    : `${validationResults.withoutGE > 1 ? 's do' : ' does'} not have`
-                } expression data in any of the selected genes.`} */}
-            </li>
-          </ul>
+              {validationResults.casesData.withoutGE > 0 && (
+                <li>
+                  <i className="fa fa-exclamation-triangle yellow" />
+                  <span className="numbers">{validationResults.casesData.withoutGE}</span>
+                  {` case${
+                    validationResults.casesData.withoutGE === 1 ? ' has' : 's have'
+                    } expression data in none of the selected genes.`}
+                </li>
+              )}
+            </ul>
+
+            {validationResults.status === 'notEnough' && (
+              <WarningBox>
+                The amount of gene expression data does not meet the minimum required for display.
+                Please modify your sets.
+              </WarningBox>
+            )}
+
+            {validationResults.status === 'tooMany' && (
+              <WarningBox>
+                The amount of gene expression data exceeds the display limit.
+                Please reduce your set sizes.
+              </WarningBox>
+            )}
+          </React.Fragment>
         )
       )}
     </Column>

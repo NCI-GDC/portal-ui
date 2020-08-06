@@ -1,79 +1,17 @@
 import React from 'react';
-import { compose, pure, setDisplayName, withHandlers, withProps, withState } from 'recompose';
+import { compose, lifecycle, pure, setDisplayName, withHandlers, withProps, withState } from 'recompose';
 import { find } from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 
-import { styles } from './SelectSet';
-import DemoButton from './DemoButton';
-
-const scrnaWorkflowTypes = [
-  'Seurat - 10x Chromium',
-  'Seurat - Smart-Seq2'
-];
-// TODO workflow types will be 10X chromium and smart-seq2.
-// for now use existing workflow types with small data sets.
-
-const exampleCases = [
-  {
-    caseId: 'C3N-11111-caseId',
-    submitterId: 'C3N-11111',
-    workflowTypes: [
-      'Seurat - 10x Chromium',
-      'Seurat - Smart-Seq2'
-    ],
-  },
-  {
-    caseId: 'C3N-22222-caseId',
-    submitterId: 'C3N-22222',
-    workflowTypes: [
-      'Seurat - 10x Chromium',
-    ],
-  },
-  {
-    caseId: 'C3N-33333-caseId',
-    submitterId: 'C3N-33333',
-    workflowTypes: [
-      'Seurat - 10x Chromium',
-      'Seurat - Smart-Seq2'
-    ],
-  },
-  {
-    caseId: 'C3N-44444-caseId',
-    submitterId: 'C3N-44444',
-    workflowTypes: [
-      'Seurat - Smart-Seq2'
-    ],
-  },
-  {
-    caseId: 'C3N-55555-caseId',
-    submitterId: 'C3N-55555',
-    workflowTypes: [
-      'Seurat - 10x Chromium',
-      'Seurat - Smart-Seq2'
-    ],
-  }
-];
-
+import { styles } from '../SelectSet';
+import DemoButton from '../DemoButton';
 
 const enhance = compose(
-  setDisplayName('EnhancedSelectScrnaSeq'),
+  setDisplayName('SelectScrnaSeqPresentation'),
   withState('selectedCase', 'setSelectedCase', null),
-  withState('selectedWorkflow', 'setSelectedWorkflow', null),
-  withState('resultId', 'setResultId', null),
-  // TODO what is the result? case, file, etc
-  // TODO on mount, make a graphql request to repo endpoint to get cases that match 2 workflow types
-  withProps(({ selectedCase }) => {
-    if (!selectedCase) {
-      return ({ workflowTypes: null });
-    }
-
-    const caseObj = find(exampleCases, option => option.caseId === selectedCase);
-    const { workflowTypes } = caseObj;
-
-    return ({ workflowTypes });
-  }),
+  withState('selectedFile', 'setSelectedFile', null),
   pure,
 );
 
@@ -83,23 +21,20 @@ const SelectScrnaSeq = ({
     description,
     Icon,
     label,
-    setDisabledMessage = () => {},
     setInstructions,
     setTypes,
     type,
     validateSets,
   },
-  handleSelectCase,
   onCancel,
   onRun,
-  resultId,
   selectedCase,
-  selectedWorkflow,
-  setResultId,
+  selectedFile,
   setSelectedCase,
-  setSelectedWorkflow,
-  workflowTypes,
+  setSelectedFile,
+  viewer: { repository: { cases: { hits } } },
 }) => {
+  const scrnaSeqCases = hits && hits.edges;
   return (
     <Column
       style={{
@@ -151,19 +86,19 @@ const SelectScrnaSeq = ({
             style={{ width: 300 }}
             >
             <option value="">-- Select a case --</option>
-            {exampleCases.map(option => (
+            {scrnaSeqCases.map(({ node: { case_id, submitter_id }}) => (
               <option
-                key={option.caseId}
-                value={option.caseId}
+                key={case_id}
+                value={case_id}
                 >
-                {option.submitterId}
+                {submitter_id}
               </option>
             ))}
           </select>
         </Column>
       </Row>
 
-      {workflowTypes && (
+      {/* {workflowTypes && (
         <Row style={styles.rowStyle}>
           <Column style={{ flex: 1, marginBottom: 15 }}>
             <h2
@@ -185,7 +120,7 @@ const SelectScrnaSeq = ({
                 <input
                   aria-describedby="scrnaseq-select-workflow-description"
                   name="scrnaseq-select-workflow"
-                  onChange={e => setSelectedWorkflow(e.target.value)}
+                  onChange={e => setSelectedFile(e.target.value)}
                   type="radio"
                   value={type}
                   />
@@ -194,7 +129,7 @@ const SelectScrnaSeq = ({
             ))}
           </Column>
         </Row>
-      )}
+      )} */}
 
       <Row
         style={{
@@ -204,8 +139,8 @@ const SelectScrnaSeq = ({
         }}
         >
         <Button
-          disabled={!selectedCase || !selectedWorkflow}
-          onClick={() => onRun(resultId)}
+          disabled={!selectedCase || !selectedFile}
+          onClick={() => onRun(selectedFile)}
           >
           Run
         </Button>

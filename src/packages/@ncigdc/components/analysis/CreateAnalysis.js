@@ -99,13 +99,21 @@ const CreateAnalysis = ({
                 <h1 style={{ fontSize: '2rem' }}>{item.label}</h1>
                 <div style={{ marginBottom: 10 }}>{item.description}</div>
                 <Row spacing={5}>
-                  {/* temp: scrnaseq ONLY has a demo button & it goes to select page */}
-                  <Button onClick={() => setAnalysis(item)}>
-                    {isSCRNASeq ? 'Demo' : 'Select'}
-                  </Button>
-                  {isSCRNASeq || (
-                    <DemoButton demoData={item.demoData} type={item.type} />
-                  )}
+                  {isSCRNASeq
+                  // TEMP: scrnaseq only has a demo button,
+                  // and it goes to the select page
+                    ? (
+                      <Tooltip
+                        Component={<div style={{ maxWidth: 240 }}>{item.demoData.message}</div>}
+                        >
+                        <Button onClick={() => setAnalysis(item)}>Demo</Button>
+                      </Tooltip>
+                    ) 
+                    : (
+                        <Button onClick={() => setAnalysis(item)}>Select</Button>
+                        <DemoButton demoData={item.demoData} type={item.type} />
+                      )
+                  }
                 </Row>
               </div>
             </Row>

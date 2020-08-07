@@ -17,14 +17,10 @@ const enhance = compose(
 
 const SelectScrnaSeq = ({
   analysisProps: {
-    demoData,
     description,
     Icon,
     label,
-    setInstructions,
-    setTypes,
     type,
-    validateSets,
   },
   onCancel,
   onRun,
@@ -53,12 +49,11 @@ const SelectScrnaSeq = ({
         <Icon />
         <Column style={{ flex: 1 }}>
           <h1 style={{ fontSize: '2rem' }}>{label}</h1>
-          {description}
+          Display a demo of different clustering visualizations for single cell RNA sequencing data.
         </Column>
         <Column style={{ paddingTop: 5 }}>
           <Row spacing="5px">
             <Button onClick={onCancel}>Back</Button>
-            <DemoButton demoData={demoData} type={type} />
           </Row>
         </Column>
       </Row>
@@ -71,13 +66,13 @@ const SelectScrnaSeq = ({
               fontSize: '1.8rem',
             }}
             >
-            Step 1: Select a case
+            Step 1: Select a case to demo
           </h2>
           <label
             htmlFor="scrnaseq-select-case"
             style={{ marginBottom: 15 }}
             >
-            Select a case with single cell RNA sequencing data available.
+            Select a demo case with single cell RNA sequencing data available for visualization.
           </label>
           <select
             id="scrnaseq-select-case"
@@ -113,7 +108,7 @@ const SelectScrnaSeq = ({
               id="scrnaseq-select-workflow-description"
               style={{ marginBottom: 15 }}
               >
-              Select an analysis workflow that was used for the selected case.
+              Select an analysis workflow that was used for the selected demo case.
             </div>
             {workflowTypes.map(type => (
               <label key={type}>

@@ -46,9 +46,8 @@ const CreateAnalysis = ({
         <SelectScrnaSeq
           analysisProps={analysis}
           onCancel={() => setAnalysis(null)}
-          onRun={resultId => {
-            // TODO result = file or case? TBD
-            console.log('run scRNA seq for...', resultId);
+          onRun={file_id => {
+            console.log('run scRNA-seq for...', file_id);
             // TODO create analysis... see SelectSet onRun() below
           }}
           />

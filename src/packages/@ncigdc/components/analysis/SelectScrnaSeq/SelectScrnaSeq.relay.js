@@ -1,6 +1,7 @@
 import React from 'react';
 import { graphql } from 'react-relay';
 import { compose, pure, setDisplayName } from 'recompose';
+
 import Query from '@ncigdc/modern_components/Query';
 
 // NOTES
@@ -37,7 +38,7 @@ export default (Component) =>
   compose(
     setDisplayName('SelectScrnaSeqQuery'),
     pure,
-  )((props = {}) => {
+  )((props) => {
     return (
       <Query
         parentProps={props}

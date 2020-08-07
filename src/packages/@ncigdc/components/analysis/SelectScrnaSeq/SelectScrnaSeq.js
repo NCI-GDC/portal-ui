@@ -7,6 +7,7 @@ import Button from '@ncigdc/uikit/Button';
 
 import { styles } from '../SelectSet';
 import DemoButton from '../DemoButton';
+import SelectScrnaSeqWorkflow from './SelectScrnaSeqWorkflow';
 
 const enhance = compose(
   setDisplayName('SelectScrnaSeqPresentation'),
@@ -93,7 +94,7 @@ const SelectScrnaSeq = ({
         </Column>
       </Row>
 
-      {/* {workflowTypes && (
+      {selectedCase && (
         <Row style={styles.rowStyle}>
           <Column style={{ flex: 1, marginBottom: 15 }}>
             <h2
@@ -110,21 +111,13 @@ const SelectScrnaSeq = ({
               >
               Select an analysis workflow that was used for the selected demo case.
             </div>
-            {workflowTypes.map(type => (
-              <label key={type}>
-                <input
-                  aria-describedby="scrnaseq-select-workflow-description"
-                  name="scrnaseq-select-workflow"
-                  onChange={e => setSelectedFile(e.target.value)}
-                  type="radio"
-                  value={type}
-                  />
-                {` ${type}`}
-              </label>
-            ))}
+            <SelectScrnaSeqWorkflow
+              selectedCase={selectedCase}
+              setSelectedFile={setSelectedFile}
+              />
           </Column>
         </Row>
-      )} */}
+      )}
 
       <Row
         style={{

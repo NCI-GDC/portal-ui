@@ -13,6 +13,12 @@ const enhance = compose(
   setDisplayName('SelectScrnaSeqPresentation'),
   withState('selectedCase', 'setSelectedCase', null),
   withState('selectedFile', 'setSelectedFile', null),
+  withHandlers({
+    handleSetSelectedCase: ({ setSelectedCase, setSelectedFile }) => (e) => {
+      setSelectedCase(e.target.value);
+      setSelectedFile(null);
+    },
+  }),
   pure,
 );
 
@@ -23,11 +29,11 @@ const SelectScrnaSeq = ({
     label,
     type,
   },
+  handleSetSelectedCase,
   onCancel,
   onRun,
   selectedCase,
   selectedFile,
-  setSelectedCase,
   setSelectedFile,
   viewer: { repository: { cases: { hits } } },
 }) => {
@@ -78,7 +84,7 @@ const SelectScrnaSeq = ({
           <select
             id="scrnaseq-select-case"
             name="scrnaseq-select-case"
-            onChange={e => setSelectedCase(e.target.value)}
+            onChange={handleSetSelectedCase}
             style={{ width: 300 }}
             >
             <option value="">-- Select a case --</option>

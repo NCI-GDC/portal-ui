@@ -99,10 +99,13 @@ const CreateAnalysis = ({
                 <h1 style={{ fontSize: '2rem' }}>{item.label}</h1>
                 <div style={{ marginBottom: 10 }}>{item.description}</div>
                 <Row spacing={5}>
+                  {/* temp: scrnaseq ONLY has a demo button & it goes to select page */}
+                  <Button onClick={() => setAnalysis(item)}>
+                    {isSCRNASeq ? 'Demo' : 'Select'}
+                  </Button>
                   {isSCRNASeq || (
-                    <Button onClick={() => setAnalysis(item)}>Select</Button>
+                    <DemoButton demoData={item.demoData} type={item.type} />
                   )}
-                  <DemoButton demoData={item.demoData} type={item.type} />
                 </Row>
               </div>
             </Row>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, lifecycle, pure, setDisplayName, withHandlers, withProps, withState } from 'recompose';
+import { compose, lifecycle, pure, setDisplayName, withHandlers, withProps, withPropsOnChange, withState } from 'recompose';
 import { find } from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -12,11 +12,40 @@ import SelectScrnaSeqWorkflow from './SelectScrnaSeqWorkflow';
 const enhance = compose(
   setDisplayName('SelectScrnaSeqPresentation'),
   withState('selectedCase', 'setSelectedCase', null),
+  withState('selectedCaseDetails', 'setSelectedCaseDetails', null),
   withState('selectedFile', 'setSelectedFile', null),
+  withState('selectedFileDetails', 'setSelectedFileDetails', null),
   withHandlers({
-    handleSetSelectedCase: ({ setSelectedCase, setSelectedFile }) => (e) => {
-      setSelectedCase(e.target.value);
+    handleSetSelectedCase: ({
+      setSelectedCase,
+      setSelectedCaseDetails,
+      setSelectedFile,
+      setSelectedFileDetails,
+      viewer: { repository: { cases: { hits }}}
+    }) => (e) => {
+      const selectedCase = e.target.value;
+      const selectedCaseDetails = hits && hits.edges &&
+        find(hits.edges, edge => edge.node.case_id === selectedCase);
+      const { 
+        case_id,
+        demographic: { gender },
+        disease_type,
+        primary_site,
+        project: { project_id },
+        submitter_id
+      } = selectedCaseDetails.node;
+
+      setSelectedCase(selectedCase);
+      setSelectedCaseDetails({
+        case_id,
+        disease_type,
+        gender,
+        primary_site,
+        project_id,
+        submitter_id,
+      });
       setSelectedFile(null);
+      setSelectedFileDetails(null);
     },
   }),
   pure,
@@ -33,8 +62,11 @@ const SelectScrnaSeq = ({
   onCancel,
   onRun,
   selectedCase,
+  selectedCaseDetails,
   selectedFile,
+  selectedFileDetails,
   setSelectedFile,
+  setSelectedFileDetails,
   viewer: { repository: { cases: { hits } } },
 }) => {
   const scrnaSeqCases = hits && hits.edges;
@@ -120,6 +152,7 @@ const SelectScrnaSeq = ({
             <SelectScrnaSeqWorkflow
               selectedCase={selectedCase}
               setSelectedFile={setSelectedFile}
+              setSelectedFileDetails={setSelectedFileDetails}
               />
           </Column>
         </Row>
@@ -134,7 +167,7 @@ const SelectScrnaSeq = ({
         >
         <Button
           disabled={!selectedCase || !selectedFile}
-          onClick={() => onRun(selectedFile)}
+          onClick={() => onRun(selectedCaseDetails, selectedFileDetails)}
           >
           Run
         </Button>

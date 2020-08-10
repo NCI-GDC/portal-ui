@@ -46,14 +46,14 @@ const CreateAnalysis = ({
         <SelectScrnaSeq
           analysisProps={analysis}
           onCancel={() => setAnalysis(null)}
-          onRun={file_id => {
+          onRun={(selectedCase, selectedFile) => {
             const created = new Date().toISOString();
             const id = created;
 
             dispatch(
               addAnalysis({
+                analysisInfo: { ...selectedCase, ...selectedFile },
                 created,
-                file_id,
                 id,
                 type: analysis.type,
               }),

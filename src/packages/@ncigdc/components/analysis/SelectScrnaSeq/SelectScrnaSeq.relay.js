@@ -61,7 +61,15 @@ export default (Component) =>
                     edges {
                       node {
                         case_id
+                        primary_site
+                        disease_type
                         submitter_id
+                        project {
+                          project_id
+                        }
+                        demographic {
+                          gender
+                        }
                       }
                     }
                   }

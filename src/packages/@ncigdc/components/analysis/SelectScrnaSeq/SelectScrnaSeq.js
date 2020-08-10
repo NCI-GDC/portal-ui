@@ -12,20 +12,15 @@ import SelectScrnaSeqWorkflow from './SelectScrnaSeqWorkflow';
 const enhance = compose(
   setDisplayName('SelectScrnaSeqPresentation'),
   withState('selectedCase', 'setSelectedCase', null),
-  withState('selectedCaseDetails', 'setSelectedCaseDetails', null),
   withState('selectedFile', 'setSelectedFile', null),
-  withState('selectedFileDetails', 'setSelectedFileDetails', null),
   withHandlers({
     handleSetSelectedCase: ({
       setSelectedCase,
-      setSelectedCaseDetails,
       setSelectedFile,
-      setSelectedFileDetails,
-      viewer: { repository: { cases: { hits }}}
+      viewer: { repository: { cases: { hits: { edges }}}}
     }) => (e) => {
-      const selectedCase = e.target.value;
-      const selectedCaseDetails = hits && hits.edges &&
-        find(hits.edges, edge => edge.node.case_id === selectedCase);
+      const caseInput = e.target.value;
+      const caseInputDetails = find(edges, edge => edge.node.case_id === caseInput);
       const { 
         case_id,
         demographic: { gender },
@@ -33,10 +28,9 @@ const enhance = compose(
         primary_site,
         project: { project_id },
         submitter_id
-      } = selectedCaseDetails.node;
+      } = caseInputDetails.node;
 
-      setSelectedCase(selectedCase);
-      setSelectedCaseDetails({
+      setSelectedCase({
         case_id,
         disease_type,
         gender,
@@ -44,8 +38,9 @@ const enhance = compose(
         project_id,
         submitter_id,
       });
+
+      // reset file on case change
       setSelectedFile(null);
-      setSelectedFileDetails(null);
     },
   }),
   pure,
@@ -62,7 +57,6 @@ const SelectScrnaSeq = ({
   onCancel,
   onRun,
   selectedCase,
-  selectedCaseDetails,
   selectedFile,
   selectedFileDetails,
   setSelectedFile,
@@ -150,9 +144,7 @@ const SelectScrnaSeq = ({
               Select an analysis workflow that was used for the selected demo case.
             </div>
             <SelectScrnaSeqWorkflow
-              selectedCase={selectedCase}
               setSelectedFile={setSelectedFile}
-              setSelectedFileDetails={setSelectedFileDetails}
               />
           </Column>
         </Row>
@@ -166,8 +158,8 @@ const SelectScrnaSeq = ({
         }}
         >
         <Button
-          disabled={!selectedCase || !selectedFile}
-          onClick={() => onRun(selectedCaseDetails, selectedFileDetails)}
+          disabled={!(selectedCase && selectedFile)}
+          onClick={() => onRun(selectedCase, selectedFile)}
           >
           Run
         </Button>

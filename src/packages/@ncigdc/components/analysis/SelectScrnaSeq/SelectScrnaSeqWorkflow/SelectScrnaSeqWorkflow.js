@@ -7,9 +7,7 @@ const enhance = compose(
 );
 
 const SelectScrnaSeqWorkflow = ({
-  selectedCase,
   setSelectedFile,
-  setSelectedFileDetails,
   viewer: { repository: { files: { hits } } },
 }) => {
   const workflowTypes = hits && hits.edges;
@@ -25,10 +23,7 @@ const SelectScrnaSeqWorkflow = ({
           <input
             aria-describedby="scrnaseq-select-workflow-description"
             name="scrnaseq-select-workflow"
-            onChange={e => {
-              setSelectedFile(e.target.value)
-              setSelectedFileDetails({ file_id, workflow_type })
-            }}
+            onChange={e => setSelectedFile({ file_id, workflow_type })}
             type="radio"
             value={file_id}
             />

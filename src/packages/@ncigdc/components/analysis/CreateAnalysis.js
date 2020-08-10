@@ -47,8 +47,24 @@ const CreateAnalysis = ({
           analysisProps={analysis}
           onCancel={() => setAnalysis(null)}
           onRun={file_id => {
-            console.log('run scRNA-seq for...', file_id);
-            // TODO create analysis... see SelectSet onRun() below
+            const created = new Date().toISOString();
+            const id = created;
+
+            dispatch(
+              addAnalysis({
+                created,
+                file_id,
+                id,
+                type: analysis.type,
+              }),
+            ).then(() => {
+              push({
+                query: {
+                  analysisId: id,
+                  analysisTableTab: 'result',
+                },
+              });
+            });
           }}
           />
         )

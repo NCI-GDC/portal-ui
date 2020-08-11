@@ -128,6 +128,13 @@ const SCRNASeq = ({
         </h1>
 
         <Row>
+          {/* <ToolbarButton
+            //   faClass="fa-angle-double-down"
+            //   label="Get TSV"
+            //   name="downloadAnalysis"
+            //   onToolbarClick={getWholeTsv}
+            //  />
+          */}
           <DownloadButton
             onAnalysisClick={handleAnalysisClick}
             {...buttonList.downloadAnalysis}

@@ -5,17 +5,18 @@ import {
   pure,
   setDisplayName,
   withHandlers,
+  withProps,
   withPropsOnChange,
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 
 import SCRNASeqPlot from './SCRNASeqPlot';
 import { buttonList } from './SCRNASeqPlot/utils';
 import './styles.scss';
 import {
   DownloadButton,
-  // ToolbarButton,
 } from './toolbar';
 
 const enhance = compose(
@@ -41,23 +42,61 @@ const enhance = compose(
       plotsDataList: Object.values(plotsData),
     }),
   ),
+  withProps(({
+    analysisInfo: {
+      case_id,
+      disease_type,
+      gender,
+      primary_site,
+      project_id,
+      submitter_id,
+      workflow_type,
+    }
+  }) => ({
+    analysisTable: [
+      {
+        link: `/cases/${case_id}`,
+        name: 'Case ID',
+        text: submitter_id,
+      },
+      {
+        link: `/projects/${project_id}`,
+        name: 'Project',
+        text: project_id,
+      },
+      {
+        name: 'Primary Site',
+        text: primary_site,
+      },
+      {
+        name: 'Disease Type',
+        text: disease_type,
+      },
+      {
+        name: 'Workflow Type',
+        text: workflow_type,
+      },
+      // TODO: # CELLS
+    ]
+  })),
   lifecycle({
     componentDidMount() {
       const {
         getWholeTsv,
         plotsDataList,
       } = this.props;
-
       plotsDataList.some(plotData => plotData.data.length > 0) || getWholeTsv();
     },
   }),
 );
 
 const SCRNASeq = ({
+  analysisTable,
   handleAnalysisClick,
   loading,
   plotsDataList,
-}) => (
+}) => { 
+  return (
   <Row
     style={{
       margin: '10px 0',
@@ -99,6 +138,23 @@ const SCRNASeq = ({
             />
         </Row>
       </Row>
+      <Table
+        body={(
+          <tbody>
+            {analysisTable.map((row, i) => (
+              <Tr index={i} key={row.name}>
+                <Td><strong>{row.name}</strong></Td>
+                <Td>
+                  {row.link
+                    ? <a href={row.link}>{row.text}</a>
+                    : row.text}
+                </Td>
+              </Tr>
+            ))}
+          </tbody>
+        )}
+        style={{ marginBottom: 20, maxWidth: 500 }}
+        />
       <div className="scrnaseq-row">
         {plotsDataList.length > 0
           ? plotsDataList.map(plot => (
@@ -119,6 +175,6 @@ const SCRNASeq = ({
       </div>
     </Column>
   </Row>
-);
+)};
 
 export default enhance(SCRNASeq);

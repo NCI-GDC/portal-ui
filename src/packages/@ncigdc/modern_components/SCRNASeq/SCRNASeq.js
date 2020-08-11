@@ -51,7 +51,8 @@ const enhance = compose(
       project_id,
       submitter_id,
       workflow_type,
-    }
+    },
+    plotsDataList,
   }) => ({
     analysisTable: [
       {
@@ -76,7 +77,11 @@ const enhance = compose(
         name: 'Workflow Type',
         text: workflow_type,
       },
-      // TODO: # CELLS
+      {
+        name: '# Cells',
+        text: plotsDataList[0].data
+          .reduce((arr, curr) => arr += curr.x.length, 0)
+      }
     ]
   })),
   lifecycle({
@@ -95,8 +100,7 @@ const SCRNASeq = ({
   handleAnalysisClick,
   loading,
   plotsDataList,
-}) => { 
-  return (
+}) => (
   <Row
     style={{
       margin: '10px 0',
@@ -124,14 +128,6 @@ const SCRNASeq = ({
         </h1>
 
         <Row>
-          {/* <ToolbarButton
-          //   faClass="fa-angle-double-down"
-          //   label="Get TSV"
-          //   name="downloadAnalysis"
-          //   onToolbarClick={getWholeTsv}
-          //  />
-          */}
-
           <DownloadButton
             onAnalysisClick={handleAnalysisClick}
             {...buttonList.downloadAnalysis}
@@ -175,6 +171,6 @@ const SCRNASeq = ({
       </div>
     </Column>
   </Row>
-)};
+);
 
 export default enhance(SCRNASeq);

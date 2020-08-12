@@ -5,6 +5,7 @@ import $ from 'jquery';
 import Konva from 'konva';
 import Color from 'color';
 import { capitalize, each, round } from 'lodash';
+import moment from 'moment';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -183,7 +184,7 @@ import { capitalize, each, round } from 'lodash';
     },
   };
 
-  function InCHlib(element, options) {
+  function InCHlib(element, options, extHandlers) {
     const self = this;
 
     // basic plugin setup
@@ -192,6 +193,9 @@ import { capitalize, each, round } from 'lodash';
     self.options = $.extend({}, defaults, options);
     self._name = plugin_name;
     self.$element.attr('id', self._name);
+
+    // make external handlers available in subfunctions
+    self.extHandlers = extHandlers;
 
     // inchlib setup
     self.user_options = options || {};
@@ -202,7 +206,7 @@ import { capitalize, each, round } from 'lodash';
       self.options.max_width < element_width
       ? self.options.max_width
       : element_width;
-    
+
     self.options.legend_width = 170;
 
     self.options.width -= self.options.legend_width;
@@ -942,8 +946,8 @@ import { capitalize, each, round } from 'lodash';
     const modal_actions = [
       modal_btn.clone()
         .attr('id', cancel_id)
-        .text(has_close_btn 
-          ? 'Close' 
+        .text(has_close_btn
+          ? 'Close'
           : 'Cancel'),
       ...has_close_btn || modal_btn.clone()
         .attr('id', save_id)
@@ -1461,7 +1465,7 @@ import { capitalize, each, round } from 'lodash';
       self.options.column_dendrogram = false;
     }
     self._adjust_leaf_size(self.heatmap_array.length);
-  
+
     self.right_margin = 100;
 
     self._adjust_horizontal_sizes();
@@ -1492,7 +1496,7 @@ import { capitalize, each, round } from 'lodash';
       self.columns_start_index = 0;
       self._draw_column_dendrogram(self.column_root_id);
     }
-    
+
     self._draw_heatmap();
     self._draw_heatmap_header();
     self._draw_navigation();
@@ -2017,9 +2021,9 @@ import { capitalize, each, round } from 'lodash';
     let text;
     let text_value;
     let col_index;
-  
+
     const [ ensembl_id, hgnc_symbol ] = self.metadata.nodes[node_id];
-  
+
     // draw heatmap cells
     for (var i = 0, len = self.on_features.data.length; i < len; i++) {
       col_index = self.on_features.data[i];
@@ -2027,10 +2031,10 @@ import { capitalize, each, round } from 'lodash';
       y2 = y1;
       value = node.features[col_index];
       text_value = value;
-  
+
       if (value !== null) {
         color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
-  
+
         line = self.objects_ref.heatmap_line.clone({
           stroke: color,
           points: [
@@ -2047,14 +2051,14 @@ import { capitalize, each, round } from 'lodash';
         });
         row.add(line);
       }
-  
+
       x1 = x2;
     }
-  
+
     // don't draw gene symbol column if it's empty
     x2 = x1;
     y2 = y1;
-  
+
     if (self.current_draw_values) {
       text = self.objects_ref.heatmap_value.clone({
         text: hgnc_symbol,
@@ -2062,7 +2066,7 @@ import { capitalize, each, round } from 'lodash';
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
-      
+
       line = self.objects_ref.heatmap_line.clone({
         // gene ensembl_id for creating links
         ensembl_id,
@@ -2081,7 +2085,7 @@ import { capitalize, each, round } from 'lodash';
         // on top of the text
         stroke: '#fff',
       });
-  
+
       const y = self._hack_round(y1 - self.value_font_size / 2);
       text.position({
         x: x1 + 5,
@@ -2095,7 +2099,7 @@ import { capitalize, each, round } from 'lodash';
       });
     }
     x1 = x2;
-  
+
     return row;
   };
 
@@ -2163,7 +2167,7 @@ import { capitalize, each, round } from 'lodash';
   };
 
   InCHlib.prototype._format_category_name = function (title) {
-    return title.split('_').map(word => 
+    return title.split('_').map(word =>
       word === 'at' || word === 'to' ? word : capitalize(word)
     ).join(' ');
   };
@@ -2449,15 +2453,16 @@ import { capitalize, each, round } from 'lodash';
   InCHlib.prototype._draw_download_menu = function () {
     const self = this;
     const overlay = self._draw_overlay(true);
+    const { handleFileDownloads = () => {} } = self.extHandlers;
     const download_options = [
       {
         id: 'download-png',
         label: 'PNG',
       },
-      // {
-      //   id: 'download-json',
-      //   label: 'JSON',
-      // },
+      {
+        id: 'download-tsv',
+        label: 'TSV',
+      },
     ];
 
     const download_ul = $(`<ul class="inchlib-download"></ul>`);
@@ -2477,6 +2482,9 @@ import { capitalize, each, round } from 'lodash';
       if ($(this).attr('data-inchlib-id') === 'download-png') {
         self._download_png();
       }
+      if ($(this).attr('data-inchlib-id') === 'download-tsv') {
+        handleFileDownloads('tsv');
+      }
     });
 
     overlay.click(function() {
@@ -2484,7 +2492,7 @@ import { capitalize, each, round } from 'lodash';
       $('.inchlib-download').remove();
     });
   };
-  
+
   InCHlib.prototype._draw_navigation = function () {
     const self = this;
     self.navigation_layer = new Konva.Layer();
@@ -3121,7 +3129,7 @@ import { capitalize, each, round } from 'lodash';
     }
 
     overlay = $(`<div class="inchlib-overlay${invisible
-      ? ' inchlib-overlay_invisible' 
+      ? ' inchlib-overlay_invisible'
       : ''}"></div>`);
     self.$element.append(overlay);
 
@@ -3173,7 +3181,12 @@ import { capitalize, each, round } from 'lodash';
     self.stage.toDataURL({
       quality: 1,
       callback(dataUrl) {
-        downloadURI(dataUrl, 'gene-expression.png');
+        downloadURI(
+          dataUrl,
+          `gene-expression-values.${
+            moment().format('YYYY-MM-DD-HHmmss')
+          }.png`
+        );
         self.stage.width(width);
         self.stage.height(height);
         self.stage.scale({
@@ -3218,7 +3231,7 @@ import { capitalize, each, round } from 'lodash';
             const legend_list = Object.keys(self.options.categories.colors[name])
               .map(value => `<li class="inchlib-legend_sublist-item${
                 self.legend_horizontal_categories
-                  .includes(name) 
+                  .includes(name)
                     ? ' inchlib-legend_sublist-item-horizontal'
                     : ''
                 }"><span class='inchlib-legend_square' style='background: ${self.options.categories.colors[name][value]}'></span> ${value}</li>`)
@@ -3320,7 +3333,7 @@ import { capitalize, each, round } from 'lodash';
       const scale_text = new Konva.Text({
         fill: self.hover_fill,
         fontFamily: self.options.font.family,
-        fontStyle: '500', 
+        fontStyle: '500',
         text,
         x: scale_x,
         y: scale_y,
@@ -3411,7 +3424,7 @@ import { capitalize, each, round } from 'lodash';
         y += 25;
       } else {
         const legend_list = Object.keys(self.options.categories.colors[heading]);
-        
+
         for (let n = 0; n < legend_list.length; n++) {
           const value = legend_list[n];
           const text = value;
@@ -3419,8 +3432,8 @@ import { capitalize, each, round } from 'lodash';
             fill: self.options.categories.colors[heading][value],
             height: 12,
             width: 12,
-            x, 
-            y, 
+            x,
+            y,
           });
           const legend_text = new Konva.Text({
             fill: self.hover_fill,
@@ -3869,13 +3882,13 @@ import { capitalize, each, round } from 'lodash';
     }, 50);
   };
 
-  $.fn[plugin_name] = function (options) {
+  $.fn[plugin_name] = function (options, extHandlers) {
     // note: this plugin only supports ONE instance
     return this.each(function () {
       if ($.data(this, 'plugin_' + plugin_name)) {
         $.removeData(this, 'plugin_' + plugin_name);
       }
-      $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options));
+      $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options, extHandlers));
     })
   };
 })(jQuery);

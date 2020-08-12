@@ -393,6 +393,9 @@ const availableAnalysis: [TAnalysis] = [
           case: {
             'demo-pancreas': 'Pancreas',
           },
+          gene: {
+            'demo-pancreas': 'Pancreas',
+          },
         },
         type: 'gene_expression',
       },

@@ -34,14 +34,23 @@ const handleOverlayClickOut = ({ target }) => {
 };
 
 class GeneExpressionChart extends Component {
+  handlers = {}
+
   componentDidMount() {
-    const { handleClickInchlibLink, visualizationData } = this.props;
+    const {
+      handleClickInchlibLink,
+      handleFileDownloads,
+      visualizationData,
+    } = this.props;
+    this.handlers = {
+      handleFileDownloads,
+    };
     this.options = {
       ...options,
       data: visualizationData,
     };
     this.$el = $(this.el);
-    this.$el.InCHlib(this.options);
+    this.$el.InCHlib(this.options, this.handlers);
     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
     document.addEventListener('click', handleOverlayClickOut);
   }
@@ -59,7 +68,7 @@ class GeneExpressionChart extends Component {
         ...this.options,
         data: visualizationData,
       };
-      this.$el.InCHlib(nextOptions);
+      this.$el.InCHlib(nextOptions, this.handlers);
       this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
     }
   }

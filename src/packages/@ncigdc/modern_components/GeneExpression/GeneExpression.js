@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 
-import React, { Component } from 'react';
 import {
   compose,
   lifecycle,
@@ -9,9 +8,12 @@ import {
   withHandlers,
   withState,
 } from 'recompose';
+import moment from 'moment';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { fetchApi } from '@ncigdc/utils/ajax';
+import { processStream } from '@ncigdc/utils/data';
+import saveFile from '@ncigdc/utils/filesaver';
 import withRouter from '@ncigdc/utils/withRouter';
 
 import GeneExpressionChart from './GeneExpressionChart';
@@ -19,34 +21,10 @@ import GeneExpressionChart from './GeneExpressionChart';
 // import mockData from './inchlib/data';
 import * as helper from './helpers';
 
-export default compose(
-  setDisplayName('EnhancedGeneExpression'),
-  // optional: small, local dataset for working on UI,
-  // because the mock API endpoint result is large (120k data points).
-  // can be removed when the full API is available.
-  // withState('visualizationData', 'setVisualizationData', mockData.inchlib),
-  withState('visualizationData', 'setVisualizationData', null),
-  withHandlers({
-    fetchVisualizationData: ({ setVisualizationData }) => () => {
-      // dev env only
-      fetchApi('gene_expression/visualize', {
-        method: 'POST'
-      })
-        .then(data => {
-          data && data.inchlib && setVisualizationData(data.inchlib);
-        })
-        .catch(error => console.error(error));
-    },
-  }),
-  lifecycle({
-    componentDidMount() {
-      const { fetchVisualizationData } = this.props;
-      fetchVisualizationData();
-    }
-  }),
-  withRouter,
-  pure,
-)(({ visualizationData }) => (
+const GeneExpression = ({
+  downloadFiles,
+  visualizationData,
+}) => (
   <Column style={{ marginBottom: '1rem' }}>
     <Row
       style={{
@@ -63,10 +41,79 @@ export default compose(
         {visualizationData && (
           <GeneExpressionChart
             handleClickInchlibLink={helper.handleClickInchlibLink}
+            handleFileDownloads={downloadFiles}
             visualizationData={visualizationData}
             />
         )}
       </Column>
     </Row>
   </Column>
-));
+);
+
+export default compose(
+  setDisplayName('EnhancedGeneExpression'),
+  // optional: small, local dataset for working on UI,
+  // because the mock API endpoint result is large (120k data points).
+  // can be removed when the full API is available.
+  // withState('visualizationData', 'setVisualizationData', mockData.inchlib),
+  withState('visualizationData', 'setVisualizationData', null),
+  withHandlers(({ sets }) => {
+    const case_set_id = localStorage.GE_SCENARIO || Object.keys(sets.case)[0];
+    const gene_set_id = Object.keys(sets.gene)[0];
+
+    return {
+      downloadFiles: () => async format => {
+        switch (format.toLowerCase()) {
+          case 'tsv': {
+            const { body: stream } = await fetchApi('gene_expression/values', {
+              body: {
+                case_set_id,
+                gene_set_id,
+              },
+              fullResponse: true,
+            });
+
+            return stream
+              ? processStream('GeneExpression.Download', stream.getReader())()
+                .then(parsedStream => saveFile(
+                  parsedStream,
+                  'tsv',
+                  `gene-expression-values.${
+                    moment().format('YYYY-MM-DD-HHmmss')
+                  }.tsv`,
+                ))
+                .catch(error => console.error(error))
+              : console.error('Gene Expression TSV download error, empty response from server');
+          }
+          default:
+            return console.info('unhandled download format');
+        }
+      },
+      fetchVisualizationData: ({
+        setVisualizationData,
+      }) => () => {
+        fetchApi('gene_expression/visualize', {
+          body: {
+            case_set_id,
+            gene_set_id,
+          },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then(data => {
+            data && data.inchlib && setVisualizationData(data.inchlib);
+          })
+          .catch(error => console.error(error));
+      },
+    };
+  }),
+  lifecycle({
+    componentDidMount() {
+      const { fetchVisualizationData } = this.props;
+      fetchVisualizationData();
+    },
+  }),
+  withRouter,
+  pure,
+)(GeneExpression);

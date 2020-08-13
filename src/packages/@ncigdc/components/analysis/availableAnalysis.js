@@ -1,4 +1,3 @@
-import React from 'react';
 import { VennSvg } from '@ncigdc/components/Charts/Venn';
 import CohortComparison from '@ncigdc/modern_components/CohortComparison';
 import CCIcon from '@ncigdc/theme/icons/CohortComparisonIcon';
@@ -11,9 +10,12 @@ import GeneExpressionContainer from '@ncigdc/modern_components/GeneExpression';
 import SCRNASeq from '@ncigdc/theme/icons/SCRNASeq';
 import SCRNASeqContainer from '@ncigdc/modern_components/SCRNASeq';
 import GeneExpression from '@ncigdc/theme/icons/GeneExpression';
+import { fetchApi } from '@ncigdc/utils/ajax';
+
 import Demo from './Demo';
 import SetOperations from './SetOperations';
 import defaultVariables from './defaultCDAVEvariables';
+import { validateGeneExpressionAvailability } from './geneExpression/helpers';
 
 export type TSelectedSets = {
   [TSetTypes]: any,
@@ -215,9 +217,10 @@ const availableAnalysis: [TAnalysis] = [
       const entries = Object.entries(sets);
       return (
         entries.length === 1 && // can only have one type
-        // must have 2 or 3 sets selected
-        (Object.keys(entries[0][1]).length === 2 ||
-          Object.keys(entries[0][1]).length === 3)
+        ( // must have 2 or 3 sets selected
+          [2, 3].some(validSelections =>
+            Object.keys(entries[0][1]).length === validSelections)
+        )
       );
     },
   },
@@ -413,8 +416,70 @@ const availableAnalysis: [TAnalysis] = [
       ),
       setTypes: ['case', 'gene'],
       type: 'gene_expression',
-      validateSets: sets => sets &&
-        ['case', 'gene'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
+      validateSets: {
+        availability: sets => (
+          Object.keys(sets).length
+            ? fetchApi(
+              'gene-expression/availability',
+              {
+                body: {
+                  case_set_id: Object.keys(sets.case)[0],
+                  gene_set_id: Object.keys(sets.gene)[0],
+                },
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            )
+              // .then((response = {}) => validateGeneExpressionAvailability(response)
+              .then((response = {}) => {
+                // console.log('response', response, typeof response);
+                return validateGeneExpressionAvailability(
+                  { // mockaroooooo!
+                    cases: {
+                      with_gene_expression_count: localStorage.GE_CASES_YES ||
+                        Math.floor(Math.random() * (100 - 0)),
+                      without_gene_expression_count: localStorage.GE_CASES_NO ||
+                        Math.floor(Math.random() * (100 - 0)),
+                      // details: [
+                      //   {
+                      //     case_id: "dc809b76-71a5-4679-89ad-e70c7721518b",
+                      //     has_gene_expression_values: true
+                      //   },
+                      //   {
+                      //     case_id: "ed8dbec5-0d99-4ef2-8294-c5e04ee6cc41",
+                      //     has_gene_expression_values: false
+                      //   }
+                      // ]
+                    },
+                    genes: {
+                      with_gene_expression_count: localStorage.GE_GENES_YES ||
+                        Math.floor(Math.random() * (100 - 0)),
+                      without_gene_expression_count: localStorage.GE_GENES_NO ||
+                        Math.floor(Math.random() * (100 - 0)),
+                      // details: [
+                      //   {
+                      //     gene_id: "ENSG00000000003",
+                      //     has_gene_expression_values: false
+                      //   },
+                      //   {
+                      //     gene_id: "ENSG00000128923",
+                      //     has_gene_expression_values: true
+                      //   },
+                      // ]
+                    },
+                  },
+                );
+              })
+              // .catch(error => console.error(error))
+              .catch(error => {
+                console.error(error);
+              })
+            : sets
+        ),
+        quantity: sets => sets &&
+          ['case', 'gene'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
+      },
     },
   ],
   ...DISPLAY_SCRNA_SEQ && [
@@ -467,7 +532,7 @@ const availableAnalysis: [TAnalysis] = [
       setTypes: ['case'],
       type: 'scrna_seq',
       validateSets: sets => sets &&
-      ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
+        ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
     },
   ],
 ];

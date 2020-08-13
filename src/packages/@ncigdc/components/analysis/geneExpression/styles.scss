@@ -1,0 +1,23 @@
+.validation-results {
+  ul {
+    list-style: none;
+    padding: 0;
+
+    &.results-list > li:not(:last-child) {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .numbers {
+    font-weight: bold;
+    margin-left: 0.5rem;
+  }
+
+  .green {
+    color: #2ca02c;
+  }
+
+  .yellow {
+    color: #D39C3F;
+  }
+}

@@ -437,7 +437,7 @@ const availableAnalysis: [TAnalysis] = [
             op: 'and',
           },
         },
-        message: 'Demo',
+        message: 'Demo showing UMAP, t-SNE, PCA plots generated from single cell RNA sequencing data for a sample case.',
         name: 'Demo SCRNA-SEQ',
         sets: {
           case: {

@@ -11,6 +11,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import { zDepth1 } from '@ncigdc/theme/mixins';
+import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import availableAnalysis from './availableAnalysis';
 import SelectSet from './SelectSet';
 import DemoButton from './DemoButton';
@@ -98,12 +99,23 @@ const CreateAnalysis = ({
               <div>
                 <h1 style={{ fontSize: '2rem' }}>{item.label}</h1>
                 <div style={{ marginBottom: 10 }}>{item.description}</div>
-                <Row spacing={5}>
-                  {isSCRNASeq || (
-                    <Button onClick={() => setAnalysis(item)}>Select</Button>
-                  )}
-                  <DemoButton demoData={item.demoData} type={item.type} />
-                </Row>
+                {isSCRNASeq
+                // TEMP: scrnaseq only has a demo button,
+                // and it goes to the select page
+                  ? (
+                    <Tooltip
+                      Component={<div style={{ maxWidth: 240 }}>{item.demoData.message}</div>}
+                      >
+                      <Button onClick={() => setAnalysis(item)}>Demo</Button>
+                    </Tooltip>
+                  ) 
+                  : (
+                    <Row spacing={5}>
+                      <Button onClick={() => setAnalysis(item)}>Select</Button>
+                      <DemoButton demoData={item.demoData} type={item.type} />
+                    </Row>
+                  )
+                }
               </div>
             </Row>
           );

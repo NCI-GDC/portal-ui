@@ -41,7 +41,7 @@ export const shapeClusteringData = (parsedChunk, existingData) => (
               ...data,
               [cluster]: {
                 ...currentCluster,
-                name: `${Number(cluster) + 1} - ${(currentCluster.x || []).length + 1} cells`,
+                name: `${Number(cluster)} - ${(currentCluster.x || []).length} cells`,
                 x: (currentCluster.x || [])
                   .concat(parsedRow[`${headerNormaliser(simplifiedMethodName)}_1`]),
                 y: (currentCluster.y || [])

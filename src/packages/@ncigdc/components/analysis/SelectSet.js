@@ -17,7 +17,7 @@ import DemoButton from './DemoButton';
 import SetTable from './SetTable';
 import ValidateGeneExpression from './ValidateGeneExpression';
 
-const styles = {
+export const styles = {
   rowStyle: {
     borderBottom: `1px solid ${theme.greyScale5}`,
     marginTop: 'auto',

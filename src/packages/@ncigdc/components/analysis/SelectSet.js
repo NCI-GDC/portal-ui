@@ -187,13 +187,13 @@ const SelectSet = ({
               />,
           )
         : (
-            <SetTable
-              isClinical={isClinical}
-              setInstructions={setInstructions}
-              setsData={setsData()}
-              setType={setTypes.length > 1 ? setTypes : setTypes[0]}
-              styles={styles}
-              />
+          <SetTable
+            isClinical={isClinical}
+            setInstructions={setInstructions}
+            setsData={setsData()}
+            setType={setTypes.length > 1 ? setTypes : setTypes[0]}
+            styles={styles}
+            />
         )}
 
       <Row

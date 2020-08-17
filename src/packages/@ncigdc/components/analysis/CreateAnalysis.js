@@ -11,6 +11,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import { zDepth1 } from '@ncigdc/theme/mixins';
+import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import availableAnalysis from './availableAnalysis';
 import SelectSet from './SelectSet';
 import DemoButton from './DemoButton';
@@ -79,45 +80,61 @@ const CreateAnalysis = ({
                 },
               });
             });
-          }}
-          />
-      )
-      : (
-        <Row
-          style={{
-            flexFlow: 'row wrap',
-            justifyContent: 'space-between',
-            margin: '0 2rem',
-            padding: '2rem 2.5rem',
-          }}
-          >
-          {availableAnalysis.map(item => {
-            return (
-              <Row
-                key={item.type}
-                style={{
-                  ...zDepth1,
-                  margin: '2rem',
-                  padding: '2rem',
-                  width: '45%',
-                }}
-                >
-                <div style={{ margin: 20 }}>
-                  <item.Icon />
-                </div>
-                <div>
-                  <h1 style={{ fontSize: '2rem' }}>{item.label}</h1>
-                  <div style={{ marginBottom: 10 }}>{item.description}</div>
-                  <Row spacing={5}>
-                    <Button onClick={() => setAnalysis(item)}>Select</Button>
-                    <DemoButton demoData={item.demoData} type={item.type} />
-                  </Row>
-                </div>
-              </Row>
-            );
-          })}
-        </Row>
-      );
+          });
+        }}
+        />
+    )
+    : (
+      <Row
+        style={{
+          flexFlow: 'row wrap',
+          justifyContent: 'space-between',
+          margin: '0 2rem',
+          padding: '2rem 2.5rem',
+        }}
+        >
+        {availableAnalysis.map(item => {
+          const isSCRNASeq = item.type === 'scrna_seq';
+
+          return (
+            <Row
+              key={item.type}
+              style={{
+                ...zDepth1,
+                margin: '2rem',
+                padding: '2rem',
+                width: '45%',
+              }}
+              >
+              <div style={{ margin: 20 }}>
+                <item.Icon />
+              </div>
+              <div>
+                <h1 style={{ fontSize: '2rem' }}>{item.label}</h1>
+                <div style={{ marginBottom: 10 }}>{item.description}</div>
+                {isSCRNASeq
+                // TEMP: scrnaseq only has a demo button,
+                // and it goes to the select page
+                  ? (
+                    <Tooltip
+                      Component={<div style={{ maxWidth: 240 }}>{item.demoData.message}</div>}
+                      >
+                      <Button onClick={() => setAnalysis(item)}>Demo</Button>
+                    </Tooltip>
+                  ) 
+                  : (
+                    <Row spacing={5}>
+                      <Button onClick={() => setAnalysis(item)}>Select</Button>
+                      <DemoButton demoData={item.demoData} type={item.type} />
+                    </Row>
+                  )
+                }
+              </div>
+            </Row>
+          );
+        })}
+      </Row>
+    );
 };
 
 export default enhance(CreateAnalysis);

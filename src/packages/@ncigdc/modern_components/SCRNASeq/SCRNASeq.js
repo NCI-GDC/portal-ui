@@ -96,7 +96,7 @@ const enhance = compose(
 );
 
 const SCRNASeq = ({
-  analysisTable = [],
+  analysisTable,
   handleAnalysisClick,
   loading,
   plotsDataList,

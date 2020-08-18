@@ -31,15 +31,12 @@ const fetchFiles = async (caseId: string, size, filters?: Object) => {
     filters: JSON.stringify(
       addInFilters(
         filters,
-        makeFilter(
-          [
-            {
-              field: 'cases.case_id',
-              value: [caseId],
-            },
-          ],
-          false,
-        ),
+        makeFilter([
+          {
+            field: 'cases.case_id',
+            value: [caseId],
+          },
+        ]),
       ),
     ),
     size,

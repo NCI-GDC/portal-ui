@@ -57,16 +57,13 @@ const FilesLink = ({ node, fields = [], children }) =>
   ) : (
     <RepositoryFilesLink
       query={{
-        filters: makeFilter(
-          [
-            {
-              field: 'cases.case_id',
-              value: [node.case_id],
-            },
-            ...fields,
-          ],
-          false,
-        ),
+        filters: makeFilter([
+          {
+            field: 'cases.case_id',
+            value: [node.case_id],
+          },
+          ...fields,
+        ]),
       }}
       >
       {children}
@@ -74,15 +71,12 @@ const FilesLink = ({ node, fields = [], children }) =>
   ));
 
 const getProjectIdFilter = projects =>
-  makeFilter(
-    [
-      {
-        field: 'cases.project.project_id',
-        value: projects.edges.map(({ node: p }) => p.project_id),
-      },
-    ],
-    false,
-  );
+  makeFilter([
+    {
+      field: 'cases.project.project_id',
+      value: projects.edges.map(({ node: p }) => p.project_id),
+    },
+  ]);
 
 const casesTableModel = [
   createSelectColumn({
@@ -273,15 +267,12 @@ const casesTableModel = [
         {node.score > 0 ? (
           <ExploreSSMLink
             filters={replaceFilters(
-              makeFilter(
-                [
-                  {
-                    field: 'cases.case_id',
-                    value: [node.case_id],
-                  },
-                ],
-                false,
-              ),
+              makeFilter([
+                {
+                  field: 'cases.case_id',
+                  value: [node.case_id],
+                },
+              ]),
               filters,
             )}
             searchTableTab="genes"

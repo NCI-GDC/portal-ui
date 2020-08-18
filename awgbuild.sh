@@ -1,6 +1,6 @@
 #!/bin/bash
 # Copied from tungsten
-export REACT_APP_GDC_DISPLAY_SLIDES=true
+# export REACT_APP_GDC_DISPLAY_SLIDES=true
 export REACT_APP_SLIDE_IMAGE_ENDPOINT="/auth/api/v0/tile/"
 export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD`
 export REACT_APP_COMMIT_TAG=`git tag -l --points-at HEAD`

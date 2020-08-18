@@ -12,7 +12,7 @@ ENV REACT_APP_WEBSITE_NAME=GDC \
     REACT_APP_GDC_AUTH_API="https://portal.awg.gdc.cancer.gov/auth/api" \
     REACT_APP_AWG=true \
     REACT_APP_IS_AUTH_PORTAL=true \
-    REACT_APP_GDC_DISPLAY_SLIDES=true \
+    # REACT_APP_GDC_DISPLAY_SLIDES=true \
     REACT_APP_SLIDE_IMAGE_ENDPOINT="/auth/api/v0/tile/" \
     NODE_PATH=src/packages
 

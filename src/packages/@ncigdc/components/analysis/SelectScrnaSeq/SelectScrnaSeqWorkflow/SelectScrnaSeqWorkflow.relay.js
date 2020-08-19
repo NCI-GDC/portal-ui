@@ -4,11 +4,10 @@ import { compose, pure, setDisplayName, withPropsOnChange } from 'recompose';
 
 import Query from '@ncigdc/modern_components/Query';
 
-// NOTES
-// update filters and variables with real scrnaseq settings
+import { scrnaSeqFilters } from '../SelectScrnaSeq.relay';
 
 const variables = {
-  "files_size": 2,
+  "files_size": 99,
   "files_offset": 0,
   "files_sort": [],
 };
@@ -18,7 +17,9 @@ export default (Component) =>
     setDisplayName('SelectScrnaSeqWorkflowQuery'),
     withPropsOnChange(['selectedCase'], ({ selectedCase: { case_id }}) => ({
       filters: {
+        ...scrnaSeqFilters,
         content: [
+          ...scrnaSeqFilters.content,
           {
             op: "in",
             content: {
@@ -28,27 +29,7 @@ export default (Component) =>
               ]
             }
           },
-        {
-          op: "in",
-          content: {
-            field: "files.analysis.workflow_type",
-            value: [
-              "MuSE",
-              "VarScan2"
-            ]
-          }
-        },
-          {
-            op: "in",
-            content: {
-              field: "files.data_format",
-              value: [
-                "vcf"
-              ]
-            }
-          }
         ],
-        op: "and"
       }
     })),
     pure,

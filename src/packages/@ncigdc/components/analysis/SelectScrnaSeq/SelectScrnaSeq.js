@@ -91,40 +91,45 @@ const SelectScrnaSeq = ({
         </Column>
       </Row>
 
-      <Row style={styles.rowStyle}>
-        <Column style={{ flex: 1, marginBottom: 15  }}>
-          <h2
-            style={{
-              color: '#c7254e',
-              fontSize: '1.8rem',
-            }}
-            >
-            Step 1: Select a case to demo
-          </h2>
-          <label
-            htmlFor="scrnaseq-select-case"
-            style={{ marginBottom: 15 }}
-            >
-            Select a demo case with single cell RNA sequencing data available for visualization.
-          </label>
-          <select
-            id="scrnaseq-select-case"
-            name="scrnaseq-select-case"
-            onChange={handleSetSelectedCase}
-            style={{ width: 300 }}
-            >
-            <option value="">-- Select a case --</option>
-            {scrnaSeqCases.map(({ node: { case_id, submitter_id }}) => (
-              <option
-                key={case_id}
-                value={case_id}
+      {scrnaSeqCases.length === 0
+        ? (
+          <p style={{ margin: 20 }}>No cases with single cell RNA sequencing data found.</p>
+        ) : (
+          <Row style={styles.rowStyle}>
+            <Column style={{ flex: 1, marginBottom: 15  }}>
+              <h2
+                style={{
+                  color: '#c7254e',
+                  fontSize: '1.8rem',
+                }}
                 >
-                {submitter_id}
-              </option>
-            ))}
-          </select>
-        </Column>
-      </Row>
+                Step 1: Select a case to demo
+              </h2>
+              <label
+                htmlFor="scrnaseq-select-case"
+                style={{ marginBottom: 15 }}
+                >
+                Select a demo case with single cell RNA sequencing data available for visualization.
+              </label>
+              <select
+                id="scrnaseq-select-case"
+                name="scrnaseq-select-case"
+                onChange={handleSetSelectedCase}
+                style={{ width: 300 }}
+                >
+                <option value="">-- Select a case --</option>
+                {scrnaSeqCases.map(({ node: { case_id, submitter_id }}) => (
+                  <option
+                    key={case_id}
+                    value={case_id}
+                    >
+                    {submitter_id}
+                  </option>
+                ))}
+              </select>
+            </Column>
+          </Row>
+        )}
 
       {selectedCase && (
         <Row style={styles.rowStyle}>

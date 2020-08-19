@@ -547,24 +547,24 @@ export default compose(
                               title: 'UUID',
                             },
                             {
-                              key: 'molecularAnalysisMethod',
-                              style: styles.molecularTestTh,
-                              title: 'Molecular Analysis Method',
-                            },
-                            {
                               key: 'geneSymbol',
                               style: styles.molecularTestTh,
                               title: 'Gene Symbol',
                             },
                             {
+                              key: 'secondGeneSymbol',
+                              style: styles.molecularTestTh,
+                              title: 'Second Gene Symbol',
+                            },
+                            {
+                              key: 'molecularAnalysisMethod',
+                              style: styles.molecularTestTh,
+                              title: 'Molecular Analysis Method',
+                            },
+                            {
                               key: 'laboratoryTest',
                               style: styles.molecularTestTh,
                               title: 'Laboratory Test',
-                            },
-                            {
-                              key: 'biospecimenType',
-                              style: styles.molecularTestTh,
-                              title: 'Biospecimen Type',
                             },
                             {
                               key: 'testValue',
@@ -575,6 +575,26 @@ export default compose(
                               key: 'testResult',
                               style: styles.molecularTestTh,
                               title: 'Test Result',
+                            },
+                            {
+                              key: 'testUnits',
+                              style: styles.molecularTestTh,
+                              title: 'Test Units',
+                            },
+                            {
+                              key: 'biospecimenType',
+                              style: styles.molecularTestTh,
+                              title: 'Biospecimen Type',
+                            },
+                            {
+                              key: 'variantType',
+                              style: styles.molecularTestTh,
+                              title: 'Variant Type',
+                            },
+                            {
+                              key: 'chromosome',
+                              style: styles.molecularTestTh,
+                              title: 'Chromosome',
                             },
                             {
                               key: 'aaChange',
@@ -588,27 +608,7 @@ export default compose(
                             },
                             {
                               key: 'mismatchRepairMutation',
-                              style: styles.molecularTestTh,
                               title: 'Mismatch Repair Mutation',
-                            },
-                            {
-                              key: 'secondGeneSymbol',
-                              style: styles.molecularTestTh,
-                              title: 'Second Gene Symbol',
-                            },
-                            {
-                              key: 'variantType',
-                              style: styles.molecularTestTh,
-                              title: 'Variant Type',
-                            },
-                            {
-                              key: 'chromosome',
-                              style: styles.molecularTestTh,
-                              title: 'Chromosome',
-                            },
-                            {
-                              key: 'testUnits',
-                              title: 'Test Units',
                             },
                           ]}
                           />

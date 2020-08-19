@@ -608,6 +608,7 @@ export default compose(
                             },
                             {
                               key: 'mismatchRepairMutation',
+                              style: styles.molecularTestTh,
                               title: 'Mismatch Repair Mutation',
                             },
                           ]}

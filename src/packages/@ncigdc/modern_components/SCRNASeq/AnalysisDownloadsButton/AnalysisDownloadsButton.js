@@ -21,8 +21,8 @@ const enhance = compose(
     handleAnalysisClick: ({
       case_id,
       tsvIds,
-    }) => ({ target }) => {
-      const data_type = target.getAttribute('data-type');
+    }) => (data_type) => {
+      console.log(data_type)
       // TODO: call download() util (see DownloadFile.js & DownloadButton.js)
       // pseudo code:
       // const file_id = tsvIds[data_type]

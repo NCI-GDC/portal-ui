@@ -32,17 +32,15 @@ const downloadOptions = {
 };
 
 export default class DownloadButton extends Component {
-  handleClick = e => {
-    const {
-      name,
-      onAnalysisClick,
-      onToolbarClick,
-    } = this.props;
-    if (name === 'downloadAnalysis') {
-      onAnalysisClick(e);
-    } else {
-      onToolbarClick(e);
-    }
+  handleAnalysisClick = data_type => () => {
+    console.log({ data_type })
+    const { onAnalysisClick } = this.props;
+    onAnalysisClick(data_type);
+  }
+
+  handleToolbarClick = e => {
+    const { onToolbarClick } = this.props;
+    onToolbarClick(e);
   }
 
   render() {
@@ -64,22 +62,39 @@ export default class DownloadButton extends Component {
           width: 200,
         }}
         >
-        {downloadOptions[name].map(dlOpt => (
-          <DropdownItem
-            data-format={dlOpt.format || ''}
-            data-name={name}
-            data-scale={dlOpt.scale || ''}
-            data-type={dlOpt.data_type || ''}
-            key={dlOpt.label}
-            onClick={this.handleClick(dlOpt)}
-            style={{
-              cursor: 'pointer',
-              width: 'auto',
-            }}
-            >
-            {dlOpt.label}
-          </DropdownItem>
-        ))}
+        {name === 'downloadAnalysis'
+          ? (
+            downloadOptions[name].map(dlOpt => (
+              <DropdownItem
+                key={dlOpt.label}
+                onClick={this.handleAnalysisClick(dlOpt.data_type)}
+                style={{
+                  cursor: 'pointer',
+                  width: 'auto',
+                }}
+                >
+                {dlOpt.label}
+              </DropdownItem>
+            ))
+          )
+          : (
+            downloadOptions[name].map(dlOpt => (
+              <DropdownItem
+                data-format={dlOpt.format}
+                data-name={name}
+                data-scale={dlOpt.scale}
+                key={dlOpt.label}
+                onClick={this.handleToolbarClick}
+                style={{
+                  cursor: 'pointer',
+                  width: 'auto',
+                }}
+                >
+                {dlOpt.label}
+              </DropdownItem>
+            ))
+          )
+        }
       </DropDown>
     );
   }

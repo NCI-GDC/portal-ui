@@ -7,6 +7,7 @@ import {
   withHandlers,
   withProps,
   withPropsOnChange,
+  withState,
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -15,20 +16,11 @@ import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import SCRNASeqPlot from './SCRNASeqPlot';
 import { buttonList } from './SCRNASeqPlot/utils';
 import './styles.scss';
-import {
-  DownloadButton,
-} from './toolbar';
+import AnalysisDownloadsButton from './AnalysisDownloadsButton';
 
 const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
   pure,
-  withHandlers({
-    handleAnalysisClick: ({
-      // TODO: get file IDs for TSVs from props
-    }) => ({ target }) => {
-      console.log('clicked analysis dropdown item', { target })
-    },
-  }),
   withPropsOnChange(
     (
       {
@@ -98,8 +90,8 @@ const enhance = compose(
 );
 
 const SCRNASeq = ({
+  analysisInfo: { case_id },
   analysisTable,
-  handleAnalysisClick,
   loading,
   plotsDataList,
 }) => (
@@ -130,17 +122,7 @@ const SCRNASeq = ({
         </h1>
 
         <Row>
-          {/* <ToolbarButton
-            //   faClass="fa-angle-double-down"
-            //   label="Get TSV"
-            //   name="downloadAnalysis"
-            //   onToolbarClick={getWholeTsv}
-            //  />
-          */}
-          <DownloadButton
-            onAnalysisClick={handleAnalysisClick}
-            {...buttonList.downloadAnalysis}
-            />
+          <AnalysisDownloadsButton case_id={case_id} />
         </Row>
       </Row>
       <Table

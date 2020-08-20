@@ -8,11 +8,11 @@ import ToolbarButton from './ToolbarButton';
 const downloadOptions = {
   downloadAnalysis: [
     {
-      format: 'cellCounts',
+      data_type: 'Single Cell Analysis',
       label: 'Cell Counts',
     },
     {
-      format: 'differentialGeneExpression',
+      data_type: 'Differential Gene Expression',
       label: 'Differential Gene Expression',
     },
   ],
@@ -69,8 +69,9 @@ export default class DownloadButton extends Component {
             data-format={dlOpt.format || ''}
             data-name={name}
             data-scale={dlOpt.scale || ''}
+            data-type={dlOpt.data_type || ''}
             key={dlOpt.label}
-            onClick={this.handleClick}
+            onClick={this.handleClick(dlOpt)}
             style={{
               cursor: 'pointer',
               width: 'auto',

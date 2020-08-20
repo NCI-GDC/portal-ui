@@ -21,17 +21,14 @@ export default (Component: ReactClass<*>) =>
           variables: {
             ssmCountsfilters: caseIds.length
               ? addInFilters(
-                  filters,
-                  makeFilter(
-                    [
-                      {
-                        field: 'occurrence.case.case_id',
-                        value: caseIds,
-                      },
-                    ],
-                    false,
-                  ),
-                )
+                filters,
+                makeFilter([
+                  {
+                    field: 'occurrence.case.case_id',
+                    value: caseIds,
+                  },
+                ]),
+              )
               : null,
           },
         };

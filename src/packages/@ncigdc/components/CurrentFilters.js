@@ -114,8 +114,14 @@ const enhance = compose(
   withPropsOnChange(['query'], ({ query: { filters } }) => ({
     filters: parseJSONParam(filters),
   })),
-  withPropsOnChange(['filters'], ({ filters }) => ({
-    currentFilters: (filters && filters.content) || [],
+  withPropsOnChange(['filters'], ({
+    filters: {
+      content: currentFilters = [],
+      op: operation = 'and',
+    },
+  } = {}) => ({
+    currentFilters,
+    operation,
   })),
   withState('expandedFilters', 'setExpandedFilters', []),
   withProps(({ expandedFilters }) => ({
@@ -181,6 +187,7 @@ const CurrentFilters = (
     getDisplayValue,
     hideHelpText = false,
     hideClearButton = false,
+    operation,
   }: TProps = {},
 ) => (
   <Info className="test-current-filters" style={style}>
@@ -300,7 +307,11 @@ const CurrentFilters = (
                   </UnstyledButton>
                 )}
                 {value.length > 1 && <span style={styles.rightParen}>)</span>}
-                {i < currentFilters.length - 1 && <Op>AND</Op>}
+                {i < currentFilters.length - 1 && (
+                  <Op>
+                    {operation.toUpperCase()}
+                  </Op>
+                )}
               </Row>
             );
           })}

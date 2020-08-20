@@ -23,8 +23,10 @@ const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
   pure,
   withHandlers({
-    handleAnalysisClick: () => {
-      console.log('clicked analysis dropdown item');
+    handleAnalysisClick: ({
+      // TODO: get file IDs for TSVs from props
+    }) => ({ target }) => {
+      console.log('clicked analysis dropdown item', { target })
     },
   }),
   withPropsOnChange(

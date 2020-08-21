@@ -189,13 +189,21 @@ must be provided
                                   hits(first: 99) {
                                     edges {
                                       node {
-                                        molecular_test_id
-                                        gene_symbol
-                                        molecular_analysis_method
-                                        test_value
-                                        laboratory_test
+                                        aa_change
+                                        antigen
                                         biospecimen_type
+                                        chromosome
+                                        gene_symbol
+                                        id
+                                        laboratory_test
+                                        mismatch_repair_mutation
+                                        molecular_analysis_method
+                                        molecular_test_id
+                                        second_gene_symbol
+                                        test_result
                                         test_units
+                                        test_value
+                                        variant_type
                                       }
                                     }
                                   }

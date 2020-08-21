@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   compose,
   lifecycle,
@@ -11,8 +10,22 @@ import {
   withState,
 } from 'recompose';
 
+import DropDown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
+
 import { buttonList } from '../SCRNASeqPlot/utils';
-import { DownloadButton } from '../toolbar';
+import { ToolbarButton } from '../toolbar';
+
+const downloadOptions = [
+  {
+    data_type: 'Single Cell Analysis',
+    label: 'Cell Counts',
+  },
+  {
+    data_type: 'Differential Gene Expression',
+    label: 'Differential Gene Expression',
+  },
+];
 
 const enhance = compose(
   setDisplayName('EnhancedAnalysisDownloadsButton'),
@@ -21,7 +34,7 @@ const enhance = compose(
     handleAnalysisClick: ({
       case_id,
       tsvIds,
-    }) => (data_type) => {
+    }) => (data_type) => () => {
       console.log(data_type)
       // TODO: call download() util (see DownloadFile.js & DownloadButton.js)
       // pseudo code:
@@ -33,10 +46,27 @@ const enhance = compose(
 
 const AnalysisDownloadsButton = ({ handleAnalysisClick }) => {
   return (
-    <DownloadButton
-      onAnalysisClick={handleAnalysisClick}
-      {...buttonList.downloadAnalysis}
-      />
+    <DropDown
+      button={(
+        <ToolbarButton
+          {...buttonList.downloadAnalysis}
+          />
+      )}
+      dropdownStyle={{ width: 200 }}
+      >
+      {downloadOptions.map(dlOpt => (
+        <DropdownItem
+          key={dlOpt.label}
+          onClick={handleAnalysisClick(dlOpt.data_type)}
+          style={{
+            cursor: 'pointer',
+            width: 'auto',
+          }}
+          >
+          {dlOpt.label}
+        </DropdownItem>
+      ))}
+    </DropDown>
   )
 };
 

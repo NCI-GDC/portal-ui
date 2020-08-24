@@ -33,13 +33,12 @@ const enhance = compose(
   withHandlers({
     handleAnalysisClick: ({
       case_id,
-      tsvIds,
+      viewer: { repository: { files: { hits: { edges = [] }}}},
     }) => (data_type) => () => {
-      console.log(data_type)
       // TODO: call download() util (see DownloadFile.js & DownloadButton.js)
       // pseudo code:
       // const file_id = tsvIds[data_type]
-      console.log('clicked analysis dropdown item', case_id, data_type)
+      console.log('clicked analysis dropdown item', case_id, edges, data_type)
     },
   }),
 );

@@ -144,7 +144,7 @@ const SelectScrnaSeq = ({
               Select an analysis workflow that was used for the selected demo case.
             </div>
             <SelectScrnaSeqWorkflow
-              selectedCase={selectedCase}
+              case_id={selectedCase.case_id}
               setSelectedFile={setSelectedFile}
               />
           </Column>

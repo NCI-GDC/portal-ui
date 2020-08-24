@@ -1,22 +1,19 @@
 import React from 'react';
 import { graphql } from 'react-relay';
-import { compose, pure, setDisplayName, withPropsOnChange } from 'recompose';
+import { compose, pure, setDisplayName, withProps } from 'recompose';
 
 import Query from '@ncigdc/modern_components/Query';
 
-// NOTES
-// update filters and variables with real scrnaseq settings
-
 const variables = {
-  "files_size": 2,
+  "files_size": 99,
   "files_offset": 0,
   "files_sort": [],
 };
 
 export default (Component) =>
   compose(
-    setDisplayName('SelectScrnaSeqWorkflowQuery'),
-    withPropsOnChange(['case_id'], ({ case_id }) => ({
+    setDisplayName('AnalysisDownloadsButtonQuery'),
+    withProps(({ case_id }) => ({
       filters: {
         content: [
           {
@@ -31,10 +28,10 @@ export default (Component) =>
         {
           op: "in",
           content: {
-            field: "files.analysis.workflow_type",
+            field: "files.data_type",
             value: [
-              "MuSE",
-              "VarScan2"
+              "Differential Gene Expression",
+              "Single Cell Analysis"
             ]
           }
         },
@@ -43,7 +40,7 @@ export default (Component) =>
             content: {
               field: "files.data_format",
               value: [
-                "vcf"
+                "tsv"
               ]
             }
           }
@@ -57,12 +54,12 @@ export default (Component) =>
     return (
       <Query
         parentProps={props}
-        name="SelectScrnaSeqWorkflow"
+        name="AnalysisDownloadsButtonQuery"
         minHeight={0}
         variables={{ ...variables, filters }}
         Component={Component}
         query={graphql`
-          query SelectScrnaSeqWorkflow_relayQuery(
+          query AnalysisDownloadsButton_relayQuery(
             $files_size: Int
             $files_offset: Int
             $files_sort: [Sort]
@@ -75,9 +72,7 @@ export default (Component) =>
                     edges {
                       node {
                         file_id
-                        analysis {
-                          workflow_type
-                        }
+                        data_type
                       }
                     }
                   }

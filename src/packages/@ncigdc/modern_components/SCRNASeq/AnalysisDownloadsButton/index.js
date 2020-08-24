@@ -1,5 +1,4 @@
 import AnalysisDownloadsButton from './AnalysisDownloadsButton';
-// import createRenderer from './AnalysisDownloadsButton.relay';
+import createRenderer from './AnalysisDownloadsButton.relay';
 
-// export default createRenderer(AnalysisDownloadsButton);
-export default AnalysisDownloadsButton;
+export default createRenderer(AnalysisDownloadsButton);

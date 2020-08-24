@@ -24,6 +24,15 @@ export const scrnaSeqFilters = {
           "tsv"
         ]
       }
+    },
+    {
+      op: "in",
+      content: {
+        field: "files.data_type",
+        value: [
+          "Single Cell Analysis"
+        ]
+      }
     }
   ],
   op: "and",

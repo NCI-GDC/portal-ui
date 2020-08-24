@@ -15,7 +15,7 @@ const variables = {
 export default (Component) =>
   compose(
     setDisplayName('SelectScrnaSeqWorkflowQuery'),
-    withPropsOnChange(['selectedCase'], ({ selectedCase: { case_id }}) => ({
+    withPropsOnChange(['case_id'], ({ case_id }) => ({
       filters: {
         ...scrnaSeqFilters,
         content: [

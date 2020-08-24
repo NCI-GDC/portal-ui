@@ -9,6 +9,7 @@ import {
   withPropsOnChange,
   withState,
 } from 'recompose';
+import { find } from 'lodash';
 
 import DropDown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
@@ -34,10 +35,12 @@ const enhance = compose(
       case_id,
       viewer: { repository: { files: { hits: { edges = [] }}}},
     }) => (data_type) => () => {
+      const tsvFile = find(edges, edge => edge.data_type === data_type);
+      const file_id = (tsvFile && tsvFile.file_id) || 
+        'ecab3a48-612e-463a-a56f-d3d1c3d5daf0';
+      // TEST UUID ONLY. REMOVE AFTER TESTING.
+      console.log(edges, data_type, tsvFile, file_id)
       // TODO: call download() util (see DownloadFile.js & DownloadButton.js)
-      // pseudo code:
-      // const file_id = tsvIds[data_type]
-      console.log('clicked analysis dropdown item', case_id, edges, data_type)
     },
   }),
 );

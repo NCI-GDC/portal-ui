@@ -526,12 +526,20 @@ export default compose(
                       followUp.node.molecular_tests.hits.edges.length > 0 && (
                         <EntityPageHorizontalTable
                           data={followUp.node.molecular_tests.hits.edges.map(({ node }) => ({
+                            aaChange: node.aa_change,
+                            antigen: node.antigen,
                             biospecimenType: node.biospecimen_type,
+                            chromosome: node.chromosome,
                             geneSymbol: node.gene_symbol,
                             laboratoryTest: node.laboratory_test,
+                            mismatchRepairMutation: node.mismatch_repair_mutation,
                             molecularAnalysisMethod: node.molecular_analysis_method,
                             molecularTestId: node.molecular_test_id,
+                            secondGeneSymbol: node.second_gene_symbol,
+                            testResult: node.test_result,
+                            testUnits: node.test_units,
                             testValue: node.test_value && node.test_units ? `${node.test_value} ${node.test_units}` : node.test_value,
+                            variantType: node.variant_type,
                           }))}
                           headings={[
                             {
@@ -539,14 +547,19 @@ export default compose(
                               title: 'UUID',
                             },
                             {
-                              key: 'molecularAnalysisMethod',
-                              style: styles.molecularTestTh,
-                              title: 'Molecular Analysis Method',
-                            },
-                            {
                               key: 'geneSymbol',
                               style: styles.molecularTestTh,
                               title: 'Gene Symbol',
+                            },
+                            {
+                              key: 'secondGeneSymbol',
+                              style: styles.molecularTestTh,
+                              title: 'Second Gene Symbol',
+                            },
+                            {
+                              key: 'molecularAnalysisMethod',
+                              style: styles.molecularTestTh,
+                              title: 'Molecular Analysis Method',
                             },
                             {
                               key: 'laboratoryTest',
@@ -554,13 +567,49 @@ export default compose(
                               title: 'Laboratory Test',
                             },
                             {
+                              key: 'testValue',
+                              style: styles.molecularTestTh,
+                              title: 'Test Value',
+                            },
+                            {
+                              key: 'testResult',
+                              style: styles.molecularTestTh,
+                              title: 'Test Result',
+                            },
+                            {
+                              key: 'testUnits',
+                              style: styles.molecularTestTh,
+                              title: 'Test Units',
+                            },
+                            {
                               key: 'biospecimenType',
                               style: styles.molecularTestTh,
                               title: 'Biospecimen Type',
                             },
                             {
-                              key: 'testValue',
-                              title: 'Test Value',
+                              key: 'variantType',
+                              style: styles.molecularTestTh,
+                              title: 'Variant Type',
+                            },
+                            {
+                              key: 'chromosome',
+                              style: styles.molecularTestTh,
+                              title: 'Chromosome',
+                            },
+                            {
+                              key: 'aaChange',
+                              style: styles.molecularTestTh,
+                              title: 'AA Change',
+                            },
+                            {
+                              key: 'antigen',
+                              style: styles.molecularTestTh,
+                              title: 'Antigen',
+                            },
+                            {
+                              key: 'mismatchRepairMutation',
+                              style: styles.molecularTestTh,
+                              title: 'Mismatch Repair Mutation',
                             },
                           ]}
                           />

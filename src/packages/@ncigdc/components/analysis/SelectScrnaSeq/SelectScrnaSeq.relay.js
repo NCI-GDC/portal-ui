@@ -4,33 +4,45 @@ import { compose, pure, setDisplayName } from 'recompose';
 
 import Query from '@ncigdc/modern_components/Query';
 
-// NOTES
-// this query will return 5 cases with either or both workflow_types.
-// TODO add real scrnaseq filters & use the commented-out variables properties.
-
-const filters = {
-  op: "and",
+export const scrnaSeqFilters = {
   content: [
     {
       op: "in",
       content: {
         field: "files.analysis.workflow_type",
         value: [
-          "MuSE",
-          "VarScan2"
+          "Seurat - 10x Chromium",
+          "Seurat - Smart-Seq2"
+        ]
+      }
+    },
+    {
+      op: "in",
+      content: {
+        field: "files.data_format",
+        value: [
+          "tsv"
+        ]
+      }
+    },
+    {
+      op: "in",
+      content: {
+        field: "files.data_type",
+        value: [
+          "Single Cell Analysis"
         ]
       }
     }
-  ]
+  ],
+  op: "and",
 };
 
 const variables = {
-  cases_offset: 13853,
-  // cases_offset: 0,
-  cases_size: 5,
-  // cases_size: 20,
+  cases_offset: 0,
+  cases_size: 99,
   cases_sort: [],
-  filters,
+  filters: scrnaSeqFilters,
   score: 'annotations.annotation_id',
 };
 
@@ -61,15 +73,15 @@ export default (Component) =>
                     edges {
                       node {
                         case_id
-                        primary_site
-                        disease_type
-                        submitter_id
-                        project {
-                          project_id
-                        }
                         demographic {
                           gender
                         }
+                        disease_type
+                        primary_site
+                        project {
+                          project_id
+                        }
+                        submitter_id
                       }
                     }
                   }

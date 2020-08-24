@@ -12,9 +12,8 @@ import {
 
 import DropDown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
-
-import { buttonList } from '../SCRNASeqPlot/utils';
-import { ToolbarButton } from '../toolbar';
+import Button from '@ncigdc/uikit/Button';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const downloadOptions = [
   {
@@ -47,11 +46,24 @@ const AnalysisDownloadsButton = ({ handleAnalysisClick }) => {
   return (
     <DropDown
       button={(
-        <ToolbarButton
-          {...buttonList.downloadAnalysis}
-          />
+        <Tooltip
+          Component={<div>Analysis Downloads</div>}
+          >
+          <Button>
+            <i
+              aria-hidden="true"
+              className="fa fa-download"
+              />
+            <span style={{ marginLeft: 6 }}>Analysis Downloads</span>
+          </Button>
+        </Tooltip>
       )}
-      dropdownStyle={{ width: 200 }}
+      dropdownStyle={{ 
+        // move to the right to compensate for
+        // div added by relay component
+        right: -172,
+        width: 200,
+      }}
       >
       {downloadOptions.map(dlOpt => (
         <DropdownItem

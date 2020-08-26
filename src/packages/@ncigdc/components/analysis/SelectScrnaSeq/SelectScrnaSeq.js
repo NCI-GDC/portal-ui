@@ -20,24 +20,28 @@ const enhance = compose(
       viewer: { repository: { cases: { hits: { edges }}}}
     }) => (e) => {
       const caseInput = e.target.value;
-      const caseInputDetails = find(edges, edge => edge.node.case_id === caseInput);
-      const { 
-        case_id,
-        demographic: { gender },
-        disease_type,
-        primary_site,
-        project: { project_id },
-        submitter_id
-      } = caseInputDetails.node;
+      if (caseInput) {
+        const caseInputDetails = find(edges, edge => edge.node.case_id === caseInput);
+        const { 
+          case_id,
+          demographic: { gender },
+          disease_type,
+          primary_site,
+          project: { project_id },
+          submitter_id
+        } = caseInputDetails.node;
 
-      setSelectedCase({
-        case_id,
-        disease_type,
-        gender,
-        primary_site,
-        project_id,
-        submitter_id,
-      });
+        setSelectedCase({
+          case_id,
+          disease_type,
+          gender,
+          primary_site,
+          project_id,
+          submitter_id,
+        });
+      } else {
+        setSelectedCase(null);
+      }
 
       // reset file on case change
       setSelectedFile(null);

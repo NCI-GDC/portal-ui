@@ -11,6 +11,7 @@ import {
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import SCRNASeqPlot from './SCRNASeqPlot';
 import { buttonList } from './SCRNASeqPlot/utils';
@@ -128,54 +129,55 @@ const SCRNASeq = ({
         </h1>
 
         <Row>
-          {/* <ToolbarButton
-            //   faClass="fa-angle-double-down"
-            //   label="Get TSV"
-            //   name="downloadAnalysis"
-            //   onToolbarClick={getWholeTsv}
-            //  />
-          */}
-          <DownloadButton
-            onAnalysisClick={handleAnalysisClick}
-            {...buttonList.downloadAnalysis}
-            />
+          {loading || (
+            <DownloadButton
+              onAnalysisClick={handleAnalysisClick}
+              {...buttonList.downloadAnalysis}
+              />
+          )}
         </Row>
       </Row>
-      <Table
-        body={(
-          <tbody>
-            {analysisTable.map((row, i) => (
-              <Tr index={i} key={row.name}>
-                <Td><strong>{row.name}</strong></Td>
-                <Td>
-                  {row.link
-                    ? <a href={row.link} target="_blank">{row.text}</a>
-                    : row.text}
-                </Td>
-              </Tr>
-            ))}
-          </tbody>
-        )}
-        style={{ marginBottom: 20, maxWidth: 500 }}
-        />
-      <div className="scrnaseq-row">
-        {plotsDataList.length > 0
-          ? plotsDataList.map(plot => (
-            <div
-              className="scrnaseq-column"
-              key={plot.name}
-              >
-              <div className="scrnaseq-card">
-                <SCRNASeqPlot
-                  data={plot.data}
-                  dataType={plot.name}
-                  loading={loading}
-                  />
-              </div>
+      {loading
+        ? <Loader loading={loading} style={{ position: 'relative' }} />
+        : (
+          <Column>
+            <Table
+              body={(
+                <tbody>
+                  {analysisTable.map((row, i) => (
+                    <Tr index={i} key={row.name}>
+                      <Td><strong>{row.name}</strong></Td>
+                      <Td>
+                        {row.link
+                          ? <a href={row.link} target="_blank">{row.text}</a>
+                          : row.text}
+                      </Td>
+                    </Tr>
+                  ))}
+                </tbody>
+              )}
+              style={{ marginBottom: 20, maxWidth: 500 }}
+              />
+            <div className="scrnaseq-row">
+              {plotsDataList.length > 0
+                ? plotsDataList.map(plot => (
+                  <div
+                    className="scrnaseq-column"
+                    key={plot.name}
+                    >
+                    <div className="scrnaseq-card">
+                      <SCRNASeqPlot
+                        data={plot.data}
+                        dataType={plot.name}
+                        loading={loading}
+                        />
+                    </div>
+                  </div>
+                ))
+                : 'No clustering plots available to be displayed'}
             </div>
-          ))
-          : 'No clustering plots available to be displayed'}
-      </div>
+          </Column>
+      )}
     </Column>
   </Row>
 );

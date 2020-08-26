@@ -149,7 +149,7 @@ const SCRNASeq = ({
                 <Td><strong>{row.name}</strong></Td>
                 <Td>
                   {row.link
-                    ? <a href={row.link}>{row.text}</a>
+                    ? <a href={row.link} target="_blank">{row.text}</a>
                     : row.text}
                 </Td>
               </Tr>

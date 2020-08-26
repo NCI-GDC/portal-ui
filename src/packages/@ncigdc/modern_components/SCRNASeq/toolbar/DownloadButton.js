@@ -8,10 +8,6 @@ import ToolbarButton from './ToolbarButton';
 const downloadOptions = {
   downloadAnalysis: [
     {
-      format: 'summary',
-      label: 'Summary',
-    },
-    {
       format: 'cellCounts',
       label: 'Cell Counts',
     },

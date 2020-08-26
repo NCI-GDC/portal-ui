@@ -446,7 +446,7 @@ const availableAnalysis: [TAnalysis] = [
         },
         type: 'scrna_seq',
       },
-      description: 'Display different types of clustering visualizations for your selected single-cell RNA sequencing experiment.',
+      description: 'Display a demo of different clustering visualizations for single cell RNA sequencing data.',
       Icon: withTheme(({ style }) => (
         <div>
           <SCRNASeq

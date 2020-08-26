@@ -18,7 +18,6 @@ import {
   isFullScreen,
 } from '@ncigdc/utils/fullscreen';
 
-import { withLoader } from '@ncigdc/uikit/Loaders/Loader';
 import withSize from '@ncigdc/utils/withSize';
 
 import { DownloadButton, ToolbarButton } from '../toolbar';
@@ -37,10 +36,11 @@ const SCRNASeqPlot = ({
   size: { height, width },
   uniqueGridClass,
 }) => {
+  const checkFullScreen = !!isFullScreen();
   const layoutParams = {
     dataType,
-    fullscreen: isFullScreen(),
-    ...isFullScreen() && { height },
+    fullscreen: checkFullScreen,
+    height,
     width,
   };
   return (
@@ -102,10 +102,11 @@ export default compose(
     }) => e => {
       e.persist();
       const name = e.target.getAttribute('data-name');
+      const checkFullScreen = !!isFullScreen();
       const layoutParams = {
         dataType,
-        fullscreen: isFullScreen(),
-        ...isFullScreen() && { height },
+        fullscreen: checkFullScreen,
+        height,
         width,
       };
       if (name === 'downloadImage') {
@@ -117,13 +118,14 @@ export default compose(
           scale,
         });
       } else if (name === 'fullscreen') {
-        if (isFullScreen()) {
+        if (checkFullScreen) {
           exitFullScreen();
         } else {
           enterFullScreen(containerRefs[uniqueGridClass]);
         }
         Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
       } else if (name === 'react') {
+        // react = hard reset of the whole plot
         Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
       } else {
         // use Plotly's built-in button functions
@@ -131,6 +133,5 @@ export default compose(
       }
     },
   }),
-  withLoader,
   pure,
 )(SCRNASeqPlot);

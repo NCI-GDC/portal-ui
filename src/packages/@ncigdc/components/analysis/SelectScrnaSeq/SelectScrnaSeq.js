@@ -86,7 +86,8 @@ const SelectScrnaSeq = ({
         <Icon />
         <Column style={{ flex: 1 }}>
           <h1 style={{ fontSize: '2rem' }}>{label}</h1>
-          Display a demo of different clustering visualizations for single cell RNA sequencing data.
+          <p>Try out the beta release of our new analysis tool for single cell RNA sequencing data.  Display a demo of different clustering visualizations for this data from a sample case.</p>
+          <p>Please send us your feedback at: <a href="mailto:support@nci-gdc.datacommons.io">support@nci-gdc.datacommons.io</a></p>
         </Column>
         <Column style={{ paddingTop: 5 }}>
           <Row spacing="5px">

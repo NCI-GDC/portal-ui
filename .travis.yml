@@ -16,6 +16,9 @@ jobs:
     # - echo $TRAVIS_COMMIT_RANGE | sed 's/\.\.\./../' | xargs git diff-tree --no-commit-id --name-only -r | xargs echo -n
     - npm run lint || travis_terminate 1
     - npm test || travis_terminate 1
+    after_script:
+    - bash <(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url="https://cdis.blackducksoftware.com" --blackduck.api.token=$(echo $BLACKDUCK_TOKEN) --blackduck.trust.cert=true --detect.policy.check=true  --snippet-matching=true --full-snippet-scan=true
+
   - stage: deploy
     script:
     - echo "$QUAY_PASSWORD" | docker login quay.io -u="$QUAY_USERNAME" --password-stdin

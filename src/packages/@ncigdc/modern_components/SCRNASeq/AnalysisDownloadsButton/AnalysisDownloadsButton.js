@@ -5,6 +5,7 @@ import {
   setDisplayName,
   withHandlers,
   withProps,
+  withState,
 } from 'recompose';
 import { find } from 'lodash';
 import urlJoin from 'url-join';
@@ -15,6 +16,8 @@ import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { AUTH_API } from '@ncigdc/utils/constants';
 import download from '@ncigdc/utils/download';
+import DownloadIcon from '@ncigdc/theme/icons/Download';
+import Spinner from '@ncigdc/theme/icons/Spinner';
 
 const enhance = compose(
   setDisplayName('EnhancedAnalysisDownloadsButton'),
@@ -27,13 +30,16 @@ const enhance = compose(
       label: node.data_type === 'Single Cell Analysis'
         ? 'Cell Counts'
         : node.data_type
-    }))
+    })),
   })),
+  withState('active', 'setActive', false),
   withHandlers({
     handleAnalysisClick: ({
       analysisFiles,
       case_id,
+      setActive,
     }) => (data_type) => () => {
+      setActive(true);
       const analysisFile = find(analysisFiles, file => file.data_type === data_type);
       const file_id = analysisFile && analysisFile.file_id;
       console.log({analysisFile, data_type, file_id})
@@ -46,24 +52,25 @@ const enhance = compose(
       download({
         params,
         url: urlJoin(AUTH_API, 'data?annotations=true&related_files=true'),
-      })
+      })(() => {}, () => setActive(false));
     },
   }),
 );
 
-const AnalysisDownloadsButton = ({ analysisFiles, handleAnalysisClick }) => {
+const AnalysisDownloadsButton = ({
+  active, analysisFiles, handleAnalysisClick
+}) => {
   return (
     <DropDown
       button={(
         <Tooltip
           Component={<div>Analysis Downloads</div>}
           >
-          <Button>
-            <i
-              aria-hidden="true"
-              className="fa fa-download"
-              />
-            <span style={{ marginLeft: 6 }}>Analysis Downloads</span>
+          <Button disabled={active}>
+            {active ? <Spinner key="icon" /> : <DownloadIcon key="icon" />}
+            <span style={{ marginLeft: 6 }}>
+              {active ? 'Processing' : 'Analysis Downloads'}
+            </span>
           </Button>
         </Tooltip>
       )}
@@ -73,7 +80,7 @@ const AnalysisDownloadsButton = ({ analysisFiles, handleAnalysisClick }) => {
         right: -172,
         width: 200,
       }}
-      isDisabled={analysisFiles.length === 0}
+      isDisabled={active || analysisFiles.length === 0}
       >
       {analysisFiles.map(file => (
         <DropdownItem

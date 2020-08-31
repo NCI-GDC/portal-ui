@@ -40,9 +40,7 @@ const enhance = compose(
   }),
 );
 
-const AnalysisDownloadsButton = ({ analysisFiles, handleAnalysisClick, viewer: { repository: { files: { hits: { edges = [] }}}} }) => {
-  console.log({analysisFiles});
-  console.log({edges})
+const AnalysisDownloadsButton = ({ analysisFiles, handleAnalysisClick }) => {
   return (
     <DropDown
       button={(

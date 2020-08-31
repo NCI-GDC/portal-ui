@@ -38,7 +38,7 @@ export const scrnaSeqFilters = {
 };
 
 const variables = {
-  cases_offset: MOCK_SCRNA_DATA ? 13853 : 0,
+  cases_offset: 0,
   cases_size: MOCK_SCRNA_DATA ? 5 : 99,
   cases_sort: [],
   filters: scrnaSeqFilters,

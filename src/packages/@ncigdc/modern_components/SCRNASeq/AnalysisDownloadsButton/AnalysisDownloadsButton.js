@@ -50,6 +50,7 @@ const enhance = compose(
         size: analysisFile.file_size,
       }
       download({
+        method: 'POST',
         params,
         url: urlJoin(AUTH_API, 'data?annotations=true&related_files=true'),
       })(() => {}, () => setActive(false));

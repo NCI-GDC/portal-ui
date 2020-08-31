@@ -42,8 +42,6 @@ const enhance = compose(
       setActive(true);
       const analysisFile = find(analysisFiles, file => file.data_type === data_type);
       const file_id = analysisFile && analysisFile.file_id;
-      console.log({analysisFile, data_type, file_id})
-      // TODO: call download() util (see DownloadFile.js & DownloadButton.js)
       const params = {
         filename: analysisFile.file_name,
         ids: analysisFile.file_id,

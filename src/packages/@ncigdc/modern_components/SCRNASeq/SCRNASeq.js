@@ -4,7 +4,6 @@ import {
   lifecycle,
   pure,
   setDisplayName,
-  withHandlers,
   withProps,
   withPropsOnChange,
 } from 'recompose';
@@ -16,18 +15,11 @@ import Loader from '@ncigdc/uikit/Loaders/Loader';
 import SCRNASeqPlot from './SCRNASeqPlot';
 import { buttonList } from './SCRNASeqPlot/utils';
 import './styles.scss';
-import {
-  DownloadButton,
-} from './toolbar';
+import AnalysisDownloadsButton from './AnalysisDownloadsButton';
 
 const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
   pure,
-  withHandlers({
-    handleAnalysisClick: () => {
-      console.log('clicked analysis dropdown item');
-    },
-  }),
   withPropsOnChange(
     (
       {
@@ -97,8 +89,8 @@ const enhance = compose(
 );
 
 const SCRNASeq = ({
+  analysisInfo: { case_id },
   analysisTable,
-  handleAnalysisClick,
   loading,
   plotsDataList,
 }) => (
@@ -130,10 +122,7 @@ const SCRNASeq = ({
 
         <Row>
           {loading || (
-            <DownloadButton
-              onAnalysisClick={handleAnalysisClick}
-              {...buttonList.downloadAnalysis}
-              />
+            <AnalysisDownloadsButton case_id={case_id} />
           )}
         </Row>
       </Row>

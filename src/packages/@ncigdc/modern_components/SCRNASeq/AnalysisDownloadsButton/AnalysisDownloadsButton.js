@@ -1,13 +1,10 @@
 import React from 'react';
 import {
   compose,
-  lifecycle,
   pure,
   setDisplayName,
   withHandlers,
   withProps,
-  withPropsOnChange,
-  withState,
 } from 'recompose';
 import { find } from 'lodash';
 
@@ -16,34 +13,36 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-const downloadOptions = [
-  {
-    data_type: 'Single Cell Analysis',
-    label: 'Cell Counts',
-  },
-  {
-    data_type: 'Differential Gene Expression',
-    label: 'Differential Gene Expression',
-  },
-];
-
 const enhance = compose(
   setDisplayName('EnhancedAnalysisDownloadsButton'),
   pure,
+  withProps(({
+    viewer: { repository: { files: { hits: { edges = [] }}}}
+  }) => ({
+    analysisFiles: edges.map(({ node: { data_type, file_id }}) => ({
+      data_type,
+      file_id,
+      label: data_type === 'Single Cell Analysis'
+        ? 'Cell Counts'
+        : data_type
+    }))
+  })),
   withHandlers({
     handleAnalysisClick: ({
+      analysisFiles,
       case_id,
-      viewer: { repository: { files: { hits: { edges = [] }}}},
     }) => (data_type) => () => {
-      const tsvFile = find(edges, edge => edge.data_type === data_type);
-      const file_id = tsvFile && tsvFile.file_id;
-      console.log(edges, data_type, tsvFile, file_id)
+      const analysisFile = find(analysisFiles, file => file.data_type === data_type);
+      const file_id = analysisFile && analysisFile.file_id;
+      console.log({analysisFile, data_type, file_id})
       // TODO: call download() util (see DownloadFile.js & DownloadButton.js)
     },
   }),
 );
 
-const AnalysisDownloadsButton = ({ handleAnalysisClick }) => {
+const AnalysisDownloadsButton = ({ analysisFiles, handleAnalysisClick, viewer: { repository: { files: { hits: { edges = [] }}}} }) => {
+  console.log({analysisFiles});
+  console.log({edges})
   return (
     <DropDown
       button={(
@@ -65,17 +64,18 @@ const AnalysisDownloadsButton = ({ handleAnalysisClick }) => {
         right: -172,
         width: 200,
       }}
+      isDisabled={analysisFiles.length === 0}
       >
-      {downloadOptions.map(dlOpt => (
+      {analysisFiles.map(file => (
         <DropdownItem
-          key={dlOpt.label}
-          onClick={handleAnalysisClick(dlOpt.data_type)}
+          key={file.label}
+          onClick={handleAnalysisClick(file.data_type)}
           style={{
             cursor: 'pointer',
             width: 'auto',
           }}
           >
-          {dlOpt.label}
+          {file.label}
         </DropdownItem>
       ))}
     </DropDown>

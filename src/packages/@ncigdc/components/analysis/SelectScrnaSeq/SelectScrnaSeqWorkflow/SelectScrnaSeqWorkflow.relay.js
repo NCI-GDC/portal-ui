@@ -7,9 +7,9 @@ import Query from '@ncigdc/modern_components/Query';
 import { scrnaSeqFilters } from '../SelectScrnaSeq.relay';
 
 const variables = {
-  "files_size": 99,
-  "files_offset": 0,
-  "files_sort": [],
+  'files_offset': 0,
+  'files_size': 99,
+  'files_sort': [],
 };
 
 export default (Component) =>

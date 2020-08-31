@@ -79,6 +79,8 @@ export default (Component) =>
                       node {
                         file_id
                         data_type
+                        file_name
+                        file_size
                       }
                     }
                   }

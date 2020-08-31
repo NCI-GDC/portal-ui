@@ -7,11 +7,14 @@ import {
   withProps,
 } from 'recompose';
 import { find } from 'lodash';
+import urlJoin from 'url-join';
 
 import DropDown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Button from '@ncigdc/uikit/Button';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { AUTH_API } from '@ncigdc/utils/constants';
+import download from '@ncigdc/utils/download';
 
 const enhance = compose(
   setDisplayName('EnhancedAnalysisDownloadsButton'),
@@ -19,12 +22,11 @@ const enhance = compose(
   withProps(({
     viewer: { repository: { files: { hits: { edges = [] }}}}
   }) => ({
-    analysisFiles: edges.map(({ node: { data_type, file_id }}) => ({
-      data_type,
-      file_id,
-      label: data_type === 'Single Cell Analysis'
+    analysisFiles: edges.map(({ node }) => ({
+      ...node,
+      label: node.data_type === 'Single Cell Analysis'
         ? 'Cell Counts'
-        : data_type
+        : node.data_type
     }))
   })),
   withHandlers({
@@ -36,6 +38,15 @@ const enhance = compose(
       const file_id = analysisFile && analysisFile.file_id;
       console.log({analysisFile, data_type, file_id})
       // TODO: call download() util (see DownloadFile.js & DownloadButton.js)
+      const params = {
+        filename: analysisFile.file_name,
+        ids: analysisFile.file_id,
+        size: analysisFile.file_size,
+      }
+      download({
+        params,
+        url: urlJoin(AUTH_API, 'data?annotations=true&related_files=true'),
+      })
     },
   }),
 );

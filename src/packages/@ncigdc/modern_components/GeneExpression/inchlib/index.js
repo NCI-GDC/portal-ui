@@ -7,6 +7,8 @@ import Color from 'color';
 import { capitalize, each, round } from 'lodash';
 import moment from 'moment';
 
+import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
+
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
   * visualization and exploration by means of a cluster heatmap. InCHlib
@@ -256,8 +258,9 @@ import moment from 'moment';
       // create lightness value for HSL().
       // will result in a shade of green.
       // higher value = darker green.
-      const percentage = 1 - (val / self.MAX_AGE_AT_DIAGNOSIS);
+      const percentage = 1 - (getLowerAgeYears(val) / self.MAX_AGE_AT_DIAGNOSIS);
       const lightness = (percentage * (self.age_dx_colors.max_light - self.age_dx_colors.min_light)) + self.age_dx_colors.min_light;
+
       return isNaN(percentage) // i.e. val is "not reported"
         ? self.invalid_column_metadata_color
         : `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${lightness}%)`;

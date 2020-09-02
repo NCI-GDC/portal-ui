@@ -294,26 +294,24 @@ export const getFilterValue = ({
 }) => currentFilters.find(f => f.content.field === dotField);
 
 type TMakeFilter = (
-  fields: Array<{ field: string; value: string | string[] }>
+  fields: Array<{ field: string; value: string | string[] }>,
 ) => IGroupFilter | null;
-export const makeFilter: TMakeFilter = fields => {
-  if (!fields.length) {
-    return null;
-  } else {
-    return {
-      op: 'and',
+export const makeFilter: TMakeFilter = (fields, andOr = 'and') => (
+  fields.length
+    ? ({
       content: fields.map(item => {
         const value = isArray(item.value) ? item.value : item.value.split(',');
         return {
-          op: 'in',
           content: {
             field: item.field,
             value,
           },
+          op: 'in',
         } as IValueFilter;
       }),
-    };
-  }
-};
+      op: andOr,
+    })
+  : null
+);
 
 export default makeFilter;

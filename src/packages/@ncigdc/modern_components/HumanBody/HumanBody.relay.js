@@ -20,10 +20,9 @@ const CenteredColumnContainer = styled(Column, {
 export default (Component: ReactClass<*>) => (props: Object) => {
   return (
     <Query
-      parentProps={props}
-      minHeight={200}
-      Loader={({ loading }) =>
-        !loading ? null : (
+      Component={Component}
+      Loader={({ loading }) => (loading
+        ? (
           <CenteredColumnContainer>
             <Row
               style={{
@@ -31,17 +30,19 @@ export default (Component: ReactClass<*>) => (props: Object) => {
                 fontSize: '1.2em',
                 marginBottom: '1rem',
               }}
-            >
+              >
               Loading, please wait...
             </Row>
             <span
-              style={{ color: 'white' }}
               className="fa fa-spinner fa-spin fa-2x"
-            />
+              style={{ color: 'white' }}
+              />
           </CenteredColumnContainer>
-        )}
-      variables={props.variables}
-      Component={Component}
+        )
+        : null
+      )}
+      minHeight={200}
+      parentProps={props}
       query={graphql`
         query HumanBody_relayQuery {
           viewer {
@@ -49,6 +50,12 @@ export default (Component: ReactClass<*>) => (props: Object) => {
               files {
                 aggregations {
                   cases__primary_site {
+                    buckets {
+                      doc_count
+                      key
+                    }
+                  }
+                  cases__diagnoses__tissue_or_organ_of_origin {
                     buckets {
                       doc_count
                       key
@@ -64,12 +71,19 @@ export default (Component: ReactClass<*>) => (props: Object) => {
                       key
                     }
                   }
+                  diagnoses__tissue_or_organ_of_origin {
+                    buckets {
+                      doc_count
+                      key
+                    }
+                  }
                 }
               }
             }
           }
         }
       `}
-    />
+      variables={props.variables}
+      />
   );
 };

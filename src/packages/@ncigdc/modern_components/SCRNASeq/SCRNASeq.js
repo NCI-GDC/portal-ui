@@ -5,17 +5,19 @@ import {
   pure,
   setDisplayName,
   withHandlers,
+  withProps,
   withPropsOnChange,
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
 
 import SCRNASeqPlot from './SCRNASeqPlot';
 import { buttonList } from './SCRNASeqPlot/utils';
 import './styles.scss';
 import {
   DownloadButton,
-  // ToolbarButton,
 } from './toolbar';
 
 const enhance = compose(
@@ -41,19 +43,61 @@ const enhance = compose(
       plotsDataList: Object.values(plotsData),
     }),
   ),
+  withProps(({
+    analysisInfo: {
+      case_id,
+      disease_type,
+      gender,
+      primary_site,
+      project_id,
+      submitter_id,
+      workflow_type,
+    },
+    plotsDataList,
+  }) => ({
+    analysisTable: [
+      {
+        link: `/cases/${case_id}`,
+        name: 'Case ID',
+        text: submitter_id,
+      },
+      {
+        link: `/projects/${project_id}`,
+        name: 'Project',
+        text: project_id,
+      },
+      {
+        name: 'Primary Site',
+        text: primary_site,
+      },
+      {
+        name: 'Disease Type',
+        text: disease_type,
+      },
+      {
+        name: 'Workflow Type',
+        text: workflow_type,
+      },
+      {
+        name: '# Cells',
+        text: plotsDataList[0].data
+          .reduce((arr, curr) => arr += curr.x.length, 0)
+      }
+    ]
+  })),
   lifecycle({
     componentDidMount() {
       const {
         getWholeTsv,
         plotsDataList,
       } = this.props;
-
       plotsDataList.some(plotData => plotData.data.length > 0) || getWholeTsv();
     },
   }),
 );
 
 const SCRNASeq = ({
+  analysisTable,
   handleAnalysisClick,
   loading,
   plotsDataList,
@@ -85,38 +129,55 @@ const SCRNASeq = ({
         </h1>
 
         <Row>
-          {/* <ToolbarButton
-          //   faClass="fa-angle-double-down"
-          //   label="Get TSV"
-          //   name="downloadAnalysis"
-          //   onToolbarClick={getWholeTsv}
-          //  />
-          */}
-
-          <DownloadButton
-            onAnalysisClick={handleAnalysisClick}
-            {...buttonList.downloadAnalysis}
-            />
+          {loading || (
+            <DownloadButton
+              onAnalysisClick={handleAnalysisClick}
+              {...buttonList.downloadAnalysis}
+              />
+          )}
         </Row>
       </Row>
-      <div className="scrnaseq-row">
-        {plotsDataList.length > 0
-          ? plotsDataList.map(plot => (
-            <div
-              className="scrnaseq-column"
-              key={plot.name}
-              >
-              <div className="scrnaseq-card">
-                <SCRNASeqPlot
-                  data={plot.data}
-                  dataType={plot.name}
-                  loading={loading}
-                  />
-              </div>
+      {loading
+        ? <Loader loading={loading} style={{ position: 'relative' }} />
+        : (
+          <Column>
+            <Table
+              body={(
+                <tbody>
+                  {analysisTable.map((row, i) => (
+                    <Tr index={i} key={row.name}>
+                      <Td><strong>{row.name}</strong></Td>
+                      <Td>
+                        {row.link
+                          ? <a href={row.link} target="_blank">{row.text}</a>
+                          : row.text}
+                      </Td>
+                    </Tr>
+                  ))}
+                </tbody>
+              )}
+              style={{ marginBottom: 20, maxWidth: 500 }}
+              />
+            <div className="scrnaseq-row">
+              {plotsDataList.length > 0
+                ? plotsDataList.map(plot => (
+                  <div
+                    className="scrnaseq-column"
+                    key={plot.name}
+                    >
+                    <div className="scrnaseq-card">
+                      <SCRNASeqPlot
+                        data={plot.data}
+                        dataType={plot.name}
+                        loading={loading}
+                        />
+                    </div>
+                  </div>
+                ))
+                : 'No clustering plots available to be displayed'}
             </div>
-          ))
-          : 'No clustering plots available to be displayed'}
-      </div>
+          </Column>
+      )}
     </Column>
   </Row>
 );

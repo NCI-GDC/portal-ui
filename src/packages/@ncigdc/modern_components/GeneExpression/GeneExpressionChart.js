@@ -4,9 +4,9 @@ import React, { Component } from 'react';
 import { isEqual } from 'lodash';
 
 import { theme } from '@ncigdc/theme';
-import './inchlib';
 import { CATEGORY_COLORS } from '@ncigdc/utils/constants';
 
+import './inchlib';
 import './inchlib/style.css';
 
 const options = {
@@ -34,14 +34,23 @@ const handleOverlayClickOut = ({ target }) => {
 };
 
 class GeneExpressionChart extends Component {
+  handlers = {}
+
   componentDidMount() {
-    const { data, handleClickInchlibLink } = this.props;
+    const {
+      handleClickInchlibLink,
+      handleFileDownloads,
+      visualizationData,
+    } = this.props;
+    this.handlers = {
+      handleFileDownloads,
+    };
     this.options = {
       ...options,
-      data,
+      data: visualizationData,
     };
     this.$el = $(this.el);
-    this.$el.InCHlib(this.options);
+    this.$el.InCHlib(this.options, this.handlers);
     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
     document.addEventListener('click', handleOverlayClickOut);
   }
@@ -49,17 +58,17 @@ class GeneExpressionChart extends Component {
   componentDidUpdate(prevProps) {
     // for viz demo
     // unsure if data will update in final version
-    const { data, handleClickInchlibLink } = this.props;
-    if (!isEqual(data, prevProps.data)) {
+    const { handleClickInchlibLink, visualizationData } = this.props;
+    if (!isEqual(visualizationData, prevProps.visualizationData)) {
       // destroy inchlib
       this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
       this.$el.children().remove();
 
       const nextOptions = {
         ...this.options,
-        data,
+        data: visualizationData,
       };
-      this.$el.InCHlib(nextOptions);
+      this.$el.InCHlib(nextOptions, this.handlers);
       this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
     }
   }

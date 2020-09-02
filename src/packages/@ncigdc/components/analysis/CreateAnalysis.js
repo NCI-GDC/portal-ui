@@ -11,10 +11,12 @@ import withRouter from '@ncigdc/utils/withRouter';
 import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import { zDepth1 } from '@ncigdc/theme/mixins';
+import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import availableAnalysis from './availableAnalysis';
 import SelectSet from './SelectSet';
 import DemoButton from './DemoButton';
 import defaultVariables from './defaultCDAVEvariables';
+import SelectScrnaSeq from './SelectScrnaSeq';
 
 const enhance = compose(
   branch(
@@ -40,36 +42,63 @@ const CreateAnalysis = ({
   setAnalysis,
 }) => {
   return analysis
-    ? (
-      <SelectSet
-        analysisProps={analysis}
-        onCancel={() => setAnalysis(null)}
-        onRun={sets => {
-          const created = new Date().toISOString();
-          const id = created;
+    ? analysis.type === 'scrna_seq'
+      ? (
+        <SelectScrnaSeq
+          analysisProps={analysis}
+          onCancel={() => setAnalysis(null)}
+          onRun={(selectedCase, selectedFile) => {
+            const created = new Date().toISOString();
+            const id = created;
 
-          dispatch(
-            addAnalysis({
-              created,
-              id,
-              sets,
-              type: analysis.type,
-              ...analysis.type === 'clinical_data' && {
-                displayVariables: defaultVariables,
-                name: `Custom Analysis ${numAnalysis + 1}`,
-              },
-            }),
-          ).then(() => {
-            push({
-              query: {
-                analysisId: id,
-                analysisTableTab: 'result',
-              },
+            dispatch(
+              addAnalysis({
+                analysisInfo: { ...selectedCase, ...selectedFile },
+                created,
+                id,
+                type: analysis.type,
+              }),
+            ).then(() => {
+              push({
+                query: {
+                  analysisId: id,
+                  analysisTableTab: 'result',
+                },
+              });
             });
-          });
-        }}
-        />
-    )
+          }}
+          />
+        )
+      : (
+        <SelectSet
+          analysisProps={analysis}
+          onCancel={() => setAnalysis(null)}
+          onRun={sets => {
+            const created = new Date().toISOString();
+            const id = created;
+
+            dispatch(
+              addAnalysis({
+                created,
+                id,
+                sets,
+                type: analysis.type,
+                ...analysis.type === 'clinical_data' && {
+                  displayVariables: defaultVariables,
+                  name: `Custom Analysis ${numAnalysis + 1}`,
+                },
+              }),
+            ).then(() => {
+              push({
+                query: {
+                  analysisId: id,
+                  analysisTableTab: 'result',
+                },
+              });
+            });
+          }}
+          />
+      )
     : (
       <Row
         style={{
@@ -80,8 +109,6 @@ const CreateAnalysis = ({
         }}
         >
         {availableAnalysis.map(item => {
-          const isSCRNASeq = item.type === 'scrna_seq';
-
           return (
             <Row
               key={item.type}
@@ -98,12 +125,23 @@ const CreateAnalysis = ({
               <div>
                 <h1 style={{ fontSize: '2rem' }}>{item.label}</h1>
                 <div style={{ marginBottom: 10 }}>{item.description}</div>
-                <Row spacing={5}>
-                  {isSCRNASeq || (
-                    <Button onClick={() => setAnalysis(item)}>Select</Button>
-                  )}
-                  <DemoButton demoData={item.demoData} type={item.type} />
-                </Row>
+                {item.type === 'scrna_seq'
+                // TEMP: scrnaseq only has a demo button,
+                // and it goes to the select page
+                  ? (
+                    <Tooltip
+                      Component={<div style={{ maxWidth: 240 }}>{item.demoData.message}</div>}
+                      >
+                      <Button onClick={() => setAnalysis(item)}>Demo</Button>
+                    </Tooltip>
+                  ) 
+                  : (
+                    <Row spacing={5}>
+                      <Button onClick={() => setAnalysis(item)}>Select</Button>
+                      <DemoButton demoData={item.demoData} type={item.type} />
+                    </Row>
+                  )
+                }
               </div>
             </Row>
           );

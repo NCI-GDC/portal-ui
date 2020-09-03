@@ -47,7 +47,7 @@ proxy:
   replicaCount: 1
   image: 
     repository: docker.osdc.io/ncigdc/nginx-extras
-    tag: 1.10.3-pinwheel
+    tag: 1.1.0
   ingress:
     enabled: true
     annotations: {}

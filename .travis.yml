@@ -3,6 +3,7 @@ git:
 language: node_js
 node_js:
 - '13'
+os: linux
 dist: trusty
 group: edge
 services:
@@ -15,7 +16,8 @@ jobs:
     # this will only run lint / tests against modified files but it is unstable
     # - echo $TRAVIS_COMMIT_RANGE | sed 's/\.\.\./../' | xargs git diff-tree --no-commit-id --name-only -r | xargs echo -n
     - npm run lint || travis_terminate 1
-    - npm test || travis_terminate 1
+    # These tests are largely out of date and the coverage is not worth the build time. commenting
+    # - npm test || travis_terminate 1
   - stage: deploy
     script:
     - echo "$QUAY_PASSWORD" | docker login quay.io -u="$QUAY_USERNAME" --password-stdin

@@ -1,12 +1,14 @@
+/* eslint-disable camelcase */
 import React from 'react';
-import { compose, lifecycle, pure, setDisplayName, withHandlers, withProps, withPropsOnChange, withState } from 'recompose';
+import {
+  compose, pure, setDisplayName, withHandlers, withProps, withPropsOnChange, withState,
+} from 'recompose';
 import { find } from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 
 import { styles } from '../SelectSet';
-import DemoButton from '../DemoButton';
 import SelectScrnaSeqWorkflow from './SelectScrnaSeqWorkflow';
 
 const enhance = compose(
@@ -17,24 +19,22 @@ const enhance = compose(
     handleSetSelectedCase: ({
       setSelectedCase,
       setSelectedFile,
-      viewer: { repository: { cases: { hits: { edges }}}}
+      viewer: { repository: { cases: { hits: { edges } } } },
     }) => (e) => {
       const caseInput = e.target.value;
       if (caseInput) {
         const caseInputDetails = find(edges, edge => edge.node.case_id === caseInput);
-        const { 
+        const {
           case_id,
-          demographic: { gender },
           disease_type,
           primary_site,
           project: { project_id },
-          submitter_id
+          submitter_id,
         } = caseInputDetails.node;
 
         setSelectedCase({
           case_id,
           disease_type,
-          gender,
           primary_site,
           project_id,
           submitter_id,
@@ -52,19 +52,15 @@ const enhance = compose(
 
 const SelectScrnaSeq = ({
   analysisProps: {
-    description,
     Icon,
     label,
-    type,
   },
   handleSetSelectedCase,
   onCancel,
   onRun,
   selectedCase,
   selectedFile,
-  selectedFileDetails,
   setSelectedFile,
-  setSelectedFileDetails,
   viewer: { repository: { cases: { hits } } },
 }) => {
   const scrnaSeqCases = hits && hits.edges;
@@ -87,7 +83,11 @@ const SelectScrnaSeq = ({
         <Column style={{ flex: 1 }}>
           <h1 style={{ fontSize: '2rem' }}>{label}</h1>
           <p>Try out the beta release of our new analysis tool for single cell RNA sequencing data.  Display a demo of different clustering visualizations for this data from a sample case.</p>
-          <p>Please send us your feedback at: <a href="mailto:support@nci-gdc.datacommons.io">support@nci-gdc.datacommons.io</a></p>
+          <p>
+            Please send us your feedback at:
+            {' '}
+            <a href="mailto:support@nci-gdc.datacommons.io">support@nci-gdc.datacommons.io</a>
+          </p>
         </Column>
         <Column style={{ paddingTop: 5 }}>
           <Row spacing="5px">
@@ -101,7 +101,12 @@ const SelectScrnaSeq = ({
           <p style={{ margin: 20 }}>No cases with single cell RNA sequencing data found.</p>
         ) : (
           <Row style={styles.rowStyle}>
-            <Column style={{ flex: 1, marginBottom: 15  }}>
+            <Column
+              style={{
+                flex: 1,
+                marginBottom: 15,
+              }}
+              >
               <h2
                 style={{
                   color: '#c7254e',
@@ -123,7 +128,7 @@ const SelectScrnaSeq = ({
                 style={{ width: 300 }}
                 >
                 <option value="">-- Select a case --</option>
-                {scrnaSeqCases.map(({ node: { case_id, submitter_id }}) => (
+                {scrnaSeqCases.map(({ node: { case_id, submitter_id } }) => (
                   <option
                     key={case_id}
                     value={case_id}
@@ -138,7 +143,12 @@ const SelectScrnaSeq = ({
 
       {selectedCase && (
         <Row style={styles.rowStyle}>
-          <Column style={{ flex: 1, marginBottom: 15 }}>
+          <Column
+            style={{
+              flex: 1,
+              marginBottom: 15,
+            }}
+            >
             <h2
               style={{
                 color: '#c7254e',
@@ -176,7 +186,7 @@ const SelectScrnaSeq = ({
         </Button>
       </Row>
     </Column>
-  )
+  );
 };
 
 export default enhance(SelectScrnaSeq);

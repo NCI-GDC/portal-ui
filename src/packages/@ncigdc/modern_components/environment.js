@@ -1,19 +1,25 @@
 // @flow
 
 import urlJoin from 'url-join';
-import { Environment, Network, RecordSource, Store } from 'relay-runtime';
+import {
+  Environment,
+  Network,
+  RecordSource,
+  Store,
+} from 'relay-runtime';
 import md5 from 'blueimp-md5';
 
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import { redirectToLogin } from '@ncigdc/utils/auth';
+import consoleDebug from '@ncigdc/utils/consoleDebug';
+
 const source = new RecordSource();
 const store = new Store(source);
 const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
-import { redirectToLogin } from '@ncigdc/utils/auth';
-import consoleDebug from '@ncigdc/utils/consoleDebug';
 
-function fetchQuery(operation, variables, cacheConfig) {
+const fetchQuery = (operation, variables, cacheConfig) => {
   const body = JSON.stringify({
     query: operation.text, // GraphQL text from input
     variables,
@@ -75,38 +81,34 @@ function fetchQuery(operation, variables, cacheConfig) {
         }
 
         return json;
-      })
-      .catch(err => {
-        if (err.status) {
-          switch (err.status) {
-            case 401:
-            case 403:
-              consoleDebug(err.statusText);
-              if (IS_AUTH_PORTAL) {
-                return redirectToLogin('timeout');
-              }
-              break;
-            case 400:
-            case 404:
-              consoleDebug(err.statusText);
-              break;
-            default:
-              return consoleDebug(`Default error case: ${err.statusText}`);
-          }
-        } else {
-          consoleDebug(
-            `Something went wrong in environment, but no error status: ${err}`,
-          );
+      }))
+    .catch(err => {
+      if (err.status) {
+        switch (err.status) {
+          case 401:
+          case 403:
+            consoleDebug(err.statusText);
+            if (IS_AUTH_PORTAL) {
+              return redirectToLogin('timeout');
+            }
+            break;
+          case 400:
+          case 404:
+            consoleDebug(err.statusText);
+            break;
+          default:
+            return consoleDebug(`Default error case: ${err.statusText}`);
         }
-      }),
-  );
-}
-
-// Create a network layer from the fetch function
-const network = Network.create(fetchQuery);
+      } else {
+        consoleDebug(
+        `Something went wrong in environment, but no error status: ${err}`,
+        );
+      }
+    });
+};
 
 export default new Environment({
   handlerProvider, // Can omit.
-  network,
+  network: Network.create(fetchQuery),
   store,
 });

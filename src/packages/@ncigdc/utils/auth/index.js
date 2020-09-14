@@ -1,12 +1,13 @@
-// @flow
-
-import _ from 'lodash';
 import urlJoin from 'url-join';
+import {
+  get,
+  intersection,
+} from 'lodash';
 
 import { forceLogout } from '@ncigdc/dux/auth';
 import { FENCE } from '@ncigdc/utils/constants';
 
-const isUserProject = ({ user, file }) => {
+const isUserProject = ({ file, user }) => {
   if (!user) {
     return false;
   }
@@ -19,21 +20,27 @@ const isUserProject = ({ user, file }) => {
     ]),
   );
 
-  const gdcIds = Object.keys(_.get(user, 'projects.gdc_ids', {}));
-  return _.intersection(projectIds, gdcIds).length !== 0;
+  const gdcIds = Object.keys(get(user, 'projects.gdc_ids', {}));
+  return intersection(projectIds, gdcIds).length !== 0;
 };
 
 const fileInCorrectState = (file): boolean => file.state === 'submitted';
 
-const intersectsWithFileAcl = ({ user, file }): boolean =>
-  _.intersection(
-    Object.keys(_.get(user, 'projects.phs_ids', {})).filter(
+const intersectsWithFileAcl = ({
+  file,
+  user,
+}): boolean =>
+  intersection(
+    Object.keys(get(user, 'projects.phs_ids', {})).filter(
       p => user.projects.phs_ids[p].indexOf('_member_') !== -1,
     ) || [],
     file.acl,
   ).length !== 0;
 
-const userCanDownloadFiles = ({ user, files }) =>
+const userCanDownloadFiles = ({
+  files,
+  user,
+}) =>
   files.every(file => {
     if (file.access === 'open') {
       return true;
@@ -44,8 +51,14 @@ const userCanDownloadFiles = ({ user, files }) =>
     }
 
     if (
-      isUserProject({ user, file }) ||
-      (intersectsWithFileAcl({ user, file }) && fileInCorrectState(file))
+      isUserProject({
+        file,
+        user,
+      }) ||
+      (intersectsWithFileAcl({
+        file,
+        user,
+      }) && fileInCorrectState(file))
     ) {
       return true;
     }
@@ -53,8 +66,11 @@ const userCanDownloadFiles = ({ user, files }) =>
     return false;
   });
 
-const userCanDownloadFile = ({ user, file }: { user: Object, file: Object }) =>
-  userCanDownloadFiles({ user, files: [file] });
+const userCanDownloadFile = ({ file, user }: { user: Object, file: Object }) =>
+  userCanDownloadFiles({
+    files: [file],
+    user,
+  });
 
 type TFilesAuthData = {
   key?: string,
@@ -64,19 +80,30 @@ type TFilesAuthData = {
 };
 
 const authPartitionFiles = ({
-  user,
   files,
+  user,
 }: {
   user: Object,
   files: Array<Object>,
 }): { authorized: TFilesAuthData, unauthorized: TFilesAuthData } => {
   const defaultData = {
-    authorized: { doc_count: 0, file_size: 0, files: [] },
-    unauthorized: { doc_count: 0, file_size: 0, files: [] },
+    authorized: {
+      doc_count: 0,
+      file_size: 0,
+      files: [],
+    },
+    unauthorized: {
+      doc_count: 0,
+      file_size: 0,
+      files: [],
+    },
   };
 
   return files.reduce((result, file) => {
-    const canDownloadKey = userCanDownloadFile({ user, file })
+    const canDownloadKey = userCanDownloadFile({
+      file,
+      user,
+    })
       ? 'authorized'
       : 'unauthorized';
     result[canDownloadKey].doc_count += 1;
@@ -87,13 +114,16 @@ const authPartitionFiles = ({
 };
 
 const getAuthCounts = ({
-  user,
   files,
+  user,
 }: {
   user: Object,
   files: Array<Object>,
 }): Array<TFilesAuthData> => {
-  const authCountAndFileSizes = authPartitionFiles({ user, files });
+  const authCountAndFileSizes = authPartitionFiles({
+    files,
+    user,
+  });
   return [
     {
       key: 'authorized',
@@ -130,13 +160,13 @@ const redirectToLogin = error => {
 /*----------------------------------------------------------------------------*/
 
 export {
-  isUserProject,
-  userCanDownloadFiles,
-  userCanDownloadFile,
-  intersectsWithFileAcl,
+  authPartitionFiles,
   fileInCorrectState,
   getAuthCounts,
-  userProjectsCount,
-  authPartitionFiles,
+  intersectsWithFileAcl,
+  isUserProject,
   redirectToLogin,
+  userCanDownloadFile,
+  userCanDownloadFiles,
+  userProjectsCount,
 };

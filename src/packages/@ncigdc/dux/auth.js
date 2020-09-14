@@ -1,4 +1,3 @@
-/* @flow */
 import { handleActions } from 'redux-actions';
 
 import { saveAs } from 'filesaver.js';
@@ -7,6 +6,7 @@ import { DEV_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
 
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
+
 const USER_CA_CLEAR = 'gdc/USER_CONTROLLED_ACCESS_CLEAR';
 const USER_CA_SUCCESS = 'gdc/USER_CONTROLLED_ACCESS_SUCCESS';
 const USER_REQUEST = 'gdc/USER_REQUEST';
@@ -41,24 +41,24 @@ export const fetchUser = () => ((IS_DEV || DEV_USER)
 
 export function forceLogout(): Action {
   return {
-    type: USER_FAILURE,
     payload: { message: 'Session timed out or not authorized' },
+    type: USER_FAILURE,
   };
 }
 
 export function clearToken(): Action {
   return {
-    type: TOKEN_CLEAR,
     payload: {},
+    type: TOKEN_CLEAR,
   };
 }
 
 export function fetchToken() {
   return fetchAuth({
+    endpoint: AWG ? 'token/refresh/awg' : 'token/refresh',
     types: [
       TOKEN_REQUEST,
       {
-        type: TOKEN_SUCCESS,
         payload: async (action, state, res) => {
           const token = await res.text();
           saveAs(
@@ -68,21 +68,21 @@ export function fetchToken() {
 
           return token;
         },
+        type: TOKEN_SUCCESS,
       },
       TOKEN_FAILURE,
     ],
-    endpoint: AWG ? 'token/refresh/awg' : 'token/refresh',
   });
 }
 
 const initialState: State = {
+  error: {},
+  failed: false,
   firstLoad: true,
   isFetching: false,
-  user: null,
-  error: {},
   isFetchingToken: false,
   token: undefined,
-  failed: false,
+  user: null,
   userControlledAccess: {
     fetched: false,
     studies: {},
@@ -91,6 +91,25 @@ const initialState: State = {
 
 export default handleActions(
   {
+    [TOKEN_CLEAR]: state => ({
+      ...state,
+      isFetchingToken: false,
+      token: undefined,
+    }),
+    [TOKEN_FAILURE]: state => ({
+      ...state,
+      isFetchingToken: false,
+      token: undefined,
+    }),
+    [TOKEN_REQUEST]: state => ({
+      ...state,
+      isFetchingToken: true,
+    }),
+    [TOKEN_SUCCESS]: (state, action) => ({
+      ...state,
+      isFetchingToken: false,
+      token: action.payload,
+    }),
     [USER_CA_CLEAR]: state => ({
       ...state,
       userControlledAccess: initialState.userControlledAccess,
@@ -102,46 +121,27 @@ export default handleActions(
         studies: action.payload,
       },
     }),
+    [USER_FAILURE]: (state, action) => ({
+      ...state,
+      error: action.payload,
+      failed: true,
+      firstLoad: false,
+      isFetching: false,
+      user: null,
+    }),
     [USER_REQUEST]: state => ({
       ...state,
+      error: {},
       isFetching: true,
       user: state.user,
-      error: {},
     }),
     [USER_SUCCESS]: (state, action) => ({
       ...state,
+      error: action.error ? action.payload : {},
+      failed: false,
+      firstLoad: false,
       isFetching: false,
       user: action.error ? null : action.payload,
-      error: action.error ? action.payload : {},
-      firstLoad: false,
-      failed: false,
-    }),
-    [USER_FAILURE]: (state, action) => ({
-      ...state,
-      isFetching: false,
-      error: action.payload,
-      user: null,
-      firstLoad: false,
-      failed: true,
-    }),
-    [TOKEN_REQUEST]: state => ({
-      ...state,
-      isFetchingToken: true,
-    }),
-    [TOKEN_SUCCESS]: (state, action) => ({
-      ...state,
-      isFetchingToken: false,
-      token: action.payload,
-    }),
-    [TOKEN_FAILURE]: state => ({
-      ...state,
-      isFetchingToken: false,
-      token: undefined,
-    }),
-    [TOKEN_CLEAR]: state => ({
-      ...state,
-      isFetchingToken: false,
-      token: undefined,
     }),
   },
   initialState,

@@ -2,6 +2,7 @@ import { handleActions } from 'redux-actions';
 
 import { saveAs } from 'filesaver.js';
 import { fetchAuth } from '@ncigdc/utils/ajax';
+import { clearAWGSession } from '@ncigdc/utils/auth/awg';
 import { DEV_USER, IS_DEV, AWG } from '@ncigdc/utils/constants';
 
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
@@ -19,27 +20,30 @@ const TOKEN_FAILURE = 'gdc/TOKEN_FAILURE';
 const TOKEN_CLEAR = 'gdc/TOKEN_CLEAR';
 
 export const fetchUser = () => ((IS_DEV || DEV_USER)
-? {
-  payload: DEV_USER,
-  type: USER_SUCCESS,
-}
-: fetchAuth({
-  endpoint: 'user',
-  types: [
-    USER_REQUEST,
-    {
-      payload: async (action, state, res) => {
-        const text = await res.text();
-        const json = JSON.parse(text);
-        return json;
+  ? {
+    payload: DEV_USER,
+    type: USER_SUCCESS,
+  }
+  : fetchAuth({
+    endpoint: 'user',
+    types: [
+      USER_REQUEST,
+      {
+        payload: async (action, state, res) => {
+          const text = await res.text();
+          const json = JSON.parse(text);
+          return json;
+        },
+        type: USER_SUCCESS,
       },
-      type: USER_SUCCESS,
-    },
-    USER_FAILURE,
-  ],
-}));
+      USER_FAILURE,
+    ],
+  })
+);
 
 export function forceLogout(): Action {
+  AWG && clearAWGSession();
+
   return {
     payload: { message: 'Session timed out or not authorized' },
     type: USER_FAILURE,

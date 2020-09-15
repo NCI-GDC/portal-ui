@@ -9,6 +9,8 @@ export REACT_APP_GDC_AUTH="https://portal.gdc.cancer.gov/auth/"
 export GDC_BASE="/"
 export NODE_ENV=production
 export REACT_APP_COMMIT_HASH=$TRAVIS_COMMIT
+unset AWG_LOGIN_EXPIRY
+unset AWG_LOGIN_RENEWAL_INTERVAL
 unset REACT_APP_AWG
 unset REACT_APP_FENCE
 unset REACT_APP_IS_AUTH_PORTAL

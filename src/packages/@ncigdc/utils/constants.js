@@ -14,10 +14,7 @@ export const AUTH =
 export const FENCE =
   localStorage.REACT_APP_FENCE || process.env.REACT_APP_FENCE || '';
 
-export const AUTH_API =
-  localStorage.REACT_APP_GDC_AUTH_API ||
-  process.env.REACT_APP_GDC_AUTH_API ||
-  `${AUTH}/api`;
+export const AUTH_API = `${AUTH}/api`;
 
 export const API = localStorage.REACT_APP_API || process.env.REACT_APP_API;
 
@@ -33,10 +30,6 @@ export const IS_AUTH_PORTAL =
   process.env.REACT_APP_IS_AUTH_PORTAL ||
   AWG ||
   false;
-
-export const AWG_LOGIN_INTERVAL = (localStorage.AWG_LOGIN_INTERVAL ||
-  process.env.AWG_LOGIN_INTERVAL ||
-  5) * 60 * 1000;
 
 export const DISPLAY_SLIDES =
   localStorage.REACT_APP_GDC_DISPLAY_SLIDES ||
@@ -759,6 +752,9 @@ export const IMPACT_SHORT_FORMS = {
   },
 };
 
+export const DEBUGGING = localStorage.REACT_APP_DEBUGGING ||
+  process.env.REACT_APP_DEBUGGING;
+
 export const IS_DEV = process.env.NODE_ENV === 'development';
 
 export const DEV_USER =
@@ -817,6 +813,20 @@ export const DEV_USER_CA = [ // controlled access mock
 //   localStorage.REACT_APP_DISPLAY_CDAVE ||
 //   process.env.REACT_APP_DISPLAY_CDAVE ||
 //   false;
+
+export const AWG_TOKEN_EXPIRY = (
+  localStorage.AWG_TOKEN_EXPIRY ||
+  process.env.AWG_TOKEN_EXPIRY ||
+  5 // Default timeout for token renewal by Fence queries
+) * 60 * 1000; // to milliseconds
+
+export const AWG_TOKEN_RENEWAL_INTERVAL = (
+  (DEBUGGING && ( // this polling should only be enabled for testing
+    localStorage.AWG_TOKEN_RENEWAL_INTERVAL ||
+    process.env.AWG_TOKEN_RENEWAL_INTERVAL
+  )) ||
+  0 // if none is set, do not automate renewal at all
+) * 60 * 1000; // to milliseconds
 
 export const CLINICAL_FIELD_BLACKLIST = [
   'state',

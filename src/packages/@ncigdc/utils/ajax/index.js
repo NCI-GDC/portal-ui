@@ -4,21 +4,32 @@ import urlJoin from 'url-join';
 import Queue from 'queue';
 import md5 from 'blueimp-md5';
 
-import { API, AUTH, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import {
+  API,
+  AUTH,
+  AWG,
+  IS_AUTH_PORTAL,
+} from '@ncigdc/utils/constants';
 import { redirectToLogin } from '@ncigdc/utils/auth';
+import {
+  checkAWGSession,
+  clearAWGSession,
+} from '@ncigdc/utils/auth/awg';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 
 const DEFAULTS = {
-  method: 'get',
   credentials: 'same-origin',
   headers: {
-    'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': true,
+    'Content-Type': 'application/json',
     'X-Auth-Token': 'secret admin token',
   },
+  method: 'get',
 };
 
 export function fetchAuth(options: { endpoint: string }): Object {
+  AWG && checkAWGSession();
+
   return {
     [CALL_API]: {
       ...DEFAULTS,
@@ -36,11 +47,11 @@ export function fetchAuth(options: { endpoint: string }): Object {
 
 // $FlowIgnore
 export const fetchApi = (endpoint, options = {}) => {
-  /* This helper used to return the JSON of all requests by default
-   * which is not what we want in the case of file streams, etc.
+  /* This helper was originally designed to return the JSON of all requests by default.
+   * This is not what we want in the case of file streams, etc.
    *
-   * Made that default optional, while to destructure thus to avoid TS issues
-   * and continue returning JSON to ensure backwards compatibility.
+   * Made that optional instead using "fullResponse", destructuring it like so,
+   * in order to avoid TS issues and ensure backwards compatibility.
    */
   const {
     fullResponse = false,
@@ -60,6 +71,9 @@ export const fetchApi = (endpoint, options = {}) => {
       method: 'POST',
     }),
   };
+
+  AWG && checkAWGSession();
+
   return fetch(urlJoin(API, endpoint), clonedOptions)
     .then(r => {
       if (r.ok) {
@@ -75,6 +89,7 @@ export const fetchApi = (endpoint, options = {}) => {
           case 403:
             consoleDebug(err.statusText);
             if (IS_AUTH_PORTAL) {
+              clearAWGSession();
               return redirectToLogin('timeout');
             }
             break;

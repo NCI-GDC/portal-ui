@@ -9,6 +9,10 @@ import queryString from 'query-string';
 
 import { AUTH, FENCE } from '@ncigdc/utils/constants';
 import { fetchUser } from '@ncigdc/dux/auth';
+import {
+  clearAWGSession,
+  createAWGSession,
+} from '@ncigdc/utils/auth/awg';
 import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import openAuthWindow from '@ncigdc/utils/openAuthWindow';
@@ -45,12 +49,12 @@ const AWGLoginButton = compose(
 )(({ dispatch, push }) => (
   <Button
     onClick={async () => {
-      console.log('AWGLoginButton clicked');
       const loginParams = queryString.stringify({
         redirect: window.location.origin,
       });
 
       try {
+        clearAWGSession();
         await openAuthWindow({
           name: 'AWG',
           pollInterval: 200,
@@ -64,7 +68,7 @@ const AWGLoginButton = compose(
           return (window.location.href = '/login?error=no_fence_projects');
         }
       }
-      console.log('logged in!');
+      await createAWGSession();
       await dispatch(fetchUser());
       push({ pathname: '/repository' });
     }}
@@ -115,6 +119,7 @@ const LoginRoute = () => (
         }}
         >
         <h1 style={styles.title}>Analysis Working Group</h1>
+
         <h1
           style={{
             ...styles.title,
@@ -123,6 +128,7 @@ const LoginRoute = () => (
           >
           Data Portal
         </h1>
+
         <div
           style={{
             color: 'rgb(38, 89, 134)',
@@ -131,6 +137,7 @@ const LoginRoute = () => (
           >
           <i className="fa fa-users" />
         </div>
+
         {window.location.search.includes('error=no_fence_projects') && (
           <div>
             <br />
@@ -142,6 +149,7 @@ const LoginRoute = () => (
             </span>
           </div>
         )}
+
         {window.location.search.includes('error=timeout') && (
           <div>
             <br />

@@ -1,11 +1,9 @@
-import urlJoin from 'url-join';
 import {
   get,
   intersection,
 } from 'lodash';
 
 import { forceLogout } from '@ncigdc/dux/auth';
-import { FENCE } from '@ncigdc/utils/constants';
 
 const isUserProject = ({ file, user }) => {
   if (!user) {
@@ -146,14 +144,7 @@ const userProjectsCount = (user: Object) =>
     [],
   ).length;
 
-const awgLogout = async () => {
-  await fetch(urlJoin(FENCE, 'logout'), {
-    credentials: 'include',
-  });
-};
-
 const redirectToLogin = error => {
-  awgLogout();
   store.dispatch(forceLogout());
   return (window.location.href = `/login?error=${error}`);
 };

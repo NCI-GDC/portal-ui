@@ -25,6 +25,11 @@ import { viewerQuery } from '@ncigdc/routes/queries';
 import { fetchUser } from '@ncigdc/dux/auth';
 import Login from '@ncigdc/routes/Login';
 import { redirectToLogin } from '@ncigdc/utils/auth';
+import {
+  checkAWGSession,
+  clearAWGSession,
+  keepAliveAWGSession,
+} from '@ncigdc/utils/auth/awg';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
@@ -88,7 +93,7 @@ const HasUser = connect(state => state.auth)(props => {
 const RelaySetup = compose(
   setDisplayName('EnhancedRelayRootRoute'),
   withHandlers({
-    customMiddleware: () => next => req => {
+    customMiddleware: () => next => async req => {
       const [url, search = ''] = req.url.split('?');
       const hash =
         parse(search).hash ||
@@ -104,31 +109,29 @@ const RelaySetup = compose(
       if (IS_AUTH_PORTAL) {
         req.credentials = 'include';
 
-        return next(req)
-          .then(res => {
-            if (!res.ok && !retryStatusCodes.includes(res.status)) {
-              consoleDebug('Throwing error in Root');
-              throw res;
-            }
+        const sessionActive = await checkAWGSession();
+        console.log('session active? (root env)', JSON.stringify(sessionActive));
 
-            const { json } = res;
+        return sessionActive && next(req)
+          .then(response => {
+            const { payload } = response;
             const { user } = window.store.getState().auth;
 
             if (user) {
-              if (!json.fence_projects[0]) {
+              if (!payload.fence_projects[0]) {
                 throw new AccessError('no_fence_projects');
               }
 
-              if (!json.nih_projects) {
+              if (!payload.nih_projects) {
                 throw new AccessError('no_nih_projects');
               }
 
-              if (!json.intersection[0]) {
+              if (!payload.intersection[0]) {
                 throw new AccessError('no_intersection');
               }
             }
 
-            return res;
+            return response;
           })
           .catch(err => {
             const { user } = window.store.getState().auth;
@@ -136,7 +139,8 @@ const RelaySetup = compose(
               consoleDebug(`Access error message: ${err.message}`);
               return redirectToLogin(err.message);
             }
-            consoleDebug(`Something went wrong in Root network layer: ${err}`);
+            consoleDebug('Something went wrong in Root network layer:');
+            consoleDebug(err);
               // not able to pass the response status from throw so need to exclude by error message
             const errorMessage = err.message
               ? JSON.parse(err.message).message
@@ -148,6 +152,7 @@ const RelaySetup = compose(
                 errorMessage ===
                   'Your token is invalid or expired. Please get a new token from GDC Data Portal.'
             ) {
+              clearAWGSession();
               return redirectToLogin('timeout');
             }
           });
@@ -162,6 +167,11 @@ const RelaySetup = compose(
       const {
         customMiddleware,
       } = this.props;
+
+      if (IS_AUTH_PORTAL) {
+        // only enabled if AWG_TOKEN_RENEWAL_INTERVAL is set
+        this.AWGSessionTimer = keepAliveAWGSession();
+      }
 
       Relay.injectNetworkLayer(
         new RelayNetworkLayer([
@@ -182,6 +192,10 @@ const RelaySetup = compose(
           customMiddleware,
         ]),
       );
+    },
+    componentWillUnmount() {
+      // only active if AWG_TOKEN_RENEWAL_INTERVAL is set
+      IS_AUTH_PORTAL && clearAWGSession(this.AWGSessionTimer);
     },
   }),
 )(props => (

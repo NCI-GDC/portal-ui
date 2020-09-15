@@ -9,9 +9,13 @@ import {
 } from 'relay-runtime';
 import md5 from 'blueimp-md5';
 
-import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 import { redirectToLogin } from '@ncigdc/utils/auth';
+import {
+  checkAWGSession,
+  clearAWGSession,
+} from '@ncigdc/utils/auth/awg';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
+import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
 
 const source = new RecordSource();
 const store = new Store(source);
@@ -19,7 +23,7 @@ const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
 
-const fetchQuery = (operation, variables, cacheConfig) => {
+const fetchQuery = async (operation, variables, cacheConfig) => {
   const body = JSON.stringify({
     query: operation.text, // GraphQL text from input
     variables,
@@ -58,13 +62,15 @@ const fetchQuery = (operation, variables, cacheConfig) => {
   // if the request is not in the simpleCache yet, put it in the pendingCache and proceed to fetch
   pendingCache[hash] = true;
 
-  return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
+  const sessionActive = IS_AUTH_PORTAL ? await checkAWGSession() : true;
+
+  return sessionActive && fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
     ...(IS_AUTH_PORTAL ? { credentials: 'include' } : {}),
-    method: 'POST',
+    body,
     headers: {
       'Content-Type': 'application/json',
     },
-    body,
+    method: 'POST',
   }).then(response =>
     response
       .json()
@@ -89,6 +95,7 @@ const fetchQuery = (operation, variables, cacheConfig) => {
           case 403:
             consoleDebug(err.statusText);
             if (IS_AUTH_PORTAL) {
+              clearAWGSession();
               return redirectToLogin('timeout');
             }
             break;

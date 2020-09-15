@@ -19,7 +19,6 @@ import {
   AUTH,
   IS_DEV,
   AWG,
-  FENCE,
 } from '@ncigdc/utils/constants';
 
 const iconStyle = {
@@ -34,24 +33,25 @@ const DropdownItemStyled = styled(DropdownItem, {
 });
 
 const logout = async dispatch => {
-  if (AWG) {
-    try {
-      await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
-      // need to delete user from store
-      dispatch(forceLogout());
-    } catch (err) {
-      console.warn('There was an error: ', err);
-    }
-    return window.location.assign(
-      urlJoin(AUTH, 'logout?next=https://portal.awg.gdc.cancer.gov/login'),
-    );
+  try {
+    // need to delete user from store
+    dispatch(forceLogout());
+  } catch (err) {
+    console.warn('There was an error: ', err);
   }
 
-  dispatch(forceLogout());
-
-  return IS_DEV || window.location.assign(urlJoin(AUTH, `logout?next=${
-    window.location.port ? `:${window.location.port}` : ''
-  }${window.location.pathname}`));
+  return AWG
+    ? window.location.assign(urlJoin(
+      AUTH,
+      'logout?next=https://portal.awg.gdc.cancer.gov/login',
+    ))
+    : IS_DEV ||
+      window.location.assign(urlJoin(
+        AUTH,
+        `logout?next=${
+          window.location.port ? `:${window.location.port}` : ''
+        }${window.location.pathname}`,
+      ));
 };
 
 const UserDropdown = connect(state => ({

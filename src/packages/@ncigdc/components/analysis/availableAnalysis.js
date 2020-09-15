@@ -25,7 +25,7 @@ type TAnalysis = {
   type: string,
   title: string,
   Icon: ReactComponent<*>,
-  description: string,
+  description: string | ReactComponent<*>,
   demoData: {
     sets: TSelectedSets,
     filters: {},
@@ -387,7 +387,7 @@ const availableAnalysis: [TAnalysis] = [
             op: 'and',
           },
         },
-        message: 'Demo',
+        message: 'Demo', // TODO change tooltip text
         name: 'Demo Gene Expression',
         sets: {
           case: {
@@ -399,7 +399,23 @@ const availableAnalysis: [TAnalysis] = [
         },
         type: 'gene_expression',
       },
-      description: 'Display the gene expression heatmap for sets of cases and genes of your choice.',
+      description: (
+        <React.Fragment>
+          <p>
+            Try out the beta release of our new tool for gene expression
+            analysis. Display the gene expression heatmap for sets of cases and genes of your choice.
+          </p>
+          <p>
+            <strong>COMING SOON:</strong>
+            {' '}
+            Filter genes by expression level, and select genes that are highly variable.
+          </p>
+          <p>
+            Please send us your feedback at:
+            <a href="mailto:support@nci-gdc.datacommons.io">support@nci-gdc.datacommons.io</a>
+          </p>
+        </React.Fragment>
+      ),
       Icon: withTheme(({ style }) => (
         <div>
           <GeneExpression

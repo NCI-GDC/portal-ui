@@ -31,6 +31,7 @@ type TAnalysis = {
     filters: {},
     type: string,
   },
+  introText: string | ReactComponent<*>,
   setInstructions: string,
   setDisabledMessage: (opts: { sets: TSelectedSets, type: string }) => ?string,
   setTypes: Array<string>,
@@ -399,7 +400,19 @@ const availableAnalysis: [TAnalysis] = [
         },
         type: 'gene_expression',
       },
-      description: (
+      description: 'Display the gene expression heatmap for sets of cases and genes of your choice.',
+      Icon: withTheme(({ style }) => (
+        <div>
+          <GeneExpression
+            style={{
+              width: 80,
+              height: 80,
+              ...style,
+            }}
+            />
+        </div>
+      )),
+      introText: (
         <React.Fragment>
           <p>
             Try out the beta release of our new tool for gene expression
@@ -417,17 +430,6 @@ const availableAnalysis: [TAnalysis] = [
           </p>
         </React.Fragment>
       ),
-      Icon: withTheme(({ style }) => (
-        <div>
-          <GeneExpression
-            style={{
-              width: 80,
-              height: 80,
-              ...style,
-            }}
-            />
-        </div>
-      )),
       label: 'Gene Expression',
       ResultComponent: props => (
         <GeneExpressionContainer

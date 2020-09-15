@@ -412,6 +412,7 @@ const availableAnalysis: [TAnalysis] = [
           </p>
           <p>
             Please send us your feedback at:
+            {' '}
             <a href="mailto:support@nci-gdc.datacommons.io">support@nci-gdc.datacommons.io</a>
           </p>
         </React.Fragment>

@@ -387,7 +387,7 @@ const availableAnalysis: [TAnalysis] = [
             op: 'and',
           },
         },
-        message: 'Demo', // TODO change tooltip text
+        message: 'Demo showing the gene expression heatmap derived from a set of TCGA BRCA cases and a set of invasive lobular carcinoma genes.',
         name: 'Demo Gene Expression',
         sets: {
           case: {

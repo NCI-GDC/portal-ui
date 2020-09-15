@@ -114,7 +114,7 @@ export default compose(
         const format = e.target.getAttribute('data-format');
         const scale = e.target.getAttribute('data-scale');
         Plotly.downloadImage(graphDiv, {
-          filename: `scrnaseq-${moment().format('YYYY-MM-DD-HHmmss')}`,
+          filename: `scrnaseq_${dataType}_${moment().format('YYYY-MM-DD-HHmmss')}`,
           format,
           scale,
         });

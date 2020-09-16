@@ -24,9 +24,9 @@ export function fetchAuth(options: { endpoint: string }): Object {
       ...DEFAULTS,
       ...(IS_AUTH_PORTAL
         ? {
-            credentials: 'include',
-            headers: {},
-          }
+          credentials: 'include',
+          headers: {},
+        }
         : {}),
       ...options,
       endpoint: urlJoin(AUTH, options.endpoint),
@@ -35,11 +35,25 @@ export function fetchAuth(options: { endpoint: string }): Object {
 }
 
 // $FlowIgnore
-export const fetchApi = (endpoint, opts = {}) => {
+export const fetchApi = (endpoint, options = {}) => {
+  /* This helper used to return the JSON of all requests by default
+   * which is not what we want in the case of file streams, etc.
+   *
+   * Made that default optional, while to destructure thus to avoid TS issues
+   * and continue returning JSON to ensure backwards compatibility.
+   */
+  const {
+    fullResponse = false,
+    ...opts
+  } = options;
+
   const clonedOptions = {
     ...opts,
     ...(IS_AUTH_PORTAL
-      ? { credentials: opts.credentials || 'include', headers: opts.headers }
+      ? {
+        credentials: opts.credentials || 'include',
+        headers: opts.headers,
+      }
       : {}),
     ...(opts.body && {
       body: JSON.stringify(opts.body),
@@ -48,10 +62,11 @@ export const fetchApi = (endpoint, opts = {}) => {
   };
   return fetch(urlJoin(API, endpoint), clonedOptions)
     .then(r => {
-      if (!r.ok) {
-        throw r;
+      if (r.ok) {
+        return fullResponse ? r : r.json();
       }
-      return r.json();
+
+      throw r;
     })
     .catch(err => {
       if (err.status) {
@@ -84,7 +99,7 @@ type TFetchApiChunked = (
 const DEFAULT_CHUNK_SIZE = 10000;
 export const fetchApiChunked: TFetchApiChunked = async (
   endpoint,
-  { chunkSize = DEFAULT_CHUNK_SIZE, ...opts } = {}
+  { chunkSize = DEFAULT_CHUNK_SIZE, ...opts } = {},
 ) => {
   const queue = Queue({ concurrency: 6 });
   const body = opts.body || {};
@@ -102,9 +117,9 @@ export const fetchApiChunked: TFetchApiChunked = async (
   const hash = md5(JSON.stringify(defaultOptions));
   const { data } = await fetchApi(
     urlJoin(endpoint, `?hash=${hash}`),
-    defaultOptions
+    defaultOptions,
   );
-  let hits = data.hits;
+  let { hits } = data;
 
   for (
     let count = firstSize;

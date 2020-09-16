@@ -85,6 +85,13 @@ module.exports = {
       SwitchCase: 1,
       VariableDeclarator: 'first',
     }],
+    'max-len': ['warn', {
+      code: 100,
+      ignoreComments: true,
+      ignoreStrings: true,
+      ignoreTemplateLiterals: true,
+      ignoreUrls: true,
+    }],
     'multiline-ternary': ['warn', 'always-multiline'],
     'no-console': ['warn', {
       allow: [
@@ -160,6 +167,9 @@ module.exports = {
     'react/jsx-max-props-per-line': ['warn', {
       maximum: 1,
       when: 'multiline',
+    }],
+    'react/jsx-no-undef': ['error', {
+      allowGlobals: true,
     }],
     'react/jsx-one-expression-per-line': ['warn', {
       allow: 'single-child',

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 // import { graphql } from 'react-relay';
 import {
   compose,
@@ -6,14 +7,16 @@ import {
   // withPropsOnChange,
   withState,
 } from 'recompose';
+import urlJoin from 'url-join';
 
 import {
   processStream,
 //   streamedXSVtoJSON,
   wholeXSVtoJSON,
 } from '@ncigdc/utils/data';
+import { fetchApi } from '@ncigdc/utils/ajax';
 
-import { IS_DEV } from '@ncigdc/utils/constants';
+import { IS_DEV, AUTH_API } from '@ncigdc/utils/constants';
 
 import { DESIREDHEADERS } from './constants';
 import {
@@ -57,12 +60,28 @@ export default (Component: ReactClass<*>) =>
       //     .catch(error => console.error(error));
       // },
       getWholeTsv: ({
+        analysisInfo: { file_id },
         setData,
         setLoading,
       }) => async () => {
         // const file = await import('./stubData/seurat.tsv');
         // const { body: stream } = await fetch(`http://localhost:3000${file}`);
-        const { body: stream } = await fetch('https://gist.githubusercontent.com/caravinci/e538391f6681348446af21127d30e4e7/raw/e3c8569f3b8fa50a00823486ccd7a0e3c723bee1/seurat.tsv');
+        // const { body: stream } = await fetch('https://gist.githubusercontent.com/caravinci/e538391f6681348446af21127d30e4e7/raw/e3c8569f3b8fa50a00823486ccd7a0e3c723bee1/seurat.tsv');
+
+        const fetchUrl = urlJoin(AUTH_API, 'data');
+
+        console.log({ fetchUrl });
+        // TODO: look at repository file entity page,
+        // the download button at top right of the page
+
+        const { body: stream } = await fetchApi(fetchUrl, {
+          body: {
+            ids: file_id,
+          },
+          fullResponse: true,
+        });
+
+        console.log({ stream });
 
         const tsvToJSON = wholeXSVtoJSON(
           'EnhancedSCRNASeq.relay',

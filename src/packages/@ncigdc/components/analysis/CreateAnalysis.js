@@ -53,7 +53,10 @@ const CreateAnalysis = ({
 
             dispatch(
               addAnalysis({
-                analysisInfo: { ...selectedCase, ...selectedFile },
+                analysisInfo: {
+                  ...selectedCase,
+                  ...selectedFile,
+                },
                 created,
                 id,
                 type: analysis.type,
@@ -134,14 +137,13 @@ const CreateAnalysis = ({
                       >
                       <Button onClick={() => setAnalysis(item)}>Demo</Button>
                     </Tooltip>
-                  ) 
+                  )
                   : (
                     <Row spacing={5}>
                       <Button onClick={() => setAnalysis(item)}>Select</Button>
                       <DemoButton demoData={item.demoData} type={item.type} />
                     </Row>
-                  )
-                }
+                  )}
               </div>
             </Row>
           );

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import React from 'react';
 import {
-  compose, pure, setDisplayName, withHandlers, withProps, withPropsOnChange, withState,
+  compose, pure, setDisplayName, withHandlers, withState,
 } from 'recompose';
 import { find } from 'lodash';
 

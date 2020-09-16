@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import {
   compose,
@@ -85,15 +86,22 @@ const AnalysisResult = ({
     analyses.findIndex(a => a.id === analysisId),
     0,
   );
+  console.log({
+    analyses,
+    availableAnalysis,
+  });
 
   return (
     <TabbedLinks
       defaultIndex={currentIndex}
       links={analyses
         .map(savedAnalysis => {
+          console.log({ savedAnalysis });
           const foundAnalysis = availableAnalysis.find(
-            a => a.type === savedAnalysis.type
+            a => a.type === savedAnalysis.type,
           );
+
+          console.log({ foundAnalysis });
 
           const tabTitle =
             foundAnalysis.type === 'clinical_data'

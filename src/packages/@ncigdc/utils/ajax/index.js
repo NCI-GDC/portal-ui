@@ -60,6 +60,7 @@ export const fetchApi = (endpoint, options = {}) => {
       method: 'POST',
     }),
   };
+  console.log({ clonedOptions });
   return fetch(urlJoin(API, endpoint), clonedOptions)
     .then(r => {
       if (r.ok) {

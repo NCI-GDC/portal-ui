@@ -11,6 +11,7 @@ import SCRNASeq from '@ncigdc/theme/icons/SCRNASeq';
 import SCRNASeqContainer from '@ncigdc/modern_components/SCRNASeq';
 import GeneExpression from '@ncigdc/theme/icons/GeneExpression';
 import { fetchApi } from '@ncigdc/utils/ajax';
+import geneExpressionDemoData from '@ncigdc/modern_components/GeneExpression/inchlib/data';
 
 import Demo from './Demo';
 import SetOperations from './SetOperations';
@@ -389,14 +390,7 @@ const availableAnalysis: [TAnalysis] = [
         },
         message: 'Demo',
         name: 'Demo Gene Expression',
-        sets: {
-          case: {
-            'demo-pancreas': 'Pancreas',
-          },
-          gene: {
-            'demo-pancreas': 'Pancreas',
-          },
-        },
+        sets: geneExpressionDemoData,
         type: 'gene_expression',
       },
       description: 'Display the gene expression heatmap for sets of cases and genes of your choice.',

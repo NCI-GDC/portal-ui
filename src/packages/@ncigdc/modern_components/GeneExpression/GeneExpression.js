@@ -57,19 +57,24 @@ export default compose(
   // can be removed when the full API is available.
   // withState('visualizationData', 'setVisualizationData', mockData.inchlib),
   withState('visualizationData', 'setVisualizationData', null),
-  withHandlers(({ sets }) => {
-    const case_set_id = localStorage.GE_SCENARIO || Object.keys(sets.case)[0];
-    const gene_set_id = Object.keys(sets.gene)[0];
+  withHandlers(({ sets, sets: { case_ids = [], gene_ids = [] } }) => {
+    // demo uses arrays of case & gene IDs instead of a case & gene set
+    const isDemo = case_ids.length > 0 && gene_ids.length > 0;
+    const body = {
+      ...isDemo
+        ? sets
+        : {
+          case_set_id: Object.keys(sets.case)[0],
+          gene_set_id: Object.keys(sets.gene)[0],
+        },
+    };
 
     return {
       downloadFiles: () => async format => {
         switch (format.toLowerCase()) {
           case 'tsv': {
             const { body: stream } = await fetchApi('gene_expression/values', {
-              body: {
-                case_set_id,
-                gene_set_id,
-              },
+              body,
               fullResponse: true,
             });
 
@@ -93,10 +98,7 @@ export default compose(
         setVisualizationData,
       }) => () => {
         fetchApi('gene_expression/visualize', {
-          body: {
-            case_set_id,
-            gene_set_id,
-          },
+          body,
           headers: {
             'Content-Type': 'application/json',
           },

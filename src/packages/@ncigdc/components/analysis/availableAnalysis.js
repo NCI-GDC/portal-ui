@@ -26,12 +26,13 @@ type TAnalysis = {
   type: string,
   title: string,
   Icon: ReactComponent<*>,
-  description: string,
+  description: string | ReactComponent<*>,
   demoData: {
     sets: TSelectedSets,
     filters: {},
     type: string,
   },
+  introText: string | ReactComponent<*>,
   setInstructions: string,
   setDisabledMessage: (opts: { sets: TSelectedSets, type: string }) => ?string,
   setTypes: Array<string>,
@@ -388,7 +389,7 @@ const availableAnalysis: [TAnalysis] = [
             op: 'and',
           },
         },
-        message: 'Demo',
+        message: 'Demo showing the gene expression heatmap derived from TCGA BRCA cases and a set of invasive lobular carcinoma genes.',
         name: 'Demo Gene Expression',
         sets: geneExpressionDemoData,
         type: 'gene_expression',
@@ -405,6 +406,24 @@ const availableAnalysis: [TAnalysis] = [
             />
         </div>
       )),
+      introText: (
+        <React.Fragment>
+          <p>
+            Try out the beta release of our new tool for gene expression
+            analysis. Display the gene expression heatmap for sets of cases and genes of your choice.
+          </p>
+          <p>
+            <strong>COMING SOON:</strong>
+            {' '}
+            Filter genes by expression level, and select genes that are highly variable.
+          </p>
+          <p>
+            Please send us your feedback at:
+            {' '}
+            <a href="mailto:support@nci-gdc.datacommons.io">support@nci-gdc.datacommons.io</a>
+          </p>
+        </React.Fragment>
+      ),
       label: 'Gene Expression',
       ResultComponent: props => (
         <GeneExpressionContainer

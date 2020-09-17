@@ -163,7 +163,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
       size: 12,
     },
-    heatmap_colors: 'RdLrGr',
+    heatmap_colors: 'GrBkRd',
     heatmap_header: true,
     heatmap_part_width: 0.7,
     heatmap: true,
@@ -761,6 +761,23 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
           r: 35,
           g: 139,
           b: 69,
+        },
+      },
+      GrBkRd: {
+        start: {
+          r: 35,
+          g: 139,
+          b: 69,
+        },
+        middle: {
+          r: 0,
+          g: 0,
+          b: 0,
+        },
+        end: {
+          r: 215,
+          g: 25,
+          b: 28,
         },
       },
     };

@@ -6,6 +6,7 @@ import Konva from 'konva';
 import Color from 'color';
 import { capitalize, each, round } from 'lodash';
 import moment from 'moment';
+import { jsPDF } from "jspdf";
 
 import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
@@ -178,7 +179,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     middle_percentile: 50,
     min_percentile: 0,
     min_row_height: 1,
-    png_padding: 20,
+    img_padding: 20,
     tooltip: {
       fill: '#fff',
       stroke: 'lightgrey',
@@ -1622,13 +1623,13 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._draw_stage_layer = function () {
     const self = this;
-    const { height, png_padding, width } = self.options;
+    const { height, img_padding, width } = self.options;
     self.stage_layer = new Konva.Layer();
     // drawing a large white background for PNG download.
 
     // PADDING
-    const padding = png_padding * 2;
-    const move_bg_to_center = png_padding * -1;
+    const padding = img_padding * 2;
+    const move_bg_to_center = img_padding * -1;
 
     // HEIGHT
     const min_height = 700;
@@ -2476,6 +2477,10 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const { handleFileDownloads = () => {} } = self.extHandlers;
     const download_options = [
       {
+        id: 'download-pdf',
+        label: 'PDF',
+      },
+      {
         id: 'download-png',
         label: 'PNG',
       },
@@ -2499,8 +2504,11 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     $('.inchlib-toolbar_btn-download').parent().append(download_ul);
 
     $('.inchlib-download_btn').click(function() {
+      if ($(this).attr('data-inchlib-id') === 'download-pdf') {
+        self._download_img('pdf');
+      }
       if ($(this).attr('data-inchlib-id') === 'download-png') {
-        self._download_png();
+        self._download_img('png');
       }
       if ($(this).attr('data-inchlib-id') === 'download-tsv') {
         handleFileDownloads('tsv');
@@ -3156,13 +3164,17 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     return overlay;
   };
 
-  InCHlib.prototype._download_png = function () {
+  InCHlib.prototype._download_img = function (img_format) {
     const self = this;
+    const is_png = img_format === 'png'; // png or pdf
     const overlay = self._draw_overlay();
     const zoom = 3;
     const width = self.stage.width();
     const height = self.stage.height();
-    const { png_padding } = self.options;
+    const { img_padding } = self.options;
+    const img_file_name = `gene-expression-values.${
+      moment().format('YYYY-MM-DD-HHmmss')
+    }.${img_format}`;
 
     overlay.click(function() {
       overlay.fadeOut().remove();
@@ -3172,7 +3184,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.$element.after(loading_div);
     self.$element.hide();
 
-    self._draw_legend_for_png();
+    self._draw_legend_for_img(is_png);
 
     // setup height
     const min_height = 600;
@@ -3183,30 +3195,43 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       ? min_height
       : height_full;
 
-    const padding = png_padding * 2;
+    const double_padding = img_padding * 2;
 
-    const png_height = (get_height + padding) * zoom;
-    const png_width = (width + png_padding) * zoom;
+    const img_height = is_png
+      ? (get_height + double_padding) * zoom
+      : (get_height + img_padding) * zoom;
+    const img_width = is_png
+      ? (width + img_padding) * zoom
+      : (width + double_padding) * zoom;
 
-    self.stage.width(png_width);
-    self.stage.height(png_height);
+    self.stage.width(img_width);
+    self.stage.height(img_height);
     self.stage.scale({
       x: zoom,
       y: zoom,
     });
-    self.stage.x(padding);
-    self.stage.y(padding);
+    self.stage.x(is_png ? double_padding : img_padding * 3);
+    self.stage.y(0);
     self.stage.draw();
     self.navigation_layer.hide();
+
     self.stage.toDataURL({
       quality: 1,
-      callback(dataUrl) {
-        downloadURI(
-          dataUrl,
-          `gene-expression-values.${
-            moment().format('YYYY-MM-DD-HHmmss')
-          }.png`
-        );
+      callback(dataURL) {
+        if (is_png) {
+          downloadURI(
+            dataURL,
+            img_file_name
+          );
+        } else {
+          var imgPdf = new jsPDF({
+            format: 'letter',
+            unit: 'in',
+          });
+          imgPdf.addImage(dataURL, 'PNG', 0, -0.25, 8.5, 0, '', 'none');
+          imgPdf.save(img_file_name);
+        }
+        
         self.stage.width(width);
         self.stage.height(height);
         self.stage.scale({
@@ -3221,10 +3246,10 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         self.navigation_layer.show();
         self.navigation_layer.draw();
         self._delete_layers([
-          self.legend_png_layer,
+          self.legend_img_layer,
         ]);
         overlay.trigger('click');
-      },
+      }
     });
 
     // function from https://stackoverflow.com/a/15832662/512042
@@ -3366,14 +3391,16 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.heatmap_scale_layer.draw();
   }
 
-  InCHlib.prototype._draw_legend_for_png = function() {
+  InCHlib.prototype._draw_legend_for_img = function(is_png) {
     const self = this;
-    self.legend_png_layer = self.objects_ref.layer_below_toolbar.clone();
-    self.stage.add(self.legend_png_layer);
+    self.legend_img_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.stage.add(self.legend_img_layer);
 
     const legend_width = 150;
     const legend_y = -20;
-    const legend_x = self.stage.width() - (legend_width + 5);
+    const legend_x = self.stage.width() - (is_png
+      ? legend_width + 5
+      : legend_width);
 
     // create legend
 
@@ -3480,8 +3507,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       y: legend_y,
     })
 
-    self.legend_png_layer.add(legend, legend_title, legend_group);
-    self.legend_png_layer.draw();
+    self.legend_img_layer.add(legend, legend_title, legend_group);
+    self.legend_img_layer.draw();
   };
 
   InCHlib.prototype._redraw_heatmap_scale = function() {

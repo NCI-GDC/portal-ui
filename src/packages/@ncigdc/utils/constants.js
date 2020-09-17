@@ -882,35 +882,31 @@ export const capitalisedTerms = {
 };
 
 export const CATEGORY_COLORS = {
-  'ethnicity': {
+  ethnicity: {
     'hispanic or latino': 'rgb(255,150,148)', // pink
     'not hispanic or latino': 'rgb(215,40,40)', // red
     'not reported': 'rgb(255,189,122)', // yellow
   },
-  'gender': {
-    'female': 'rgb(220,96,156)', // pink
-    'male': 'rgb(67,6,147)', // purple
+  gender: {
+    female: 'rgb(220,96,156)', // pink
+    male: 'rgb(67,6,147)', // purple
   },
-  'race': {
+  race: {
     'american indian or alaska native': 'rgb(153, 223, 139)', // light green
-    'asian': 'rgb(30, 117, 179)', // dark blue
+    asian: 'rgb(30, 117, 179)', // dark blue
     'black or african american': 'rgb(175, 200, 233)', // light blue
     'native hawaiian or other pacific islander': 'rgb(44, 160, 44)', // dark green
     'not reported': 'rgb(255, 189, 122)', // light orange
-    'white': 'rgb(255, 127, 15)', // dark orange
+    white: 'rgb(255, 127, 15)', // dark orange
   },
-  'vital_status': {
-    'alive': 'rgb(22,147,192)', // blue
-    'dead': 'rgb(138,0,0)', // red
+  vital_status: {
+    alive: 'rgb(22,147,192)', // blue
+    dead: 'rgb(138,0,0)', // red
   },
 };
 
 export const DISPLAY_SUMMARY_PAGE = localStorage.REACT_APP_DISPLAY_SUMMARY_PAGE ||
   process.env.REACT_APP_DISPLAY_SUMMARY_PAGE ||
-  false;
-
-export const DISPLAY_GENE_EXPRESSION = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION ||
-  process.env.REACT_APP_DISPLAY_GENE_EXPRESSION ||
   false;
 
 export const DISPLAY_10K = localStorage.REACT_APP_DISPLAY_10K ||

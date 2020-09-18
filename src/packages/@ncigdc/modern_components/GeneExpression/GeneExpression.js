@@ -76,6 +76,9 @@ export default compose(
             const { body: stream } = await fetchApi('gene_expression/values', {
               body,
               fullResponse: true,
+              headers: {
+                'Content-Type': 'text/tsv',
+              },
             });
 
             return stream

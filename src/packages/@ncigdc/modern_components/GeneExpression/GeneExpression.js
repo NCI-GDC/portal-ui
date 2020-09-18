@@ -73,13 +73,13 @@ export default compose(
       downloadFiles: () => async format => {
         switch (format.toLowerCase()) {
           case 'tsv': {
-            const { body: stream } = await fetchApi('gene_expression/values', {
+            const { body: stream } = (await fetchApi('gene_expression/values', {
               body,
               fullResponse: true,
               headers: {
-                'Content-Type': 'text/tsv',
+                'Content-Type': 'application/json',
               },
-            });
+            }) || {});
 
             return stream
               ? processStream('GeneExpression.Download', stream.getReader())()

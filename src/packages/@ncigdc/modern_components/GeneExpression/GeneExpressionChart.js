@@ -40,10 +40,12 @@ class GeneExpressionChart extends Component {
     const {
       handleClickInchlibLink,
       handleFileDownloads,
+      handleLoading,
       visualizationData,
     } = this.props;
     this.handlers = {
       handleFileDownloads,
+      handleLoading,
     };
     this.options = {
       ...options,

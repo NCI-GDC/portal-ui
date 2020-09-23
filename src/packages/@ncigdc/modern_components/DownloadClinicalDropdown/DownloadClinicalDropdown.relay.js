@@ -17,17 +17,14 @@ export default (Component: ReactClass<*>) =>
         const downloadFilters =
           selectedIds && selectedIds.length
             ? addInFilters(
-                ...filters,
-                makeFilter(
-                  [
-                    {
-                      field: 'cases.case_id',
-                      value: selectedIds,
-                    },
-                  ],
-                  false,
-                ),
-              )
+              ...filters,
+              makeFilter([
+                {
+                  field: 'cases.case_id',
+                  value: selectedIds,
+                },
+              ]),
+            )
             : filters;
         return {
           filters: downloadFilters,

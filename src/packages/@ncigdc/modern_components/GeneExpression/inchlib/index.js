@@ -5,6 +5,10 @@ import $ from 'jquery';
 import Konva from 'konva';
 import Color from 'color';
 import { capitalize, each, round } from 'lodash';
+import moment from 'moment';
+import { jsPDF } from "jspdf";
+
+import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -159,7 +163,7 @@ import { capitalize, each, round } from 'lodash';
       family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
       size: 12,
     },
-    heatmap_colors: 'RdLrGr',
+    heatmap_colors: 'GrBkRd',
     heatmap_header: true,
     heatmap_part_width: 0.7,
     heatmap: true,
@@ -175,7 +179,7 @@ import { capitalize, each, round } from 'lodash';
     middle_percentile: 50,
     min_percentile: 0,
     min_row_height: 1,
-    png_padding: 20,
+    img_padding: 20,
     tooltip: {
       fill: '#fff',
       stroke: 'lightgrey',
@@ -183,7 +187,7 @@ import { capitalize, each, round } from 'lodash';
     },
   };
 
-  function InCHlib(element, options) {
+  function InCHlib(element, options, extHandlers) {
     const self = this;
 
     // basic plugin setup
@@ -192,6 +196,9 @@ import { capitalize, each, round } from 'lodash';
     self.options = $.extend({}, defaults, options);
     self._name = plugin_name;
     self.$element.attr('id', self._name);
+
+    // make external handlers available in subfunctions
+    self.extHandlers = extHandlers;
 
     // inchlib setup
     self.user_options = options || {};
@@ -202,7 +209,7 @@ import { capitalize, each, round } from 'lodash';
       self.options.max_width < element_width
       ? self.options.max_width
       : element_width;
-    
+
     self.options.legend_width = 170;
 
     self.options.width -= self.options.legend_width;
@@ -252,8 +259,9 @@ import { capitalize, each, round } from 'lodash';
       // create lightness value for HSL().
       // will result in a shade of green.
       // higher value = darker green.
-      const percentage = 1 - (val / self.MAX_AGE_AT_DIAGNOSIS);
+      const percentage = 1 - (getLowerAgeYears(val) / self.MAX_AGE_AT_DIAGNOSIS);
       const lightness = (percentage * (self.age_dx_colors.max_light - self.age_dx_colors.min_light)) + self.age_dx_colors.min_light;
+
       return isNaN(percentage) // i.e. val is "not reported"
         ? self.invalid_column_metadata_color
         : `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${lightness}%)`;
@@ -755,6 +763,23 @@ import { capitalize, each, round } from 'lodash';
           b: 69,
         },
       },
+      GrBkRd: {
+        start: {
+          r: 35,
+          g: 139,
+          b: 69,
+        },
+        middle: {
+          r: 0,
+          g: 0,
+          b: 0,
+        },
+        end: {
+          r: 215,
+          g: 25,
+          b: 28,
+        },
+      },
     };
 
     /**
@@ -942,8 +967,8 @@ import { capitalize, each, round } from 'lodash';
     const modal_actions = [
       modal_btn.clone()
         .attr('id', cancel_id)
-        .text(has_close_btn 
-          ? 'Close' 
+        .text(has_close_btn
+          ? 'Close'
           : 'Cancel'),
       ...has_close_btn || modal_btn.clone()
         .attr('id', save_id)
@@ -1111,7 +1136,9 @@ import { capitalize, each, round } from 'lodash';
         .map(feature => feature
           .map(value => typeof value === 'number'
               ? value.toString()
-              : value.toLowerCase()
+              : typeof value === 'string'
+                ? value.toLowerCase()
+                : value
           ));
 
       self.column_metadata.visible = Array(self.column_metadata.features.length)
@@ -1459,7 +1486,7 @@ import { capitalize, each, round } from 'lodash';
       self.options.column_dendrogram = false;
     }
     self._adjust_leaf_size(self.heatmap_array.length);
-  
+
     self.right_margin = 100;
 
     self._adjust_horizontal_sizes();
@@ -1490,7 +1517,7 @@ import { capitalize, each, round } from 'lodash';
       self.columns_start_index = 0;
       self._draw_column_dendrogram(self.column_root_id);
     }
-    
+
     self._draw_heatmap();
     self._draw_heatmap_header();
     self._draw_navigation();
@@ -1596,13 +1623,13 @@ import { capitalize, each, round } from 'lodash';
 
   InCHlib.prototype._draw_stage_layer = function () {
     const self = this;
-    const { height, png_padding, width } = self.options;
+    const { height, img_padding, width } = self.options;
     self.stage_layer = new Konva.Layer();
     // drawing a large white background for PNG download.
 
     // PADDING
-    const padding = png_padding * 2;
-    const move_bg_to_center = png_padding * -1;
+    const padding = img_padding * 2;
+    const move_bg_to_center = img_padding * -1;
 
     // HEIGHT
     const min_height = 700;
@@ -2015,9 +2042,11 @@ import { capitalize, each, round } from 'lodash';
     let text;
     let text_value;
     let col_index;
-  
-    const [ ensembl_id, hgnc_symbol ] = self.metadata.nodes[node_id];
-  
+
+    let [ ensembl_id, hgnc_symbol ] = self.metadata.nodes[node_id];
+
+    hgnc_symbol = hgnc_symbol && hgnc_symbol.toUpperCase();
+
     // draw heatmap cells
     for (var i = 0, len = self.on_features.data.length; i < len; i++) {
       col_index = self.on_features.data[i];
@@ -2025,10 +2054,10 @@ import { capitalize, each, round } from 'lodash';
       y2 = y1;
       value = node.features[col_index];
       text_value = value;
-  
+
       if (value !== null) {
         color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
-  
+
         line = self.objects_ref.heatmap_line.clone({
           stroke: color,
           points: [
@@ -2045,14 +2074,14 @@ import { capitalize, each, round } from 'lodash';
         });
         row.add(line);
       }
-  
+
       x1 = x2;
     }
-  
+
     // don't draw gene symbol column if it's empty
     x2 = x1;
     y2 = y1;
-  
+
     if (self.current_draw_values) {
       text = self.objects_ref.heatmap_value.clone({
         text: hgnc_symbol,
@@ -2060,7 +2089,7 @@ import { capitalize, each, round } from 'lodash';
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
-      
+
       line = self.objects_ref.heatmap_line.clone({
         // gene ensembl_id for creating links
         ensembl_id,
@@ -2079,7 +2108,7 @@ import { capitalize, each, round } from 'lodash';
         // on top of the text
         stroke: '#fff',
       });
-  
+
       const y = self._hack_round(y1 - self.value_font_size / 2);
       text.position({
         x: x1 + 5,
@@ -2093,7 +2122,7 @@ import { capitalize, each, round } from 'lodash';
       });
     }
     x1 = x2;
-  
+
     return row;
   };
 
@@ -2161,7 +2190,7 @@ import { capitalize, each, round } from 'lodash';
   };
 
   InCHlib.prototype._format_category_name = function (title) {
-    return title.split('_').map(word => 
+    return title.split('_').map(word =>
       word === 'at' || word === 'to' ? word : capitalize(word)
     ).join(' ');
   };
@@ -2447,15 +2476,20 @@ import { capitalize, each, round } from 'lodash';
   InCHlib.prototype._draw_download_menu = function () {
     const self = this;
     const overlay = self._draw_overlay(true);
+    const { handleFileDownloads = () => {} } = self.extHandlers;
     const download_options = [
+      {
+        id: 'download-pdf',
+        label: 'PDF',
+      },
       {
         id: 'download-png',
         label: 'PNG',
       },
-      // {
-      //   id: 'download-json',
-      //   label: 'JSON',
-      // },
+      {
+        id: 'download-tsv',
+        label: 'TSV',
+      },
     ];
 
     const download_ul = $(`<ul class="inchlib-download"></ul>`);
@@ -2472,8 +2506,14 @@ import { capitalize, each, round } from 'lodash';
     $('.inchlib-toolbar_btn-download').parent().append(download_ul);
 
     $('.inchlib-download_btn').click(function() {
+      if ($(this).attr('data-inchlib-id') === 'download-pdf') {
+        self._download_img('pdf');
+      }
       if ($(this).attr('data-inchlib-id') === 'download-png') {
-        self._download_png();
+        self._download_img('png');
+      }
+      if ($(this).attr('data-inchlib-id') === 'download-tsv') {
+        handleFileDownloads('tsv');
       }
     });
 
@@ -2482,7 +2522,7 @@ import { capitalize, each, round } from 'lodash';
       $('.inchlib-download').remove();
     });
   };
-  
+
   InCHlib.prototype._draw_navigation = function () {
     const self = this;
     self.navigation_layer = new Konva.Layer();
@@ -3119,20 +3159,24 @@ import { capitalize, each, round } from 'lodash';
     }
 
     overlay = $(`<div class="inchlib-overlay${invisible
-      ? ' inchlib-overlay_invisible' 
+      ? ' inchlib-overlay_invisible'
       : ''}"></div>`);
     self.$element.append(overlay);
 
     return overlay;
   };
 
-  InCHlib.prototype._download_png = function () {
+  InCHlib.prototype._download_img = function (img_format) {
     const self = this;
+    const is_png = img_format === 'png'; // png or pdf
     const overlay = self._draw_overlay();
     const zoom = 3;
     const width = self.stage.width();
     const height = self.stage.height();
-    const { png_padding } = self.options;
+    const { img_padding } = self.options;
+    const img_file_name = `gene-expression-values.${
+      moment().format('YYYY-MM-DD-HHmmss')
+    }.${img_format}`;
 
     overlay.click(function() {
       overlay.fadeOut().remove();
@@ -3142,7 +3186,7 @@ import { capitalize, each, round } from 'lodash';
     self.$element.after(loading_div);
     self.$element.hide();
 
-    self._draw_legend_for_png();
+    self._draw_legend_for_img(is_png);
 
     // setup height
     const min_height = 600;
@@ -3153,25 +3197,43 @@ import { capitalize, each, round } from 'lodash';
       ? min_height
       : height_full;
 
-    const padding = png_padding * 2;
+    const double_padding = img_padding * 2;
 
-    const png_height = (get_height + padding) * zoom;
-    const png_width = (width + png_padding) * zoom;
+    const img_height = is_png
+      ? (get_height + double_padding) * zoom
+      : (get_height + img_padding) * zoom;
+    const img_width = is_png
+      ? (width + img_padding) * zoom
+      : (width + double_padding) * zoom;
 
-    self.stage.width(png_width);
-    self.stage.height(png_height);
+    self.stage.width(img_width);
+    self.stage.height(img_height);
     self.stage.scale({
       x: zoom,
       y: zoom,
     });
-    self.stage.x(padding);
-    self.stage.y(padding);
+    self.stage.x(is_png ? double_padding : img_padding * 3);
+    self.stage.y(0);
     self.stage.draw();
     self.navigation_layer.hide();
+
     self.stage.toDataURL({
       quality: 1,
-      callback(dataUrl) {
-        downloadURI(dataUrl, 'gene-expression.png');
+      callback(dataURL) {
+        if (is_png) {
+          downloadURI(
+            dataURL,
+            img_file_name
+          );
+        } else {
+          var imgPdf = new jsPDF({
+            format: 'letter',
+            unit: 'in',
+          });
+          imgPdf.addImage(dataURL, 'PNG', 0, -0.25, 8.5, 0, '', 'none');
+          imgPdf.save(img_file_name);
+        }
+        
         self.stage.width(width);
         self.stage.height(height);
         self.stage.scale({
@@ -3186,10 +3248,10 @@ import { capitalize, each, round } from 'lodash';
         self.navigation_layer.show();
         self.navigation_layer.draw();
         self._delete_layers([
-          self.legend_png_layer,
+          self.legend_img_layer,
         ]);
         overlay.trigger('click');
-      },
+      }
     });
 
     // function from https://stackoverflow.com/a/15832662/512042
@@ -3216,7 +3278,7 @@ import { capitalize, each, round } from 'lodash';
             const legend_list = Object.keys(self.options.categories.colors[name])
               .map(value => `<li class="inchlib-legend_sublist-item${
                 self.legend_horizontal_categories
-                  .includes(name) 
+                  .includes(name)
                     ? ' inchlib-legend_sublist-item-horizontal'
                     : ''
                 }"><span class='inchlib-legend_square' style='background: ${self.options.categories.colors[name][value]}'></span> ${value}</li>`)
@@ -3318,7 +3380,7 @@ import { capitalize, each, round } from 'lodash';
       const scale_text = new Konva.Text({
         fill: self.hover_fill,
         fontFamily: self.options.font.family,
-        fontStyle: '500', 
+        fontStyle: '500',
         text,
         x: scale_x,
         y: scale_y,
@@ -3331,14 +3393,16 @@ import { capitalize, each, round } from 'lodash';
     self.heatmap_scale_layer.draw();
   }
 
-  InCHlib.prototype._draw_legend_for_png = function() {
+  InCHlib.prototype._draw_legend_for_img = function(is_png) {
     const self = this;
-    self.legend_png_layer = self.objects_ref.layer_below_toolbar.clone();
-    self.stage.add(self.legend_png_layer);
+    self.legend_img_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.stage.add(self.legend_img_layer);
 
     const legend_width = 150;
     const legend_y = -20;
-    const legend_x = self.stage.width() - (legend_width + 5);
+    const legend_x = self.stage.width() - (is_png
+      ? legend_width + 5
+      : legend_width);
 
     // create legend
 
@@ -3409,7 +3473,7 @@ import { capitalize, each, round } from 'lodash';
         y += 25;
       } else {
         const legend_list = Object.keys(self.options.categories.colors[heading]);
-        
+
         for (let n = 0; n < legend_list.length; n++) {
           const value = legend_list[n];
           const text = value;
@@ -3417,8 +3481,8 @@ import { capitalize, each, round } from 'lodash';
             fill: self.options.categories.colors[heading][value],
             height: 12,
             width: 12,
-            x, 
-            y, 
+            x,
+            y,
           });
           const legend_text = new Konva.Text({
             fill: self.hover_fill,
@@ -3445,8 +3509,8 @@ import { capitalize, each, round } from 'lodash';
       y: legend_y,
     })
 
-    self.legend_png_layer.add(legend, legend_title, legend_group);
-    self.legend_png_layer.draw();
+    self.legend_img_layer.add(legend, legend_title, legend_group);
+    self.legend_img_layer.draw();
   };
 
   InCHlib.prototype._redraw_heatmap_scale = function() {
@@ -3745,7 +3809,7 @@ import { capitalize, each, round } from 'lodash';
     const { name, value } = attrs;
 
     const header_text = self.heatmap_header.includes(header_value)
-      ? `Case: ${self._get_submitter_id(header_value)}, Gene: ${attrs.hgnc_symbol}`
+      ? `Case: ${self._get_submitter_id(header_value)}, Gene: ${attrs.hgnc_symbol.toUpperCase()}`
       // below: column_metadata tooltip
       : self._format_category_name(header_value);
 
@@ -3867,13 +3931,13 @@ import { capitalize, each, round } from 'lodash';
     }, 50);
   };
 
-  $.fn[plugin_name] = function (options) {
+  $.fn[plugin_name] = function (options, extHandlers) {
     // note: this plugin only supports ONE instance
     return this.each(function () {
       if ($.data(this, 'plugin_' + plugin_name)) {
         $.removeData(this, 'plugin_' + plugin_name);
       }
-      $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options));
+      $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options, extHandlers));
     })
   };
 })(jQuery);

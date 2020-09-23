@@ -64,6 +64,7 @@ const Tabs = ({
           ...styles.content(theme),
           flex: 1,
           width: 1,
+          overflow: 'auto',
           ...(contentStyle || {}),
         }}
         >

@@ -923,10 +923,6 @@ export const DISPLAY_SUMMARY_PAGE = localStorage.REACT_APP_DISPLAY_SUMMARY_PAGE 
   process.env.REACT_APP_DISPLAY_SUMMARY_PAGE ||
   false;
 
-export const DISPLAY_GENE_EXPRESSION = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION ||
-  process.env.REACT_APP_DISPLAY_GENE_EXPRESSION ||
-  false;
-
 export const DISPLAY_10K = localStorage.REACT_APP_DISPLAY_10K ||
   process.env.REACT_APP_DISPLAY_10K ||
   false;

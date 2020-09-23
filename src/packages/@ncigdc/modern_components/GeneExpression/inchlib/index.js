@@ -2043,7 +2043,9 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     let text_value;
     let col_index;
 
-    const [ ensembl_id, hgnc_symbol ] = self.metadata.nodes[node_id];
+    let [ ensembl_id, hgnc_symbol ] = self.metadata.nodes[node_id];
+
+    hgnc_symbol = hgnc_symbol && hgnc_symbol.toUpperCase();
 
     // draw heatmap cells
     for (var i = 0, len = self.on_features.data.length; i < len; i++) {
@@ -3807,7 +3809,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const { name, value } = attrs;
 
     const header_text = self.heatmap_header.includes(header_value)
-      ? `Case: ${self._get_submitter_id(header_value)}, Gene: ${attrs.hgnc_symbol}`
+      ? `Case: ${self._get_submitter_id(header_value)}, Gene: ${attrs.hgnc_symbol.toUpperCase()}`
       // below: column_metadata tooltip
       : self._format_category_name(header_value);
 

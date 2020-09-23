@@ -3316,8 +3316,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     let scale_x = 0;
     let scale_y = 0;
 
-    const scale_height = 125;
-
     const scale_heading = new Konva.Text({
       fill: self.hover_fill,
       fontFamily: self.options.font.family,
@@ -3329,13 +3327,14 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
     scale_y += 25;
 
+    const scale_height = 130;
     const scale_width = 20;
 
     const scale_gradient = new Konva.Rect({
       fillLinearGradientColorStops: self.color_steps,
       fillLinearGradientEndPoint: {
         x: scale_x,
-        y: scale_y + 90,
+        y: scale_height - scale_y,
       },
       fillLinearGradientStartPoint: {
         x: scale_x,

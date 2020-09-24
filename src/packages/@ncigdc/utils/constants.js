@@ -816,7 +816,7 @@ export const DEV_USER_CA = [ // controlled access mock
 
 export const AWG_TOKEN_EXPIRY = (
   localStorage.AWG_TOKEN_EXPIRY ||
-  process.env.AWG_TOKEN_EXPIRY ||
+  process.env.REACT_APP_AWG_TOKEN_EXPIRY ||
   5 // Default timeout for token renewal by Fence queries
 ) * 60 * 1000; // to milliseconds
 

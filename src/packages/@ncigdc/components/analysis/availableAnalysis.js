@@ -11,11 +11,11 @@ import SCRNASeq from '@ncigdc/theme/icons/SCRNASeq';
 import SCRNASeqContainer from '@ncigdc/modern_components/SCRNASeq';
 import GeneExpression from '@ncigdc/theme/icons/GeneExpression';
 import { fetchApi } from '@ncigdc/utils/ajax';
-import geneExpressionDemoData from '@ncigdc/modern_components/GeneExpression/inchlib/data';
 
 import Demo from './Demo';
 import SetOperations from './SetOperations';
 import defaultVariables from './defaultCDAVEvariables';
+import geneExpressionDemoData from './geneExpression/demoData';
 import { validateGeneExpressionAvailability } from './geneExpression/helpers';
 
 export type TSelectedSets = {

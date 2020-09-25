@@ -53,18 +53,21 @@ const CreateAnalysis = ({
 
             dispatch(
               addAnalysis({
-                analysisInfo: { ...selectedCase, ...selectedFile },
+                analysisInfo: {
+                  ...selectedCase,
+                  ...selectedFile,
+                },
                 created,
                 id,
                 type: analysis.type,
               }),
-            ).then(() => {
-              push({
-                query: {
-                  analysisId: id,
-                  analysisTableTab: 'result',
-                },
-              });
+            );
+
+            push({
+              query: {
+                analysisId: id,
+                analysisTableTab: 'result',
+              },
             });
           }}
           />
@@ -88,13 +91,13 @@ const CreateAnalysis = ({
                   name: `Custom Analysis ${numAnalysis + 1}`,
                 },
               }),
-            ).then(() => {
-              push({
-                query: {
-                  analysisId: id,
-                  analysisTableTab: 'result',
-                },
-              });
+            );
+
+            push({
+              query: {
+                analysisId: id,
+                analysisTableTab: 'result',
+              },
             });
           }}
           />

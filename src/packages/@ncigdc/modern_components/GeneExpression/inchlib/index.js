@@ -2373,12 +2373,19 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const toolbar_ul = $(`<ul class="inchlib-toolbar"></ul>`);
     const toolbar_buttons = self.toolbar_buttons.map(btn => {
       const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
-      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}${is_button_disabled ? ' inchlib-toolbar_btn-disabled' :''}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}">`;
+      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}${is_button_disabled ? ' inchlib-toolbar_btn-disabled' :''}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}" data-test="${btn.id}-button">`;
+
+      const label = `<span${
+        btn.id === 'legend' ? '' : ` class="sr-only"`
+      }>${btn.label}</span>`
+
+      const icon = `<i aria-hidden="true" class="fa ${
+        btn.id === 'legend'? btn.fa_icon[0] : btn.fa_icon
+      }" focusable="false"></i>`;
+
       const close_button = '</button></li>';
-      const contents = btn.id === 'legend'
-      ? `${btn.label}<i class="fa ${btn.fa_icon[0]}"></i>`
-      : `<i class="fa ${btn.fa_icon}"></i>`;
-      return `${open_button}${contents}${close_button}`;
+
+      return `${open_button}${label}${icon}${close_button}`;
     })
     .join('');
 
@@ -3233,7 +3240,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
           imgPdf.addImage(dataURL, 'PNG', 0, -0.25, 8.5, 0, '', 'none');
           imgPdf.save(img_file_name);
         }
-        
+
         self.stage.width(width);
         self.stage.height(height);
         self.stage.scale({

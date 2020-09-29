@@ -3918,6 +3918,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     if (self.extHandlers.handleLoading) {
       self.read_data(self.options.data);
       self.draw();
+      // Future implementation: passing a string here could update the message in the loader. "Loading heatmap"
       self.extHandlers.handleLoading(false);
     } else {
       // setTimeout is used to force synchronicity in canvas

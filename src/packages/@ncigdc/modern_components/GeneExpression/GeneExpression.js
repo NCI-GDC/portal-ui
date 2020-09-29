@@ -156,6 +156,7 @@ export default compose(
       loadingHandler: ({
         setIsLoading,
       }) => chartIsLoading => {
+        // This is for future implementation, to allow InchLib to change the message. "Loading heatmap"
         setIsLoading(chartIsLoading);
       },
     };

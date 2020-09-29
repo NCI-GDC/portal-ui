@@ -3915,23 +3915,30 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     */
   InCHlib.prototype.init = function () {
     const self = this;
-    // setTimeout is used to force synchronicity in canvas
-    const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-    self.$element.after(loading_div);
-    self.$element.hide();
-
-    setTimeout(function () {
+    if (self.extHandlers.handleLoading) {
       self.read_data(self.options.data);
       self.draw();
-    }, 50);
+      // Future implementation: passing a string here could update the message in the loader. "Loading heatmap"
+      self.extHandlers.handleLoading(false);
+    } else {
+      // setTimeout is used to force synchronicity in canvas
+      const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
+      self.$element.after(loading_div);
+      self.$element.hide();
 
-    setTimeout(function () {
-      loading_div.fadeOut().remove();
-      self.$element.show();
-    }, 50);
+      setTimeout(function () {
+        self.read_data(self.options.data);
+        self.draw();
+      }, 50);
+
+      setTimeout(function () {
+        loading_div.fadeOut().remove();
+        self.$element.show();
+      }, 50);
+    }
   };
 
-  $.fn[plugin_name] = function (options, extHandlers) {
+  $.fn[plugin_name] = function (options = {}, extHandlers = {}) {
     // note: this plugin only supports ONE instance
     return this.each(function () {
       if ($.data(this, 'plugin_' + plugin_name)) {

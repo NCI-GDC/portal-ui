@@ -3724,16 +3724,20 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const case_count = self.heatmap_layer.children[0].children.length;
 
     const is_outermost_line = count === (is_column ? case_count : gene_count);
+    const log_thing = is_column ? case_count : gene_count;
+    console.log({ count, is_column, log_thing });
 
     const tooltip = self.objects_ref.tooltip_label.clone({
       x: x + (width / 2),
       y,
       id: 'dendrogram_label',
-      opacity: is_outermost_line ? 0 : 1,
+      opacity: 1,
     });
 
-    // leave space for the zoom_icon
-    const tooltip_text = `        ${clicks} to zoom ${count} ${genes_or_cases}`;
+    // leave space for the zoom_icon on inner dendrograms
+    const tooltip_text = `${is_outermost_line 
+      ? '' 
+      : `        ${clicks} to zoom `}${count} ${genes_or_cases}`;
 
     tooltip.add(
       self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }),

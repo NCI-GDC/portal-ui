@@ -407,6 +407,7 @@ const availableAnalysis: [TAnalysis] = [
         </p>
       </React.Fragment>
     ),
+    isBeta: true,
     label: 'Gene Expression',
     ResultComponent: props => (
       <GeneExpressionContainer

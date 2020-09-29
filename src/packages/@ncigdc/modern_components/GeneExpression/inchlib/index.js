@@ -3694,6 +3694,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
   InCHlib.prototype._draw_dendrogram_label = function ({ target: { attrs }}) {
     const self = this;
     const { id, path, path_id, width, x, y } = attrs;
+    console.log({attrs})
 
     const is_column = id.split('_')[0] === 'col';
 
@@ -3715,6 +3716,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
     // center tooltip on the dendrogram line
     let tooltip_x = x + (width / 2);
+    console.log({x, width})
 
     // find outermost dendrogram line:
     // check if the tooltip text matches the number of rows/cols visible
@@ -3748,15 +3750,16 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     // move it over to the right
     const half_width = tooltip.width() / 2;
     if (!is_column) {
+      tooltip.x(x + 10);
       const current_tooltip_x = tooltip.x();
-      const half_width = tooltip.width() / 2;
       const difference = half_width - current_tooltip_x;
+      console.log({current_tooltip_x, half_width, difference})
       if (difference > 0) {
         tooltip_x = current_tooltip_x + difference + 5;
         tooltip.x(tooltip_x);
       }
     }
-    const zoom_x = tooltip_x - half_width - 3;
+    const zoom_x = tooltip.x() - half_width - 3;
     const zoom_y = y - 39;
 
     const zoom_icon = self.objects_ref.zoom_icon.clone({

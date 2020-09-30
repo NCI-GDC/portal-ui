@@ -3694,7 +3694,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
   InCHlib.prototype._draw_dendrogram_label = function ({ target: { attrs }}) {
     const self = this;
     const { id, path, path_id, width, x, y } = attrs;
-    console.log({attrs})
 
     const is_column = id.split('_')[0] === 'col';
 
@@ -3723,7 +3722,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const gene_count = self.heatmap_layer.children
       .filter(child => child.attrs.class !== 'column_metadata')
       .length;
-    const case_count = self.heatmap_layer.children[0].children.length;
+    // find heatmap cells
+    const case_count = self.heatmap_layer.children[0].children.filter(child => child.attrs && child.attrs.hgnc_symbol).length;
 
     const is_outermost_line = count === (is_column ? case_count : gene_count);
     const log_thing = is_column ? case_count : gene_count;

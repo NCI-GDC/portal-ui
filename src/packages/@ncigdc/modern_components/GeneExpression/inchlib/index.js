@@ -1720,11 +1720,18 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     return nodes2columns;
   };
 
+  InCHlib.prototype._check_top_node = function (id) {
+    return id.includes('_top_node');
+  }
+
   InCHlib.prototype._bind_dendrogram_hover_events = function (layer) {
     const self = this;
 
     layer.on('mouseover', function (evt) {
-      self._cursor_mouseover();
+      const is_top_node = self._check_top_node(evt.target.attrs.id);
+      if (!is_top_node) {
+        self._cursor_mouseover();
+      }
       self._dendrogram_layers_mouseover(this, evt);
     });
 
@@ -2643,38 +2650,45 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     });
   };
 
-  InCHlib.prototype._highlight_cluster = function (path_id) {
+  InCHlib.prototype._highlight_cluster = function (path_id, id) {
     const self = this;
     const previous_cluster = self.last_highlighted_cluster;
+    const is_top_node = self._check_top_node(id);
 
     if (previous_cluster) {
       self.unhighlight_cluster();
     }
 
-    if (previous_cluster === path_id) {
-      self._zoom_cluster(path_id);
-    } else {
-      self.last_highlighted_cluster = path_id;
-      self._highlight_path(path_id, self.dendrogram_active_color);
-      self._draw_cluster_layer(path_id);
+    if (!is_top_node) {
+      if (previous_cluster === path_id) {
+        self._zoom_cluster(path_id);
+      } else {
+        self.last_highlighted_cluster = path_id;
+        self._highlight_path(path_id, self.dendrogram_active_color);
+        self._draw_cluster_layer(path_id);
+      }
     }
+
     self.dendrogram_layer.draw();
   };
 
-  InCHlib.prototype._highlight_column_cluster = function (path_id) {
+  InCHlib.prototype._highlight_column_cluster = function (path_id, id) {
     const self = this;
     const previous_cluster = self.last_highlighted_column_cluster;
+    const is_top_node = self._check_top_node(id);
     if (previous_cluster) {
       self.unhighlight_column_cluster();
     }
-    if (previous_cluster === path_id) {
-      self._get_column_ids(path_id);
-      self._zoom_column_cluster(path_id);
-    } else {
-      self.last_highlighted_column_cluster = path_id;
-      self._highlight_column_path(path_id, self.dendrogram_active_color);
-      self.current_column_ids.sort((a, b) => { return a - b; });
-      self._draw_column_cluster_layer(path_id);
+    if (!is_top_node) {
+      if (previous_cluster === path_id) {
+        self._get_column_ids(path_id);
+        self._zoom_column_cluster(path_id);
+      } else {
+        self.last_highlighted_column_cluster = path_id;
+        self._highlight_column_path(path_id, self.dendrogram_active_color);
+        self.current_column_ids.sort((a, b) => { return a - b; });
+        self._draw_column_cluster_layer(path_id);
+      }
     }
     self.column_dendrogram_layer.draw();
   };
@@ -3525,16 +3539,18 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._dendrogram_layers_click = function (layer, evt) {
     const self = this;
-    const { path_id } = evt.target.attrs;
-    layer.fire('mouseout', layer, evt);
-    self._highlight_cluster(path_id);
+    const { path_id, id } = evt.target.attrs;
+    const is_top_node = self._check_top_node(id);
+    if (!is_top_node) layer.fire('mouseout', layer, evt);
+    self._highlight_cluster(path_id, id);
   };
 
   InCHlib.prototype._column_dendrogram_layers_click = function (layer, evt) {
     const self = this;
-    const { path_id } = evt.target.attrs;
-    layer.fire('mouseout', layer, evt);
-    self._highlight_column_cluster(path_id);
+    const { path_id, id } = evt.target.attrs;
+    const is_top_node = self._check_top_node(id);
+    if (!is_top_node) layer.fire('mouseout', layer, evt);
+    self._highlight_column_cluster(path_id, id);
   };
 
   InCHlib.prototype._dendrogram_layers_mousedown = function (layer, evt) {
@@ -3553,7 +3569,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._dendrogram_layers_mouseout = function (layer, evt) {
     const self = this;
-    self.path_overlay.destroy();
     // remove tooltip
     self.dendrogram_hover_layer.destroyChildren();
     self.dendrogram_hover_layer.draw();
@@ -3727,8 +3742,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     // find heatmap cells
     const case_count = self.heatmap_layer.children[0].children.filter(child => child.attrs && child.attrs.hgnc_symbol).length;
 
-    const is_top_node = id.includes('_top_node');
-    const log_thing = is_column ? case_count : gene_count;
+    const is_top_node = self._check_top_node(id);
 
     const tooltip = self.objects_ref.tooltip_label.clone({
       x: x + (width / 2),

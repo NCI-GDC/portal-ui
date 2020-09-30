@@ -921,8 +921,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.toolbar_buttons = [
       {
         fa_icon: 'fa-undo',
-        label: 'Reset',
-        id: 'reset',
+        label: 'Reset Zoom Level',
+        id: 'reset_zoom_level',
       },
       {
         fa_icon: 'fa-paint-brush',
@@ -1307,7 +1307,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
           : (self.options.middle_percentile != 50)
             ? columns[i][self._hack_round(len * self.options.middle_percentile / 100)]
             : columns[i][self._hack_round((len - 1) / 2)];
-  
+
         data2descs[i] = {
           min,
           max,
@@ -2384,7 +2384,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
     const toolbar_ul = $(`<ul class="inchlib-toolbar"></ul>`);
     const toolbar_buttons = self.toolbar_buttons.map(btn => {
-      const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
+      const is_button_disabled = btn.id === 'reset_zoom_level' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
       const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}${is_button_disabled ? ' inchlib-toolbar_btn-disabled' :''}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}" data-test="${btn.id}-button">`;
 
       const label = `<span${
@@ -2426,7 +2426,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
   InCHlib.prototype._toolbar_click = function (button) {
     const self = this;
     const id = button.attr('data-inchlib-id');
-    if (id === 'reset') {
+    if (id === 'reset_zoom_level') {
       self.redraw();
     } else if (id === 'edit_heatmap_colors') {
       self._draw_heatmap_modal();

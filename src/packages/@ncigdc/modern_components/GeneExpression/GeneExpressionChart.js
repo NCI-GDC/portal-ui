@@ -11,10 +11,11 @@ import './inchlib/style.css';
 
 const options = {
   button_color: theme.primary,
+  case_metadata_fields: ['case_id', 'submitter_id'],
   categories: {
     colors: CATEGORY_COLORS,
   },
-  case_metadata_fields: ['case_id', 'submitter_id'],
+  centering: 'geneExpression',
   max_width: 1200,
   tooltip: {
     fill: '#fff',

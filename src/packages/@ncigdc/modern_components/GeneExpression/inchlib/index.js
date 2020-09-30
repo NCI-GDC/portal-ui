@@ -149,6 +149,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       colors: {},
       defaults: [],
     },
+    centering: 'mean',
     column_dendrogram: false,
     column_metadata_colors: 'RdLrBu',
     column_metadata: false,
@@ -1301,9 +1302,12 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         min = (self.options.min_percentile > 0)
           ? columns[i][self._hack_round(len * self.options.min_percentile / 100)]
           : Math.min.apply(null, columns[i]);
-        middle = (self.options.middle_percentile != 50)
-          ? columns[i][self._hack_round(len * self.options.middle_percentile / 100)]
-          : columns[i][self._hack_round((len - 1) / 2)];
+        middle = self.options.centering === 'geneExpression'
+          ? 0
+          : (self.options.middle_percentile != 50)
+            ? columns[i][self._hack_round(len * self.options.middle_percentile / 100)]
+            : columns[i][self._hack_round((len - 1) / 2)];
+  
         data2descs[i] = {
           min,
           max,
@@ -3233,7 +3237,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
           imgPdf.addImage(dataURL, 'PNG', 0, -0.25, 8.5, 0, '', 'none');
           imgPdf.save(img_file_name);
         }
-        
+
         self.stage.width(width);
         self.stage.height(height);
         self.stage.scale({

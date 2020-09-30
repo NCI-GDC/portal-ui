@@ -1589,8 +1589,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       const y1 = self._get_y1(node_neighbourhood, current_left_count, current_right_count);
       let y2 = self._get_y2(node_neighbourhood, current_left_count, current_right_count);
       let x1 = self._hack_round(self.distance - self.distance_step * node.distance);
-      x1 = (x1 == 0) ? 2 : x1;
-
+      x1 = (x1 === 0) ? 2 : x1;
 
       const x2 = x1;
       const left_distance = self.distance - self.distance_step * self.data.nodes[node.left_child].distance;
@@ -1600,7 +1599,9 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         y2 += self.pixels_for_leaf / 2;
       }
 
-      self.dendrogram_layer.add(self._draw_horizontal_path(node_id, x1, y1, x2, y2, left_distance, right_distance));
+      const is_top_node = x === 0;
+
+      self.dendrogram_layer.add(self._draw_horizontal_path(node_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node));
       self._draw_row_dendrogram_node(node.left_child, left_child, current_left_count - node_neighbourhood.left_node.right_count, current_right_count + node_neighbourhood.left_node.right_count, left_distance, y1);
       self._draw_row_dendrogram_node(node.right_child, right_child, current_left_count + node_neighbourhood.right_node.left_count, current_right_count - node_neighbourhood.right_node.left_count, right_distance, y2);
     } else {
@@ -2557,7 +2558,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const self = this;
     const node = self.data.nodes[path_id];
     if (node.count != 1) {
-      self.dendrogram_layer.find(`#${path_id}`)[0].stroke(color);
+      self.dendrogram_layer.find(`#${path_id}, #${path_id}_top_node`)[0].stroke(color);
       self._highlight_path(node.left_child, color);
       self._highlight_path(node.right_child, color);
     } else {
@@ -2570,7 +2571,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const self = this;
     const node = self.column_dendrogram.nodes[path_id];
     if (node.count != 1) {
-      self.column_dendrogram_layer.find(`#col${path_id}`)[0].stroke(color);
+      self.column_dendrogram_layer.find(`#col${path_id}, #col${path_id}_top_node`)[0].stroke(color);
       self._highlight_column_path(node.left_child, color);
       self._highlight_column_path(node.right_child, color);
     } else {
@@ -3044,17 +3045,19 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       const x1 = self._get_x1(node_neighbourhood, current_left_count, current_right_count);
       let x2 = self._get_x2(node_neighbourhood, current_left_count, current_right_count);
       let y1 = self._hack_round(self.vertical_distance - self.vertical_distance_step * node.distance);
-      y1 = (y1 == 0) ? 2 : y1;
+      y1 = (y1 === 0) ? 2 : y1;
       const y2 = y1;
 
       if (right_child.count == 1) {
         x2 -= self.pixels_for_dimension / 2;
       }
 
+      const is_top_node = x === 0 && y === 0;
+
       const left_distance = self.vertical_distance - self.vertical_distance_step * self.column_dendrogram.nodes[node.left_child].distance;
       const right_distance = self.vertical_distance - self.vertical_distance_step * self.column_dendrogram.nodes[node.right_child].distance;
 
-      self.column_dendrogram_layer.add(self._draw_vertical_path(node_id, x1, y1, x2, y2, left_distance, right_distance));
+      self.column_dendrogram_layer.add(self._draw_vertical_path(node_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node));
       self._draw_column_dendrogram_node(node.left_child, left_child, current_left_count - node_neighbourhood.left_node.right_count, current_right_count + node_neighbourhood.left_node.right_count, left_distance, y1);
       self._draw_column_dendrogram_node(node.right_child, right_child, current_left_count + node_neighbourhood.right_node.left_count, current_right_count - node_neighbourhood.right_node.left_count, right_distance, y2);
     } else {
@@ -3090,7 +3093,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     return (self.heatmap_distance + self.on_features.data.length * self.pixels_for_dimension) - x;
   };
 
-  InCHlib.prototype._draw_vertical_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance) {
+  InCHlib.prototype._draw_vertical_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node) {
     const self = this;
     const path_group = new Konva.Group({});
     const path = self.objects_ref.node.clone({
@@ -3104,14 +3107,14 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         x2,
         right_distance,
       ],
-      id: `col${path_id}`,
+      id: `col${path_id}${is_top_node ? '_top_node' : ''}`,
     });
     const path_rect = self.objects_ref.node_rect.clone({
       x: x2 - 1,
       y: y1 - 1,
       width: x1 - x2 + 2,
       height: self.header_height - y1,
-      id: `col_rect${path_id}`,
+      id: `col_rect${path_id}${is_top_node ? '_top_node' : ''}`,
       path,
       path_id,
     });
@@ -3120,7 +3123,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     return path_group;
   };
 
-  InCHlib.prototype._draw_horizontal_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance) {
+  InCHlib.prototype._draw_horizontal_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node) {
     const self = this;
     const path_group = new Konva.Group({});
     const path = self.objects_ref.node.clone({
@@ -3134,7 +3137,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         right_distance,
         y2,
       ],
-      id: path_id,
+      id: `${path_id}${is_top_node ? '_top_node' : ''}`,
     });
 
     const path_rect = self.objects_ref.node_rect.clone({
@@ -3142,7 +3145,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       y: y1 - 1,
       width: self.distance - x1,
       height: y2 - y1,
-      id: [path_id, 'rect'].join('_'),
+      id: `${[path_id, 'rect'].join('_')}${is_top_node ? '_top_node' : ''}`,
       path,
       path_id,
     });
@@ -3725,7 +3728,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     // find heatmap cells
     const case_count = self.heatmap_layer.children[0].children.filter(child => child.attrs && child.attrs.hgnc_symbol).length;
 
-    const is_outermost_line = count === (is_column ? case_count : gene_count);
+    const is_top_node = id.includes('_top_node');
     const log_thing = is_column ? case_count : gene_count;
     console.log({ count, is_column, log_thing });
 
@@ -3737,7 +3740,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     });
 
     // leave space for the zoom_icon on inner dendrograms
-    const tooltip_text = `${is_outermost_line 
+    const tooltip_text = `${is_top_node 
       ? '' 
       : `        ${clicks} to zoom `}${count} ${genes_or_cases}`;
 
@@ -3763,7 +3766,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const zoom_y = y - 39;
 
     const zoom_icon = self.objects_ref.zoom_icon.clone({
-      opacity: +(!is_outermost_line), // integer value of boolean's opposite
+      opacity: +(!is_top_node), // integer value of boolean's opposite
       x: zoom_x,
       y: zoom_y,
     });

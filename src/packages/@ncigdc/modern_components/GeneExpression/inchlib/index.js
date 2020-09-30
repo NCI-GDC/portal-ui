@@ -3718,7 +3718,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
     // center tooltip on the dendrogram line
     let tooltip_x = x + (width / 2);
-    console.log({x, width})
 
     // find outermost dendrogram line:
     // check if the tooltip text matches the number of rows/cols visible
@@ -3730,7 +3729,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
     const is_top_node = id.includes('_top_node');
     const log_thing = is_column ? case_count : gene_count;
-    console.log({ count, is_column, log_thing });
 
     const tooltip = self.objects_ref.tooltip_label.clone({
       x: x + (width / 2),
@@ -3756,7 +3754,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       tooltip.x(x + 10);
       const current_tooltip_x = tooltip.x();
       const difference = half_width - current_tooltip_x;
-      console.log({current_tooltip_x, half_width, difference})
       if (difference > 0) {
         tooltip_x = current_tooltip_x + difference + 5;
         tooltip.x(tooltip_x);

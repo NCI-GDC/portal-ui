@@ -3824,8 +3824,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       : self._format_category_name(header_value);
 
     const tooltip_value = typeof value === 'undefined'
-      ? name
-      : value;
+      ? name || 'N/A'
+      : `Value: ${typeof value === 'number' ? value.toFixed(4) : value}`;
 
     const tooltip_text = [header_text, tooltip_value].join('\n');
 

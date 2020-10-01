@@ -3739,8 +3739,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const gene_count = self.heatmap_layer.children
       .filter(child => child.attrs.class !== 'column_metadata')
       .length;
-    // find heatmap cells
-    const case_count = self.heatmap_layer.children[0].children.filter(child => child.attrs && child.attrs.hgnc_symbol).length;
 
     const is_top_node = self._check_top_node(id);
 

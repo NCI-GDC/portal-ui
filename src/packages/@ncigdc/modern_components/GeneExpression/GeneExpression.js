@@ -1,11 +1,11 @@
 /* eslint-disable camelcase */
-
+import { isEqual } from 'lodash';
 import {
   compose,
-  lifecycle,
   pure,
   setDisplayName,
   withHandlers,
+  withPropsOnChange,
   withState,
 } from 'recompose';
 import moment from 'moment';
@@ -19,7 +19,6 @@ import withRouter from '@ncigdc/utils/withRouter';
 
 import GeneExpressionChart from './GeneExpressionChart';
 
-// import mockData from './inchlib/data';
 import * as helper from './helpers';
 
 const GeneExpression = ({
@@ -86,87 +85,111 @@ const GeneExpression = ({
 export default compose(
   setDisplayName('EnhancedGeneExpression'),
   withState('isLoading', 'setIsLoading', 'Getting data...'),
-  // optional: small, local dataset for working on UI,
-  // because the mock API endpoint result is large (120k data points).
-  // can be removed when the full API is available.
-  // withState('visualizationData', 'setVisualizationData', mockData.inchlib),
   withState('visualizationData', 'setVisualizationData', null),
-  withHandlers(({ sets, sets: { case_ids = [], gene_ids = [] } }) => {
-    // demo uses arrays of case & gene IDs instead of a case & gene set
-    const isDemo = case_ids.length > 0 && gene_ids.length > 0;
-    const body = {
-      ...isDemo
-        ? sets
-        : {
-          case_set_id: Object.keys(sets.case)[0],
-          gene_set_id: Object.keys(sets.gene)[0],
-        },
-    };
+  withPropsOnChange(
+    (props, nextProps) => !(
+      isEqual(props.sets, nextProps.sets)
+    ),
+    ({
+      setIsLoading,
+      sets: {
+        case_ids = [],
+        gene_ids = [],
+        ...sets
+      },
+    }) => {
+      const isDemo = case_ids.length > 0 && gene_ids.length > 0;
 
-    return {
-      downloadFiles: () => async format => {
-        switch (format.toLowerCase()) {
-          case 'tsv': {
-            const { body: stream } = (await fetchApi('gene_expression/values', {
-              body,
+      setIsLoading('Loading...');
+
+      return ({
+        isDemo,
+        parsedSets: isDemo
+          ? {
+            case_ids,
+            gene_ids,
+          }
+          : (
+            Object.keys(sets).length > 0 && {
+              case_set_id: Object.keys(sets.case)[0],
+              gene_set_id: Object.keys(sets.gene)[0],
+            }),
+      });
+    },
+  ),
+  withHandlers(() => ({
+    downloadFiles: ({ parsedSets }) => async format => {
+      switch (format.toLowerCase()) {
+        case 'tsv': {
+          const { body: stream } = (
+            await fetchApi('gene_expression/values', {
+              body: parsedSets,
               fullResponse: true,
               headers: {
                 'Content-Type': 'application/json',
               },
-            }) || {});
+            }) || {} // in case the call fails
+          );
 
-            return stream
-              ? processStream('GeneExpression.Download', stream.getReader())()
-                .then(parsedStream => saveFile(
-                  parsedStream,
-                  'tsv',
-                  `gene-expression-values.${
-                    moment().format('YYYY-MM-DD-HHmmss')
-                  }.tsv`,
-                ))
-                .catch(error => console.error(error))
-              : console.error('Gene Expression TSV download error, empty response from server');
-          }
-          default:
-            return console.info('unhandled download format');
+          return stream
+            ? processStream('GeneExpression.Download', stream.getReader())()
+              .then(parsedStream => saveFile(
+                parsedStream,
+                'tsv',
+                `gene-expression-values.${
+                  moment().format('YYYY-MM-DD-HHmmss')
+                }.tsv`,
+              ))
+              .catch(error => console.error(error))
+            : console.error('Gene Expression TSV download error, empty response from server');
         }
-      },
-      fetchVisualizationData: ({
-        setIsLoading,
-        setVisualizationData,
-      }) => () => {
-        const handleError = err => {
-          console.error(err);
-          setIsLoading(false);
-        };
-
-        fetchApi('gene_expression/visualize', {
-          body,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-          .then(data => (
-            data
-              ? data.inchlib && setVisualizationData(data.inchlib, () => setIsLoading(false))
-              : handleError()
-          ))
-          .catch(handleError);
-      },
-      loadingHandler: ({
-        setIsLoading,
-      }) => chartIsLoading => {
-        // This is for future implementation, to allow InchLib to change the message. "Loading heatmap"
-        setIsLoading(chartIsLoading);
-      },
-    };
-  }),
-  lifecycle({
-    componentDidMount() {
-      const { fetchVisualizationData } = this.props;
-      fetchVisualizationData();
+        default:
+          return console.info('unhandled download format');
+      }
     },
-  }),
+    fetchVisualizationData: ({
+      parsedSets,
+      setIsLoading,
+      setVisualizationData,
+    }) => () => {
+      const handleError = err => {
+        console.error(err);
+        setIsLoading(false);
+      };
+
+      setIsLoading('Getting data...');
+
+      fetchApi('gene_expression/visualize', {
+        body: parsedSets,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(data => (
+          data
+            ? data.inchlib && setVisualizationData(data.inchlib, () => setIsLoading(false))
+            : handleError()
+        ))
+        .catch(handleError);
+    },
+    loadingHandler: ({
+      setIsLoading,
+    }) => chartIsLoading => {
+      // This is for future implementation, to allow InchLib to change the message. "Loading heatmap"
+      setIsLoading(chartIsLoading);
+    },
+  })),
+  withPropsOnChange(
+    (props, nextProps) => !(
+      isEqual(props.parsedSets, nextProps.parsedSets)
+    ),
+    ({
+      fetchVisualizationData,
+      parsedSets,
+    }) => {
+      parsedSets && fetchVisualizationData();
+    },
+  ),
   withRouter,
   pure,
 )(GeneExpression);

@@ -61,6 +61,9 @@ const ValidationResults = ({
             {validationResults.status === 'notEnough' && (
               <WarningBox>
                 The amount of gene expression data does not meet the minimum required for display.
+                <br />
+                A minimum of 25 total rows and columns (for example 5 cases and 5 genes) is required.
+                <br />
                 Please modify your sets.
               </WarningBox>
             )}

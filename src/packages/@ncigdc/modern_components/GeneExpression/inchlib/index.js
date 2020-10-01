@@ -269,7 +269,11 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     }
 
     self.legend_id = `legend_${self._name}`;
-    self.legend_continuous_categories = ['age_at_diagnosis', 'days_to_death'];
+    self.legend_continuous_categories = [
+      'age_at_diagnosis',
+      // 'days_to_death'
+      // hide days to death from legend
+    ];
     self.legend_horizontal_categories = ['gender', 'vital_status'];
     self.legend_headings = [
       ...Object.keys(self.options.categories.colors),

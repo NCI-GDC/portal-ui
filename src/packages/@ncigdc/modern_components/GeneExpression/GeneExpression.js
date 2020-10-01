@@ -22,6 +22,16 @@ import GeneExpressionChart from './GeneExpressionChart';
 // import mockData from './inchlib/data';
 import * as helper from './helpers';
 
+const featureNamesAllowList = [
+  'age_at_diagnosis',
+  'case_id',
+  'ethnicity',
+  'gender',
+  'race',
+  'submitter_id',
+  'vital_status',
+];
+
 const GeneExpression = ({
   downloadFiles,
   isLoading,
@@ -146,11 +156,25 @@ export default compose(
             'Content-Type': 'application/json',
           },
         })
-          .then(data => (
-            data
-              ? data.inchlib && setVisualizationData(data.inchlib, () => setIsLoading(false))
-              : handleError()
-          ))
+          .then(data => {
+            if (data) {
+              if (data.inchlib) {
+                const dataFiltered = {
+                  ...data.inchlib,
+                  column_metadata: {
+                    ...data.inchlib.column_metadata,
+                    feature_names: data.inchlib.column_metadata.feature_names
+                      .filter(name => featureNamesAllowList.includes(name)),
+                    features: data.inchlib.column_metadata.features
+                      .filter((feat, i) => featureNamesAllowList.includes(data.inchlib.column_metadata.feature_names[i])),
+                  },
+                };
+                setVisualizationData(dataFiltered, () => setIsLoading(false));
+              }
+            } else {
+              handleError();
+            }
+          })
           .catch(handleError);
       },
       loadingHandler: ({

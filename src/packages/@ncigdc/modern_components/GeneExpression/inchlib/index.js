@@ -3341,19 +3341,23 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.axis_labels_layer = self.objects_ref.layer_below_toolbar.clone();
     self.stage.add(self.axis_labels_layer);
 
+    console.log('self.heatmap_width', self.heatmap_width)
+
+    const x_axis_x = self.heatmap_distance - (self.axis_label_width / 2) + (self.heatmap_width / 2) - 6;
+
     const x_axis_label = self.objects_ref.axis_label.clone({
       text: 'Cases',
-      x: 200,
-      y: -20,
+      x: x_axis_x,
+      y: -20
     });
 
-    const genes_y = self.column_metadata_height + self.header_height + (self.heatmap_height / 2) + (self.axis_label_width / 2) + 10;
+    const y_axis_y = self.column_metadata_height + self.header_height + (self.heatmap_height / 2) + (self.axis_label_width / 2) + 10;
 
     const y_axis_label = self.objects_ref.axis_label.clone({
       rotation: -90,
       text: 'Genes',
       x: -20,
-      y: genes_y,
+      y: y_axis_y,
     });
 
     self.axis_labels_layer.add(x_axis_label, y_axis_label);

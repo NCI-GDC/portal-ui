@@ -226,6 +226,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.header_height = 150;
     self.footer_height = 70;
     self.dendrogram_heatmap_distance = 5;
+    self.axis_label_width = 100;
 
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
@@ -881,8 +882,18 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       }),
 
       layer_below_toolbar: new Konva.Layer({
-        y: self.toolbar_distance,
-      })
+        y: self.toolbar_distance + 20,
+        x: 25,
+      }),
+
+      axis_label: new Konva.Text({
+        align: 'center',
+        fill: self.hover_fill,
+        fontFamily: self.options.font.family,
+        fontSize: self.options.font.size,
+        fontStyle: '500',
+        width: self.axis_label_width,
+      }),
     };
 
     /**
@@ -1527,6 +1538,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self._draw_navigation();
     self.highlight_rows(self.options.highlighted_rows);
     self._draw_heatmap_scale();
+    self._redraw_axis_labels();
   };
 
   InCHlib.prototype._draw_dendrogram_layers = function () {
@@ -1582,6 +1594,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.dendrogram_layer.on('mouseup', function (evt) {
       self._dendrogram_layers_mouseup(this, evt);
     });
+
+    self._redraw_axis_labels();
   };
 
   InCHlib.prototype._draw_row_dendrogram_node = function (node_id, node, current_left_count, current_right_count, x, y) {
@@ -1773,6 +1787,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     if (self.options.min_row_height > self.pixels_for_leaf) {
       self.pixels_for_leaf = self.options.min_row_height;
     }
+
+    self.heatmap_height = leaves * self.pixels_for_leaf;
   };
 
   InCHlib.prototype._adjust_horizontal_sizes = function (dimensions) {
@@ -3311,6 +3327,38 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       background: `linear-gradient(90deg, ${self.legend_gradients.days.min} 0%, ${self.legend_gradients.days.max} 100%)`
     });
   };
+
+  InCHlib.prototype._redraw_axis_labels = function () {
+    const self = this;
+    self._delete_layers([
+      self.axis_labels_layer,
+    ]);
+    self._draw_axis_labels();
+  };
+
+  InCHlib.prototype._draw_axis_labels = function () {
+    const self = this;
+    self.axis_labels_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.stage.add(self.axis_labels_layer);
+
+    const x_axis_label = self.objects_ref.axis_label.clone({
+      text: 'Cases',
+      x: 200,
+      y: -20,
+    });
+
+    const genes_y = self.column_metadata_height + self.header_height + (self.heatmap_height / 2) + (self.axis_label_width / 2) + 10;
+
+    const y_axis_label = self.objects_ref.axis_label.clone({
+      rotation: -90,
+      text: 'Genes',
+      x: -20,
+      y: genes_y,
+    });
+
+    self.axis_labels_layer.add(x_axis_label, y_axis_label);
+    self.axis_labels_layer.draw();
+  }
 
   InCHlib.prototype._draw_heatmap_scale = function() {
     const self = this;

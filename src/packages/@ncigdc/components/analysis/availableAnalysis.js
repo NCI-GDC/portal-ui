@@ -15,7 +15,6 @@ import { fetchApi } from '@ncigdc/utils/ajax';
 import Demo from './Demo';
 import SetOperations from './SetOperations';
 import defaultVariables from './defaultCDAVEvariables';
-import geneExpressionDemoData from './geneExpression/demoData';
 import { validateGeneExpressionAvailability } from './geneExpression/helpers';
 
 export type TSelectedSets = {
@@ -40,7 +39,14 @@ type TAnalysis = {
   validateSets: (TSelectedSets) => boolean,
 };
 
+/* Note on demo sets:
+ * Whenever a set is created (programatically or by user input), it cannot currently be deleted
+ * and it must either be modified, or abandoned, should changes be required.
+ * i.e. if you want to change a demo set, you should choose a new name every time.
+ */
+
 const availableAnalysis: [TAnalysis] = [
+  // Set Operations
   {
     demoData: {
       filters: {
@@ -226,6 +232,7 @@ const availableAnalysis: [TAnalysis] = [
       );
     },
   },
+  // Cohort Comparison
   {
     demoData: {
       filters: {
@@ -312,6 +319,7 @@ const availableAnalysis: [TAnalysis] = [
     type: 'comparison',
     validateSets: sets => ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 2),
   },
+  // Clinical Data Analysis
   {
     demoData: {
       displayVariables: { ...defaultVariables },
@@ -369,12 +377,54 @@ const availableAnalysis: [TAnalysis] = [
     validateSets: sets => sets &&
       ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
   },
+  // Gene Expression
   {
     demoData: {
-      displayVariables: { ...defaultVariables },
-      message: 'Demo showing the gene expression heatmap derived from TCGA BRCA cases and a set of invasive lobular carcinoma genes.',
+      filters: {
+        'tcga-brca': {
+          content: [
+            {
+              content: {
+                field: 'cases.project.project_id',
+                value: ['TCGA-BRCA'],
+              },
+              op: 'in',
+            },
+          ],
+          op: 'and',
+        },
+        'tcga-brca--top-50-pc-genes': {
+          content: [
+            {
+              content: {
+                field: 'cases.project.project_id',
+                value: ['TCGA-BRCA'],
+              },
+              op: 'in',
+            },
+            {
+              content: {
+                field: 'genes.biotype',
+                value: ['protein_coding'],
+              },
+              op: 'in',
+            },
+          ],
+          op: 'and',
+          score: 'case.project.project_id',
+          size: 50,
+        },
+      },
+      message: 'Demo showing the gene expression heatmap derived from TCGA BRCA cases and the top 50 protein coding genes by highest # SSM affected cases in the cohort.',
       name: 'Demo Gene Expression',
-      sets: geneExpressionDemoData,
+      sets: {
+        case: {
+          'tcga-brca': 'All TCGA-BRCA cases.',
+        },
+        gene: {
+          'tcga-brca--top-50-pc-genes': 'Top 50 protein coding genes by highest # SSM affected cases in the cohort.',
+        },
+      },
       type: 'gene_expression',
     },
     description: 'Display the gene expression heatmap for sets of cases and genes of your choice.',
@@ -392,8 +442,8 @@ const availableAnalysis: [TAnalysis] = [
     introText: (
       <React.Fragment>
         <p>
-          Try out the beta release of our new tool for gene expression
-          analysis. Display the gene expression heatmap for sets of cases and genes of your choice.
+          Try out the beta release of our new tool for gene expression analysis.
+          Display the gene expression heatmap for sets of cases and genes of your choice.
         </p>
         <p>
           <strong>COMING SOON:</strong>
@@ -409,10 +459,15 @@ const availableAnalysis: [TAnalysis] = [
     ),
     isBeta: true,
     label: 'Gene Expression',
-    ResultComponent: props => (
-      <GeneExpressionContainer
-        {...props}
-        />
+    ResultComponent: props => (props.id.includes('demo-')
+      ? (
+        <Demo {...props}>
+          <GeneExpressionContainer {...props} />
+        </Demo>
+      )
+      : (
+        <GeneExpressionContainer {...props} />
+      )
     ),
     setTypes: ['case', 'gene'],
     type: 'gene_expression',
@@ -441,12 +496,12 @@ const availableAnalysis: [TAnalysis] = [
           ['case', 'gene'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
     },
   },
+  // Single Cell RNA Sequencing
   ...DISPLAY_SCRNA_SEQ && [
     // copied from clinical analysis and lightly modified
     // TODO: replace with real demoData, a real icon, etc
     {
       demoData: {
-        displayVariables: { ...defaultVariables },
         filters: {
           'demo-pancreas': {
             content: [

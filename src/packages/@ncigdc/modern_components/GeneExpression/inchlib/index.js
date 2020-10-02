@@ -1538,7 +1538,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self._draw_navigation();
     self.highlight_rows(self.options.highlighted_rows);
     self._draw_heatmap_scale();
-    self._redraw_axis_labels();
   };
 
   InCHlib.prototype._draw_dendrogram_layers = function () {
@@ -1594,8 +1593,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.dendrogram_layer.on('mouseup', function (evt) {
       self._dendrogram_layers_mouseup(this, evt);
     });
-
-    self._redraw_axis_labels();
   };
 
   InCHlib.prototype._draw_row_dendrogram_node = function (node_id, node, current_left_count, current_right_count, x, y) {
@@ -2048,6 +2045,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       self.heatmap_overlay.destroyChildren();
       self.heatmap_overlay.draw();
     });
+
+    self._redraw_axis_labels();
   };
 
   InCHlib.prototype._draw_heatmap_row = function (node_id, x1, y1) {
@@ -3341,9 +3340,10 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.axis_labels_layer = self.objects_ref.layer_below_toolbar.clone();
     self.stage.add(self.axis_labels_layer);
 
-    console.log('self.heatmap_width', self.heatmap_width)
-
-    const x_axis_x = self.heatmap_distance - (self.axis_label_width / 2) + (self.heatmap_width / 2) - 6;
+    const column_count = self.heatmap_layer.children[0].children.length;
+    // TODO: remove the children that don't have hgnc symbols
+    const heatmap_cells_width = column_count * self.pixels_for_dimension;
+    const x_axis_x = self.heatmap_distance - (self.axis_label_width / 2) + (heatmap_cells_width / 2);
 
     const x_axis_label = self.objects_ref.axis_label.clone({
       text: 'Cases',

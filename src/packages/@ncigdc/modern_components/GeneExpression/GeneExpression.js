@@ -10,6 +10,7 @@ import {
 } from 'recompose';
 import moment from 'moment';
 
+import Chip from '@ncigdc/uikit/Chip';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
 import { fetchApi } from '@ncigdc/utils/ajax';
@@ -23,6 +24,7 @@ import * as helper from './helpers';
 
 const GeneExpression = ({
   downloadFiles,
+  isDemo,
   isLoading,
   loadingHandler,
   visualizationData,
@@ -39,7 +41,39 @@ const GeneExpression = ({
           flex: '1 0 auto',
         }}
         >
-        <h1 style={{ margin: '0 0 20px' }}>Gene Expression</h1>
+        <h1
+          style={{
+            alignItems: 'center',
+            display: 'flex',
+            margin: '0 0 20px',
+          }}
+          >
+          Gene Expression
+          <Chip
+            label="BETA"
+            style={{
+              marginLeft: '1rem',
+            }}
+            />
+        </h1>
+
+        {isDemo && (
+          <section>
+            <p>
+              Try out the beta release of our new tool for gene expression analysis.
+              <br />
+              Display the gene expression heatmap for sets of cases and genes of your choice.
+            </p>
+            <p>
+              <strong>COMING SOON:</strong>
+              {' Filter genes by expression level, and select genes that are highly variable.'}
+            </p>
+            <p>
+              {'Please send us your feedback at: '}
+              <a href="mailto:support@nci-gdc.datacommons.io">support@nci-gdc.datacommons.io</a>
+            </p>
+          </section>
+        )}
 
         {isLoading
           ? (
@@ -175,7 +209,8 @@ export default compose(
     loadingHandler: ({
       setIsLoading,
     }) => chartIsLoading => {
-      // This is for future implementation, to allow InchLib to change the message. "Loading heatmap"
+      // This is for future implementation, to allow InchLib to change the message.
+      // e.g. "Loading heatmap", "Loading visualization"
       setIsLoading(chartIsLoading);
     },
   })),

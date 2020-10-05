@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { addAnalysis } from '@ncigdc/dux/analysis';
 import withRouter from '@ncigdc/utils/withRouter';
 import Button from '@ncigdc/uikit/Button';
+import Chip from '@ncigdc/uikit/Chip';
 import { Row } from '@ncigdc/uikit/Flex';
 import { zDepth1 } from '@ncigdc/theme/mixins';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
@@ -126,7 +127,23 @@ const CreateAnalysis = ({
                 <item.Icon />
               </div>
               <div>
-                <h1 style={{ fontSize: '2rem' }}>{item.label}</h1>
+                <h1
+                  style={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    fontSize: '2rem',
+                  }}
+                  >
+                  {item.label}
+                  {item.isBeta && (
+                    <Chip
+                      label="BETA"
+                      style={{
+                        marginLeft: '0.5rem',
+                      }}
+                      />
+                  )}
+                </h1>
                 <div style={{ marginBottom: 10 }}>{item.description}</div>
                 {item.type === 'scrna_seq'
                 // TEMP: scrnaseq only has a demo button,
@@ -137,14 +154,13 @@ const CreateAnalysis = ({
                       >
                       <Button onClick={() => setAnalysis(item)}>Demo</Button>
                     </Tooltip>
-                  ) 
+                  )
                   : (
                     <Row spacing={5}>
                       <Button onClick={() => setAnalysis(item)}>Select</Button>
                       <DemoButton demoData={item.demoData} type={item.type} />
                     </Row>
-                  )
-                }
+                  )}
               </div>
             </Row>
           );

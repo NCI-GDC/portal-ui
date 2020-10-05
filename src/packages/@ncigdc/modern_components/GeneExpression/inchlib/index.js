@@ -932,8 +932,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.toolbar_buttons = [
       {
         fa_icon: 'fa-undo',
-        label: 'Reset',
-        id: 'reset',
+        label: 'Reset Zoom Level',
+        id: 'reset_zoom_level',
       },
       {
         fa_icon: 'fa-paint-brush',
@@ -1318,7 +1318,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
           : (self.options.middle_percentile != 50)
             ? columns[i][self._hack_round(len * self.options.middle_percentile / 100)]
             : columns[i][self._hack_round((len - 1) / 2)];
-  
+
         data2descs[i] = {
           min,
           max,
@@ -1604,8 +1604,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       const y1 = self._get_y1(node_neighbourhood, current_left_count, current_right_count);
       let y2 = self._get_y2(node_neighbourhood, current_left_count, current_right_count);
       let x1 = self._hack_round(self.distance - self.distance_step * node.distance);
-      x1 = (x1 == 0) ? 2 : x1;
-
+      x1 = (x1 === 0) ? 2 : x1;
 
       const x2 = x1;
       const left_distance = self.distance - self.distance_step * self.data.nodes[node.left_child].distance;
@@ -1615,7 +1614,9 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         y2 += self.pixels_for_leaf / 2;
       }
 
-      self.dendrogram_layer.add(self._draw_horizontal_path(node_id, x1, y1, x2, y2, left_distance, right_distance));
+      const is_top_node = x === 0;
+
+      self.dendrogram_layer.add(self._draw_horizontal_path(node_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node));
       self._draw_row_dendrogram_node(node.left_child, left_child, current_left_count - node_neighbourhood.left_node.right_count, current_right_count + node_neighbourhood.left_node.right_count, left_distance, y1);
       self._draw_row_dendrogram_node(node.right_child, right_child, current_left_count + node_neighbourhood.right_node.left_count, current_right_count - node_neighbourhood.right_node.left_count, right_distance, y2);
     } else {
@@ -1734,11 +1735,18 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     return nodes2columns;
   };
 
+  InCHlib.prototype._check_top_node = function (id) {
+    return id.includes('_top_node');
+  }
+
   InCHlib.prototype._bind_dendrogram_hover_events = function (layer) {
     const self = this;
 
     layer.on('mouseover', function (evt) {
-      self._cursor_mouseover();
+      const is_top_node = self._check_top_node(evt.target.attrs.id);
+      if (!is_top_node) {
+        self._cursor_mouseover();
+      }
       self._dendrogram_layers_mouseover(this, evt);
     });
 
@@ -2391,7 +2399,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
     const toolbar_ul = $(`<ul class="inchlib-toolbar"></ul>`);
     const toolbar_buttons = self.toolbar_buttons.map(btn => {
-      const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
+      const is_button_disabled = btn.id === 'reset_zoom_level' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
       const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}${is_button_disabled ? ' inchlib-toolbar_btn-disabled' :''}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}" data-test="${btn.id}-button">`;
 
       const label = `<span${
@@ -2433,7 +2441,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
   InCHlib.prototype._toolbar_click = function (button) {
     const self = this;
     const id = button.attr('data-inchlib-id');
-    if (id === 'reset') {
+    if (id === 'reset_zoom_level') {
       self.redraw();
     } else if (id === 'edit_heatmap_colors') {
       self._draw_heatmap_modal();
@@ -2583,7 +2591,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const self = this;
     const node = self.data.nodes[path_id];
     if (node.count != 1) {
-      self.dendrogram_layer.find(`#${path_id}`)[0].stroke(color);
+      self.dendrogram_layer.find(`#${path_id}, #${path_id}_top_node`)[0].stroke(color);
       self._highlight_path(node.left_child, color);
       self._highlight_path(node.right_child, color);
     } else {
@@ -2596,7 +2604,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const self = this;
     const node = self.column_dendrogram.nodes[path_id];
     if (node.count != 1) {
-      self.column_dendrogram_layer.find(`#col${path_id}`)[0].stroke(color);
+      self.column_dendrogram_layer.find(`#col${path_id}, #col${path_id}_top_node`)[0].stroke(color);
       self._highlight_column_path(node.left_child, color);
       self._highlight_column_path(node.right_child, color);
     } else {
@@ -2668,38 +2676,45 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     });
   };
 
-  InCHlib.prototype._highlight_cluster = function (path_id) {
+  InCHlib.prototype._highlight_cluster = function (path_id, id) {
     const self = this;
     const previous_cluster = self.last_highlighted_cluster;
+    const is_top_node = self._check_top_node(id);
 
     if (previous_cluster) {
       self.unhighlight_cluster();
     }
 
-    if (previous_cluster === path_id) {
-      self._zoom_cluster(path_id);
-    } else {
-      self.last_highlighted_cluster = path_id;
-      self._highlight_path(path_id, self.dendrogram_active_color);
-      self._draw_cluster_layer(path_id);
+    if (!is_top_node) {
+      if (previous_cluster === path_id) {
+        self._zoom_cluster(path_id);
+      } else {
+        self.last_highlighted_cluster = path_id;
+        self._highlight_path(path_id, self.dendrogram_active_color);
+        self._draw_cluster_layer(path_id);
+      }
     }
+
     self.dendrogram_layer.draw();
   };
 
-  InCHlib.prototype._highlight_column_cluster = function (path_id) {
+  InCHlib.prototype._highlight_column_cluster = function (path_id, id) {
     const self = this;
     const previous_cluster = self.last_highlighted_column_cluster;
+    const is_top_node = self._check_top_node(id);
     if (previous_cluster) {
       self.unhighlight_column_cluster();
     }
-    if (previous_cluster === path_id) {
-      self._get_column_ids(path_id);
-      self._zoom_column_cluster(path_id);
-    } else {
-      self.last_highlighted_column_cluster = path_id;
-      self._highlight_column_path(path_id, self.dendrogram_active_color);
-      self.current_column_ids.sort((a, b) => { return a - b; });
-      self._draw_column_cluster_layer(path_id);
+    if (!is_top_node) {
+      if (previous_cluster === path_id) {
+        self._get_column_ids(path_id);
+        self._zoom_column_cluster(path_id);
+      } else {
+        self.last_highlighted_column_cluster = path_id;
+        self._highlight_column_path(path_id, self.dendrogram_active_color);
+        self.current_column_ids.sort((a, b) => { return a - b; });
+        self._draw_column_cluster_layer(path_id);
+      }
     }
     self.column_dendrogram_layer.draw();
   };
@@ -3070,17 +3085,19 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       const x1 = self._get_x1(node_neighbourhood, current_left_count, current_right_count);
       let x2 = self._get_x2(node_neighbourhood, current_left_count, current_right_count);
       let y1 = self._hack_round(self.vertical_distance - self.vertical_distance_step * node.distance);
-      y1 = (y1 == 0) ? 2 : y1;
+      y1 = (y1 === 0) ? 2 : y1;
       const y2 = y1;
 
       if (right_child.count == 1) {
         x2 -= self.pixels_for_dimension / 2;
       }
 
+      const is_top_node = x === 0 && y === 0;
+
       const left_distance = self.vertical_distance - self.vertical_distance_step * self.column_dendrogram.nodes[node.left_child].distance;
       const right_distance = self.vertical_distance - self.vertical_distance_step * self.column_dendrogram.nodes[node.right_child].distance;
 
-      self.column_dendrogram_layer.add(self._draw_vertical_path(node_id, x1, y1, x2, y2, left_distance, right_distance));
+      self.column_dendrogram_layer.add(self._draw_vertical_path(node_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node));
       self._draw_column_dendrogram_node(node.left_child, left_child, current_left_count - node_neighbourhood.left_node.right_count, current_right_count + node_neighbourhood.left_node.right_count, left_distance, y1);
       self._draw_column_dendrogram_node(node.right_child, right_child, current_left_count + node_neighbourhood.right_node.left_count, current_right_count - node_neighbourhood.right_node.left_count, right_distance, y2);
     } else {
@@ -3116,7 +3133,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     return (self.heatmap_distance + self.on_features.data.length * self.pixels_for_dimension) - x;
   };
 
-  InCHlib.prototype._draw_vertical_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance) {
+  InCHlib.prototype._draw_vertical_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node) {
     const self = this;
     const path_group = new Konva.Group({});
     const path = self.objects_ref.node.clone({
@@ -3130,14 +3147,14 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         x2,
         right_distance,
       ],
-      id: `col${path_id}`,
+      id: `col${path_id}${is_top_node ? '_top_node' : ''}`,
     });
     const path_rect = self.objects_ref.node_rect.clone({
       x: x2 - 1,
       y: y1 - 1,
       width: x1 - x2 + 2,
       height: self.header_height - y1,
-      id: `col_rect${path_id}`,
+      id: `col_rect${path_id}${is_top_node ? '_top_node' : ''}`,
       path,
       path_id,
     });
@@ -3146,7 +3163,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     return path_group;
   };
 
-  InCHlib.prototype._draw_horizontal_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance) {
+  InCHlib.prototype._draw_horizontal_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node) {
     const self = this;
     const path_group = new Konva.Group({});
     const path = self.objects_ref.node.clone({
@@ -3160,7 +3177,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         right_distance,
         y2,
       ],
-      id: path_id,
+      id: `${path_id}${is_top_node ? '_top_node' : ''}`,
     });
 
     const path_rect = self.objects_ref.node_rect.clone({
@@ -3168,7 +3185,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       y: y1 - 1,
       width: self.distance - x1,
       height: y2 - y1,
-      id: [path_id, 'rect'].join('_'),
+      id: `${[path_id, 'rect'].join('_')}${is_top_node ? '_top_node' : ''}`,
       path,
       path_id,
     });
@@ -3585,16 +3602,18 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._dendrogram_layers_click = function (layer, evt) {
     const self = this;
-    const { path_id } = evt.target.attrs;
-    layer.fire('mouseout', layer, evt);
-    self._highlight_cluster(path_id);
+    const { path_id, id } = evt.target.attrs;
+    const is_top_node = self._check_top_node(id);
+    if (!is_top_node) layer.fire('mouseout', layer, evt);
+    self._highlight_cluster(path_id, id);
   };
 
   InCHlib.prototype._column_dendrogram_layers_click = function (layer, evt) {
     const self = this;
-    const { path_id } = evt.target.attrs;
-    layer.fire('mouseout', layer, evt);
-    self._highlight_column_cluster(path_id);
+    const { path_id, id } = evt.target.attrs;
+    const is_top_node = self._check_top_node(id);
+    if (!is_top_node) layer.fire('mouseout', layer, evt);
+    self._highlight_column_cluster(path_id, id);
   };
 
   InCHlib.prototype._dendrogram_layers_mousedown = function (layer, evt) {
@@ -3613,7 +3632,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._dendrogram_layers_mouseout = function (layer, evt) {
     const self = this;
-    self.path_overlay.destroy();
     // remove tooltip
     self.dendrogram_hover_layer.destroyChildren();
     self.dendrogram_hover_layer.draw();
@@ -3784,19 +3802,20 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const gene_count = self.heatmap_layer.children
       .filter(child => child.attrs.class !== 'column_metadata')
       .length;
-    const case_count = self.heatmap_layer.children[0].children.length;
 
-    const is_outermost_line = count === (is_column ? case_count : gene_count);
+    const is_top_node = self._check_top_node(id);
 
     const tooltip = self.objects_ref.tooltip_label.clone({
       x: x + (width / 2),
       y,
       id: 'dendrogram_label',
-      opacity: is_outermost_line ? 0 : 1,
+      opacity: 1,
     });
 
-    // leave space for the zoom_icon
-    const tooltip_text = `        ${clicks} to zoom ${count} ${genes_or_cases}`;
+    // leave space for the zoom_icon on inner dendrograms
+    const tooltip_text = `${is_top_node 
+      ? '' 
+      : `        ${clicks} to zoom `}${count} ${genes_or_cases}`;
 
     tooltip.add(
       self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }),
@@ -3807,19 +3826,19 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     // move it over to the right
     const half_width = tooltip.width() / 2;
     if (!is_column) {
+      tooltip.x(x + 10);
       const current_tooltip_x = tooltip.x();
-      const half_width = tooltip.width() / 2;
       const difference = half_width - current_tooltip_x;
       if (difference > 0) {
         tooltip_x = current_tooltip_x + difference + 5;
         tooltip.x(tooltip_x);
       }
     }
-    const zoom_x = tooltip_x - half_width - 3;
+    const zoom_x = tooltip.x() - half_width - 3;
     const zoom_y = y - 39;
 
     const zoom_icon = self.objects_ref.zoom_icon.clone({
-      opacity: +(!is_outermost_line), // integer value of boolean's opposite
+      opacity: +(!is_top_node), // integer value of boolean's opposite
       x: zoom_x,
       y: zoom_y,
     });
@@ -3876,8 +3895,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       : self._format_category_name(header_value);
 
     const tooltip_value = typeof value === 'undefined'
-      ? name
-      : value;
+      ? name || 'N/A'
+      : `Value: ${typeof value === 'number' ? value.toFixed(4) : value}`;
 
     const tooltip_text = [header_text, tooltip_value].join('\n');
 

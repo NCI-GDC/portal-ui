@@ -882,7 +882,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       }),
 
       layer_below_toolbar: new Konva.Layer({
-        y: self.toolbar_distance + 20,
+        y: self.toolbar_distance,
         x: 25,
       }),
 
@@ -3357,8 +3357,11 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.axis_labels_layer = self.objects_ref.layer_below_toolbar.clone();
     self.stage.add(self.axis_labels_layer);
 
-    const column_count = self.heatmap_layer.children[0].children.length;
-    // TODO: remove the children that don't have hgnc symbols
+
+    const column_count = Object.values(self.heatmap_layer.children[0].children)
+      .filter(hm_child => hm_child &&
+        hm_child.attrs &&
+        hm_child.attrs.hgnc_symbol).length;
     const heatmap_cells_width = column_count * self.pixels_for_dimension;
     const x_axis_x = self.heatmap_distance - (self.axis_label_width / 2) + (heatmap_cells_width / 2);
 
@@ -3782,26 +3785,20 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       ? self.column_dendrogram.nodes[path_id]
       : self.data.nodes[path_id];
 
-    const is_featured = is_column
-      ? path_id === self.last_highlighted_column_cluster
-      : path_id === self.last_highlighted_cluster;
-
     const genes_or_cases = is_column
       ? 'cases'
       : 'genes';
 
-    const clicks = is_featured
+    const is_highlighted = is_column
+      ? path_id === self.last_highlighted_column_cluster
+      : path_id === self.last_highlighted_cluster;
+
+    const clicks = is_highlighted
       ? 'Click'
       : 'Double-click';
 
     // center tooltip on the dendrogram line
     let tooltip_x = x + (width / 2);
-
-    // find outermost dendrogram line:
-    // check if the tooltip text matches the number of rows/cols visible
-    const gene_count = self.heatmap_layer.children
-      .filter(child => child.attrs.class !== 'column_metadata')
-      .length;
 
     const is_top_node = self._check_top_node(id);
 

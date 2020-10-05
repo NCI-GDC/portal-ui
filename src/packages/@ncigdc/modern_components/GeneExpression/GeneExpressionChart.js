@@ -56,6 +56,7 @@ class GeneExpressionChart extends Component {
     this.$el.InCHlib(this.options, this.handlers);
     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
     document.addEventListener('click', handleOverlayClickOut);
+    console.log('componentDidMount');
   }
 
   componentDidUpdate(prevProps) {
@@ -63,8 +64,11 @@ class GeneExpressionChart extends Component {
     // unsure if data will update in final version
     const { handleClickInchlibLink, visualizationData } = this.props;
     if (!isEqual(visualizationData, prevProps.visualizationData)) {
+      console.log('componentDidUpdate - data changed');
       // destroy inchlib
+      this.$el.InCHlib({}, { destroyInchlib: true });
       this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
+      document.removeEventListener('click', handleOverlayClickOut);
       this.$el.children().remove();
 
       const nextOptions = {
@@ -73,12 +77,16 @@ class GeneExpressionChart extends Component {
       };
       this.$el.InCHlib(nextOptions, this.handlers);
       this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
+    } else {
+      console.log('componentDidUpdate - no change to data');
     }
   }
 
   componentWillUnmount() {
+    console.log('componentWillUnmount');
     const { handleClickInchlibLink } = this.props;
     // destroy inchlib
+    this.$el.InCHlib({}, { destroyInchlib: true });
     this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
     document.removeEventListener('click', handleOverlayClickOut);
     this.$el.children().remove();

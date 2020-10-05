@@ -1155,20 +1155,25 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._add_prefix = function () {
     const self = this;
-    self.data.nodes = self._add_prefix_to_data(self.data.nodes);
-    var id;
+    console.log(self.data)
+    if (self.data) {
+      self.data.nodes = self._add_prefix_to_data(self.data.nodes);
+      var id;
 
-    if (self.options.metadata) {
-      const metadata = {};
-      for (var i = 0, keys = Object.keys(self.metadata.nodes), len = keys.length; i < len; i++) {
-        id = [self._name, keys[i]].join('#');
-        metadata[id] = self.metadata.nodes[keys[i]];
+      if (self.options.metadata) {
+        const metadata = {};
+        for (var i = 0, keys = Object.keys(self.metadata.nodes), len = keys.length; i < len; i++) {
+          id = [self._name, keys[i]].join('#');
+          metadata[id] = self.metadata.nodes[keys[i]];
+        }
+        self.metadata.nodes = metadata;
       }
-      self.metadata.nodes = metadata;
-    }
 
-    if (self.column_dendrogram) {
-      self.column_dendrogram.nodes = self._add_prefix_to_data(self.column_dendrogram.nodes);
+      if (self.column_dendrogram) {
+        self.column_dendrogram.nodes = self._add_prefix_to_data(self.column_dendrogram.nodes);
+      }
+    } else {
+      console.log('no self.data')
     }
   };
 
@@ -1763,7 +1768,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._delete_all_layers = function () {
     const self = this;
-    self.stage.destroyChildren();
+    self.stage && self.stage.destroyChildren();
+    return false;
   };
 
   InCHlib.prototype._adjust_leaf_size = function (leaves) {
@@ -3944,26 +3950,31 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     */
   InCHlib.prototype.init = function () {
     const self = this;
-    if (self.extHandlers.handleLoading) {
-      self.read_data(self.options.data);
-      self.draw();
-      // Future implementation: passing a string here could update the message in the loader. "Loading heatmap"
-      self.extHandlers.handleLoading(false);
+    if (self.extHandlers.destroyInchlib) {
+      console.log('destroy inchlib')
+      self._delete_all_layers();
     } else {
-      // setTimeout is used to force synchronicity in canvas
-      const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-      self.$element.after(loading_div);
-      self.$element.hide();
-
-      setTimeout(function () {
+      if (self.extHandlers.handleLoading) {
         self.read_data(self.options.data);
         self.draw();
-      }, 50);
+        // Future implementation: passing a string here could update the message in the loader. "Loading heatmap"
+        self.extHandlers.handleLoading(false);
+      } else {
+        // setTimeout is used to force synchronicity in canvas
+        const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
+        self.$element.after(loading_div);
+        self.$element.hide();
 
-      setTimeout(function () {
-        loading_div.fadeOut().remove();
-        self.$element.show();
-      }, 50);
+        setTimeout(function () {
+          self.read_data(self.options.data);
+          self.draw();
+        }, 50);
+
+        setTimeout(function () {
+          loading_div.fadeOut().remove();
+          self.$element.show();
+        }, 50);
+      }
     }
   };
 
@@ -3971,9 +3982,11 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     // note: this plugin only supports ONE instance
     return this.each(function () {
       if ($.data(this, 'plugin_' + plugin_name)) {
+        console.log('plugin_inchlib instance found')
         $.removeData(this, 'plugin_' + plugin_name);
       }
       $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options, extHandlers));
+      // TODO: remove data after this ^ if destroy = true
     })
   };
 })(jQuery);

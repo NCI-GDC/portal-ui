@@ -3972,12 +3972,12 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const self = this;
     self.$element.bind('destroy.inchlib', function() {
       self._delete_all_layers();
-      self.unbind_events();
+      self._unbind_events();
       $.removeData(this, 'plugin_' + plugin_name);
     });
   }
 
-  InCHlib.prototype.unbind_events = function() {
+  InCHlib.prototype._unbind_events = function() {
     const self = this;
     self.$element.unbind('.inchlib');
   }

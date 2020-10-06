@@ -1155,7 +1155,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._add_prefix = function () {
     const self = this;
-    console.log(self.data)
     if (self.data) {
       self.data.nodes = self._add_prefix_to_data(self.data.nodes);
       var id;
@@ -1172,8 +1171,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       if (self.column_dendrogram) {
         self.column_dendrogram.nodes = self._add_prefix_to_data(self.column_dendrogram.nodes);
       }
-    } else {
-      console.log('no self.data')
     }
   };
 
@@ -3950,43 +3947,51 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     */
   InCHlib.prototype.init = function () {
     const self = this;
-    if (self.extHandlers.destroyInchlib) {
-      console.log('destroy inchlib')
-      self._delete_all_layers();
+    self.bind_events();
+    if (self.extHandlers.handleLoading) {
+      self.read_data(self.options.data);
+      self.draw();
+      // Future implementation: passing a string here could update the message in the loader. "Loading heatmap"
+      self.extHandlers.handleLoading(false);
     } else {
-      if (self.extHandlers.handleLoading) {
+      // setTimeout is used to force synchronicity in canvas
+      const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
+      self.$element.after(loading_div);
+      self.$element.hide();
+
+      setTimeout(function () {
         self.read_data(self.options.data);
         self.draw();
-        // Future implementation: passing a string here could update the message in the loader. "Loading heatmap"
-        self.extHandlers.handleLoading(false);
-      } else {
-        // setTimeout is used to force synchronicity in canvas
-        const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-        self.$element.after(loading_div);
-        self.$element.hide();
+      }, 50);
 
-        setTimeout(function () {
-          self.read_data(self.options.data);
-          self.draw();
-        }, 50);
-
-        setTimeout(function () {
-          loading_div.fadeOut().remove();
-          self.$element.show();
-        }, 50);
-      }
+      setTimeout(function () {
+        loading_div.fadeOut().remove();
+        self.$element.show();
+      }, 50);
     }
   };
+
+  InCHlib.prototype.bind_events = function() {
+    const self = this;
+    self.$element.bind('destroy.inchlib', function() {
+      self._delete_all_layers();
+      self.unbind_events();
+      $.removeData(this, 'plugin_' + plugin_name);
+    });
+  }
+
+  InCHlib.prototype.unbind_events = function() {
+    const self = this;
+    self.$element.unbind('.inchlib');
+  }
 
   $.fn[plugin_name] = function (options = {}, extHandlers = {}) {
     // note: this plugin only supports ONE instance
     return this.each(function () {
       if ($.data(this, 'plugin_' + plugin_name)) {
-        console.log('plugin_inchlib instance found')
         $.removeData(this, 'plugin_' + plugin_name);
       }
       $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options, extHandlers));
-      // TODO: remove data after this ^ if destroy = true
     })
   };
 })(jQuery);

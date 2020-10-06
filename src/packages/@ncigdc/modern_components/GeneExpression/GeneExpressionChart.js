@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 
 import React, { Component } from 'react';
-import { isEqual } from 'lodash';
 
 import { theme } from '@ncigdc/theme';
 import { CATEGORY_COLORS } from '@ncigdc/utils/constants';
@@ -56,37 +55,31 @@ class GeneExpressionChart extends Component {
     this.$el.InCHlib(this.options, this.handlers);
     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
     document.addEventListener('click', handleOverlayClickOut);
-    console.log('componentDidMount');
   }
 
-  componentDidUpdate(prevProps) {
-    // for viz demo
-    // unsure if data will update in final version
-    const { handleClickInchlibLink, visualizationData } = this.props;
-    if (!isEqual(visualizationData, prevProps.visualizationData)) {
-      console.log('componentDidUpdate - data changed');
-      // destroy inchlib
-      this.$el.InCHlib({}, { destroyInchlib: true });
-      this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
-      document.removeEventListener('click', handleOverlayClickOut);
-      this.$el.children().remove();
+  // not used currently.
+  // on case set switch, component unmounts & mounts again.
+  // componentDidUpdate(prevProps) {
+  //   const { handleClickInchlibLink, visualizationData } = this.props;
+  //   if (!isEqual(visualizationData, prevProps.visualizationData)) {
+  //     this.destroyInchlib();
 
-      const nextOptions = {
-        ...this.options,
-        data: visualizationData,
-      };
-      this.$el.InCHlib(nextOptions, this.handlers);
-      this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
-    } else {
-      console.log('componentDidUpdate - no change to data');
-    }
-  }
+  //     const nextOptions = {
+  //       ...this.options,
+  //       data: visualizationData,
+  //     };
+  //     this.$el.InCHlib(nextOptions, this.handlers);
+  //     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
+  //   }
+  // }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount');
+    this.destroyInchlib();
+  }
+
+  destroyInchlib() {
     const { handleClickInchlibLink } = this.props;
-    // destroy inchlib
-    this.$el.InCHlib({}, { destroyInchlib: true });
+    this.$el.trigger('destroy.inchlib');
     this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
     document.removeEventListener('click', handleOverlayClickOut);
     this.$el.children().remove();

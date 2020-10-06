@@ -1155,22 +1155,20 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._add_prefix = function () {
     const self = this;
-    if (self.data) {
-      self.data.nodes = self._add_prefix_to_data(self.data.nodes);
-      var id;
+    self.data.nodes = self._add_prefix_to_data(self.data.nodes);
+    var id;
 
-      if (self.options.metadata) {
-        const metadata = {};
-        for (var i = 0, keys = Object.keys(self.metadata.nodes), len = keys.length; i < len; i++) {
-          id = [self._name, keys[i]].join('#');
-          metadata[id] = self.metadata.nodes[keys[i]];
-        }
-        self.metadata.nodes = metadata;
+    if (self.options.metadata) {
+      const metadata = {};
+      for (var i = 0, keys = Object.keys(self.metadata.nodes), len = keys.length; i < len; i++) {
+        id = [self._name, keys[i]].join('#');
+        metadata[id] = self.metadata.nodes[keys[i]];
       }
+      self.metadata.nodes = metadata;
+    }
 
-      if (self.column_dendrogram) {
-        self.column_dendrogram.nodes = self._add_prefix_to_data(self.column_dendrogram.nodes);
-      }
+    if (self.column_dendrogram) {
+      self.column_dendrogram.nodes = self._add_prefix_to_data(self.column_dendrogram.nodes);
     }
   };
 
@@ -1765,8 +1763,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._delete_all_layers = function () {
     const self = this;
-    self.stage && self.stage.destroyChildren();
-    return false;
+    self.stage.destroyChildren();
   };
 
   InCHlib.prototype._adjust_leaf_size = function (leaves) {

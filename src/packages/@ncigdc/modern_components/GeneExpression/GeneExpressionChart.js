@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 
 import React, { Component } from 'react';
+// import { isEqual } from 'lodash';
 
 import { theme } from '@ncigdc/theme';
 import { CATEGORY_COLORS } from '@ncigdc/utils/constants';
@@ -58,7 +59,7 @@ class GeneExpressionChart extends Component {
   }
 
   // not used currently.
-  // on case set switch, component unmounts & mounts again.
+  // on analysis switch, component unmounts & mounts again.
   // componentDidUpdate(prevProps) {
   //   const { handleClickInchlibLink, visualizationData } = this.props;
   //   if (!isEqual(visualizationData, prevProps.visualizationData)) {

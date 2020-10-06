@@ -3944,7 +3944,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     */
   InCHlib.prototype.init = function () {
     const self = this;
-    self.bind_events();
+    self._bind_events();
     if (self.extHandlers.handleLoading) {
       self.read_data(self.options.data);
       self.draw();
@@ -3968,7 +3968,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     }
   };
 
-  InCHlib.prototype.bind_events = function() {
+  InCHlib.prototype._bind_events = function() {
     const self = this;
     self.$element.bind('destroy.inchlib', function() {
       self._delete_all_layers();

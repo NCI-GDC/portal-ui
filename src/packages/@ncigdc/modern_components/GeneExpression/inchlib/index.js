@@ -3301,7 +3301,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         .map(name => {
           if (self.legend_continuous_categories.includes(name)) {
             return `<li class="inchlib-legend_list-item"><strong>${self._format_category_name(name)}</strong>
-            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.split('_')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
+            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.split('_')[0]}"></span> ${self.legend_gradient_upper_value(name)} ${name === 'age_at_diagnosis' ? 'years' : 'days'}</li></ul></li>`
           } else {
             const legend_list = Object.keys(self.options.categories.colors[name])
               .map(value => `<li class="inchlib-legend_sublist-item${
@@ -3491,7 +3491,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
         const max = new Konva.Text({
           fill: self.hover_fill,
-          text: self.legend_gradient_upper_value(heading),
+          text: `${self.legend_gradient_upper_value(heading)} ${heading === 'age_at_diagnosis' ? 'years' : 'days'}`,
           x: x + 95,
           y,
         });
@@ -3842,6 +3842,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       // below: column_metadata tooltip
       : self._format_category_name(header_value);
 
+      // todo: age @ dx tooltip text 'x years y days'
     const tooltip_value = typeof value === 'undefined'
       ? name || 'N/A'
       : `Value: ${typeof value === 'number' ? value.toFixed(4) : value}`;

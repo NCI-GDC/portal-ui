@@ -23,6 +23,7 @@ import GeneExpressionChart from './GeneExpressionChart';
 import * as helper from './helpers';
 
 const featureNamesAllowList = [
+  // alphabetized
   'age_at_diagnosis',
   'case_id',
   'ethnicity',
@@ -31,6 +32,19 @@ const featureNamesAllowList = [
   'submitter_id',
   'vital_status',
 ];
+
+const formatColumnMetadata = ({ feature_names, features }) => {
+  // alphabetize by feature name & remove unwanted features
+  const obj = featureNamesAllowList.reduce((acc, curr) => ({
+    ...acc,
+    [curr]: features[feature_names.indexOf(curr)],
+  }), {});
+
+  return ({
+    feature_names: Object.keys(obj),
+    features: Object.values(obj),
+  });
+};
 
 const GeneExpression = ({
   downloadFiles,
@@ -159,15 +173,10 @@ export default compose(
           .then(data => {
             if (data) {
               if (data.inchlib) {
+                const column_metadata = formatColumnMetadata(data.inchlib.column_metadata);
                 const dataFiltered = {
                   ...data.inchlib,
-                  column_metadata: {
-                    ...data.inchlib.column_metadata,
-                    feature_names: data.inchlib.column_metadata.feature_names
-                      .filter(name => featureNamesAllowList.includes(name)),
-                    features: data.inchlib.column_metadata.features
-                      .filter((feat, i) => featureNamesAllowList.includes(data.inchlib.column_metadata.feature_names[i])),
-                  },
+                  column_metadata,
                 };
                 setVisualizationData(dataFiltered, () => setIsLoading(false));
               }

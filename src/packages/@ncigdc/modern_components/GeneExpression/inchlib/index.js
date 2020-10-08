@@ -226,6 +226,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.header_height = 150;
     self.footer_height = 70;
     self.dendrogram_heatmap_distance = 5;
+    self.axis_label_width = 100;
 
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
@@ -882,7 +883,17 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
       layer_below_toolbar: new Konva.Layer({
         y: self.toolbar_distance,
-      })
+        x: 25,
+      }),
+
+      axis_label: new Konva.Text({
+        align: 'center',
+        fill: self.hover_fill,
+        fontFamily: self.options.font.family,
+        fontSize: self.options.font.size,
+        fontStyle: '500',
+        width: self.axis_label_width,
+      }),
     };
 
     /**
@@ -1781,6 +1792,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     if (self.options.min_row_height > self.pixels_for_leaf) {
       self.pixels_for_leaf = self.options.min_row_height;
     }
+
+    self.heatmap_height = leaves * self.pixels_for_leaf;
   };
 
   InCHlib.prototype._adjust_horizontal_sizes = function (dimensions) {
@@ -2040,6 +2053,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       self.heatmap_overlay.destroyChildren();
       self.heatmap_overlay.draw();
     });
+
+    self._redraw_axis_labels();
   };
 
   InCHlib.prototype._draw_heatmap_row = function (node_id, x1, y1) {
@@ -3329,6 +3344,46 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     });
   };
 
+  InCHlib.prototype._redraw_axis_labels = function () {
+    const self = this;
+    self._delete_layers([
+      self.axis_labels_layer,
+    ]);
+    self._draw_axis_labels();
+  };
+
+  InCHlib.prototype._draw_axis_labels = function () {
+    const self = this;
+    self.axis_labels_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.stage.add(self.axis_labels_layer);
+
+
+    const column_count = Object.values(self.heatmap_layer.children[0].children)
+      .filter(hm_child => hm_child &&
+        hm_child.attrs &&
+        hm_child.attrs.hgnc_symbol).length;
+    const heatmap_cells_width = column_count * self.pixels_for_dimension;
+    const x_axis_x = self.heatmap_distance - (self.axis_label_width / 2) + (heatmap_cells_width / 2);
+
+    const x_axis_label = self.objects_ref.axis_label.clone({
+      text: 'Cases',
+      x: x_axis_x,
+      y: -20
+    });
+
+    const y_axis_y = self.column_metadata_height + self.header_height + (self.heatmap_height / 2) + (self.axis_label_width / 2) + 10;
+
+    const y_axis_label = self.objects_ref.axis_label.clone({
+      rotation: -90,
+      text: 'Genes',
+      x: -20,
+      y: y_axis_y,
+    });
+
+    self.axis_labels_layer.add(x_axis_label, y_axis_label);
+    self.axis_labels_layer.draw();
+  }
+
   InCHlib.prototype._draw_heatmap_scale = function() {
     const self = this;
     self.heatmap_scale_layer = self.objects_ref.layer_below_toolbar.clone({x: 5 })
@@ -3730,26 +3785,20 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       ? self.column_dendrogram.nodes[path_id]
       : self.data.nodes[path_id];
 
-    const is_featured = is_column
-      ? path_id === self.last_highlighted_column_cluster
-      : path_id === self.last_highlighted_cluster;
-
     const genes_or_cases = is_column
       ? 'cases'
       : 'genes';
 
-    const clicks = is_featured
+    const is_highlighted = is_column
+      ? path_id === self.last_highlighted_column_cluster
+      : path_id === self.last_highlighted_cluster;
+
+    const clicks = is_highlighted
       ? 'Click'
       : 'Double-click';
 
     // center tooltip on the dendrogram line
     let tooltip_x = x + (width / 2);
-
-    // find outermost dendrogram line:
-    // check if the tooltip text matches the number of rows/cols visible
-    const gene_count = self.heatmap_layer.children
-      .filter(child => child.attrs.class !== 'column_metadata')
-      .length;
 
     const is_top_node = self._check_top_node(id);
 

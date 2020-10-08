@@ -252,8 +252,8 @@ export default function(params) {
     axis
       .append('text')
       .attr('y', tickHeight + fontHeight)
-      .text(function(d) {
-        return d3.format('s')(d.widthScale.domain()[1]);
+        const total = data.reduce((acc, curr) => acc + curr[d.id], 0);
+        return d3.format('.3s')(total);
       });
   }
 

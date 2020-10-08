@@ -3417,11 +3417,11 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       fillLinearGradientColorStops: self.color_steps,
       fillLinearGradientEndPoint: {
         x: scale_x,
-        y: scale_height - scale_y,
+        y: scale_y,
       },
       fillLinearGradientStartPoint: {
         x: scale_x,
-        y: scale_y,
+        y: scale_height - scale_y,
       },
       linecap: 'square',
       height: scale_height,
@@ -3457,19 +3457,19 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     scale_y -= 5;
     const scaleY_int = Math.floor(scale_height / scale_values.length) + 6;
 
-    for (let i = 0; i < scale_values.length; i++) {
-      const text = scale_values[i];
-      const scale_text = new Konva.Text({
+    // reverse, as in "from positive to negative"
+    scale_values.reverse().forEach(text => {
+      scale_group.add(new Konva.Text({
         fill: self.hover_fill,
         fontFamily: self.options.font.family,
         fontStyle: '500',
         text,
         x: scale_x,
         y: scale_y,
-      });
-      scale_group.add(scale_text);
+      }));
+
       scale_y += scaleY_int;
-    }
+    });
 
     self.heatmap_scale_layer.add(scale_group);
     self.heatmap_scale_layer.draw();
@@ -3810,8 +3810,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     });
 
     // leave space for the zoom_icon on inner dendrograms
-    const tooltip_text = `${is_top_node 
-      ? '' 
+    const tooltip_text = `${is_top_node
+      ? ''
       : `        ${clicks} to zoom `}${count} ${genes_or_cases}`;
 
     tooltip.add(

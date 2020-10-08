@@ -39,6 +39,7 @@ const GeneExpression = ({
       <Column
         style={{
           flex: '1 0 auto',
+          width: '100%',
         }}
         >
         <h1
@@ -63,6 +64,8 @@ const GeneExpression = ({
               Try out the beta release of our new tool for gene expression analysis.
               <br />
               Display the gene expression heatmap for sets of cases and genes of your choice.
+              <br />
+              The demo below is derived from TCGA BRCA cases and the top 50 protein coding genes by highest # SSM affected cases in the cohort.
             </p>
             <p>
               <strong>COMING SOON:</strong>
@@ -125,31 +128,16 @@ export default compose(
       isEqual(props.sets, nextProps.sets)
     ),
     ({
-      setIsLoading,
-      sets: {
-        case_ids = [],
-        gene_ids = [],
-        ...sets
-      },
-    }) => {
-      const isDemo = case_ids.length > 0 && gene_ids.length > 0;
-
-      setIsLoading('Loading...');
-
-      return ({
-        isDemo,
-        parsedSets: isDemo
-          ? {
-            case_ids,
-            gene_ids,
-          }
-          : (
-            Object.keys(sets).length > 0 && {
-              case_set_id: Object.keys(sets.case)[0],
-              gene_set_id: Object.keys(sets.gene)[0],
-            }),
-      });
-    },
+      id,
+      sets,
+    }) => ({
+      isDemo: id.includes('demo-'),
+      parsedSets: (
+        Object.keys(sets).length > 0 && {
+          case_set_id: Object.keys(sets.case)[0],
+          gene_set_id: Object.keys(sets.gene)[0],
+        }),
+    }),
   ),
   withHandlers(() => ({
     downloadFiles: ({ parsedSets }) => async format => {

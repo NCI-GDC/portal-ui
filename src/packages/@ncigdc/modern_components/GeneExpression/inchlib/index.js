@@ -8,7 +8,7 @@ import { capitalize, each, round } from 'lodash';
 import moment from 'moment';
 import { jsPDF } from "jspdf";
 
-import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
+import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -3425,7 +3425,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.legend_img_layer = self.objects_ref.layer_below_toolbar.clone();
     self.stage.add(self.legend_img_layer);
 
-    const legend_width = 150;
+    const legend_width = 170;
     const legend_y = -20;
     const legend_x = self.stage.width() - (is_png
       ? legend_width + 5
@@ -3842,10 +3842,11 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       // below: column_metadata tooltip
       : self._format_category_name(header_value);
 
-      // todo: age @ dx tooltip text 'x years y days'
-    const tooltip_value = typeof value === 'undefined'
-      ? name || 'N/A'
-      : `Value: ${typeof value === 'number' ? value.toFixed(4) : value}`;
+    const tooltip_value = header_value === 'age_at_diagnosis'
+      ? ageDisplay(name)
+      : typeof value === 'undefined'
+        ? name || 'N/A'
+        : `Value: ${typeof value === 'number' ? value.toFixed(4) : value}`;
 
     const tooltip_text = [header_text, tooltip_value].join('\n');
 

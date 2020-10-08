@@ -60,7 +60,7 @@ export const buttonList = {
   zoom: {
     attr: 'dragmode',
     faClass: 'fa-search',
-    label: 'Zoom',
+    label: 'Click & drag to zoom',
     name: 'zoom2d',
     val: 'zoom',
   },

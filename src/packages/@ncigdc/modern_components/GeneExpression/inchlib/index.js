@@ -3997,6 +3997,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     */
   InCHlib.prototype.init = function () {
     const self = this;
+    self._bind_events();
     if (self.extHandlers.handleLoading) {
       self.read_data(self.options.data);
       self.draw();
@@ -4019,6 +4020,20 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       }, 50);
     }
   };
+
+  InCHlib.prototype._bind_events = function() {
+    const self = this;
+    self.$element.bind('destroy.inchlib', function() {
+      self._delete_all_layers();
+      self._unbind_events();
+      $.removeData(this, 'plugin_' + plugin_name);
+    });
+  }
+
+  InCHlib.prototype._unbind_events = function() {
+    const self = this;
+    self.$element.unbind('.inchlib');
+  }
 
   $.fn[plugin_name] = function (options = {}, extHandlers = {}) {
     // note: this plugin only supports ONE instance

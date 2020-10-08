@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 
 import React, { Component } from 'react';
-import { isEqual } from 'lodash';
+// import { isEqual } from 'lodash';
 
 import { theme } from '@ncigdc/theme';
 import { CATEGORY_COLORS } from '@ncigdc/utils/constants';
@@ -58,27 +58,29 @@ class GeneExpressionChart extends Component {
     document.addEventListener('click', handleOverlayClickOut);
   }
 
-  componentDidUpdate(prevProps) {
-    // for viz demo
-    // unsure if data will update in final version
-    const { handleClickInchlibLink, visualizationData } = this.props;
-    if (!isEqual(visualizationData, prevProps.visualizationData)) {
-      // destroy inchlib
-      this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
-      this.$el.children().remove();
+  // not used currently.
+  // on analysis switch, component unmounts & mounts again.
+  // componentDidUpdate(prevProps) {
+  //   const { handleClickInchlibLink, visualizationData } = this.props;
+  //   if (!isEqual(visualizationData, prevProps.visualizationData)) {
+  //     this.destroyInchlib();
 
-      const nextOptions = {
-        ...this.options,
-        data: visualizationData,
-      };
-      this.$el.InCHlib(nextOptions, this.handlers);
-      this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
-    }
-  }
+  //     const nextOptions = {
+  //       ...this.options,
+  //       data: visualizationData,
+  //     };
+  //     this.$el.InCHlib(nextOptions, this.handlers);
+  //     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
+  //   }
+  // }
 
   componentWillUnmount() {
+    this.destroyInchlib();
+  }
+
+  destroyInchlib() {
     const { handleClickInchlibLink } = this.props;
-    // destroy inchlib
+    this.$el.trigger('destroy.inchlib');
     this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
     document.removeEventListener('click', handleOverlayClickOut);
     this.$el.children().remove();

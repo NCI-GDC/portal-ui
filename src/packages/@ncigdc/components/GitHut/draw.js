@@ -254,7 +254,7 @@ export default function(params) {
       .attr('y', tickHeight + fontHeight)
       .text((d) => {
         const total = data.reduce((acc, curr) => acc + curr[d.id], 0);
-        console.log(d.id, { total });
+        console.log(d.id, data.map(datum => datum[d.id]), { total });
         return d3.format('.3s')(total);
       });
   }

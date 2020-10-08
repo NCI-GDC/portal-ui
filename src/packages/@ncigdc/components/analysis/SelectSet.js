@@ -7,6 +7,7 @@ import {
   truncate,
 } from 'lodash';
 import countComponents from '@ncigdc/modern_components/Counts';
+import Chip from '@ncigdc/uikit/Chip';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { connect } from 'react-redux';
 import {
@@ -40,6 +41,7 @@ const SelectSet = ({
     description,
     Icon,
     introText = '',
+    isBeta,
     label,
     setInstructions,
     setTypes,
@@ -71,7 +73,24 @@ const SelectSet = ({
       >
       <Icon />
       <Column style={{ flex: 1 }}>
-        <h1 style={{ fontSize: '2rem' }}>{label}</h1>
+        <h1
+          style={{
+            alignItems: 'center',
+            display: 'flex',
+            fontSize: '2rem',
+          }}
+          >
+          {label}
+
+          {isBeta && (
+            <Chip
+              label="BETA"
+              style={{
+                marginLeft: '0.5rem',
+              }}
+              />
+          )}
+        </h1>
         {introText || description}
       </Column>
       <Column style={{ paddingTop: 5 }}>

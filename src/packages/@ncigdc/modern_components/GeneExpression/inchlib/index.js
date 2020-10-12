@@ -164,7 +164,7 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
       size: 12,
     },
-    heatmap_colors: 'GrBkRd',
+    heatmap_colors: 'BuBkYl',
     heatmap_header: true,
     heatmap_part_width: 0.7,
     heatmap: true,
@@ -354,6 +354,23 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     * @name InCHlib#colors
     */
     self.colors = {
+      BuBkYl: {
+        start: {
+          r: 0,
+          g: 0,
+          b: 255,
+        },
+        middle: {
+          r: 0,
+          g: 0,
+          b: 0,
+        },
+        end: {
+          r: 255,
+          g: 255,
+          b: 0,
+        },
+      },
       YlGn: {
         start: {
           r: 255,

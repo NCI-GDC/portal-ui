@@ -1,19 +1,26 @@
 // @flow
 
 import urlJoin from 'url-join';
-import { Environment, Network, RecordSource, Store } from 'relay-runtime';
+import {
+  Environment,
+  Network,
+  RecordSource,
+  Store,
+} from 'relay-runtime';
 import md5 from 'blueimp-md5';
 
+import { redirectToLogin } from '@ncigdc/utils/auth';
+import { checkAWGSession } from '@ncigdc/utils/auth/awg';
+import consoleDebug from '@ncigdc/utils/consoleDebug';
 import { API, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+
 const source = new RecordSource();
 const store = new Store(source);
 const simpleCache = {};
 const pendingCache = {};
 const handlerProvider = null;
-import { redirectToLogin } from '@ncigdc/utils/auth';
-import consoleDebug from '@ncigdc/utils/consoleDebug';
 
-function fetchQuery(operation, variables, cacheConfig) {
+const fetchQuery = async (operation, variables, cacheConfig) => {
   const body = JSON.stringify({
     query: operation.text, // GraphQL text from input
     variables,
@@ -52,61 +59,57 @@ function fetchQuery(operation, variables, cacheConfig) {
   // if the request is not in the simpleCache yet, put it in the pendingCache and proceed to fetch
   pendingCache[hash] = true;
 
-  return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
-    ...(IS_AUTH_PORTAL ? { credentials: 'include' } : {}),
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body,
-  }).then(response =>
-    response
-      .json()
-      .then(json => {
-        if (!response.ok) {
-          consoleDebug('throwing error in Environment');
-          throw response;
-        }
+  const sessionActive = IS_AUTH_PORTAL ? await checkAWGSession('modernRelay-triggered', body) : true;
 
-        if (response.status === 200) {
+  return sessionActive
+    ? fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
+      ...(IS_AUTH_PORTAL ? { credentials: 'include' } : {}),
+      body,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    }).then(response =>
+      response
+        .json()
+        .then(json => {
+          if (!response.ok) {
+            consoleDebug('throwing error in Environment');
+            throw response;
+          }
+
+          if (response.status === 200) {
           // if the response is ok, and the result to the simpleCache and delete it from the pendingCache
-          simpleCache[hash] = json;
-          delete pendingCache[hash];
-        }
+            simpleCache[hash] = json;
+            delete pendingCache[hash];
+          }
 
-        return json;
-      })
+          return json;
+        }))
       .catch(err => {
         if (err.status) {
           switch (err.status) {
             case 401:
             case 403:
               consoleDebug(err.statusText);
-              if (IS_AUTH_PORTAL) {
-                return redirectToLogin('timeout');
-              }
-              break;
+              return IS_AUTH_PORTAL && redirectToLogin('timeout');
             case 400:
             case 404:
-              consoleDebug(err.statusText);
-              break;
+              return consoleDebug(err.statusText);
             default:
               return consoleDebug(`Default error case: ${err.statusText}`);
           }
         } else {
           consoleDebug(
-            `Something went wrong in environment, but no error status: ${err}`,
+        `Something went wrong in environment, but no error status: ${err}`,
           );
         }
-      }),
-  );
-}
-
-// Create a network layer from the fetch function
-const network = Network.create(fetchQuery);
+      })
+  : redirectToLogin('timeout');
+};
 
 export default new Environment({
   handlerProvider, // Can omit.
-  network,
+  network: Network.create(fetchQuery),
   store,
 });

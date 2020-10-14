@@ -1,26 +1,31 @@
 // @flow
-import { CALL_API } from 'redux-api-middleware';
+import { RSAA } from 'redux-api-middleware';
 import urlJoin from 'url-join';
 import Queue from 'queue';
 import md5 from 'blueimp-md5';
 
-import { API, AUTH, IS_AUTH_PORTAL } from '@ncigdc/utils/constants';
+import {
+  API,
+  AUTH,
+  IS_AUTH_PORTAL,
+} from '@ncigdc/utils/constants';
 import { redirectToLogin } from '@ncigdc/utils/auth';
+import { checkAWGSession } from '@ncigdc/utils/auth/awg';
 import consoleDebug from '@ncigdc/utils/consoleDebug';
 
 const DEFAULTS = {
-  method: 'get',
   credentials: 'same-origin',
   headers: {
-    'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': true,
+    'Content-Type': 'application/json',
     'X-Auth-Token': 'secret admin token',
   },
+  method: 'get',
 };
 
 export function fetchAuth(options: { endpoint: string }): Object {
   return {
-    [CALL_API]: {
+    [RSAA]: {
       ...DEFAULTS,
       ...(IS_AUTH_PORTAL
         ? {
@@ -35,12 +40,12 @@ export function fetchAuth(options: { endpoint: string }): Object {
 }
 
 // $FlowIgnore
-export const fetchApi = (endpoint, options = {}) => {
-  /* This helper used to return the JSON of all requests by default
-   * which is not what we want in the case of file streams, etc.
+export const fetchApi = async (endpoint, options = {}) => {
+  /* This helper was originally designed to return the JSON of all requests by default.
+   * This is not what we want in the case of file streams, etc.
    *
-   * Made that default optional, while to destructure thus to avoid TS issues
-   * and continue returning JSON to ensure backwards compatibility.
+   * Made that optional instead using "fullResponse", destructuring it like so,
+   * in order to avoid TS issues and ensure backwards compatibility.
    */
   const {
     fullResponse = false,
@@ -60,36 +65,40 @@ export const fetchApi = (endpoint, options = {}) => {
       method: 'POST',
     }),
   };
-  return fetch(urlJoin(API, endpoint), clonedOptions)
-    .then(r => {
-      if (r.ok) {
-        return fullResponse ? r : r.json();
-      }
 
-      throw r;
-    })
-    .catch(err => {
-      if (err.status) {
-        switch (err.status) {
-          case 401:
-          case 403:
-            consoleDebug(err.statusText);
-            if (IS_AUTH_PORTAL) {
-              return redirectToLogin('timeout');
-            }
-            break;
-          case 400:
-          case 404:
-          case 500:
-            consoleDebug(err.statusText);
-            break;
-          default:
-            return consoleDebug('there was an error', err.statusText);
+  const sessionActive = IS_AUTH_PORTAL ? await checkAWGSession('fetchAPI-triggered', endpoint) : true;
+
+  return sessionActive
+    ? fetch(urlJoin(API, endpoint), clonedOptions)
+      .then(r => {
+        if (r.ok) {
+          return fullResponse ? r : r.json();
         }
-      } else {
-        consoleDebug('Something went wrong');
-      }
-    });
+
+        throw r;
+      })
+      .catch(err => {
+        if (err.status) {
+          switch (err.status) {
+            case 401:
+            case 403:
+              consoleDebug(err.statusText);
+              return IS_AUTH_PORTAL && redirectToLogin('timeout');
+            case 400:
+            case 404:
+            case 500:
+              return consoleDebug(err.statusText);
+            default:
+              return consoleDebug(`there was an error ${err.statusText}`);
+          }
+        } else {
+          consoleDebug('Something went wrong');
+        }
+      })
+    : (
+      redirectToLogin('timeout'),
+      {}
+    );
 };
 
 type TFetchApiChunked = (
@@ -136,8 +145,8 @@ export const fetchApiChunked: TFetchApiChunked = async (
           size: chunkSize,
         },
       };
-      const hash = md5(JSON.stringify(options));
-      fetchApi(urlJoin(endpoint, `?hash=${hash}`), options).then(response => {
+      const newHash = md5(JSON.stringify(options));
+      fetchApi(urlJoin(endpoint, `?hash=${newHash}`), options).then(response => {
         hits = [...hits, ...response.data.hits];
         callback();
       });

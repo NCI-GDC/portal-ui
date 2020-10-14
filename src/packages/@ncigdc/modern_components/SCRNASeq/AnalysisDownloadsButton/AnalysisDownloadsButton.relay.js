@@ -1,35 +1,56 @@
-import React from 'react';
 import { graphql } from 'react-relay';
-import { compose, pure, setDisplayName, withPropsOnChange } from 'recompose';
+import { compose, pure, setDisplayName, withProps } from 'recompose';
 
 import Query from '@ncigdc/modern_components/Query';
-
-import { scrnaSeqFilters } from '../SelectScrnaSeq.relay';
+import { MOCK_SCRNA_DATA } from '@ncigdc/utils/constants';
 
 const variables = {
-  'files_offset': 0,
   'files_size': 99,
+  'files_offset': 0,
   'files_sort': [],
 };
 
 export default (Component) =>
   compose(
-    setDisplayName('SelectScrnaSeqWorkflowQuery'),
-    withPropsOnChange(['case_id'], ({ case_id }) => ({
+    setDisplayName('AnalysisDownloadsButtonQuery'),
+    withProps(({ case_id }) => ({
       filters: {
-        ...scrnaSeqFilters,
         content: [
-          ...scrnaSeqFilters.content,
           {
-            op: "in",
+            op: 'in',
             content: {
-              field: "cases.case_id",
+              field: 'cases.case_id',
               value: [
                 case_id
               ]
             }
           },
+        {
+          op: 'in',
+          content: {
+            field: 'files.data_type',
+            value: MOCK_SCRNA_DATA
+              ? [
+                'Isoform Expression Quantification',
+                'miRNA Expression Quantification'
+              ]
+              : [
+                'Differential Gene Expression',
+                'Single Cell Analysis'
+              ]
+          }
+        },
+          {
+            op: 'in',
+            content: {
+              field: 'files.data_format',
+              value: MOCK_SCRNA_DATA
+                ? ['txt']
+                : ['tsv']
+            }
+          }
         ],
+        op: 'and'
       }
     })),
     pure,
@@ -38,12 +59,12 @@ export default (Component) =>
     return (
       <Query
         parentProps={props}
-        name="SelectScrnaSeqWorkflow"
+        name="AnalysisDownloadsButtonQuery"
         minHeight={0}
         variables={{ ...variables, filters }}
         Component={Component}
         query={graphql`
-          query SelectScrnaSeqWorkflow_relayQuery(
+          query AnalysisDownloadsButton_relayQuery(
             $files_size: Int
             $files_offset: Int
             $files_sort: [Sort]
@@ -56,9 +77,9 @@ export default (Component) =>
                     edges {
                       node {
                         file_id
-                        analysis {
-                          workflow_type
-                        }
+                        data_type
+                        file_name
+                        file_size
                       }
                     }
                   }

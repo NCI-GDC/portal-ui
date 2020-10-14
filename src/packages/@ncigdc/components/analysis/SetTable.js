@@ -50,8 +50,10 @@ const SetTable = ({
           fontSize: '1.8rem',
         }}
         >
-        {setInstructions || `${
-          step ? `Step ${step}: ` : ''
+        {typeof setInstructions === 'string'
+          ? setInstructions
+          : `${
+            step ? `Step ${step}: ` : ''
           }Select a ${setType} set`}
       </h2>
 
@@ -71,6 +73,12 @@ const SetTable = ({
 
         .
       </div>
+
+      {typeof setInstructions === 'object' && (
+        <div style={{ marginBottom: 15 }}>
+          {setInstructions[setType]}
+        </div>
+      )}
 
       {setsData.length > 0
         ? (

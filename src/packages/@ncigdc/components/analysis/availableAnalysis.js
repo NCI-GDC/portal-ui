@@ -1,4 +1,5 @@
 import { VennSvg } from '@ncigdc/components/Charts/Venn';
+import Link from '@ncigdc/components/Links/Link';
 import CohortComparison from '@ncigdc/modern_components/CohortComparison';
 import CCIcon from '@ncigdc/theme/icons/CohortComparisonIcon';
 import { withTheme } from '@ncigdc/theme';
@@ -415,7 +416,7 @@ const availableAnalysis: [TAnalysis] = [
           size: 50,
         },
       },
-      message: 'Demo showing the gene expression heatmap derived from TCGA BRCA cases and the top 50 protein coding genes by highest # SSM affected cases in the cohort.',
+      message: 'Demo showing the gene expression heatmap derived from 150 TCGA-TGCT cases and the 150 most variably-expressed protein-coding genes in the cohort.',
       name: 'Demo Gene Expression',
       sets: {
         case: {
@@ -469,6 +470,22 @@ const availableAnalysis: [TAnalysis] = [
         <GeneExpressionContainer {...props} />
       )
     ),
+    setInstructions: {
+      gene: (
+        <p>
+          {'The '}
+
+          <Link
+            target="_blank"
+            to="https://www.gsea-msigdb.org/gsea/msigdb/index.jsp"
+            >
+            Molecular Signatures Database (MSigDB)
+          </Link>
+
+          , a collection of annotated gene sets, can help you search for gene sets relevant to your analyses. MSigDB allows you to export these gene sets, which you can then upload to the GDC Portal for gene expression analysis.
+        </p>
+      ),
+    },
     setTypes: ['case', 'gene'],
     type: 'gene_expression',
     validationInstructions: (

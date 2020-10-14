@@ -5,12 +5,13 @@ import { withTheme } from '@ncigdc/theme';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { TSetTypes } from '@ncigdc/dux/sets';
 import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
-import { DISPLAY_GENE_EXPRESSION, DISPLAY_SCRNA_SEQ } from '@ncigdc/utils/constants';
+import { DISPLAY_SCRNA_SEQ } from '@ncigdc/utils/constants';
 import GeneExpressionContainer from '@ncigdc/modern_components/GeneExpression';
 import SCRNASeq from '@ncigdc/theme/icons/SCRNASeq';
 import SCRNASeqContainer from '@ncigdc/modern_components/SCRNASeq';
 import GeneExpression from '@ncigdc/theme/icons/GeneExpression';
 import { fetchApi } from '@ncigdc/utils/ajax';
+import geneExpressionDemoData from '@ncigdc/modern_components/GeneExpression/inchlib/data';
 
 import Demo from './Demo';
 import SetOperations from './SetOperations';
@@ -25,12 +26,13 @@ type TAnalysis = {
   type: string,
   title: string,
   Icon: ReactComponent<*>,
-  description: string,
+  description: string | ReactComponent<*>,
   demoData: {
     sets: TSelectedSets,
     filters: {},
     type: string,
   },
+  introText: string | ReactComponent<*>,
   setInstructions: string,
   setDisabledMessage: (opts: { sets: TSelectedSets, type: string }) => ?string,
   setTypes: Array<string>,
@@ -367,66 +369,60 @@ const availableAnalysis: [TAnalysis] = [
     validateSets: sets => sets &&
       ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
   },
-  ...DISPLAY_GENE_EXPRESSION && [
-    // copied from clinical analysis and lightly modified
-    // TODO: replace with real demoData, etc
-    {
-      demoData: {
-        displayVariables: { ...defaultVariables },
-        filters: {
-          'demo-pancreas': {
-            content: [
-              {
-                content: {
-                  field: 'cases.primary_site',
-                  value: ['Pancreas'],
-                },
-                op: 'in',
-              },
-            ],
-            op: 'and',
-          },
-        },
-        message: 'Demo',
-        name: 'Demo Gene Expression',
-        sets: {
-          case: {
-            'demo-pancreas': 'Pancreas',
-          },
-          gene: {
-            'demo-pancreas': 'Pancreas',
-          },
-        },
-        type: 'gene_expression',
-      },
-      description: 'Display the gene expression heatmap for sets of cases and genes of your choice.',
-      Icon: withTheme(({ style }) => (
-        <div>
-          <GeneExpression
-            style={{
-              width: 80,
-              height: 80,
-              ...style,
-            }}
-            />
-        </div>
-      )),
-      label: 'Gene Expression',
-      ResultComponent: props => (
-        <GeneExpressionContainer
-          {...props}
-          />
-      ),
-      setTypes: ['case', 'gene'],
+  {
+    demoData: {
+      displayVariables: { ...defaultVariables },
+      message: 'Demo showing the gene expression heatmap derived from TCGA BRCA cases and a set of invasive lobular carcinoma genes.',
+      name: 'Demo Gene Expression',
+      sets: geneExpressionDemoData,
       type: 'gene_expression',
-      validateSets: {
-        availability: sets => (
+    },
+    description: 'Display the gene expression heatmap for sets of cases and genes of your choice.',
+    Icon: withTheme(({ style }) => (
+      <div>
+        <GeneExpression
+          style={{
+            width: 80,
+            height: 80,
+            ...style,
+          }}
+          />
+      </div>
+    )),
+    introText: (
+      <React.Fragment>
+        <p>
+          Try out the beta release of our new tool for gene expression
+          analysis. Display the gene expression heatmap for sets of cases and genes of your choice.
+        </p>
+        <p>
+          <strong>COMING SOON:</strong>
+          {' '}
+          Filter genes by expression level, and select genes that are highly variable.
+        </p>
+        <p>
+          Please send us your feedback at:
+          {' '}
+          <a href="mailto:support@nci-gdc.datacommons.io">support@nci-gdc.datacommons.io</a>
+        </p>
+      </React.Fragment>
+    ),
+    label: 'Gene Expression',
+    ResultComponent: props => (
+      <GeneExpressionContainer
+        {...props}
+        />
+    ),
+    setTypes: ['case', 'gene'],
+    type: 'gene_expression',
+    validateSets: {
+      availability: sets => (
           Object.keys(sets).length
             ? fetchApi(
               'gene_expression/availability',
               {
                 body: {
-                  case_set_id: localStorage.GE_SCENARIO || Object.keys(sets.case)[0],
+                  case_set_id: Object.keys(sets.case)[0],
                   gene_set_id: Object.keys(sets.gene)[0],
                 },
                 headers: {
@@ -439,12 +435,11 @@ const availableAnalysis: [TAnalysis] = [
                 console.error('Gene Expression Availability error', error);
               })
             : sets
-        ),
-        quantity: sets => sets &&
+      ),
+      quantity: sets => sets &&
           ['case', 'gene'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
-      },
     },
-  ],
+  },
   ...DISPLAY_SCRNA_SEQ && [
     // copied from clinical analysis and lightly modified
     // TODO: replace with real demoData, a real icon, etc

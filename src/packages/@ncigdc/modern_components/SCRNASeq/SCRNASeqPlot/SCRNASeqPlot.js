@@ -17,6 +17,7 @@ import {
   enterFullScreen,
   isFullScreen,
 } from '@ncigdc/utils/fullscreen';
+import { GlobalTooltip } from '@ncigdc/uikit/Tooltip';
 
 import withSize from '@ncigdc/utils/withSize';
 
@@ -66,6 +67,7 @@ const SCRNASeqPlot = ({
               onToolbarClick={handleToolbarClick}
               />
           )))}
+        {checkFullScreen && <GlobalTooltip />}
       </Row>
       <Plot
         config={utils.config}

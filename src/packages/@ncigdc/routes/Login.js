@@ -1,24 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
+import {
+  compose,
+  pure,
+  setDisplayName,
+} from 'recompose';
 import queryString from 'query-string';
-import urlJoin from 'url-join';
 
 import { AUTH, FENCE } from '@ncigdc/utils/constants';
 import { fetchUser } from '@ncigdc/dux/auth';
+import {
+  clearAWGSession,
+  createAWGSession,
+} from '@ncigdc/utils/auth/awg';
 import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
 import openAuthWindow from '@ncigdc/utils/openAuthWindow';
 import withRouter from '@ncigdc/utils/withRouter';
 
 const styles = {
-  title: {
-    color: 'rgb(38, 89, 134)',
-    fontWeight: 400,
-    textTransform: 'uppercase',
-    letterSpacing: 4,
-    fontSize: 22,
-  },
   errorMessage: {
     color: 'rgb(191, 34, 58)',
     fontSize: 16,
@@ -26,20 +26,28 @@ const styles = {
   loginButton: {
     color: 'white',
     fontSize: 16,
-    padding: '12px 30px',
     fontWeight: 200,
-    textTransform: 'uppercase',
     letterSpacing: 2,
+    padding: '12px 30px',
+    textTransform: 'uppercase',
     width: 140,
+  },
+  title: {
+    color: 'rgb(38, 89, 134)',
+    fontSize: 22,
+    fontWeight: 400,
+    letterSpacing: 4,
+    textTransform: 'uppercase',
   },
 };
 
 const AWGLoginButton = compose(
+  setDisplayName('EnhancedAWGLoginButton'),
   connect(state => state.auth),
   withRouter,
+  pure,
 )(({ dispatch, push }) => (
   <Button
-    style={styles.loginButton}
     onClick={async () => {
       const loginParams = queryString.stringify({
         redirect: window.location.origin,
@@ -47,9 +55,9 @@ const AWGLoginButton = compose(
 
       try {
         await openAuthWindow({
-          winUrl: `${AUTH}?next=${FENCE}/login/fence?${loginParams}`,
-          pollInterval: 200,
           name: 'AWG',
+          pollInterval: 200,
+          winUrl: `${AUTH}?next=${FENCE}/login/fence?${loginParams}`,
         });
       } catch (err) {
         if (err === 'window closed manually') {
@@ -59,112 +67,128 @@ const AWGLoginButton = compose(
           return (window.location.href = '/login?error=no_fence_projects');
         }
       }
-      await dispatch(fetchUser());
-      push({ pathname: '/repository' });
+      const createdSession = await createAWGSession();
+
+      if (createdSession) {
+        await dispatch(fetchUser());
+        push({ pathname: '/repository' });
+      }
     }}
-  >
+    style={styles.loginButton}
+    >
     Login
   </Button>
 ));
 
-export default connect(state => ({
-  user: state.auth.user,
-  error: state.auth.error,
-}))(
-  class extends React.Component {
-    componentDidMount() {}
-    render() {
-      let NihWarning = () => (
-        <div>
-          <br />
-          <br />You do not have access to any AWG projects in dbGaP. More
-          information about obtaining access to controlled-access data can be
-          found{' '}
-          <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
-            here
-          </a>.
-        </div>
-      );
-      return (
+const LoginRoute = () => (
+  <div
+    style={{
+      alignItems: 'center',
+      backgroundColor: 'white',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100vh',
+      justifyContent: 'center',
+      left: 0,
+      position: 'fixed',
+      top: 0,
+      width: '100vw',
+      zIndex: 1000,
+    }}
+    >
+    <div
+      style={{
+        alignItems: 'center',
+        flexDirection: 'column',
+        height: '400px',
+        justifyContent: 'center',
+        textAlign: 'center',
+      }}
+      >
+      <div>
+        <img
+          alt="NCI GDC AWG Portal"
+          src="https://i.imgur.com/O33FmeE.png"
+          style={{ width: 525 }}
+          />
+      </div>
+      <br />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}
+        >
+        <h1 style={styles.title}>Analysis Working Group</h1>
+
+        <h1
+          style={{
+            ...styles.title,
+            margin: '0 0 20px',
+          }}
+          >
+          Data Portal
+        </h1>
+
         <div
           style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            backgroundColor: 'white',
-            width: '100vw',
-            height: '100vh',
-            zIndex: 1000,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
+            color: 'rgb(38, 89, 134)',
+            fontSize: '3em',
           }}
-        >
-          <div
-            style={{
-              height: '400px',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              textAlign: 'center',
-            }}
           >
-            <div>
-              <img
-                alt="NCI GDC AWG Portal"
-                style={{ width: 525 }}
-                src="https://i.imgur.com/O33FmeE.png"
-              />
-            </div>
-            <br />
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                flexDirection: 'column',
-              }}
-            >
-              <h1 style={styles.title}>Analysis Working Group</h1>
-              <h1 style={{ ...styles.title, margin: '0 0 20px' }}>
-                Data Portal
-              </h1>
-              <div style={{ fontSize: '3em', color: 'rgb(38, 89, 134)' }}>
-                <i className="fa fa-users" />
-              </div>
-              {window.location.search.includes('error=no_fence_projects') && (
-                <div>
-                  <br />
-                  <br />
-                  <span style={styles.errorMessage}>
-                    You have not been granted access to any AWG projects by the
-                    AWG Admin. Please contact the AWG administrator to request
-                    access.
-                  </span>
-                </div>
-              )}
-              {window.location.search.includes('error=timeout') && (
-                <div>
-                  <br />
-                  <br />
-                  <span style={styles.errorMessage}>
-                    Session timed out or not authorized.
-                  </span>
-                </div>
-              )}
-              {window.location.search.includes('error=no_nih_projects') && (
-                <NihWarning />
-              )}
-              {window.location.search.includes('error=no_intersection') && (
-                <NihWarning />
-              )}
-              <Row style={{ justifyContent: 'center', marginTop: '1.5rem' }}>
-                <AWGLoginButton />
-              </Row>
-            </div>
-          </div>
+          <i className="fa fa-users" />
         </div>
-      );
-    }
-  },
+
+        {window.location.search.includes('error=no_fence_projects') && (
+          <div>
+            <br />
+            <br />
+            <span style={styles.errorMessage}>
+              You have not been granted access to any AWG projects by the
+              AWG Admin. Please contact the AWG administrator to request
+              access.
+            </span>
+          </div>
+        )}
+
+        {window.location.search.includes('error=timeout') && (
+          <div>
+            <br />
+            <br />
+            <span style={styles.errorMessage}>
+              Session timed out or not authorized.
+            </span>
+          </div>
+        )}
+
+        {(
+          window.location.search.includes('error=no_nih_projects') ||
+          window.location.search.includes('error=no_intersection')
+        ) && (
+          <div>
+            <br />
+            <br />
+            {'You do not have access to any AWG projects in dbGaP. More information about obtaining access to controlled-access data can be found '}
+            <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">here</a>
+            .
+          </div>
+        )}
+
+        <Row
+          style={{
+            justifyContent: 'center',
+            marginTop: '1.5rem',
+          }}
+          >
+          <AWGLoginButton />
+        </Row>
+      </div>
+    </div>
+  </div>
 );
+
+export default connect(({ auth }) => ({
+  error: auth.error,
+  user: auth.user,
+}))(LoginRoute);

@@ -39,6 +39,7 @@ const SelectSet = ({
     demoData,
     description,
     Icon,
+    introText = '',
     label,
     setInstructions,
     setTypes,
@@ -71,7 +72,7 @@ const SelectSet = ({
       <Icon />
       <Column style={{ flex: 1 }}>
         <h1 style={{ fontSize: '2rem' }}>{label}</h1>
-        {description}
+        {introText || description}
       </Column>
       <Column style={{ paddingTop: 5 }}>
         <Row spacing="5px">

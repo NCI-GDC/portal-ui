@@ -41,21 +41,22 @@ const DemoButton = ({
             value: demoData.displayVariables,
             property: 'displayVariables',
             id,
-          })
+          }),
         );
       }
+
       pushToResultTab(id);
     } else {
       dispatch(
         addAnalysis({
           id,
-          type: type,
+          type,
           created: new Date().toISOString(),
           ...demoData,
         }),
-      ).then(() => {
-        pushToResultTab(id);
-      });
+      );
+
+      pushToResultTab(id);
     }
   };
 

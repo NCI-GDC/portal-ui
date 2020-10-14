@@ -1,21 +1,34 @@
 import React from 'react';
 import { ExclamationTriangleIcon } from '@ncigdc/theme/icons';
 
-export default ({ children, style, ...props }) => (
-  <div
+const WarningBox = ({
+  children,
+  style,
+  ...props
+}) => (
+  <figure
     style={{
-      marginTop: 10,
-      paddingRight: '5px',
       backgroundColor: '#fcf8e3',
-      borderColor: '#faebcc',
-      color: '#8a6d3b',
-      padding: '15px',
       border: '1px solid transparent',
+      borderColor: '#faebcc',
       borderRadius: '4px',
+      color: '#8a6d3b',
+      marginTop: 10,
+      padding: '15px 5px 15px 40px',
+      position: 'relative',
       ...style,
     }}
     {...props}
-  >
-    <ExclamationTriangleIcon /> {children}
-  </div>
+    >
+    <ExclamationTriangleIcon
+      style={{
+        left: '15px',
+        position: 'absolute',
+        top: '18px',
+      }}
+      />
+    {children}
+  </figure>
 );
+
+export default WarningBox;

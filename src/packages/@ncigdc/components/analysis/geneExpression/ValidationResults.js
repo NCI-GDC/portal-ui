@@ -61,14 +61,17 @@ const ValidationResults = ({
             {validationResults.status === 'notEnough' && (
               <WarningBox>
                 The amount of gene expression data does not meet the minimum required for display.
+                <br />
+                A minimum of 25 total rows and columns (for example 5 cases and 5 genes) is required.
+                <br />
                 Please modify your sets.
               </WarningBox>
             )}
 
             {validationResults.status === 'tooMany' && (
               <WarningBox>
-                The amount of gene expression data exceeds the display limit.
-                Please reduce your set sizes.
+                <p>The amount of gene expression data available for visualization exceeds the display limit. Currently, the tool supports a maximum of 120,000 total rows and columns (for example 1,000 cases and 120 genes) to be displayed after clustering. Please try reducing your case and/or gene set sizes.</p>
+                <p style={{ marginBottom: 0 }}>The GDC is actively exploring methods to increase this limit in future releases of the data portal.</p>
               </WarningBox>
             )}
           </React.Fragment>

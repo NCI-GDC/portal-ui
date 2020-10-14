@@ -24,8 +24,8 @@ export const validateGeneExpressionAvailability = ({
   status: (
     casesWithGE === undefined
       ? 'error'
-    : casesWithGE <= MINCASES ||
-      genesWithGE <= MINGENES
+    : casesWithGE < MINCASES ||
+      genesWithGE < MINGENES
       ? 'notEnough'
     : casesWithGE * genesWithGE > MAXDATAPOINTS
       ? 'tooMany'

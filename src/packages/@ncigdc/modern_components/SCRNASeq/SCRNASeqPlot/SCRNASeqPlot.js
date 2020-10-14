@@ -10,6 +10,7 @@ import {
   withProps,
   withState,
 } from 'recompose';
+import moment from 'moment';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import {
@@ -115,7 +116,7 @@ export default compose(
         const format = e.target.getAttribute('data-format');
         const scale = e.target.getAttribute('data-scale');
         Plotly.downloadImage(graphDiv, {
-          filename: 'scrnaseq',
+          filename: `scrnaseq-${dataType.toLowerCase().replace('-', '')}-${moment().format('YYYY-MM-DD-HHmmss')}`,
           format,
           scale,
         });

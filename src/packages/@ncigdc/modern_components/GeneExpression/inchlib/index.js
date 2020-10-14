@@ -8,7 +8,7 @@ import { capitalize, each, round } from 'lodash';
 import moment from 'moment';
 import { jsPDF } from "jspdf";
 
-import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
+import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -149,6 +149,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       colors: {},
       defaults: [],
     },
+    centering: 'mean',
     column_dendrogram: false,
     column_metadata_colors: 'RdLrBu',
     column_metadata: false,
@@ -225,6 +226,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.header_height = 150;
     self.footer_height = 70;
     self.dendrogram_heatmap_distance = 5;
+    self.axis_label_width = 100;
 
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
@@ -268,7 +270,11 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     }
 
     self.legend_id = `legend_${self._name}`;
-    self.legend_continuous_categories = ['age_at_diagnosis', 'days_to_death'];
+    self.legend_continuous_categories = [
+      'age_at_diagnosis',
+      // 'days_to_death'
+      // hide days to death from legend
+    ];
     self.legend_horizontal_categories = ['gender', 'vital_status'];
     self.legend_headings = [
       ...Object.keys(self.options.categories.colors),
@@ -881,7 +887,17 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
       layer_below_toolbar: new Konva.Layer({
         y: self.toolbar_distance,
-      })
+        x: 25,
+      }),
+
+      axis_label: new Konva.Text({
+        align: 'center',
+        fill: self.hover_fill,
+        fontFamily: self.options.font.family,
+        fontSize: self.options.font.size,
+        fontStyle: '500',
+        width: self.axis_label_width,
+      }),
     };
 
     /**
@@ -920,8 +936,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.toolbar_buttons = [
       {
         fa_icon: 'fa-undo',
-        label: 'Reset',
-        id: 'reset',
+        label: 'Reset Zoom Level',
+        id: 'reset_zoom_level',
       },
       {
         fa_icon: 'fa-paint-brush',
@@ -1301,9 +1317,12 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         min = (self.options.min_percentile > 0)
           ? columns[i][self._hack_round(len * self.options.min_percentile / 100)]
           : Math.min.apply(null, columns[i]);
-        middle = (self.options.middle_percentile != 50)
-          ? columns[i][self._hack_round(len * self.options.middle_percentile / 100)]
-          : columns[i][self._hack_round((len - 1) / 2)];
+        middle = self.options.centering === 'geneExpression'
+          ? 0
+          : (self.options.middle_percentile != 50)
+            ? columns[i][self._hack_round(len * self.options.middle_percentile / 100)]
+            : columns[i][self._hack_round((len - 1) / 2)];
+
         data2descs[i] = {
           min,
           max,
@@ -1589,8 +1608,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       const y1 = self._get_y1(node_neighbourhood, current_left_count, current_right_count);
       let y2 = self._get_y2(node_neighbourhood, current_left_count, current_right_count);
       let x1 = self._hack_round(self.distance - self.distance_step * node.distance);
-      x1 = (x1 == 0) ? 2 : x1;
-
+      x1 = (x1 === 0) ? 2 : x1;
 
       const x2 = x1;
       const left_distance = self.distance - self.distance_step * self.data.nodes[node.left_child].distance;
@@ -1600,7 +1618,9 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         y2 += self.pixels_for_leaf / 2;
       }
 
-      self.dendrogram_layer.add(self._draw_horizontal_path(node_id, x1, y1, x2, y2, left_distance, right_distance));
+      const is_top_node = x === 0;
+
+      self.dendrogram_layer.add(self._draw_horizontal_path(node_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node));
       self._draw_row_dendrogram_node(node.left_child, left_child, current_left_count - node_neighbourhood.left_node.right_count, current_right_count + node_neighbourhood.left_node.right_count, left_distance, y1);
       self._draw_row_dendrogram_node(node.right_child, right_child, current_left_count + node_neighbourhood.right_node.left_count, current_right_count - node_neighbourhood.right_node.left_count, right_distance, y2);
     } else {
@@ -1719,11 +1739,18 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     return nodes2columns;
   };
 
+  InCHlib.prototype._check_top_node = function (id) {
+    return id.includes('_top_node');
+  }
+
   InCHlib.prototype._bind_dendrogram_hover_events = function (layer) {
     const self = this;
 
     layer.on('mouseover', function (evt) {
-      self._cursor_mouseover();
+      const is_top_node = self._check_top_node(evt.target.attrs.id);
+      if (!is_top_node) {
+        self._cursor_mouseover();
+      }
       self._dendrogram_layers_mouseover(this, evt);
     });
 
@@ -1769,6 +1796,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     if (self.options.min_row_height > self.pixels_for_leaf) {
       self.pixels_for_leaf = self.options.min_row_height;
     }
+
+    self.heatmap_height = leaves * self.pixels_for_leaf;
   };
 
   InCHlib.prototype._adjust_horizontal_sizes = function (dimensions) {
@@ -2028,6 +2057,8 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       self.heatmap_overlay.destroyChildren();
       self.heatmap_overlay.draw();
     });
+
+    self._redraw_axis_labels();
   };
 
   InCHlib.prototype._draw_heatmap_row = function (node_id, x1, y1) {
@@ -2372,13 +2403,20 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
     const toolbar_ul = $(`<ul class="inchlib-toolbar"></ul>`);
     const toolbar_buttons = self.toolbar_buttons.map(btn => {
-      const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
-      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}${is_button_disabled ? ' inchlib-toolbar_btn-disabled' :''}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}">`;
+      const is_button_disabled = btn.id === 'reset_zoom_level' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
+      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}${is_button_disabled ? ' inchlib-toolbar_btn-disabled' :''}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}" data-test="${btn.id}-button">`;
+
+      const label = `<span${
+        btn.id === 'legend' ? '' : ` class="sr-only"`
+      }>${btn.label}</span>`
+
+      const icon = `<i aria-hidden="true" class="fa ${
+        btn.id === 'legend'? btn.fa_icon[0] : btn.fa_icon
+      }" focusable="false"></i>`;
+
       const close_button = '</button></li>';
-      const contents = btn.id === 'legend'
-      ? `${btn.label}<i class="fa ${btn.fa_icon[0]}"></i>`
-      : `<i class="fa ${btn.fa_icon}"></i>`;
-      return `${open_button}${contents}${close_button}`;
+
+      return `${open_button}${label}${icon}${close_button}`;
     })
     .join('');
 
@@ -2407,7 +2445,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
   InCHlib.prototype._toolbar_click = function (button) {
     const self = this;
     const id = button.attr('data-inchlib-id');
-    if (id === 'reset') {
+    if (id === 'reset_zoom_level') {
       self.redraw();
     } else if (id === 'edit_heatmap_colors') {
       self._draw_heatmap_modal();
@@ -2557,7 +2595,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const self = this;
     const node = self.data.nodes[path_id];
     if (node.count != 1) {
-      self.dendrogram_layer.find(`#${path_id}`)[0].stroke(color);
+      self.dendrogram_layer.find(`#${path_id}, #${path_id}_top_node`)[0].stroke(color);
       self._highlight_path(node.left_child, color);
       self._highlight_path(node.right_child, color);
     } else {
@@ -2570,7 +2608,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const self = this;
     const node = self.column_dendrogram.nodes[path_id];
     if (node.count != 1) {
-      self.column_dendrogram_layer.find(`#col${path_id}`)[0].stroke(color);
+      self.column_dendrogram_layer.find(`#col${path_id}, #col${path_id}_top_node`)[0].stroke(color);
       self._highlight_column_path(node.left_child, color);
       self._highlight_column_path(node.right_child, color);
     } else {
@@ -2642,38 +2680,45 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     });
   };
 
-  InCHlib.prototype._highlight_cluster = function (path_id) {
+  InCHlib.prototype._highlight_cluster = function (path_id, id) {
     const self = this;
     const previous_cluster = self.last_highlighted_cluster;
+    const is_top_node = self._check_top_node(id);
 
     if (previous_cluster) {
       self.unhighlight_cluster();
     }
 
-    if (previous_cluster === path_id) {
-      self._zoom_cluster(path_id);
-    } else {
-      self.last_highlighted_cluster = path_id;
-      self._highlight_path(path_id, self.dendrogram_active_color);
-      self._draw_cluster_layer(path_id);
+    if (!is_top_node) {
+      if (previous_cluster === path_id) {
+        self._zoom_cluster(path_id);
+      } else {
+        self.last_highlighted_cluster = path_id;
+        self._highlight_path(path_id, self.dendrogram_active_color);
+        self._draw_cluster_layer(path_id);
+      }
     }
+
     self.dendrogram_layer.draw();
   };
 
-  InCHlib.prototype._highlight_column_cluster = function (path_id) {
+  InCHlib.prototype._highlight_column_cluster = function (path_id, id) {
     const self = this;
     const previous_cluster = self.last_highlighted_column_cluster;
+    const is_top_node = self._check_top_node(id);
     if (previous_cluster) {
       self.unhighlight_column_cluster();
     }
-    if (previous_cluster === path_id) {
-      self._get_column_ids(path_id);
-      self._zoom_column_cluster(path_id);
-    } else {
-      self.last_highlighted_column_cluster = path_id;
-      self._highlight_column_path(path_id, self.dendrogram_active_color);
-      self.current_column_ids.sort((a, b) => { return a - b; });
-      self._draw_column_cluster_layer(path_id);
+    if (!is_top_node) {
+      if (previous_cluster === path_id) {
+        self._get_column_ids(path_id);
+        self._zoom_column_cluster(path_id);
+      } else {
+        self.last_highlighted_column_cluster = path_id;
+        self._highlight_column_path(path_id, self.dendrogram_active_color);
+        self.current_column_ids.sort((a, b) => { return a - b; });
+        self._draw_column_cluster_layer(path_id);
+      }
     }
     self.column_dendrogram_layer.draw();
   };
@@ -3044,17 +3089,19 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       const x1 = self._get_x1(node_neighbourhood, current_left_count, current_right_count);
       let x2 = self._get_x2(node_neighbourhood, current_left_count, current_right_count);
       let y1 = self._hack_round(self.vertical_distance - self.vertical_distance_step * node.distance);
-      y1 = (y1 == 0) ? 2 : y1;
+      y1 = (y1 === 0) ? 2 : y1;
       const y2 = y1;
 
       if (right_child.count == 1) {
         x2 -= self.pixels_for_dimension / 2;
       }
 
+      const is_top_node = x === 0 && y === 0;
+
       const left_distance = self.vertical_distance - self.vertical_distance_step * self.column_dendrogram.nodes[node.left_child].distance;
       const right_distance = self.vertical_distance - self.vertical_distance_step * self.column_dendrogram.nodes[node.right_child].distance;
 
-      self.column_dendrogram_layer.add(self._draw_vertical_path(node_id, x1, y1, x2, y2, left_distance, right_distance));
+      self.column_dendrogram_layer.add(self._draw_vertical_path(node_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node));
       self._draw_column_dendrogram_node(node.left_child, left_child, current_left_count - node_neighbourhood.left_node.right_count, current_right_count + node_neighbourhood.left_node.right_count, left_distance, y1);
       self._draw_column_dendrogram_node(node.right_child, right_child, current_left_count + node_neighbourhood.right_node.left_count, current_right_count - node_neighbourhood.right_node.left_count, right_distance, y2);
     } else {
@@ -3090,7 +3137,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     return (self.heatmap_distance + self.on_features.data.length * self.pixels_for_dimension) - x;
   };
 
-  InCHlib.prototype._draw_vertical_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance) {
+  InCHlib.prototype._draw_vertical_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node) {
     const self = this;
     const path_group = new Konva.Group({});
     const path = self.objects_ref.node.clone({
@@ -3104,14 +3151,14 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         x2,
         right_distance,
       ],
-      id: `col${path_id}`,
+      id: `col${path_id}${is_top_node ? '_top_node' : ''}`,
     });
     const path_rect = self.objects_ref.node_rect.clone({
       x: x2 - 1,
       y: y1 - 1,
       width: x1 - x2 + 2,
       height: self.header_height - y1,
-      id: `col_rect${path_id}`,
+      id: `col_rect${path_id}${is_top_node ? '_top_node' : ''}`,
       path,
       path_id,
     });
@@ -3120,7 +3167,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     return path_group;
   };
 
-  InCHlib.prototype._draw_horizontal_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance) {
+  InCHlib.prototype._draw_horizontal_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node) {
     const self = this;
     const path_group = new Konva.Group({});
     const path = self.objects_ref.node.clone({
@@ -3134,7 +3181,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         right_distance,
         y2,
       ],
-      id: path_id,
+      id: `${path_id}${is_top_node ? '_top_node' : ''}`,
     });
 
     const path_rect = self.objects_ref.node_rect.clone({
@@ -3142,7 +3189,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       y: y1 - 1,
       width: self.distance - x1,
       height: y2 - y1,
-      id: [path_id, 'rect'].join('_'),
+      id: `${[path_id, 'rect'].join('_')}${is_top_node ? '_top_node' : ''}`,
       path,
       path_id,
     });
@@ -3233,7 +3280,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
           imgPdf.addImage(dataURL, 'PNG', 0, -0.25, 8.5, 0, '', 'none');
           imgPdf.save(img_file_name);
         }
-        
+
         self.stage.width(width);
         self.stage.height(height);
         self.stage.scale({
@@ -3273,7 +3320,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         .map(name => {
           if (self.legend_continuous_categories.includes(name)) {
             return `<li class="inchlib-legend_list-item"><strong>${self._format_category_name(name)}</strong>
-            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.split('_')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
+            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.split('_')[0]}"></span> ${self.legend_gradient_upper_value(name)} ${name === 'age_at_diagnosis' ? 'years' : 'days'}</li></ul></li>`
           } else {
             const legend_list = Object.keys(self.options.categories.colors[name])
               .map(value => `<li class="inchlib-legend_sublist-item${
@@ -3301,6 +3348,46 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     });
   };
 
+  InCHlib.prototype._redraw_axis_labels = function () {
+    const self = this;
+    self._delete_layers([
+      self.axis_labels_layer,
+    ]);
+    self._draw_axis_labels();
+  };
+
+  InCHlib.prototype._draw_axis_labels = function () {
+    const self = this;
+    self.axis_labels_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.stage.add(self.axis_labels_layer);
+
+
+    const column_count = Object.values(self.heatmap_layer.children[0].children)
+      .filter(hm_child => hm_child &&
+        hm_child.attrs &&
+        hm_child.attrs.hgnc_symbol).length;
+    const heatmap_cells_width = column_count * self.pixels_for_dimension;
+    const x_axis_x = self.heatmap_distance - (self.axis_label_width / 2) + (heatmap_cells_width / 2);
+
+    const x_axis_label = self.objects_ref.axis_label.clone({
+      text: 'Cases',
+      x: x_axis_x,
+      y: -20
+    });
+
+    const y_axis_y = self.column_metadata_height + self.header_height + (self.heatmap_height / 2) + (self.axis_label_width / 2) + 10;
+
+    const y_axis_label = self.objects_ref.axis_label.clone({
+      rotation: -90,
+      text: 'Genes',
+      x: -20,
+      y: y_axis_y,
+    });
+
+    self.axis_labels_layer.add(x_axis_label, y_axis_label);
+    self.axis_labels_layer.draw();
+  }
+
   InCHlib.prototype._draw_heatmap_scale = function() {
     const self = this;
     self.heatmap_scale_layer = self.objects_ref.layer_below_toolbar.clone({x: 5 })
@@ -3316,8 +3403,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     let scale_x = 0;
     let scale_y = 0;
 
-    const scale_height = 125;
-
     const scale_heading = new Konva.Text({
       fill: self.hover_fill,
       fontFamily: self.options.font.family,
@@ -3329,17 +3414,18 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
     scale_y += 25;
 
+    const scale_height = 130;
     const scale_width = 20;
 
     const scale_gradient = new Konva.Rect({
       fillLinearGradientColorStops: self.color_steps,
       fillLinearGradientEndPoint: {
         x: scale_x,
-        y: scale_y + 90,
+        y: scale_y,
       },
       fillLinearGradientStartPoint: {
         x: scale_x,
-        y: scale_y,
+        y: scale_height - scale_y,
       },
       linecap: 'square',
       height: scale_height,
@@ -3375,19 +3461,19 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     scale_y -= 5;
     const scaleY_int = Math.floor(scale_height / scale_values.length) + 6;
 
-    for (let i = 0; i < scale_values.length; i++) {
-      const text = scale_values[i];
-      const scale_text = new Konva.Text({
+    // reverse, as in "from positive to negative"
+    scale_values.reverse().forEach(text => {
+      scale_group.add(new Konva.Text({
         fill: self.hover_fill,
         fontFamily: self.options.font.family,
         fontStyle: '500',
         text,
         x: scale_x,
         y: scale_y,
-      });
-      scale_group.add(scale_text);
+      }));
+
       scale_y += scaleY_int;
-    }
+    });
 
     self.heatmap_scale_layer.add(scale_group);
     self.heatmap_scale_layer.draw();
@@ -3398,7 +3484,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.legend_img_layer = self.objects_ref.layer_below_toolbar.clone();
     self.stage.add(self.legend_img_layer);
 
-    const legend_width = 150;
+    const legend_width = 170;
     const legend_y = -20;
     const legend_x = self.stage.width() - (is_png
       ? legend_width + 5
@@ -3464,7 +3550,7 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
         const max = new Konva.Text({
           fill: self.hover_fill,
-          text: self.legend_gradient_upper_value(heading),
+          text: `${self.legend_gradient_upper_value(heading)} ${heading === 'age_at_diagnosis' ? 'years' : 'days'}`,
           x: x + 95,
           y,
         });
@@ -3523,16 +3609,18 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._dendrogram_layers_click = function (layer, evt) {
     const self = this;
-    const { path_id } = evt.target.attrs;
-    layer.fire('mouseout', layer, evt);
-    self._highlight_cluster(path_id);
+    const { path_id, id } = evt.target.attrs;
+    const is_top_node = self._check_top_node(id);
+    if (!is_top_node) layer.fire('mouseout', layer, evt);
+    self._highlight_cluster(path_id, id);
   };
 
   InCHlib.prototype._column_dendrogram_layers_click = function (layer, evt) {
     const self = this;
-    const { path_id } = evt.target.attrs;
-    layer.fire('mouseout', layer, evt);
-    self._highlight_column_cluster(path_id);
+    const { path_id, id } = evt.target.attrs;
+    const is_top_node = self._check_top_node(id);
+    if (!is_top_node) layer.fire('mouseout', layer, evt);
+    self._highlight_column_cluster(path_id, id);
   };
 
   InCHlib.prototype._dendrogram_layers_mousedown = function (layer, evt) {
@@ -3551,7 +3639,6 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._dendrogram_layers_mouseout = function (layer, evt) {
     const self = this;
-    self.path_overlay.destroy();
     // remove tooltip
     self.dendrogram_hover_layer.destroyChildren();
     self.dendrogram_hover_layer.draw();
@@ -3702,39 +3789,34 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       ? self.column_dendrogram.nodes[path_id]
       : self.data.nodes[path_id];
 
-    const is_featured = is_column
-      ? path_id === self.last_highlighted_column_cluster
-      : path_id === self.last_highlighted_cluster;
-
     const genes_or_cases = is_column
       ? 'cases'
       : 'genes';
 
-    const clicks = is_featured
+    const is_highlighted = is_column
+      ? path_id === self.last_highlighted_column_cluster
+      : path_id === self.last_highlighted_cluster;
+
+    const clicks = is_highlighted
       ? 'Click'
       : 'Double-click';
 
     // center tooltip on the dendrogram line
     let tooltip_x = x + (width / 2);
 
-    // find outermost dendrogram line:
-    // check if the tooltip text matches the number of rows/cols visible
-    const gene_count = self.heatmap_layer.children
-      .filter(child => child.attrs.class !== 'column_metadata')
-      .length;
-    const case_count = self.heatmap_layer.children[0].children.length;
-
-    const is_outermost_line = count === (is_column ? case_count : gene_count);
+    const is_top_node = self._check_top_node(id);
 
     const tooltip = self.objects_ref.tooltip_label.clone({
       x: x + (width / 2),
       y,
       id: 'dendrogram_label',
-      opacity: is_outermost_line ? 0 : 1,
+      opacity: 1,
     });
 
-    // leave space for the zoom_icon
-    const tooltip_text = `        ${clicks} to zoom ${count} ${genes_or_cases}`;
+    // leave space for the zoom_icon on inner dendrograms
+    const tooltip_text = `${is_top_node
+      ? ''
+      : `        ${clicks} to zoom `}${count} ${genes_or_cases}`;
 
     tooltip.add(
       self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }),
@@ -3745,19 +3827,19 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     // move it over to the right
     const half_width = tooltip.width() / 2;
     if (!is_column) {
+      tooltip.x(x + 10);
       const current_tooltip_x = tooltip.x();
-      const half_width = tooltip.width() / 2;
       const difference = half_width - current_tooltip_x;
       if (difference > 0) {
         tooltip_x = current_tooltip_x + difference + 5;
         tooltip.x(tooltip_x);
       }
     }
-    const zoom_x = tooltip_x - half_width - 3;
+    const zoom_x = tooltip.x() - half_width - 3;
     const zoom_y = y - 39;
 
     const zoom_icon = self.objects_ref.zoom_icon.clone({
-      opacity: +(!is_outermost_line), // integer value of boolean's opposite
+      opacity: +(!is_top_node), // integer value of boolean's opposite
       x: zoom_x,
       y: zoom_y,
     });
@@ -3813,9 +3895,11 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       // below: column_metadata tooltip
       : self._format_category_name(header_value);
 
-    const tooltip_value = typeof value === 'undefined'
-      ? name
-      : value;
+    const tooltip_value = header_value === 'age_at_diagnosis'
+      ? ageDisplay(name)
+      : typeof value === 'undefined'
+        ? name || 'N/A'
+        : `Value: ${typeof value === 'number' ? value.toFixed(4) : value}`;
 
     const tooltip_text = [header_text, tooltip_value].join('\n');
 
@@ -3915,23 +3999,45 @@ import { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     */
   InCHlib.prototype.init = function () {
     const self = this;
-    // setTimeout is used to force synchronicity in canvas
-    const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-    self.$element.after(loading_div);
-    self.$element.hide();
-
-    setTimeout(function () {
+    self._bind_events();
+    if (self.extHandlers.handleLoading) {
       self.read_data(self.options.data);
       self.draw();
-    }, 50);
+      // Future implementation: passing a string here could update the message in the loader. "Loading heatmap"
+      self.extHandlers.handleLoading(false);
+    } else {
+      // setTimeout is used to force synchronicity in canvas
+      const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
+      self.$element.after(loading_div);
+      self.$element.hide();
 
-    setTimeout(function () {
-      loading_div.fadeOut().remove();
-      self.$element.show();
-    }, 50);
+      setTimeout(function () {
+        self.read_data(self.options.data);
+        self.draw();
+      }, 50);
+
+      setTimeout(function () {
+        loading_div.fadeOut().remove();
+        self.$element.show();
+      }, 50);
+    }
   };
 
-  $.fn[plugin_name] = function (options, extHandlers) {
+  InCHlib.prototype._bind_events = function() {
+    const self = this;
+    self.$element.bind('destroy.inchlib', function() {
+      self._delete_all_layers();
+      self._unbind_events();
+      $.removeData(this, 'plugin_' + plugin_name);
+    });
+  }
+
+  InCHlib.prototype._unbind_events = function() {
+    const self = this;
+    self.$element.unbind('.inchlib');
+  }
+
+  $.fn[plugin_name] = function (options = {}, extHandlers = {}) {
     // note: this plugin only supports ONE instance
     return this.each(function () {
       if ($.data(this, 'plugin_' + plugin_name)) {

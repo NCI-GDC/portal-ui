@@ -1,5 +1,3 @@
-import React from 'react';
-
 import DropDown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 

@@ -51,16 +51,16 @@ const CreateOrOpenAnalysis = ({
             type,
             created,
           }),
-        ).then(() => {
-          window.open(
-            `analysis?${queryString.stringify({
-              analysisTableTab: 'result',
-              analysisId: id,
-            })}`,
-          );
-        });
+        );
+
+        window.open(
+          `analysis?${queryString.stringify({
+            analysisTableTab: 'result',
+            analysisId: id,
+          })}`,
+        );
       }}
-    >
+      >
       {children}
     </UnstyledButton>
   );

@@ -20,6 +20,7 @@ class Demo extends React.Component {
       }, []),
     };
   }
+
   componentWillUpdate(nextProps, nextState) {
     nextState.setStates.forEach(({ count, id, type }, i) => {
       if (
@@ -27,22 +28,33 @@ class Demo extends React.Component {
         count === 0 &&
         this.state.setStates[i].count !== 0
       ) {
+        const {
+          score,
+          size,
+          ...filters
+        } = nextProps.filters[id];
+
         nextProps.createSet({
-          type,
-          scope: 'explore',
           action: 'create',
-          size: 10000,
-          set_id: id,
-          filters: nextProps.filters[id],
+          filters,
           onComplete: () => {
             const setStates = [...this.state.setStates];
-            setStates[i] = { ...setStates[i], created: true };
+            setStates[i] = {
+              ...setStates[i],
+              created: true,
+            };
             this.setState({ setStates });
           },
+          scope: 'explore',
+          set_id: id,
+          size: size || 10000,
+          type,
+          ...score && { score },
         });
       }
     });
   }
+
   render() {
     const { children } = this.props;
     const setsReady = this.state.setStates.every(
@@ -57,7 +69,6 @@ class Demo extends React.Component {
 
           return (
             <CountComponent
-              key={id}
               filters={{
                 op: 'and',
                 content: [
@@ -72,10 +83,14 @@ class Demo extends React.Component {
               }}
               handleCountChange={count => {
                 const setStates = [...this.state.setStates];
-                setStates[i] = { ...setStates[i], count };
+                setStates[i] = {
+                  ...setStates[i],
+                  count,
+                };
                 this.setState({ setStates });
               }}
-            >
+              key={id}
+              >
               {() => null}
             </CountComponent>
           );

@@ -14,6 +14,7 @@ import {
 } from 'lodash';
 
 import withRouter from '@ncigdc/utils/withRouter';
+import Chip from '@ncigdc/uikit/Chip';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 import {
   addAnalysis,
@@ -132,6 +133,14 @@ const AnalysisResult = ({
 
                       <div style={{ fontSize: '1.2rem' }}>
                         {foundAnalysis.label}
+                        {foundAnalysis.isBeta && (
+                          <Chip
+                            label="BETA"
+                            style={{
+                              marginLeft: '0.5rem',
+                            }}
+                            />
+                        )}
                       </div>
                     </Column>
                   </Row>

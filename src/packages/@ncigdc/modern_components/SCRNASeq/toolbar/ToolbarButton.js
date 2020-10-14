@@ -1,4 +1,3 @@
-import React from 'react';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
 
 import Button from '@ncigdc/uikit/Button';

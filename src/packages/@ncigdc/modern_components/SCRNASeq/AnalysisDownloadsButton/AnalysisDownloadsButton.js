@@ -23,13 +23,13 @@ const enhance = compose(
   setDisplayName('EnhancedAnalysisDownloadsButton'),
   pure,
   withProps(({
-    viewer: { repository: { files: { hits: { edges = [] }}}}
+    viewer: { repository: { files: { hits: { edges = [] } } } },
   }) => ({
     analysisFiles: edges.map(({ node }) => ({
       ...node,
       label: node.data_type === 'Single Cell Analysis'
         ? 'Cell Counts'
-        : node.data_type
+        : node.data_type,
     })),
   })),
   withState('active', 'setActive', false),
@@ -41,12 +41,11 @@ const enhance = compose(
     }) => (data_type) => () => {
       setActive(true);
       const analysisFile = find(analysisFiles, file => file.data_type === data_type);
-      const file_id = analysisFile && analysisFile.file_id;
       const params = {
         filename: analysisFile.file_name,
         ids: analysisFile.file_id,
         size: analysisFile.file_size,
-      }
+      };
       download({
         method: 'POST',
         params,
@@ -57,7 +56,7 @@ const enhance = compose(
 );
 
 const AnalysisDownloadsButton = ({
-  active, analysisFiles, handleAnalysisClick
+  active, analysisFiles, handleAnalysisClick,
 }) => {
   return (
     <DropDown
@@ -73,7 +72,7 @@ const AnalysisDownloadsButton = ({
           </Button>
         </Tooltip>
       )}
-      dropdownStyle={{ 
+      dropdownStyle={{
         // move to the right to compensate for
         // div added by relay component
         right: -172,
@@ -94,7 +93,7 @@ const AnalysisDownloadsButton = ({
         </DropdownItem>
       ))}
     </DropDown>
-  )
+  );
 };
 
 export default enhance(AnalysisDownloadsButton);

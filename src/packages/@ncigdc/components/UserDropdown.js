@@ -10,6 +10,7 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import styled from '@ncigdc/theme/styled';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import { fetchToken, forceLogout } from '@ncigdc/dux/auth';
+import { checkAWGSession } from '@ncigdc/utils/auth/awg';
 import { notify } from '@ncigdc/dux/notification';
 import UserIcon from '@ncigdc/theme/icons/User';
 import SignOutIcon from '@ncigdc/theme/icons/SignOut';
@@ -19,7 +20,6 @@ import {
   AUTH,
   IS_DEV,
   AWG,
-  FENCE,
 } from '@ncigdc/utils/constants';
 
 const iconStyle = {
@@ -34,24 +34,25 @@ const DropdownItemStyled = styled(DropdownItem, {
 });
 
 const logout = async dispatch => {
-  if (AWG) {
-    try {
-      await fetch(urlJoin(FENCE, 'logout'), { credentials: 'include' });
-      // need to delete user from store
-      dispatch(forceLogout());
-    } catch (err) {
-      console.warn('There was an error: ', err);
-    }
-    return window.location.assign(
-      urlJoin(AUTH, 'logout?next=https://portal.awg.gdc.cancer.gov/login'),
-    );
+  try {
+    // need to delete user from store
+    dispatch(forceLogout());
+  } catch (err) {
+    console.warn('There was an error: ', err);
   }
 
-  dispatch(forceLogout());
-
-  return IS_DEV || window.location.assign(urlJoin(AUTH, `logout?next=${
-    window.location.port ? `:${window.location.port}` : ''
-  }${window.location.pathname}`));
+  return AWG
+    ? window.location.assign(urlJoin(
+      AUTH,
+      'logout?next=https://portal.awg.gdc.cancer.gov/login',
+    ))
+    : IS_DEV ||
+      window.location.assign(urlJoin(
+        AUTH,
+        `logout?next=${
+          window.location.port ? `:${window.location.port}` : ''
+        }${window.location.pathname}`,
+      ));
 };
 
 const UserDropdown = connect(state => ({
@@ -92,9 +93,10 @@ const UserDropdown = connect(state => ({
     )}
 
     <DropdownItemStyled
-      onClick={() => {
+      onClick={async () => {
         if (userProjectsCount(user)) {
-          dispatch(fetchToken());
+          const sessionActive = await checkAWGSession('fetchAuth-triggered', 'fetchToken');
+          sessionActive && dispatch(fetchToken());
         } else {
           dispatch(
             notify({

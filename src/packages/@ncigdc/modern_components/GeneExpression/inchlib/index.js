@@ -247,6 +247,8 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       sat: 25,
     };
 
+    self.toRGB = ({ r, g, b }) => `rgb(${r},${g},${b})`;
+
     self.get_days_to_death_color = val => {
       // create red & green values for RGB().
       // will result in a shade of blue.
@@ -254,7 +256,7 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       const red_green = Math.floor(255 - (val / self.MAX_DAYS_TO_DEATH * 255));
       return isNaN(red_green) // i.e. val is "not reported"
         ? self.invalid_column_metadata_color
-        : `rgb(${red_green},${red_green},255)`;
+        : self.toRGB({ r: red_green, g: red_green, b: 255 });
     };
 
     self.get_age_at_diagnosis_color = val => {
@@ -288,8 +290,8 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         min: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%)`,
       },
       days: {
-        max: 'rgb(0,0,255)',
-        min: 'rgb(255,255,255)',
+        max: self.toRGB({ r: 0, g: 0, b: 255 }),
+        min: self.toRGB({ r: 255, g: 255, b: 255 }),
       },
     }
 
@@ -904,13 +906,17 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     * Creates color steps for the heatmap.
     * @name InCHlib#color_steps
     */
-    self.color_steps = [
+    self.color_steps = (
+      under = self._get_color_for_value()(0),
+      middle = self._get_color_for_value()(0.5),
+      over = self._get_color_for_value()(1),
+    ) => [
       0,
-      self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
+      under,
       .5,
-      self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
+      middle,
       1,
-      self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
+      over,
     ];
 
     /**
@@ -918,15 +924,19 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     * @name InCHlib#get_scale_values
     */
     self.get_scale_values = () => {
-      const [min, max, mid] = self.data_descs_all;
-      return [
-        min,
-        (((mid - min) / 2) + min),
-        mid,
-        (((max - mid) / 2) + mid),
-        max,
-      ]
-      .map(x => round(x, 1).toFixed(1));
+      const [min, max, mid] = self.data_descs_all.map(x => +round(x, 1).toFixed(1));
+
+      return (
+        ['median', 'geneExpression'].includes(self.options.centering)
+        ? [-3, 0, 3]
+        : [
+          min,
+          (((mid - min) / 2) + min),
+          mid,
+          (((+max - mid) / 2) + mid),
+          max,
+        ]
+      ).map(x => x.toString());
     };
 
     /**
@@ -1058,12 +1068,18 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const form_id = `${self._name}_heatmap_form`;
 
     const color_scales = Object.keys(self.colors).map(color => {
-      const color_1 = self._get_color_for_value(0, 0, 1, 0.5, color);
-      const color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, color);
-      const color_3 = self._get_color_for_value(1, 0, 1, 0.5, color);
+      const getColorforValue = self._get_color_for_value('modal', color);
+      const [min, mid, max] = self.get_scale_values();
+      const { middle } = self.colors[color];
+
+      const displayMedian = ['median', 'geneExpression'].includes(self.options.centering) && middle;
+
       const checked = self.options.heatmap_colors === color;
-      const scale = $(`<label class="inchlib-modal_heatmap-label"><input type="radio" class="inchlib-modal_heatmap-input" name="inchlib-color-scale" value="${color}"${checked ? ' checked' : ''}><div class="inchlib-modal_heatmap-gradient" style="background: linear-gradient(to right, ${color_1},${color_2},${color_3})"></div></label>`);
-      return scale;
+      const color_1 = getColorforValue(displayMedian ? min : 0);
+      const color_2 = getColorforValue(displayMedian ? mid : 0.5);
+      const color_3 = getColorforValue(displayMedian ? max : 1);
+
+      return  $(`<label class="inchlib-modal_heatmap-label"><input type="radio" class="inchlib-modal_heatmap-input" name="inchlib-color-scale" value="${color}"${checked ? ' checked' : ''}><div class="inchlib-modal_heatmap-gradient" style="background: linear-gradient(to right, ${color_1},${color_2},${color_3})"></div></label>`);
     });
 
     const heatmap_form = $(`<form id='${form_id}' class="inchlib-modal_heatmap-form"></form>`).append(color_scales);
@@ -1317,7 +1333,7 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         min = (self.options.min_percentile > 0)
           ? columns[i][self._hack_round(len * self.options.min_percentile / 100)]
           : Math.min.apply(null, columns[i]);
-        middle = self.options.centering === 'geneExpression'
+        middle = ['median', 'geneExpression'].includes(self.options.centering)
           ? 0
           : (self.options.middle_percentile != 50)
             ? columns[i][self._hack_round(len * self.options.middle_percentile / 100)]
@@ -2087,7 +2103,14 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       text_value = value;
 
       if (value !== null) {
-        color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
+        color = self._get_color_for_value('heatmap')(
+          value,
+          self.data_descs[col_index].min,
+          self.data_descs[col_index].max,
+          ['median', 'geneExpression'].includes(self.options.centering)
+            ? 0
+            : self.data_descs[col_index].middle,
+        );
 
         line = self.objects_ref.heatmap_line.clone({
           stroke: color,
@@ -2576,17 +2599,14 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
   InCHlib.prototype._update_color_scale = function () {
     const self = this;
     const color_scale = self.navigation_layer.find(`#${self._name}_color_scale`);
+    const getColorValue = self._get_color_for_value();
 
-    self.color_steps = [
-      0,
-      self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
-      0.5,
-      self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
-      1,
-      self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
-    ];
+    color_scale.fillLinearGradientColorStops(self.color_steps(
+      getColorValue(0),
+      getColorValue(0.5),
+      getColorValue(1)
+    ));
 
-    color_scale.fillLinearGradientColorStops(self.color_steps);
     self.navigation_layer.draw();
     self._redraw_heatmap_scale();
   };
@@ -3390,6 +3410,8 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._draw_heatmap_scale = function() {
     const self = this;
+    const isMedianCentered = ['median', 'geneExpression'].includes(self.options.centering);
+
     self.heatmap_scale_layer = self.objects_ref.layer_below_toolbar.clone({x: 5 })
     self.stage.add(self.heatmap_scale_layer);
 
@@ -3412,20 +3434,34 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       y: scale_y,
     });
 
-    scale_y += 25;
+    const modularOffset = isMedianCentered ? 2 : 1.5; // how many times is it tall as it is wide
+    const scale_values = self.get_scale_values();
+    const scale_width = 25;
+    const scale_height = (scale_values.length - 1) * (scale_width * modularOffset); // for visual modularity
 
-    const scale_height = 130;
-    const scale_width = 20;
+    const { middle } = self.colors[self.options.heatmap_colors];
+    const min = scale_values[0];
+    const mid = scale_values[Math.round((scale_values.length - 1) / 2)];
+    const max = scale_values[scale_values.length - 1];
+
+    const getColorforValue = self._get_color_for_value('scale');
+    const displayMedian = isMedianCentered && middle;
+
+    scale_y += scale_width;
 
     const scale_gradient = new Konva.Rect({
-      fillLinearGradientColorStops: self.color_steps,
+      fillLinearGradientColorStops: self.color_steps(
+        getColorforValue(displayMedian ? min : 0),
+        getColorforValue(displayMedian ? mid : 0.5),
+        getColorforValue(displayMedian ? max : 1),
+      ),
       fillLinearGradientEndPoint: {
         x: scale_x,
-        y: scale_y,
+        y: scale_height,
       },
       fillLinearGradientStartPoint: {
         x: scale_x,
-        y: scale_height - scale_y,
+        y: 0,
       },
       linecap: 'square',
       height: scale_height,
@@ -3435,44 +3471,36 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       x: scale_x,
       y: scale_y,
     });
+
     scale_group.add(scale_gradient, scale_heading);
 
     // add ticks to heatmap scale
+    const tickPosition = (i, offset = 0) =>
+      (scale_width * modularOffset * i) +
+      scale_y + offset;
 
     scale_x += scale_width;
 
-    for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
-      const tick = new Konva.Rect({
+    // reverse, as in "from positive to negative"
+    scale_values.reverse().forEach((text, i) => {
+      // ticks
+      scale_group.add(new Konva.Rect({
         stroke: 'grey',
         strokeWidth: 1,
-        width: 10,
+        width: 6,
         x: scale_x,
-        y: Math.round(scale_y + (scale_height * (0.25 * i))),
-      });
-      scale_group.add(tick);
-    }
+        y: tickPosition(i),
+      }));
 
-    // add values to heatmap scale
-
-    scale_x += 15;
-
-    const scale_values = self.get_scale_values();
-
-    scale_y -= 5;
-    const scaleY_int = Math.floor(scale_height / scale_values.length) + 6;
-
-    // reverse, as in "from positive to negative"
-    scale_values.reverse().forEach(text => {
+      // values
       scale_group.add(new Konva.Text({
         fill: self.hover_fill,
         fontFamily: self.options.font.family,
         fontStyle: '500',
         text,
-        x: scale_x,
-        y: scale_y,
+        x: scale_x + 15,
+        y: tickPosition(i, -6),
       }));
-
-      scale_y += scaleY_int;
     });
 
     self.heatmap_scale_layer.add(scale_group);
@@ -3652,37 +3680,48 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.dendrogram_hover_layer.draw();
   };
 
-  InCHlib.prototype._get_color_for_value = function (value, min, max, middle, color_scale) {
+  InCHlib.prototype._get_color_for_value = function (origin, color_scale) {
     const self = this;
-    const color = self.colors[color_scale];
-    let c1 = color.start;
-    let c2 = color.end;
 
-    if (value > max) {
-      return `rgb(${c2.r},${c2.g},${c2.b})`;
-    }
+    return (value, min = 0, max = 1, middle = 0.5) => {
+      const color = self.colors[color_scale || self.options.heatmap_colors];
+      let c1 = color.start;
+      let c2 = color.end;
 
-    if (min == max || value < min) {
-      return `rgb(${c1.r},${c1.g},${c1.b})`;
-    }
+      const useMedian = ['median', 'geneExpression'].includes(self.options.centering) && color.middle;
 
-    if (color.middle !== undefined) {
-      if (value >= middle) {
-        min = middle;
-        c1 = color.middle;
-        c2 = color.end;
-      } else {
-        max = middle;
-        c1 = color.start;
-        c2 = color.middle;
+      let bottom = useMedian ? -3 : min;
+      let top = useMedian ? 3 : max;
+      middle = useMedian ? 0 : middle;
+
+      if (value <= bottom || min === max) {
+        return self.toRGB({r: c1.r, g: c1.g, b: c1.b });
       }
-    }
 
-    const position = (value - min) / (max - min);
-    const r = self._hack_round(c1.r + (position * (c2.r - c1.r)));
-    const g = self._hack_round(c1.g + (position * (c2.g - c1.g)));
-    const b = self._hack_round(c1.b + (position * (c2.b - c1.b)));
-    return `rgb(${r},${g},${b})`;
+      if (value >= top) {
+        return self.toRGB({r: c2.r, g: c2.g, b: c2.b });
+      }
+
+      if (color.middle !== undefined) {
+        if (value >= middle) {
+          bottom = middle;
+          c1 = color.middle;
+          c2 = color.end;
+        } else {
+          top = middle;
+          c1 = color.start;
+          c2 = color.middle;
+        }
+      }
+
+      const position = useMedian
+        ? (value - bottom) / (top - bottom)
+        : (value - min) / (max - min);
+      const r = self._hack_round(c1.r + (position * (c2.r - c1.r)));
+      const g = self._hack_round(c1.g + (position * (c2.g - c1.g)));
+      const b = self._hack_round(c1.b + (position * (c2.b - c1.b)));
+      return self.toRGB({ r, g, b });
+    }
   };
 
   InCHlib.prototype._get_font_size = function (text_length, width, height, max_font_size) {

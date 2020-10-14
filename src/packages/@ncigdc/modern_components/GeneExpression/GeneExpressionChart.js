@@ -15,7 +15,7 @@ const options = {
   categories: {
     colors: CATEGORY_COLORS,
   },
-  centering: 'geneExpression',
+  centering: 'geneExpression', // enables median centered heatmap display
   max_width: 1200,
   tooltip: {
     fill: '#fff',

@@ -1,5 +1,9 @@
 /* eslint-disable camelcase */
-import { isEqual } from 'lodash';
+import {
+  capitalize,
+  isEqual,
+  truncate,
+} from 'lodash';
 import {
   compose,
   pure,
@@ -10,6 +14,10 @@ import {
 } from 'recompose';
 import moment from 'moment';
 
+import ValidationResults from '@ncigdc/components/analysis/geneExpression/ValidationResults';
+import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import countComponents from '@ncigdc/modern_components/Counts';
 import Chip from '@ncigdc/uikit/Chip';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
@@ -51,6 +59,8 @@ const GeneExpression = ({
   isDemo,
   isLoading,
   loadingHandler,
+  sets,
+  validationResults,
   visualizationData,
 }) => (
   <Column style={{ marginBottom: '1rem' }}>
@@ -83,7 +93,11 @@ const GeneExpression = ({
         </h1>
 
         {isDemo && (
-          <section>
+          <section
+            style={{
+              marginBottom: '1rem',
+            }}
+            >
             <p>
               Try out the beta release of our new tool for gene expression analysis.
               <br />
@@ -101,6 +115,126 @@ const GeneExpression = ({
             </p>
           </section>
         )}
+
+        <section
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            marginBottom: '1rem',
+          }}
+          >
+          <EntityPageHorizontalTable
+            data={Object.entries(sets).map(([setType, set]) => {
+              const [setId, setLabel] = Object.entries(set)[0];
+              const id = `set-table-${setType}-${setId}-select`;
+              const CountComponent = countComponents[setType];
+
+              return {
+                count: (
+                  <CountComponent
+                    filters={{
+                      content: {
+                        field: `${setType}s.${setType}_id`,
+                        value: `set_id:${setId}`,
+                      },
+                      op: '=',
+                    }}
+                    >
+                    {count => (
+                      <span>
+                        {count === 0 ? (
+                          0
+                        ) : (
+                          <ExploreLink
+                            query={{
+                              filters: {
+                                content: [
+                                  {
+                                    content: {
+                                      field: `${setType}s.${setType}_id`,
+                                      value: [`set_id:${setId}`],
+                                    },
+                                    op: 'IN',
+                                  },
+                                ],
+                                op: 'AND',
+                              },
+                              searchTableTab: `${setType}s`,
+                            }}
+                            target="_blank"
+                            >
+                            {count.toLocaleString()}
+                          </ExploreLink>
+                        )}
+                      </span>
+                    )}
+                  </CountComponent>
+                ),
+                id,
+                set: (
+                  <label
+                    htmlFor={id}
+                    title={setLabel}
+                    >
+                    <span
+                      style={{
+                        fontStyle: 'italic',
+                        fontWeight: 'bold',
+                        marginRight: '1rem',
+                      }}
+                      >
+                      {`${capitalize(setType)}s:`}
+                    </span>
+
+                    {truncate(setLabel, { length: 30 })}
+                  </label>
+                ),
+              };
+            })}
+            headings={[
+              {
+                key: 'set',
+                style: { width: 100 },
+                title: 'Set',
+              },
+              {
+                key: 'count',
+                style: { textAlign: 'right' },
+                title: '# Items',
+              },
+            ]}
+            tableBodyCellStyle={{
+              width: '100%',
+            }}
+            tableBodyRowStyle={{
+              backgroundColor: '#fff',
+            }}
+            tableContainerStyle={{
+              boxShadow: '0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12)',
+              marginBottom: '1rem',
+              marginRight: '2.5rem',
+              padding: '1rem',
+              width: '33rem',
+              zIndex: 6,
+            }}
+            tableHeadingStyle={{
+              backgroundColor: '#fff',
+              fontSize: '1.5rem',
+            }}
+            />
+
+          <ValidationResults
+            key="validation"
+            styles={{
+              alignItems: 'center',
+              boxShadow: '0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12)',
+              marginBottom: '1rem',
+              padding: '1rem',
+              paddingBottom: 'calc(1rem - 10px)',
+            }}
+            validationResults={validationResults}
+            />
+        </section>
 
         {isLoading
           ? (

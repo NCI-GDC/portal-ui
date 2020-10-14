@@ -37,7 +37,10 @@ const EntityPageHorizontalTable = ({
   idKey,
   dividerStyle,
   showHeadings = true,
+  tableBodyCellStyle = {},
+  tableBodyRowStyle = {},
   tableContainerStyle = {},
+  tableHeadingStyle = {},
   ...props
 }) => {
   return (
@@ -85,6 +88,7 @@ const EntityPageHorizontalTable = ({
                       backgroundColor: get(d, 'select.props.selected', false)
                         ? theme.tableHighlight
                         : (k % 2 === 0 ? theme.tableStripe : '#fff'),
+                      ...tableBodyRowStyle,
                     }}
                     >
                     {headings.map((h, i) => [].concat(get(d, h.key, '--')).map((v, j) => (
@@ -95,6 +99,7 @@ const EntityPageHorizontalTable = ({
                         style={{
                           ...(h.tdStyle || h.style || {}),
                           ...(i > 0 && j === 0 ? dividerStyle : {}),
+                          ...tableBodyCellStyle,
                         }}
                         >
                         {h.color && (
@@ -119,6 +124,7 @@ const EntityPageHorizontalTable = ({
                 style={{
                   ...(h.thStyle || h.style || {}),
                   ...(i > 0 ? dividerStyle : {}),
+                  ...tableHeadingStyle,
                 }}
                 >
                 {h.title}

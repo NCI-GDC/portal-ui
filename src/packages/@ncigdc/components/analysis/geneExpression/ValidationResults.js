@@ -4,26 +4,16 @@ import WarningBox from '@ncigdc/uikit/WarningBox';
 import './styles.scss';
 
 const ValidationResults = ({
+  instructions,
   styles,
   validationResults,
 }) => (
   <Row
     className="validation-results"
-    style={styles.rowStyle}
+    style={styles}
     >
     <Column style={{ flex: 1 }}>
-      <h2
-        style={{
-          color: '#c7254e',
-          fontSize: '1.8rem',
-        }}
-        >
-        Step 3: Check available data
-      </h2>
-
-      <p style={{ marginBottom: 15 }}>
-        Check if your input sets have gene expression data available before running the analysis.
-      </p>
+      {instructions}
 
       {validationResults && (
         validationResults.status === 'error'

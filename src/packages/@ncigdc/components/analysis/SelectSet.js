@@ -46,6 +46,8 @@ const SelectSet = ({
     setInstructions,
     setTypes,
     type,
+    validateSets,
+    validationInstructions,
   },
   checkDataHandler,
   isClinical,
@@ -96,7 +98,11 @@ const SelectSet = ({
       <Column style={{ paddingTop: 5 }}>
         <Row spacing="5px">
           <Button onClick={onCancel}>Back</Button>
-          <DemoButton demoData={demoData} type={type} />
+          <DemoButton
+            demoData={demoData}
+            type={type}
+            validation={validateSets}
+            />
         </Row>
       </Column>
     </Row>
@@ -116,8 +122,9 @@ const SelectSet = ({
         ))
         .concat(
           <ValidationResults
+            instructions={validationInstructions}
             key="validation"
-            styles={styles}
+            styles={styles.rowStyle}
             validationResults={validationResults}
             />,
         )
@@ -241,7 +248,8 @@ export default compose(
     runHandler: ({
       onRun,
       selectedSets,
-    }) => event => onRun(selectedSets),
+      validationResults,
+    }) => event => onRun(selectedSets, validationResults),
     setsData: ({
       analysisProps: {
         setDisabledMessage = () => {},

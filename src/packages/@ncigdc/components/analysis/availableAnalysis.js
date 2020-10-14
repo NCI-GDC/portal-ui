@@ -422,7 +422,7 @@ const availableAnalysis: [TAnalysis] = [
           'tcga-brca': 'All TCGA-BRCA cases.',
         },
         gene: {
-          'tcga-brca--top-50-pc-genes': 'Top 50 protein coding genes by highest # SSM affected cases in the cohort.',
+          'tcga-brca--top-50-pc-genes': 'Top 50 Mutated Protein Coding Genes.',
         },
       },
       type: 'gene_expression',
@@ -471,6 +471,22 @@ const availableAnalysis: [TAnalysis] = [
     ),
     setTypes: ['case', 'gene'],
     type: 'gene_expression',
+    validationInstructions: (
+      <React.Fragment>
+        <h2
+          style={{
+            color: '#c7254e',
+            fontSize: '1.8rem',
+          }}
+          >
+          Step 3: Check available data
+        </h2>
+
+        <p style={{ marginBottom: 15 }}>
+          Check if your input sets have gene expression data available before running the analysis.
+        </p>
+      </React.Fragment>
+    ),
     validateSets: {
       availability: sets => (
           Object.keys(sets).length

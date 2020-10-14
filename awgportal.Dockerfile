@@ -6,10 +6,10 @@ COPY ./ /portal
 
 ENV REACT_APP_WEBSITE_NAME=GDC \
     REACT_APP_API="https://portal.awg.gdc.cancer.gov/auth/api" \
+    REACT_APP_FENCE="https://portal.awg.gdc.cancer.gov/fence/"\
     REACT_APP_GDC_AUTH="https://portal.awg.gdc.cancer.gov/auth/"\
-    REACT_APP_FENCE="https://login.awg.gdc.cancer.gov"\
+    AWG_LOGIN_EXPIRY=20 \
     GDC_BASE="/" \
-    REACT_APP_GDC_AUTH_API="https://portal.awg.gdc.cancer.gov/auth/api" \
     REACT_APP_AWG=true \
     REACT_APP_IS_AUTH_PORTAL=true \
     # REACT_APP_GDC_DISPLAY_SLIDES=true \

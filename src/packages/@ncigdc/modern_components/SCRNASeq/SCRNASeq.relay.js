@@ -14,7 +14,6 @@ import {
 //   streamedXSVtoJSON,
   wholeXSVtoJSON,
 } from '@ncigdc/utils/data';
-import { fetchApi } from '@ncigdc/utils/ajax';
 
 import { IS_DEV, AUTH_API } from '@ncigdc/utils/constants';
 
@@ -68,20 +67,9 @@ export default (Component: ReactClass<*>) =>
         // const { body: stream } = await fetch(`http://localhost:3000${file}`);
         // const { body: stream } = await fetch('https://gist.githubusercontent.com/caravinci/e538391f6681348446af21127d30e4e7/raw/e3c8569f3b8fa50a00823486ccd7a0e3c723bee1/seurat.tsv');
 
-        const fetchUrl = urlJoin(AUTH_API, 'data');
+        const fetchUrl = `${urlJoin(AUTH_API, 'data')}/${file_id}`;
 
-        console.log({ fetchUrl });
-        // TODO: look at repository file entity page,
-        // the download button at top right of the page
-
-        const { body: stream } = await fetchApi(fetchUrl, {
-          body: {
-            ids: file_id,
-          },
-          fullResponse: true,
-        });
-
-        console.log({ stream });
+        const { body: stream } = await fetch(fetchUrl);
 
         const tsvToJSON = wholeXSVtoJSON(
           'EnhancedSCRNASeq.relay',

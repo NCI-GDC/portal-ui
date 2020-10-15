@@ -7,6 +7,7 @@ import { find } from 'lodash';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import Chip from '@ncigdc/uikit/Chip';
 
 import { styles } from '../SelectSet';
 import SelectScrnaSeqWorkflow from './SelectScrnaSeqWorkflow';
@@ -81,7 +82,16 @@ const SelectScrnaSeq = ({
         >
         <Icon />
         <Column style={{ flex: 1 }}>
-          <h1 style={{ fontSize: '2rem' }}>{label}</h1>
+          <h1 style={{ fontSize: '2rem' }}>
+            {label}
+            <Chip
+              label="BETA"
+              style={{
+                marginLeft: '1rem',
+              }}
+              />
+
+          </h1>
           <p>Try out the beta release of our new analysis tool for single cell RNA sequencing data.  Display a demo of different clustering visualizations for this data from a sample case.</p>
           <p>
             Please send us your feedback at:

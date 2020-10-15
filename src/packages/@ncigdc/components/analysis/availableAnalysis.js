@@ -537,6 +537,7 @@ const availableAnalysis: [TAnalysis] = [
             />
         </div>
       )),
+      isBeta: true,
       label: 'Single Cell RNA Sequencing',
       ResultComponent: props => (
         <SCRNASeqContainer

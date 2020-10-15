@@ -12,6 +12,7 @@ import {
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
+import Chip from '@ncigdc/uikit/Chip';
 
 import SCRNASeqPlot from './SCRNASeqPlot';
 import './styles.scss';
@@ -117,6 +118,12 @@ const SCRNASeq = ({
           }}
           >
           Single Cell RNA Sequencing
+          <Chip
+            label="BETA"
+            style={{
+              marginLeft: '1rem',
+            }}
+            />
         </h1>
 
         <Row>

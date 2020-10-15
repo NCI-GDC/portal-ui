@@ -97,12 +97,9 @@ const AnalysisResult = ({
       defaultIndex={currentIndex}
       links={analyses
         .map(savedAnalysis => {
-          console.log({ savedAnalysis });
           const foundAnalysis = availableAnalysis.find(
             a => a.type === savedAnalysis.type,
           );
-
-          console.log({ foundAnalysis });
 
           const tabTitle =
             foundAnalysis.type === 'clinical_data'

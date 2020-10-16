@@ -1,7 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
 
-import $ from 'jquery';
 import Konva from 'konva';
 import Color from 'color';
 import { capitalize, each, round } from 'lodash';
@@ -2513,8 +2512,14 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._draw_download_menu = function () {
     const self = this;
-    const overlay = self._draw_overlay(true);
+    const width = self.stage.width();
+    const height = self.stage.height();
     const { handleFileDownloads = () => {} } = self.extHandlers;
+    const loading_div = $(`<div class="inchlib-loadingOverlay" style="width: ${width}px; height: ${height}px;"></div>`)
+      .html(
+        '<h2>Preparing download...</h2>' +
+        '<i class="fa fa-spinner fa-pulse"></i>'
+      );
     const download_options = [
       {
         id: 'download-pdf',
@@ -2530,34 +2535,51 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       },
     ];
 
-    const download_ul = $(`<ul class="inchlib-download"></ul>`);
-
-    const download_lis = download_options.map(option => {
-      const open_li = `<li class="inchlib-download_item"><button type="button" class="inchlib-download_btn" data-inchlib-id="${option.id}">`;
-      const close_li = '</button></li>';
-      const contents = option.label;
-      return `${open_li}${contents}${close_li}`;
-    })
-    .join('');
-
-    download_ul.html(download_lis);
-    $('.inchlib-toolbar_btn-download').parent().append(download_ul);
-
-    $('.inchlib-download_btn').click(function() {
-      if ($(this).attr('data-inchlib-id') === 'download-pdf') {
-        self._download_img('pdf');
-      }
-      if ($(this).attr('data-inchlib-id') === 'download-png') {
-        self._download_img('png');
-      }
-      if ($(this).attr('data-inchlib-id') === 'download-tsv') {
-        handleFileDownloads('tsv');
-      }
-    });
-
-    overlay.click(function() {
-      overlay.fadeOut().remove();
+    const clickOutOverlay = self._draw_overlay(true);
+    const hideClickOutOverlay = () => {
+      clickOutOverlay.remove();
       $('.inchlib-download').remove();
+    }
+
+    clickOutOverlay.click(hideClickOutOverlay);
+
+    const visualDownloadFeedback = (button, handler) => {
+      const loadingOverlay = self._draw_overlay();
+      const format = button.html();
+      button.html(`Processing ${format}...`).css('background-color', '#CCC');
+      self.$element.prepend(loading_div);
+
+      setTimeout(() => {
+        handler
+          .call(self, format.toLowerCase())
+          .then(() => {
+            hideClickOutOverlay();
+            loadingOverlay.fadeOut().remove();
+            loading_div.fadeOut().remove();
+          });
+      }, 50);
+    }
+
+    const downloadUL = $(`<ul class="inchlib-download"></ul>`);
+
+    const downloadLIs = download_options.map(option => {
+      const start = `<li class="inchlib-download_item"><button type="button" class="inchlib-download_btn" data-inchlib-id="${option.id}">`;
+      const end = '</button></li>';
+      const contents = option.label;
+
+      return `${start}${contents}${end}`;
+    }).join('');
+
+    downloadUL.html(downloadLIs);
+    $('.inchlib-toolbar_btn-download').parent().append(downloadUL);
+
+    $('.inchlib-download_btn').click(function () {
+      visualDownloadFeedback(
+        $(this),
+        ['pdf', 'png'].includes($(this).attr('data-inchlib-id').slice(-3))
+          ? self._download_img
+          : handleFileDownloads
+      )
     });
   };
 
@@ -3215,91 +3237,9 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._download_img = function (img_format) {
     const self = this;
-    const is_png = img_format === 'png'; // png or pdf
-    const overlay = self._draw_overlay();
     const zoom = 3;
-    const width = self.stage.width();
-    const height = self.stage.height();
     const { img_padding } = self.options;
-    const img_file_name = `gene-expression-values.${
-      moment().format('YYYY-MM-DD-HHmmss')
-    }.${img_format}`;
-
-    overlay.click(function() {
-      overlay.fadeOut().remove();
-    });
-
-    const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-    self.$element.after(loading_div);
-    self.$element.hide();
-
-    self._draw_legend_for_img(is_png);
-
-    // setup height
-    const min_height = 600;
-    // labels on the bottom get cut off without this
-    const bottom_padding = 50;
-    const height_full = height + bottom_padding;
-    const get_height = height_full < min_height
-      ? min_height
-      : height_full;
-
-    const double_padding = img_padding * 2;
-
-    const img_height = is_png
-      ? (get_height + double_padding) * zoom
-      : (get_height + img_padding) * zoom;
-    const img_width = is_png
-      ? (width + img_padding) * zoom
-      : (width + double_padding) * zoom;
-
-    self.stage.width(img_width);
-    self.stage.height(img_height);
-    self.stage.scale({
-      x: zoom,
-      y: zoom,
-    });
-    self.stage.x(is_png ? double_padding : img_padding * 3);
-    self.stage.y(0);
-    self.stage.draw();
-    self.navigation_layer.hide();
-
-    self.stage.toDataURL({
-      quality: 1,
-      callback(dataURL) {
-        if (is_png) {
-          downloadURI(
-            dataURL,
-            img_file_name
-          );
-        } else {
-          var imgPdf = new jsPDF({
-            format: 'letter',
-            unit: 'in',
-          });
-          imgPdf.addImage(dataURL, 'PNG', 0, -0.25, 8.5, 0, '', 'none');
-          imgPdf.save(img_file_name);
-        }
-
-        self.stage.width(width);
-        self.stage.height(height);
-        self.stage.scale({
-          x: 1,
-          y: 1,
-        });
-        self.stage.x(0);
-        self.stage.y(0);
-        self.stage.draw();
-        loading_div.fadeOut().remove();
-        self.$element.show();
-        self.navigation_layer.show();
-        self.navigation_layer.draw();
-        self._delete_layers([
-          self.legend_img_layer,
-        ]);
-        overlay.trigger('click');
-      }
-    });
+    const is_png = img_format === 'png'; // png or pdf
 
     // function from https://stackoverflow.com/a/15832662/512042
     function downloadURI(uri, name) {
@@ -3310,6 +3250,84 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       link.click();
       document.body.removeChild(link);
     }
+
+    return new Promise((resolve, reject) => {
+      const width = self.stage.width();
+      const height = self.stage.height();
+      const img_file_name = `gene-expression-values.${
+        moment().format('YYYY-MM-DD-HHmmss')
+      }.${img_format}`;
+
+      $.multitask.add(() => {
+        self._draw_legend_for_img(is_png);
+
+        // setup height
+        const min_height = 600;
+        // labels on the bottom get cut off without this
+        const bottom_padding = 50;
+        const height_full = height + bottom_padding;
+        const get_height = height_full < min_height
+          ? min_height
+          : height_full;
+
+        const double_padding = img_padding * 2;
+
+        const img_height = is_png
+          ? (get_height + double_padding) * zoom
+          : (get_height + img_padding) * zoom;
+        const img_width = is_png
+          ? (width + img_padding) * zoom
+          : (width + double_padding) * zoom;
+
+        self.stage.width(img_width);
+        self.stage.height(img_height);
+        self.stage.scale({
+          x: zoom,
+          y: zoom,
+        });
+        self.stage.x(is_png ? double_padding : img_padding * 3);
+        self.stage.y(0);
+        self.stage.draw();
+        self.navigation_layer.hide();
+
+        self.stage.toDataURL({
+          quality: 1,
+          callback(dataURL) {
+            if (is_png) {
+              downloadURI(
+                dataURL,
+                img_file_name
+              );
+            } else {
+              var imgPdf = new jsPDF({
+                format: 'letter',
+                unit: 'in',
+              });
+              imgPdf.addImage(dataURL, 'PNG', 0, -0.25, 8.5, 0, '', 'none');
+              imgPdf.save(img_file_name);
+            }
+
+            self.stage.width(width);
+            self.stage.height(height);
+            self.stage.scale({
+              x: 1,
+              y: 1,
+            });
+            self.stage.x(0);
+            self.stage.y(0);
+            self.stage.draw();
+            self.$element.show();
+            self.navigation_layer.show();
+            self.navigation_layer.draw();
+            self._delete_layers([
+              self.legend_img_layer,
+            ]);
+          }
+        });
+
+        resolve();
+      }, self);
+    });
   };
 
   InCHlib.prototype._draw_legend_for_screen = function() {
@@ -4045,5 +4063,39 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       }
       $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options, extHandlers));
     })
+  };
+
+  $.multitask = {
+    _timer: null,
+    _queue: [],
+    add: function(fn, context, time) {
+      var setTimer = function(time) {
+          $.multitask._timer = setTimeout(function() {
+              time = $.multitask.add();
+              if ($.multitask._queue.length) {
+                  setTimer(time);
+              }
+          }, time || 2);
+      }
+
+      if (fn) {
+          $.multitask._queue.push([fn, context, time]);
+          if ($.multitask._queue.length == 1) {
+              setTimer(time);
+          }
+          return;
+      }
+
+      var next = $.multitask._queue.shift();
+      if (!next) {
+          return 0;
+      }
+      next[0].call(next[1] || window);
+      return next[2];
+    },
+    clear: function() {
+      clearTimeout($.multitask._timer);
+      $.multitask._queue = [];
+    }
   };
 })(jQuery);

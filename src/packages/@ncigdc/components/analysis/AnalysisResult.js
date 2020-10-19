@@ -87,10 +87,6 @@ const AnalysisResult = ({
     analyses.findIndex(a => a.id === analysisId),
     0,
   );
-  console.log({
-    analyses,
-    availableAnalysis,
-  });
 
   return (
     <TabbedLinks

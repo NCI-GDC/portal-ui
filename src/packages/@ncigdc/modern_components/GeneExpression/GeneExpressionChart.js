@@ -7,7 +7,7 @@ import { theme } from '@ncigdc/theme';
 import { CATEGORY_COLORS } from '@ncigdc/utils/constants';
 
 import './inchlib';
-import './inchlib/style.css';
+import './inchlib/style.scss';
 
 const options = {
   button_color: theme.primary,

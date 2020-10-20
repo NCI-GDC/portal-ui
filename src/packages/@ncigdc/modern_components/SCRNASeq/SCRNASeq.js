@@ -114,7 +114,9 @@ const SCRNASeq = ({
         >
         <h1
           style={{
-            margin: '0 0 10px 0',
+            alignItems: 'center',
+            display: 'flex',
+            margin: '0px 0px 20px',
           }}
           >
           Single Cell RNA Sequencing

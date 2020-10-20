@@ -82,7 +82,13 @@ const SelectScrnaSeq = ({
         >
         <Icon />
         <Column style={{ flex: 1 }}>
-          <h1 style={{ fontSize: '2rem' }}>
+          <h1
+            style={{
+              alignItems: 'center',
+              display: 'flex',
+              fontSize: '2rem',
+            }}
+            >
             {label}
             <Chip
               label="BETA"

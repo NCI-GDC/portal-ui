@@ -1,5 +1,3 @@
-// @flow
-
 // This component exists to satisfy this eslint rule "jsx-a11y/no-static-element-interactions"
 // Such that something is semantically clickable but not styled like a button
 

@@ -21,11 +21,13 @@ import countComponents from '@ncigdc/modern_components/Counts';
 import Chip from '@ncigdc/uikit/Chip';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Spinner from '@ncigdc/uikit/Loaders/Material';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { processStream } from '@ncigdc/utils/data';
 import saveFile from '@ncigdc/utils/filesaver';
 import withRouter from '@ncigdc/utils/withRouter';
 
+import DemoDescription from './DemoDescription';
 import GeneExpressionChart from './GeneExpressionChart';
 
 import * as helper from './helpers';
@@ -92,29 +94,7 @@ const GeneExpression = ({
             />
         </h1>
 
-        {isDemo && (
-          <section
-            style={{
-              marginBottom: '1rem',
-            }}
-            >
-            <p>
-              Try out the beta release of our new tool for gene expression analysis.
-              <br />
-              Display the gene expression heatmap for sets of cases and genes of your choice.
-              <br />
-              The demo below is derived from TCGA BRCA cases and the top 50 protein coding genes by highest # SSM affected cases in the cohort.
-            </p>
-            <p>
-              <strong>COMING SOON:</strong>
-              {' Filter genes by expression level, and select genes that are highly variable.'}
-            </p>
-            <p>
-              {'Please send us your feedback at: '}
-              <a href="mailto:support@nci-gdc.datacommons.io">support@nci-gdc.datacommons.io</a>
-            </p>
-          </section>
-        )}
+        {isDemo && <DemoDescription />}
 
         <section
           style={{
@@ -174,7 +154,6 @@ const GeneExpression = ({
                 set: (
                   <label
                     htmlFor={id}
-                    title={setLabel}
                     >
                     <span
                       style={{
@@ -186,7 +165,17 @@ const GeneExpression = ({
                       {`${capitalize(setType)}s:`}
                     </span>
 
-                    {truncate(setLabel, { length: 30 })}
+                    {setLabel.length > 30
+                      ? (
+                        <Tooltip
+                          Component={(
+                            setLabel
+                          )}
+                          >
+                          {truncate(setLabel, { length: 30 })}
+                        </Tooltip>
+                      )
+                      : setLabel}
                   </label>
                 ),
               };

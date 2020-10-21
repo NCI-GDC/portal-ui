@@ -77,7 +77,7 @@ const CreateAnalysis = ({
         <SelectSet
           analysisProps={analysis}
           onCancel={() => setAnalysis(null)}
-          onRun={sets => {
+          onRun={(sets, validationResults) => {
             const created = new Date().toISOString();
             const id = created;
 
@@ -90,6 +90,9 @@ const CreateAnalysis = ({
                 ...analysis.type === 'clinical_data' && {
                   displayVariables: defaultVariables,
                   name: `Custom Analysis ${numAnalysis + 1}`,
+                },
+                ...analysis.type === 'gene_expression' && {
+                  validationResults,
                 },
               }),
             );
@@ -158,7 +161,11 @@ const CreateAnalysis = ({
                   : (
                     <Row spacing={5}>
                       <Button onClick={() => setAnalysis(item)}>Select</Button>
-                      <DemoButton demoData={item.demoData} type={item.type} />
+                      <DemoButton
+                        demoData={item.demoData}
+                        type={item.type}
+                        validation={item.validateSets}
+                        />
                     </Row>
                   )}
               </div>

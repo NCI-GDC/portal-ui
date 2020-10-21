@@ -7,7 +7,7 @@ import { theme } from '@ncigdc/theme';
 import { CATEGORY_COLORS } from '@ncigdc/utils/constants';
 
 import './inchlib';
-import './inchlib/style.css';
+import './inchlib/style.scss';
 
 const options = {
   button_color: theme.primary,
@@ -15,7 +15,7 @@ const options = {
   categories: {
     colors: CATEGORY_COLORS,
   },
-  centering: 'geneExpression',
+  centering: 'geneExpression', // enables median centered heatmap display
   max_width: 1200,
   tooltip: {
     fill: '#fff',

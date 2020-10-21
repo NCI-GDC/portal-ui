@@ -1,7 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
 
-import $ from 'jquery';
 import Konva from 'konva';
 import Color from 'color';
 import { capitalize, each, round } from 'lodash';
@@ -164,7 +163,7 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
       size: 12,
     },
-    heatmap_colors: 'GrBkRd',
+    heatmap_colors: 'BuBkYl',
     heatmap_header: true,
     heatmap_part_width: 0.7,
     heatmap: true,
@@ -247,6 +246,8 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       sat: 25,
     };
 
+    self.toRGB = ({ r, g, b }) => `rgb(${r},${g},${b})`;
+
     self.get_days_to_death_color = val => {
       // create red & green values for RGB().
       // will result in a shade of blue.
@@ -254,7 +255,7 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       const red_green = Math.floor(255 - (val / self.MAX_DAYS_TO_DEATH * 255));
       return isNaN(red_green) // i.e. val is "not reported"
         ? self.invalid_column_metadata_color
-        : `rgb(${red_green},${red_green},255)`;
+        : self.toRGB({ r: red_green, g: red_green, b: 255 });
     };
 
     self.get_age_at_diagnosis_color = val => {
@@ -288,8 +289,8 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         min: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%)`,
       },
       days: {
-        max: 'rgb(0,0,255)',
-        min: 'rgb(255,255,255)',
+        max: self.toRGB({ r: 0, g: 0, b: 255 }),
+        min: self.toRGB({ r: 255, g: 255, b: 255 }),
       },
     }
 
@@ -354,6 +355,23 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     * @name InCHlib#colors
     */
     self.colors = {
+      BuBkYl: {
+        start: {
+          r: 0,
+          g: 0,
+          b: 255,
+        },
+        middle: {
+          r: 0,
+          g: 0,
+          b: 0,
+        },
+        end: {
+          r: 255,
+          g: 255,
+          b: 0,
+        },
+      },
       YlGn: {
         start: {
           r: 255,
@@ -904,13 +922,17 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     * Creates color steps for the heatmap.
     * @name InCHlib#color_steps
     */
-    self.color_steps = [
+    self.color_steps = (
+      under = self._get_color_for_value()(0),
+      middle = self._get_color_for_value()(0.5),
+      over = self._get_color_for_value()(1),
+    ) => [
       0,
-      self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
+      under,
       .5,
-      self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
+      middle,
       1,
-      self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
+      over,
     ];
 
     /**
@@ -918,15 +940,19 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     * @name InCHlib#get_scale_values
     */
     self.get_scale_values = () => {
-      const [min, max, mid] = self.data_descs_all;
-      return [
-        min,
-        (((mid - min) / 2) + min),
-        mid,
-        (((max - mid) / 2) + mid),
-        max,
-      ]
-      .map(x => round(x, 1).toFixed(1));
+      const [min, max, mid] = self.data_descs_all.map(x => +round(x, 1).toFixed(1));
+
+      return (
+        ['median', 'geneExpression'].includes(self.options.centering)
+        ? [-3, 0, 3]
+        : [
+          min,
+          (((mid - min) / 2) + min),
+          mid,
+          (((+max - mid) / 2) + mid),
+          max,
+        ]
+      ).map(x => x.toString());
     };
 
     /**
@@ -1058,12 +1084,18 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     const form_id = `${self._name}_heatmap_form`;
 
     const color_scales = Object.keys(self.colors).map(color => {
-      const color_1 = self._get_color_for_value(0, 0, 1, 0.5, color);
-      const color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, color);
-      const color_3 = self._get_color_for_value(1, 0, 1, 0.5, color);
+      const getColorforValue = self._get_color_for_value('modal', color);
+      const [min, mid, max] = self.get_scale_values();
+      const { middle } = self.colors[color];
+
+      const displayMedian = ['median', 'geneExpression'].includes(self.options.centering) && middle;
+
       const checked = self.options.heatmap_colors === color;
-      const scale = $(`<label class="inchlib-modal_heatmap-label"><input type="radio" class="inchlib-modal_heatmap-input" name="inchlib-color-scale" value="${color}"${checked ? ' checked' : ''}><div class="inchlib-modal_heatmap-gradient" style="background: linear-gradient(to right, ${color_1},${color_2},${color_3})"></div></label>`);
-      return scale;
+      const color_1 = getColorforValue(displayMedian ? min : 0);
+      const color_2 = getColorforValue(displayMedian ? mid : 0.5);
+      const color_3 = getColorforValue(displayMedian ? max : 1);
+
+      return  $(`<label class="inchlib-modal_heatmap-label"><input type="radio" class="inchlib-modal_heatmap-input" name="inchlib-color-scale" value="${color}"${checked ? ' checked' : ''}><div class="inchlib-modal_heatmap-gradient" style="background: linear-gradient(to right, ${color_1},${color_2},${color_3})"></div></label>`);
     });
 
     const heatmap_form = $(`<form id='${form_id}' class="inchlib-modal_heatmap-form"></form>`).append(color_scales);
@@ -1317,7 +1349,7 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
         min = (self.options.min_percentile > 0)
           ? columns[i][self._hack_round(len * self.options.min_percentile / 100)]
           : Math.min.apply(null, columns[i]);
-        middle = self.options.centering === 'geneExpression'
+        middle = ['median', 'geneExpression'].includes(self.options.centering)
           ? 0
           : (self.options.middle_percentile != 50)
             ? columns[i][self._hack_round(len * self.options.middle_percentile / 100)]
@@ -2087,7 +2119,14 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       text_value = value;
 
       if (value !== null) {
-        color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
+        color = self._get_color_for_value('heatmap')(
+          value,
+          self.data_descs[col_index].min,
+          self.data_descs[col_index].max,
+          ['median', 'geneExpression'].includes(self.options.centering)
+            ? 0
+            : self.data_descs[col_index].middle,
+        );
 
         line = self.objects_ref.heatmap_line.clone({
           stroke: color,
@@ -2513,8 +2552,14 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._draw_download_menu = function () {
     const self = this;
-    const overlay = self._draw_overlay(true);
+    const width = self.stage.width();
+    const height = self.stage.height();
     const { handleFileDownloads = () => {} } = self.extHandlers;
+    const loading_div = $(`<div class="inchlib-loadingOverlay" style="width: ${width}px; height: ${height}px;"></div>`)
+      .html(
+        '<h2>Preparing download...</h2>' +
+        '<i class="fa fa-spinner fa-pulse"></i>'
+      );
     const download_options = [
       {
         id: 'download-pdf',
@@ -2530,34 +2575,51 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       },
     ];
 
-    const download_ul = $(`<ul class="inchlib-download"></ul>`);
-
-    const download_lis = download_options.map(option => {
-      const open_li = `<li class="inchlib-download_item"><button type="button" class="inchlib-download_btn" data-inchlib-id="${option.id}">`;
-      const close_li = '</button></li>';
-      const contents = option.label;
-      return `${open_li}${contents}${close_li}`;
-    })
-    .join('');
-
-    download_ul.html(download_lis);
-    $('.inchlib-toolbar_btn-download').parent().append(download_ul);
-
-    $('.inchlib-download_btn').click(function() {
-      if ($(this).attr('data-inchlib-id') === 'download-pdf') {
-        self._download_img('pdf');
-      }
-      if ($(this).attr('data-inchlib-id') === 'download-png') {
-        self._download_img('png');
-      }
-      if ($(this).attr('data-inchlib-id') === 'download-tsv') {
-        handleFileDownloads('tsv');
-      }
-    });
-
-    overlay.click(function() {
-      overlay.fadeOut().remove();
+    const clickOutOverlay = self._draw_overlay(true);
+    const hideClickOutOverlay = () => {
+      clickOutOverlay.remove();
       $('.inchlib-download').remove();
+    }
+
+    clickOutOverlay.click(hideClickOutOverlay);
+
+    const visualDownloadFeedback = (button, handler) => {
+      const loadingOverlay = self._draw_overlay();
+      const format = button.html();
+      button.html(`Processing ${format}...`).css('background-color', '#CCC');
+      self.$element.prepend(loading_div);
+
+      setTimeout(() => {
+        handler
+          .call(self, format.toLowerCase())
+          .then(() => {
+            hideClickOutOverlay();
+            loadingOverlay.fadeOut().remove();
+            loading_div.fadeOut().remove();
+          });
+      }, 50);
+    }
+
+    const downloadUL = $(`<ul class="inchlib-download"></ul>`);
+
+    const downloadLIs = download_options.map(option => {
+      const start = `<li class="inchlib-download_item"><button type="button" class="inchlib-download_btn" data-inchlib-id="${option.id}">`;
+      const end = '</button></li>';
+      const contents = option.label;
+
+      return `${start}${contents}${end}`;
+    }).join('');
+
+    downloadUL.html(downloadLIs);
+    $('.inchlib-toolbar_btn-download').parent().append(downloadUL);
+
+    $('.inchlib-download_btn').click(function () {
+      visualDownloadFeedback(
+        $(this),
+        ['pdf', 'png'].includes($(this).attr('data-inchlib-id').slice(-3))
+          ? self._download_img
+          : handleFileDownloads
+      )
     });
   };
 
@@ -2576,17 +2638,14 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
   InCHlib.prototype._update_color_scale = function () {
     const self = this;
     const color_scale = self.navigation_layer.find(`#${self._name}_color_scale`);
+    const getColorValue = self._get_color_for_value();
 
-    self.color_steps = [
-      0,
-      self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
-      0.5,
-      self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
-      1,
-      self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
-    ];
+    color_scale.fillLinearGradientColorStops(self.color_steps(
+      getColorValue(0),
+      getColorValue(0.5),
+      getColorValue(1)
+    ));
 
-    color_scale.fillLinearGradientColorStops(self.color_steps);
     self.navigation_layer.draw();
     self._redraw_heatmap_scale();
   };
@@ -3215,91 +3274,9 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._download_img = function (img_format) {
     const self = this;
-    const is_png = img_format === 'png'; // png or pdf
-    const overlay = self._draw_overlay();
     const zoom = 3;
-    const width = self.stage.width();
-    const height = self.stage.height();
     const { img_padding } = self.options;
-    const img_file_name = `gene-expression-values.${
-      moment().format('YYYY-MM-DD-HHmmss')
-    }.${img_format}`;
-
-    overlay.click(function() {
-      overlay.fadeOut().remove();
-    });
-
-    const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-    self.$element.after(loading_div);
-    self.$element.hide();
-
-    self._draw_legend_for_img(is_png);
-
-    // setup height
-    const min_height = 600;
-    // labels on the bottom get cut off without this
-    const bottom_padding = 50;
-    const height_full = height + bottom_padding;
-    const get_height = height_full < min_height
-      ? min_height
-      : height_full;
-
-    const double_padding = img_padding * 2;
-
-    const img_height = is_png
-      ? (get_height + double_padding) * zoom
-      : (get_height + img_padding) * zoom;
-    const img_width = is_png
-      ? (width + img_padding) * zoom
-      : (width + double_padding) * zoom;
-
-    self.stage.width(img_width);
-    self.stage.height(img_height);
-    self.stage.scale({
-      x: zoom,
-      y: zoom,
-    });
-    self.stage.x(is_png ? double_padding : img_padding * 3);
-    self.stage.y(0);
-    self.stage.draw();
-    self.navigation_layer.hide();
-
-    self.stage.toDataURL({
-      quality: 1,
-      callback(dataURL) {
-        if (is_png) {
-          downloadURI(
-            dataURL,
-            img_file_name
-          );
-        } else {
-          var imgPdf = new jsPDF({
-            format: 'letter',
-            unit: 'in',
-          });
-          imgPdf.addImage(dataURL, 'PNG', 0, -0.25, 8.5, 0, '', 'none');
-          imgPdf.save(img_file_name);
-        }
-
-        self.stage.width(width);
-        self.stage.height(height);
-        self.stage.scale({
-          x: 1,
-          y: 1,
-        });
-        self.stage.x(0);
-        self.stage.y(0);
-        self.stage.draw();
-        loading_div.fadeOut().remove();
-        self.$element.show();
-        self.navigation_layer.show();
-        self.navigation_layer.draw();
-        self._delete_layers([
-          self.legend_img_layer,
-        ]);
-        overlay.trigger('click');
-      }
-    });
+    const is_png = img_format === 'png'; // png or pdf
 
     // function from https://stackoverflow.com/a/15832662/512042
     function downloadURI(uri, name) {
@@ -3310,6 +3287,84 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       link.click();
       document.body.removeChild(link);
     }
+
+    return new Promise((resolve, reject) => {
+      const width = self.stage.width();
+      const height = self.stage.height();
+      const img_file_name = `gene-expression-values.${
+        moment().format('YYYY-MM-DD-HHmmss')
+      }.${img_format}`;
+
+      $.multitask.add(() => {
+        self._draw_legend_for_img(is_png);
+
+        // setup height
+        const min_height = 600;
+        // labels on the bottom get cut off without this
+        const bottom_padding = 50;
+        const height_full = height + bottom_padding;
+        const get_height = height_full < min_height
+          ? min_height
+          : height_full;
+
+        const double_padding = img_padding * 2;
+
+        const img_height = is_png
+          ? (get_height + double_padding) * zoom
+          : (get_height + img_padding) * zoom;
+        const img_width = is_png
+          ? (width + img_padding) * zoom
+          : (width + double_padding) * zoom;
+
+        self.stage.width(img_width);
+        self.stage.height(img_height);
+        self.stage.scale({
+          x: zoom,
+          y: zoom,
+        });
+        self.stage.x(is_png ? double_padding : img_padding * 3);
+        self.stage.y(0);
+        self.stage.draw();
+        self.navigation_layer.hide();
+
+        self.stage.toDataURL({
+          quality: 1,
+          callback(dataURL) {
+            if (is_png) {
+              downloadURI(
+                dataURL,
+                img_file_name
+              );
+            } else {
+              var imgPdf = new jsPDF({
+                format: 'letter',
+                unit: 'in',
+              });
+              imgPdf.addImage(dataURL, 'PNG', 0, -0.25, 8.5, 0, '', 'none');
+              imgPdf.save(img_file_name);
+            }
+
+            self.stage.width(width);
+            self.stage.height(height);
+            self.stage.scale({
+              x: 1,
+              y: 1,
+            });
+            self.stage.x(0);
+            self.stage.y(0);
+            self.stage.draw();
+            self.$element.show();
+            self.navigation_layer.show();
+            self.navigation_layer.draw();
+            self._delete_layers([
+              self.legend_img_layer,
+            ]);
+          }
+        });
+
+        resolve();
+      }, self);
+    });
   };
 
   InCHlib.prototype._draw_legend_for_screen = function() {
@@ -3390,6 +3445,8 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
   InCHlib.prototype._draw_heatmap_scale = function() {
     const self = this;
+    const isMedianCentered = ['median', 'geneExpression'].includes(self.options.centering);
+
     self.heatmap_scale_layer = self.objects_ref.layer_below_toolbar.clone({x: 5 })
     self.stage.add(self.heatmap_scale_layer);
 
@@ -3412,20 +3469,34 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       y: scale_y,
     });
 
-    scale_y += 25;
+    const modularOffset = isMedianCentered ? 2 : 1.5; // how many times is it tall as it is wide
+    const scale_values = self.get_scale_values();
+    const scale_width = 25;
+    const scale_height = (scale_values.length - 1) * (scale_width * modularOffset); // for visual modularity
 
-    const scale_height = 130;
-    const scale_width = 20;
+    const { middle } = self.colors[self.options.heatmap_colors];
+    const min = scale_values[0];
+    const mid = scale_values[Math.round((scale_values.length - 1) / 2)];
+    const max = scale_values[scale_values.length - 1];
+
+    const getColorforValue = self._get_color_for_value('scale');
+    const displayMedian = isMedianCentered && middle;
+
+    scale_y += scale_width;
 
     const scale_gradient = new Konva.Rect({
-      fillLinearGradientColorStops: self.color_steps,
+      fillLinearGradientColorStops: self.color_steps(
+        getColorforValue(displayMedian ? min : 0),
+        getColorforValue(displayMedian ? mid : 0.5),
+        getColorforValue(displayMedian ? max : 1),
+      ),
       fillLinearGradientEndPoint: {
         x: scale_x,
-        y: scale_y,
+        y: scale_height,
       },
       fillLinearGradientStartPoint: {
         x: scale_x,
-        y: scale_height - scale_y,
+        y: 0,
       },
       linecap: 'square',
       height: scale_height,
@@ -3435,44 +3506,36 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       x: scale_x,
       y: scale_y,
     });
+
     scale_group.add(scale_gradient, scale_heading);
 
     // add ticks to heatmap scale
+    const tickPosition = (i, offset = 0) =>
+      (scale_width * modularOffset * i) +
+      scale_y + offset;
 
     scale_x += scale_width;
 
-    for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
-      const tick = new Konva.Rect({
+    // reverse, as in "from positive to negative"
+    scale_values.reverse().forEach((text, i) => {
+      // ticks
+      scale_group.add(new Konva.Rect({
         stroke: 'grey',
         strokeWidth: 1,
-        width: 10,
+        width: 6,
         x: scale_x,
-        y: Math.round(scale_y + (scale_height * (0.25 * i))),
-      });
-      scale_group.add(tick);
-    }
+        y: tickPosition(i),
+      }));
 
-    // add values to heatmap scale
-
-    scale_x += 15;
-
-    const scale_values = self.get_scale_values();
-
-    scale_y -= 5;
-    const scaleY_int = Math.floor(scale_height / scale_values.length) + 6;
-
-    // reverse, as in "from positive to negative"
-    scale_values.reverse().forEach(text => {
+      // values
       scale_group.add(new Konva.Text({
         fill: self.hover_fill,
         fontFamily: self.options.font.family,
         fontStyle: '500',
         text,
-        x: scale_x,
-        y: scale_y,
+        x: scale_x + 15,
+        y: tickPosition(i, -6),
       }));
-
-      scale_y += scaleY_int;
     });
 
     self.heatmap_scale_layer.add(scale_group);
@@ -3652,37 +3715,48 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
     self.dendrogram_hover_layer.draw();
   };
 
-  InCHlib.prototype._get_color_for_value = function (value, min, max, middle, color_scale) {
+  InCHlib.prototype._get_color_for_value = function (origin, color_scale) {
     const self = this;
-    const color = self.colors[color_scale];
-    let c1 = color.start;
-    let c2 = color.end;
 
-    if (value > max) {
-      return `rgb(${c2.r},${c2.g},${c2.b})`;
-    }
+    return (value, min = 0, max = 1, middle = 0.5) => {
+      const color = self.colors[color_scale || self.options.heatmap_colors];
+      let c1 = color.start;
+      let c2 = color.end;
 
-    if (min == max || value < min) {
-      return `rgb(${c1.r},${c1.g},${c1.b})`;
-    }
+      const useMedian = ['median', 'geneExpression'].includes(self.options.centering) && color.middle;
 
-    if (color.middle !== undefined) {
-      if (value >= middle) {
-        min = middle;
-        c1 = color.middle;
-        c2 = color.end;
-      } else {
-        max = middle;
-        c1 = color.start;
-        c2 = color.middle;
+      let bottom = useMedian ? -3 : min;
+      let top = useMedian ? 3 : max;
+      middle = useMedian ? 0 : middle;
+
+      if (value <= bottom || min === max) {
+        return self.toRGB({r: c1.r, g: c1.g, b: c1.b });
       }
-    }
 
-    const position = (value - min) / (max - min);
-    const r = self._hack_round(c1.r + (position * (c2.r - c1.r)));
-    const g = self._hack_round(c1.g + (position * (c2.g - c1.g)));
-    const b = self._hack_round(c1.b + (position * (c2.b - c1.b)));
-    return `rgb(${r},${g},${b})`;
+      if (value >= top) {
+        return self.toRGB({r: c2.r, g: c2.g, b: c2.b });
+      }
+
+      if (color.middle !== undefined) {
+        if (value >= middle) {
+          bottom = middle;
+          c1 = color.middle;
+          c2 = color.end;
+        } else {
+          top = middle;
+          c1 = color.start;
+          c2 = color.middle;
+        }
+      }
+
+      const position = useMedian
+        ? (value - bottom) / (top - bottom)
+        : (value - min) / (max - min);
+      const r = self._hack_round(c1.r + (position * (c2.r - c1.r)));
+      const g = self._hack_round(c1.g + (position * (c2.g - c1.g)));
+      const b = self._hack_round(c1.b + (position * (c2.b - c1.b)));
+      return self.toRGB({ r, g, b });
+    }
   };
 
   InCHlib.prototype._get_font_size = function (text_length, width, height, max_font_size) {
@@ -4045,5 +4119,39 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
       }
       $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options, extHandlers));
     })
+  };
+
+  $.multitask = {
+    _timer: null,
+    _queue: [],
+    add: function(fn, context, time) {
+      var setTimer = function(time) {
+          $.multitask._timer = setTimeout(function() {
+              time = $.multitask.add();
+              if ($.multitask._queue.length) {
+                  setTimer(time);
+              }
+          }, time || 2);
+      }
+
+      if (fn) {
+          $.multitask._queue.push([fn, context, time]);
+          if ($.multitask._queue.length == 1) {
+              setTimer(time);
+          }
+          return;
+      }
+
+      var next = $.multitask._queue.shift();
+      if (!next) {
+          return 0;
+      }
+      next[0].call(next[1] || window);
+      return next[2];
+    },
+    clear: function() {
+      clearTimeout($.multitask._timer);
+      $.multitask._queue = [];
+    }
   };
 })(jQuery);

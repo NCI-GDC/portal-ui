@@ -100,8 +100,8 @@ const SelectScrnaSeq = ({
           </h1>
           <p>Try out the beta release of our new analysis tool for single cell RNA sequencing data.  Display a demo of different clustering visualizations for this data from a sample case.</p>
           <p>
-            Please send us your feedback at:
-            {' '}
+            {'Please send us your feedback at: '}
+
             <a href="mailto:support@nci-gdc.datacommons.io">support@nci-gdc.datacommons.io</a>
           </p>
         </Column>

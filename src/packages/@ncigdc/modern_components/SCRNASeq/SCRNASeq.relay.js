@@ -65,7 +65,6 @@ export default (Component: ReactClass<*>) =>
       }) => async () => {
         // const file = await import('./stubData/seurat.tsv');
         // const { body: stream } = await fetch(`http://localhost:3000${file}`);
-        // const { body: stream } = await fetch('https://gist.githubusercontent.com/caravinci/e538391f6681348446af21127d30e4e7/raw/e3c8569f3b8fa50a00823486ccd7a0e3c723bee1/seurat.tsv');
 
         const fetchUrl = `${urlJoin(AUTH_API, 'data')}/${file_id}`;
 

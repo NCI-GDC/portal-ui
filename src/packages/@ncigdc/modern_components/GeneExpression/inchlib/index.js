@@ -3486,9 +3486,9 @@ import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
     const scale_gradient = new Konva.Rect({
       fillLinearGradientColorStops: self.color_steps(
-        getColorforValue(displayMedian ? min : 0),
+        getColorforValue(displayMedian ? max : 0),
         getColorforValue(displayMedian ? mid : 0.5),
-        getColorforValue(displayMedian ? max : 1),
+        getColorforValue(displayMedian ? min : 1),
       ),
       fillLinearGradientEndPoint: {
         x: scale_x,

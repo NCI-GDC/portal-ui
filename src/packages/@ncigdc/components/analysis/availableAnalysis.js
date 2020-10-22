@@ -1,4 +1,5 @@
 import { VennSvg } from '@ncigdc/components/Charts/Venn';
+import Link from '@ncigdc/components/Links/Link';
 import CohortComparison from '@ncigdc/modern_components/CohortComparison';
 import CCIcon from '@ncigdc/theme/icons/CohortComparisonIcon';
 import { withTheme } from '@ncigdc/theme';
@@ -381,48 +382,190 @@ const availableAnalysis: [TAnalysis] = [
   {
     demoData: {
       filters: {
-        'tcga-brca': {
+        'tcga-tgct--all-cases--test2': {
           content: [
             {
               content: {
                 field: 'cases.project.project_id',
-                value: ['TCGA-BRCA'],
+                value: ['TCGA-TGCT'],
               },
               op: 'in',
             },
           ],
           op: 'and',
         },
-        'tcga-brca--top-50-pc-genes': {
+        'tcga-tgct--top-50-pc-genes--test2': {
           content: [
             {
               content: {
-                field: 'cases.project.project_id',
-                value: ['TCGA-BRCA'],
-              },
-              op: 'in',
-            },
-            {
-              content: {
-                field: 'genes.biotype',
-                value: ['protein_coding'],
+                field: 'genes.gene_id',
+                value: [
+                  'ENSG00000181449',
+                  'ENSG00000007350',
+                  'ENSG00000132972',
+                  'ENSG00000204644',
+                  'ENSG00000125207',
+                  'ENSG00000133063',
+                  'ENSG00000118137',
+                  'ENSG00000139219',
+                  'ENSG00000149948',
+                  'ENSG00000176566',
+                  'ENSG00000153707',
+                  'ENSG00000101443',
+                  'ENSG00000185792',
+                  'ENSG00000242950',
+                  'ENSG00000147257',
+                  'ENSG00000187556',
+                  'ENSG00000241186',
+                  'ENSG00000187690',
+                  'ENSG00000143320',
+                  'ENSG00000175928',
+                  'ENSG00000101076',
+                  'ENSG00000076716',
+                  'ENSG00000205358',
+                  'ENSG00000142182',
+                  'ENSG00000185686',
+                  'ENSG00000124839',
+                  'ENSG00000160224',
+                  'ENSG00000159224',
+                  'ENSG00000185559',
+                  'ENSG00000106483',
+                  'ENSG00000117215',
+                  'ENSG00000110900',
+                  'ENSG00000143850',
+                  'ENSG00000157399',
+                  'ENSG00000255192',
+                  'ENSG00000156959',
+                  'ENSG00000169851',
+                  'ENSG00000120949',
+                  'ENSG00000100721',
+                  'ENSG00000137077',
+                  'ENSG00000163347',
+                  'ENSG00000143995',
+                  'ENSG00000125398',
+                  'ENSG00000189334',
+                  'ENSG00000102021',
+                  'ENSG00000171388',
+                  'ENSG00000011677',
+                  'ENSG00000183117',
+                  'ENSG00000204538',
+                  'ENSG00000262406',
+                  'ENSG00000143452',
+                  'ENSG00000166482',
+                  'ENSG00000143768',
+                  'ENSG00000130513',
+                  'ENSG00000161249',
+                  'ENSG00000169594',
+                  'ENSG00000139263',
+                  'ENSG00000141448',
+                  'ENSG00000099399',
+                  'ENSG00000183098',
+                  'ENSG00000163283',
+                  'ENSG00000214575',
+                  'ENSG00000167244',
+                  'ENSG00000159251',
+                  'ENSG00000237541',
+                  'ENSG00000133169',
+                  'ENSG00000171345',
+                  'ENSG00000145113',
+                  'ENSG00000013297',
+                  'ENSG00000138622',
+                  'ENSG00000175084',
+                  'ENSG00000105370',
+                  'ENSG00000151892',
+                  'ENSG00000262655',
+                  'ENSG00000113083',
+                  'ENSG00000152137',
+                  'ENSG00000111319',
+                  'ENSG00000196350',
+                  'ENSG00000138829',
+                  'ENSG00000075673',
+                  'ENSG00000139351',
+                  'ENSG00000189184',
+                  'ENSG00000243709',
+                  'ENSG00000197380',
+                  'ENSG00000105664',
+                  'ENSG00000133048',
+                  'ENSG00000163239',
+                  'ENSG00000142677',
+                  'ENSG00000180340',
+                  'ENSG00000203907',
+                  'ENSG00000101871',
+                  'ENSG00000114315',
+                  'ENSG00000168505',
+                  'ENSG00000156049',
+                  'ENSG00000163431',
+                  'ENSG00000135253',
+                  'ENSG00000166426',
+                  'ENSG00000163530',
+                  'ENSG00000104332',
+                  'ENSG00000197565',
+                  'ENSG00000107105',
+                  'ENSG00000196878',
+                  'ENSG00000049540',
+                  'ENSG00000138685',
+                  'ENSG00000123096',
+                  'ENSG00000126016',
+                  'ENSG00000149294',
+                  'ENSG00000113739',
+                  'ENSG00000130182',
+                  'ENSG00000100842',
+                  'ENSG00000064886',
+                  'ENSG00000163508',
+                  'ENSG00000112183',
+                  'ENSG00000166450',
+                  'ENSG00000157851',
+                  'ENSG00000086548',
+                  'ENSG00000197653',
+                  'ENSG00000185070',
+                  'ENSG00000189143',
+                  'ENSG00000111799',
+                  'ENSG00000123094',
+                  'ENSG00000198729',
+                  'ENSG00000004776',
+                  'ENSG00000106571',
+                  'ENSG00000182111',
+                  'ENSG00000006283',
+                  'ENSG00000170748',
+                  'ENSG00000244486',
+                  'ENSG00000145147',
+                  'ENSG00000154027',
+                  'ENSG00000166527',
+                  'ENSG00000232629',
+                  'ENSG00000112273',
+                  'ENSG00000162949',
+                  'ENSG00000115963',
+                  'ENSG00000091513',
+                  'ENSG00000203909',
+                  'ENSG00000113430',
+                  'ENSG00000046653',
+                  'ENSG00000221890',
+                  'ENSG00000131096',
+                  'ENSG00000147596',
+                  'ENSG00000114251',
+                  'ENSG00000160963',
+                  'ENSG00000144857',
+                  'ENSG00000150893',
+                  'ENSG00000172572',
+                  'ENSG00000121753',
+                  'ENSG00000155816',
+                  'ENSG00000118777',
+                ],
               },
               op: 'in',
             },
           ],
           op: 'and',
-          score: 'case.project.project_id',
-          size: 50,
         },
       },
-      message: 'Demo showing the gene expression heatmap derived from TCGA BRCA cases and the top 50 protein coding genes by highest # SSM affected cases in the cohort.',
+      message: 'Demo showing the gene expression heatmap derived from 150 TCGA-TGCT cases and the 150 most variably-expressed protein-coding genes in the cohort.',
       name: 'Demo Gene Expression',
       sets: {
         case: {
-          'tcga-brca': 'All TCGA-BRCA cases.',
+          'tcga-tgct--all-cases--test2': 'TCGA-TGCT',
         },
         gene: {
-          'tcga-brca--top-50-pc-genes': 'Top 50 protein coding genes by highest # SSM affected cases in the cohort.',
+          'tcga-tgct--top-50-pc-genes--test2': 'Top 150 Most Variably-Expressed Genes',
         },
       },
       type: 'gene_expression',
@@ -469,8 +612,40 @@ const availableAnalysis: [TAnalysis] = [
         <GeneExpressionContainer {...props} />
       )
     ),
+    setInstructions: {
+      gene: (
+        <p>
+          {'The '}
+
+          <Link
+            target="_blank"
+            to="https://www.gsea-msigdb.org/gsea/msigdb/index.jsp"
+            >
+            Molecular Signatures Database (MSigDB)
+          </Link>
+
+          , a collection of annotated gene sets, can help you search for gene sets relevant to your analyses. MSigDB allows you to export these gene sets, which you can then upload to the GDC Portal for gene expression analysis.
+        </p>
+      ),
+    },
     setTypes: ['case', 'gene'],
     type: 'gene_expression',
+    validationInstructions: (
+      <React.Fragment>
+        <h2
+          style={{
+            color: '#c7254e',
+            fontSize: '1.8rem',
+          }}
+          >
+          Step 3: Check available data
+        </h2>
+
+        <p style={{ marginBottom: 15 }}>
+          Check if your input sets have gene expression data available before running the analysis.
+        </p>
+      </React.Fragment>
+    ),
     validateSets: {
       availability: sets => (
           Object.keys(sets).length

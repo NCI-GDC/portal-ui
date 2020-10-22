@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { isEqual } from 'lodash';
 import {
   compose,
@@ -9,11 +10,11 @@ import {
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
+import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
+import Chip from '@ncigdc/uikit/Chip';
 
 import SCRNASeqPlot from './SCRNASeqPlot';
-import { buttonList } from './SCRNASeqPlot/utils';
 import './styles.scss';
 import AnalysisDownloadsButton from './AnalysisDownloadsButton';
 
@@ -39,7 +40,6 @@ const enhance = compose(
     analysisInfo: {
       case_id,
       disease_type,
-      gender,
       primary_site,
       project_id,
       submitter_id,
@@ -73,9 +73,9 @@ const enhance = compose(
       {
         name: '# Cells',
         text: plotsDataList[0].data
-          .reduce((arr, curr) => arr += curr.x.length, 0)
-      }
-    ]
+          .reduce((arr, curr) => arr += curr.x.length, 0),
+      },
+    ],
   })),
   lifecycle({
     componentDidMount() {
@@ -114,10 +114,18 @@ const SCRNASeq = ({
         >
         <h1
           style={{
-            margin: '0 0 10px 0',
+            alignItems: 'center',
+            display: 'flex',
+            margin: '0px 0px 20px',
           }}
           >
           Single Cell RNA Sequencing
+          <Chip
+            label="BETA"
+            style={{
+              marginLeft: '1rem',
+            }}
+            />
         </h1>
 
         <Row>
@@ -145,7 +153,10 @@ const SCRNASeq = ({
                   ))}
                 </tbody>
               )}
-              style={{ marginBottom: 20, maxWidth: 500 }}
+              style={{
+                marginBottom: 20,
+                maxWidth: 500,
+              }}
               />
             <div className="scrnaseq-row">
               {plotsDataList.length > 0

@@ -1,13 +1,15 @@
 import { graphql } from 'react-relay';
-import { compose, pure, setDisplayName, withProps } from 'recompose';
+import {
+  compose, pure, setDisplayName, withProps,
+} from 'recompose';
 
 import Query from '@ncigdc/modern_components/Query';
 import { MOCK_SCRNA_DATA } from '@ncigdc/utils/constants';
 
 const variables = {
-  'files_size': 99,
-  'files_offset': 0,
-  'files_sort': [],
+  files_size: 99,
+  files_offset: 0,
+  files_sort: [],
 };
 
 export default (Component) =>
@@ -20,49 +22,40 @@ export default (Component) =>
             op: 'in',
             content: {
               field: 'cases.case_id',
-              value: [
-                case_id
-              ]
-            }
+              value: [case_id],
+            },
           },
-        {
-          op: 'in',
-          content: {
-            field: 'files.data_type',
-            value: MOCK_SCRNA_DATA
-              ? [
-                'Isoform Expression Quantification',
-                'miRNA Expression Quantification'
-              ]
-              : [
-                'Differential Gene Expression',
-                'Single Cell Analysis'
-              ]
-          }
-        },
+          {
+            op: 'in',
+            content: {
+              field: 'files.data_type',
+              value: MOCK_SCRNA_DATA
+              ? ['Isoform Expression Quantification', 'miRNA Expression Quantification']
+              : ['Differential Gene Expression', 'Single Cell Analysis'],
+            },
+          },
           {
             op: 'in',
             content: {
               field: 'files.data_format',
               value: MOCK_SCRNA_DATA
                 ? ['txt']
-                : ['tsv']
-            }
-          }
+                : ['tsv'],
+            },
+          },
         ],
-        op: 'and'
-      }
+        op: 'and',
+      },
     })),
     pure,
   )((props) => {
     const { filters } = props;
     return (
       <Query
-        parentProps={props}
-        name="AnalysisDownloadsButtonQuery"
-        minHeight={0}
-        variables={{ ...variables, filters }}
         Component={Component}
+        minHeight={0}
+        name="AnalysisDownloadsButtonQuery"
+        parentProps={props}
         query={graphql`
           query AnalysisDownloadsButton_relayQuery(
             $files_size: Int
@@ -88,6 +81,10 @@ export default (Component) =>
             }
           }
         `}
-      />
+        variables={{
+          ...variables,
+          filters,
+        }}
+        />
     );
   });

@@ -15,14 +15,14 @@ export const scrnaSeqFilters = {
         value: MOCK_SCRNA_DATA
           ? ['MuSE', 'VarScan2']
           : ['Seurat - 10x Chromium', 'Seurat - Smart-Seq2'],
-      }
+      },
     },
     {
       op: 'in',
       content: {
         field: 'files.data_format',
         value: MOCK_SCRNA_DATA ? ['vcf'] : ['tsv'],
-      }
+      },
     },
     {
       op: 'in',
@@ -30,9 +30,9 @@ export const scrnaSeqFilters = {
         field: 'files.data_type',
         value: MOCK_SCRNA_DATA
           ? ['Raw Simple Somatic Mutation']
-          : ['Single Cell Analysis']
-      }
-    }
+          : ['Single Cell Analysis'],
+      },
+    },
   ],
   op: 'and',
 };
@@ -52,11 +52,10 @@ export default (Component) =>
   )((props) => {
     return (
       <Query
-        parentProps={props}
-        name="SelectScrnaSeqCases"
-        minHeight={387}
-        variables={variables}
         Component={Component}
+        minHeight={387}
+        name="SelectScrnaSeqCases"
+        parentProps={props}
         query={graphql`
           query SelectScrnaSeq_relayQuery(
             $cases_size: Int
@@ -72,9 +71,6 @@ export default (Component) =>
                     edges {
                       node {
                         case_id
-                        demographic {
-                          gender
-                        }
                         disease_type
                         primary_site
                         project {
@@ -89,6 +85,7 @@ export default (Component) =>
             }
           }
         `}
-      />
+        variables={variables}
+        />
     );
   });

@@ -1,15 +1,18 @@
+/* eslint-disable camelcase */
 import React from 'react';
 import { graphql } from 'react-relay';
-import { compose, pure, setDisplayName, withPropsOnChange } from 'recompose';
+import {
+  compose, pure, setDisplayName, withPropsOnChange,
+} from 'recompose';
 
 import Query from '@ncigdc/modern_components/Query';
 
 import { scrnaSeqFilters } from '../SelectScrnaSeq.relay';
 
 const variables = {
-  'files_offset': 0,
-  'files_size': 99,
-  'files_sort': [],
+  files_offset: 0,
+  files_size: 99,
+  files_sort: [],
 };
 
 export default (Component) =>
@@ -21,27 +24,24 @@ export default (Component) =>
         content: [
           ...scrnaSeqFilters.content,
           {
-            op: "in",
+            op: 'in',
             content: {
-              field: "cases.case_id",
-              value: [
-                case_id
-              ]
-            }
+              field: 'cases.case_id',
+              value: [case_id],
+            },
           },
         ],
-      }
+      },
     })),
     pure,
   )((props) => {
     const { filters } = props;
     return (
       <Query
-        parentProps={props}
-        name="SelectScrnaSeqWorkflow"
-        minHeight={0}
-        variables={{ ...variables, filters }}
         Component={Component}
+        minHeight={0}
+        name="SelectScrnaSeqWorkflow"
+        parentProps={props}
         query={graphql`
           query SelectScrnaSeqWorkflow_relayQuery(
             $files_size: Int
@@ -67,6 +67,10 @@ export default (Component) =>
             }
           }
         `}
-      />
+        variables={{
+          ...variables,
+          filters,
+        }}
+        />
     );
   });

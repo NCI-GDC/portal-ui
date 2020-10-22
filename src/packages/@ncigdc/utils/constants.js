@@ -934,10 +934,6 @@ export const DISPLAY_DAVE_CA = localStorage.REACT_APP_DISPLAY_DAVE_CA ||
   process.env.REACT_APP_DISPLAY_DAVE_CA ||
   false;
 
-export const DISPLAY_SCRNA_SEQ = localStorage.REACT_APP_DISPLAY_SCRNA_SEQ ||
-  process.env.REACT_APP_DISPLAY_SCRNA_SEQ ||
-  false;
-
 export const MOCK_SCRNA_DATA = localStorage.REACT_APP_MOCK_SCRNA_DATA ||
   process.env.REACT_APP_MOCK_SCRNA_DATA ||
   false;

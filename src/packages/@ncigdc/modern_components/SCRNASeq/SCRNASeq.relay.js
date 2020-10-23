@@ -9,6 +9,7 @@ import {
 } from 'recompose';
 import urlJoin from 'url-join';
 
+import { fetchApi } from '@ncigdc/utils/ajax';
 import {
   processStream,
 //   streamedXSVtoJSON,

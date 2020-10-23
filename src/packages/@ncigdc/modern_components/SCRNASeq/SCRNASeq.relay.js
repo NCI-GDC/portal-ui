@@ -7,7 +7,6 @@ import {
   // withPropsOnChange,
   withState,
 } from 'recompose';
-import urlJoin from 'url-join';
 
 import { fetchApi } from '@ncigdc/utils/ajax';
 import {
@@ -16,7 +15,7 @@ import {
   wholeXSVtoJSON,
 } from '@ncigdc/utils/data';
 
-import { IS_DEV, AUTH_API } from '@ncigdc/utils/constants';
+import { IS_DEV } from '@ncigdc/utils/constants';
 
 import { DESIREDHEADERS } from './constants';
 import {

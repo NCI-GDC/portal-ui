@@ -7,15 +7,15 @@ import {
   // withPropsOnChange,
   withState,
 } from 'recompose';
-import urlJoin from 'url-join';
 
+import { fetchApi } from '@ncigdc/utils/ajax';
 import {
   processStream,
 //   streamedXSVtoJSON,
   wholeXSVtoJSON,
 } from '@ncigdc/utils/data';
 
-import { IS_DEV, AUTH_API } from '@ncigdc/utils/constants';
+import { IS_DEV } from '@ncigdc/utils/constants';
 
 import { DESIREDHEADERS } from './constants';
 import {
@@ -66,9 +66,12 @@ export default (Component: ReactClass<*>) =>
         // const file = await import('./stubData/seurat.tsv');
         // const { body: stream } = await fetch(`http://localhost:3000${file}`);
 
-        const fetchUrl = `${urlJoin(AUTH_API, 'data')}/${file_id}`;
-
-        const { body: stream } = await fetch(fetchUrl);
+        const { body: stream } = await fetchApi(
+          `data/${file_id}`,
+          {
+            fullResponse: true,
+          },
+        );
 
         const tsvToJSON = wholeXSVtoJSON(
           'EnhancedSCRNASeq.relay',

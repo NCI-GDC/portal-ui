@@ -66,9 +66,12 @@ export default (Component: ReactClass<*>) =>
         // const file = await import('./stubData/seurat.tsv');
         // const { body: stream } = await fetch(`http://localhost:3000${file}`);
 
-        const fetchUrl = `${urlJoin(AUTH_API, 'data')}/${file_id}`;
-
-        const { body: stream } = await fetch(fetchUrl);
+        const { body: stream } = await fetchApi(
+          `data/${file_id}`,
+          {
+            fullResponse: true,
+          },
+        );
 
         const tsvToJSON = wholeXSVtoJSON(
           'EnhancedSCRNASeq.relay',

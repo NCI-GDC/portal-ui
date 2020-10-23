@@ -112,21 +112,31 @@ const SCRNASeq = ({
           marginBottom: 20,
         }}
         >
-        <h1
-          style={{
-            alignItems: 'center',
-            display: 'flex',
-            margin: '0px 0px 20px',
-          }}
-          >
-          Single Cell RNA Sequencing
-          <Chip
-            label="BETA"
+        <div>
+          <h1
             style={{
-              marginLeft: '1rem',
+              alignItems: 'center',
+              display: 'flex',
+              marginBottom: 20,
             }}
-            />
-        </h1>
+            >
+            Single Cell RNA Sequencing
+            <Chip
+              label="BETA"
+              style={{
+                marginLeft: '1rem',
+              }}
+              />
+          </h1>
+          <div
+            style={{
+              fontStyle: 'italic',
+              marginBottom: 20,
+            }}
+            >
+            Demo showing UMAP, t-SNE, PCA plots generated from single cell RNA sequencing data for a sample case.
+          </div>
+        </div>
 
         <Row>
           {loading || (

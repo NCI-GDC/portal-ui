@@ -35,6 +35,7 @@ const SCRNASeqPlot = ({
   dataWithMarkers,
   handleInitialize,
   handleToolbarClick,
+  isReloading,
   size: { height, width },
   uniqueGridClass,
 }) => {
@@ -47,7 +48,7 @@ const SCRNASeqPlot = ({
   };
   return (
     <div
-      className="scrnaseq-plot"
+      className={`scrnaseq-plot${isReloading ? ' reloading' : ''}`}
       ref={r => {
         containerRefs[uniqueGridClass] = r;
       }}
@@ -84,6 +85,7 @@ export default compose(
   setDisplayName('EnhancedSCRNASeqPlot'),
   withState('graphDiv', 'setGraphDiv', ''),
   withState('uniqueGridClass', 'setUniqueGridClass', ''),
+  withState('isReloading', 'setIsReloading', false),
   withProps(({ data }) => ({
     dataWithMarkers: utils.getDataWithMarkers(data),
   })),
@@ -100,6 +102,7 @@ export default compose(
       data,
       dataType,
       graphDiv,
+      setIsReloading,
       size: { height, width },
       uniqueGridClass,
     }) => e => {
@@ -128,8 +131,7 @@ export default compose(
         }
         Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
       } else if (name === 'react') {
-        // react = hard reset of the whole plot
-        Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
+        setIsReloading(true, () => setIsReloading(false));
       } else {
         // use Plotly's built-in button functions
         ModeBarButtons[name].click(graphDiv, e);

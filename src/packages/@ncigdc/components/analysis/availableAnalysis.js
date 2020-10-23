@@ -558,7 +558,7 @@ const availableAnalysis: [TAnalysis] = [
           op: 'and',
         },
       },
-      message: 'Demo showing the gene expression heatmap derived from 150 TCGA-TGCT cases and the 150 most variably-expressed protein-coding genes in the cohort.',
+      message: 'Demo showing the heatmap and the clustering of 150 most variably expressed protein-coding genes from 150 cases of testicular cancer.',
       name: 'Demo Gene Expression',
       sets: {
         case: {
@@ -587,6 +587,7 @@ const availableAnalysis: [TAnalysis] = [
         <p>
           Try out the beta release of our new tool for gene expression analysis.
           Display the gene expression heatmap for sets of cases and genes of your choice.
+          Expression data is median-centred and clustered before visualization.
         </p>
         <p>
           <strong>COMING SOON:</strong>

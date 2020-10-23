@@ -48,7 +48,7 @@ const SCRNASeqPlot = ({
   };
   return (
     <div
-      className={`scrnaseq-plot ${isReloading ? 'reloading' : ''}`}
+      className={`scrnaseq-plot${isReloading ? ' reloading' : ''}`}
       ref={r => {
         containerRefs[uniqueGridClass] = r;
       }}

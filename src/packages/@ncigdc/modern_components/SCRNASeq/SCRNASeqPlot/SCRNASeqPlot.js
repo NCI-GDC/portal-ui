@@ -130,7 +130,7 @@ export default compose(
       } else if (name === 'react') {
         // react = hard reset of the whole plot
         Plotly.purge(graphDiv);
-        Plotly.plot(graphDiv, data, utils.getLayout(layoutParams));
+        Plotly.plot(graphDiv, data, utils.getLayout(layoutParams), utils.config);
       } else {
         // use Plotly's built-in button functions
         ModeBarButtons[name].click(graphDiv, e);

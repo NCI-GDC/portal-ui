@@ -34,10 +34,8 @@ const DemoDescription = ({
         marginBottom: '1rem',
       }}
       >
-      <p>
-        Try out the beta release of our new tool for gene expression analysis.
-        <br />
-        Display the gene expression heatmap for sets of cases and genes of your choice.
+      <p style={{ fontStyle: 'italic' }}>
+        Demo showing the heatmap and the clustering of 150 most variably expressed protein-coding genes from 150 cases of testicular cancer.
       </p>
 
       <p>
@@ -67,7 +65,7 @@ const DemoDescription = ({
                 FPKM-UQ
               </a>
 
-              {' normalization method can be applied before removing low expression genes. However, for simplicity in generating this example, only the unnormalized HTSeq counts were used. Next, the top 5000 genes with the highest standard deviation (SD) were selected. These 5000 genes were then ranked from highest to lowest by coefficient of variation (SD divided by mean). The top 150 genes from this ranking were selected as the final gene set used to plot the heatmap. The case and gene sets used for this demo can be viewed and downloaded via the links to the Exploration Page in the summary panel below. '}
+              {' normalization method can be applied before removing low expression genes. However, for simplicity in generating this example, only the unnormalized HTSeq counts were used. Next, the top 5000 genes with the highest standard deviation (SD) were selected. These 5000 genes were then ranked from highest to lowest by coefficient of variation (SD divided by mean). The top 150 genes from this ranking were selected as the final gene set used to plot the heatmap. Expression data is median-centred and clustered before visualization. The case and gene sets used for this demo can be viewed and downloaded via the links to the Exploration Page in the summary panel below. '}
 
               <ExtraInstructionsButton command="less" />
             </React.Fragment>

@@ -18,9 +18,10 @@ import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import QuickSearch from '@ncigdc/components/QuickSearch/QuickSearch';
 import UserDropdown from '@ncigdc/components/UserDropdown';
 import Hidden from '@ncigdc/components/Hidden';
-import withRouter from '@ncigdc/utils/withRouter';
 import { withTheme } from '@ncigdc/theme';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
+import awgLogo from '@ncigdc/theme/images/logo-GDC-AWG-portal.png';
+import withRouter from '@ncigdc/utils/withRouter';
 
 import './styles.scss';
 
@@ -54,7 +55,7 @@ const Header = ({
             >
             <img
               alt="gdc-logo"
-              src="https://i.imgur.com/O33FmeE.png"
+              src={awgLogo}
               />
             <Hidden>
               <h1>Home</h1>

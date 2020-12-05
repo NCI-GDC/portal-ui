@@ -79,7 +79,7 @@
     "query-string": "6.12.1",
     "queue": "4.2.1",
     "react": "16.8.0",
-    "react-addons-shallow-compare": "15.6.2",
+    "react-addons-shallow-compare": "15.6.3",
     "react-app-rewire-hot-loader": "2.0.1",
     "react-color": "2.14.1",
     "react-dates": "13.0.3",

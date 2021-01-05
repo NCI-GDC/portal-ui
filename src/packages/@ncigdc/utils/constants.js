@@ -14,10 +14,7 @@ export const AUTH =
 export const FENCE =
   localStorage.REACT_APP_FENCE || process.env.REACT_APP_FENCE || '';
 
-export const AUTH_API =
-  localStorage.REACT_APP_GDC_AUTH_API ||
-  process.env.REACT_APP_GDC_AUTH_API ||
-  `${AUTH}/api`;
+export const AUTH_API = `${AUTH}/api`;
 
 export const API = localStorage.REACT_APP_API || process.env.REACT_APP_API;
 
@@ -178,131 +175,543 @@ export const DNA_CHANGE_MARKERS = [
   '>',
 ];
 
-export const HUMAN_BODY_SITES_MAP = {
-  'accessory sinuses': 'Head and Neck',
-  'adrenal gland': 'Adrenal Gland',
-  'anus and anal canal': 'Other And Ill-Defined Sites',
-  'base of tongue': 'Head and Neck',
-  'bile duct': 'Bile Duct',
-  bladder: 'Bladder',
-  blood: 'Blood',
-  bone: 'Bone',
-  'bone marrow': 'Bone Marrow',
-  'bones, joints and articular cartilage of limbs': 'Bone',
-  'bones, joints and articular cartilage of other and unspecified sites':
-    'Bone',
-  brain: 'Brain',
-  breast: 'Breast',
-  'bronchus and lung': 'Lung',
-  cervix: 'Cervix',
-  'cervix uteri': 'Cervix',
-  colon: 'Colorectal',
-  colorectal: 'Colorectal',
-  'connective, subcutaneous and other soft tissues': 'Soft Tissue',
-  'corpus uteri': 'Uterus',
-  esophagus: 'Esophagus',
-  eye: 'Eye',
-  'eye and adnexa': 'Eye',
-  'floor of mouth': 'Head and Neck',
-  gallbladder: 'Other And Ill-Defined Sites',
-  gum: 'Head and Neck',
-  'head and neck': 'Head and Neck',
-  'heart, mediastinum, and pleura': 'Pleura',
-  'hematopoietic and reticuloendothelial systems': 'Bone Marrow',
-  hypopharynx: 'Head and Neck',
-  kidney: 'Kidney',
-  larynx: 'Head and Neck',
-  lip: 'Head and Neck',
-  liver: 'Liver',
-  'liver and intrahepatic bile ducts': 'Liver',
-  lung: 'Lung',
-  'lymph nodes': 'Lymph Nodes',
-  meninges: 'Other And Ill-Defined Sites',
-  'nasal cavity and middle ear': 'Head and Neck',
-  nasopharynx: 'Head and Neck',
-  'nervous system': 'Nervous System',
-  'not reported': 'Not Reported',
-  oropharynx: 'Head and Neck',
-  'other and ill-defined digestive organs': 'Other And Ill-Defined Sites',
-  'other and ill-defined sites': 'Other And Ill-Defined Sites',
-  'other and ill-defined sites in lip, oral cavity and pharynx': 'Head and Neck',
-  'other and ill-defined sites within respiratory system and intrathoracic organs': 'Other And Ill-Defined Sites',
-  'other and unspecified female genital organs': 'Other And Ill-Defined Sites',
-  'other and unspecified major salivary glands': 'Head and Neck',
-  'other and unspecified male genital organs': 'Other And Ill-Defined Sites',
-  'other and unspecified parts of biliary tract': 'Bile Duct',
-  'other and unspecified parts of mouth': 'Head and Neck',
-  'other and unspecified parts of tongue': 'Head and Neck',
-  'other and unspecified urinary organs': 'Other And Ill-Defined Sites',
-  'other endocrine glands and related structures': 'Other And Ill-Defined Sites',
-  ovary: 'Ovary',
-  palate: 'Head and Neck',
-  pancreas: 'Pancreas',
-  'parotid gland': 'Head and Neck',
-  penis: 'Other And Ill-Defined Sites',
-  'peripheral nerves and autonomic nervous system':
-    'Other And Ill-Defined Sites',
-  placenta: 'Other And Ill-Defined Sites',
-  pleura: 'Pleura',
-  prostate: 'Prostate',
-  'prostate gland': 'Prostate',
-  'pyriform sinus': 'Head and Neck',
-  'rectosigmoid junction': 'Colorectal',
-  rectum: 'Colorectal',
-  'renal pelvis': 'Other And Ill-Defined Sites',
-  'retroperitoneum and peritoneum': 'Other And Ill-Defined Sites',
-  skin: 'Skin',
-  'small intestine': 'Stomach',
-  'soft tissue': 'Soft Tissue',
-  'spinal cord, cranial nerves, and other parts of central nervous system':
-    'Nervous System',
-  stomach: 'Stomach',
-  testis: 'Testis',
-  thymus: 'Thymus',
-  thyroid: 'Thyroid',
-  'thyroid gland': 'Thyroid',
-  tonsil: 'Head and Neck',
-  trachea: 'Head and Neck',
-  unknown: 'Not Reported',
-  'unknown primary site': 'Other And Ill-Defined Sites',
-  ureter: 'Other And Ill-Defined Sites',
-  uterus: 'Uterus',
-  'uterus, nos': 'Uterus',
-  vagina: 'Other And Ill-Defined Sites',
-  vulva: 'Other And Ill-Defined Sites',
+export const HUMAN_BODY_MAPPINGS = {
+  'Adrenal Gland': {
+    byPrimarySite: ['Adrenal gland'],
+    byTissueOrOrganOfOrigin: [
+      'Adrenal gland, NOS',
+      'Cortex of adrenal gland',
+      'Medulla of adrenal gland',
+    ],
+  },
+  'Bile Duct': {
+    byPrimarySite: ['Other and unspecified parts of biliary tract'],
+    byTissueOrOrganOfOrigin: [
+      'Ampulla of Vater',
+      'Biliary tract, NOS',
+      'Extrahepatic bile duct',
+      'Overlapping lesion of biliary tract',
+    ],
+  },
+  Bladder: {
+    byPrimarySite: ['Bladder'],
+    byTissueOrOrganOfOrigin: [
+      'Anterior wall of bladder',
+      'Bladder neck',
+      'Bladder, NOS',
+      'Dome of bladder',
+      'Lateral wall of bladder',
+      'Overlapping lesion of bladder',
+      'Posterior wall of bladder',
+      'Trigone of bladder',
+      'Urachus',
+      'Ureteric orifice',
+    ],
+  },
+  Bone: {
+    byPrimarySite: [
+      'Bones, joints and articular cartilage of limbs',
+      'Bones, joints and articular cartilage of other and unspecified sites',
+      'Other and ill-defined sites',
+    ],
+    byTissueOrOrganOfOrigin: [
+      'Bone of limb, NOS',
+      'Bone, NOS',
+      'Bones of skull and face and associated joints',
+      'Long bones of lower limb and associated joints',
+      'Long bones of upper limb, scapula and associated joints',
+      'Mandible',
+      'Overlapping lesion of bones, joints and articular cartilage of limbs',
+      'Overlapping lesion of bones, joints and articular cartilage',
+      'Pelvic bones, sacrum, coccyx and associated joints',
+      'Pelvis, NOS',
+      'Rib, sternum, clavicle and associated joints',
+      'Short bones of lower limb and associated joints',
+      'Short bones of upper limb and associated joints',
+      'Vertebral column',
+    ],
+  },
+  'Bone Marrow': {
+    byPrimarySite: ['Hematopoietic and reticuloendothelial systems'],
+    byTissueOrOrganOfOrigin: [
+      'Blood',
+      'Bone marrow',
+      'Hematopoietic system, NOS',
+      'Reticuloendothelial system, NOS',
+      'Spleen',
+    ],
+  },
+  Brain: {
+    byPrimarySite: ['Brain'],
+    byTissueOrOrganOfOrigin: [
+      'Brain stem',
+      'Brain, NOS',
+      'Cerebellum, NOS',
+      'Cerebrum',
+      'Frontal lobe',
+      'Occipital lobe',
+      'Overlapping lesion of brain',
+      'Parietal lobe',
+      'Temporal lobe',
+      'Ventricle, NOS',
+    ],
+  },
+  Breast: {
+    byPrimarySite: ['Breast'],
+    byTissueOrOrganOfOrigin: [
+      'Axillary tail of breast',
+      'Breast, NOS',
+      'Central portion of breast',
+      'Lower-inner quadrant of breast',
+      'Lower-outer quadrant of breast',
+      'Nipple',
+      'Overlapping lesion of breast',
+      'Upper-inner quadrant of breast',
+      'Upper-outer quadrant of breast',
+    ],
+  },
+  Cervix: {
+    byPrimarySite: ['Cervix uteri'],
+    byTissueOrOrganOfOrigin: [
+      'Cervix uteri',
+      'Endocervix',
+      'Exocervix',
+      'Overlapping lesion of cervix uteri',
+    ],
+  },
+  Colorectal: {
+    byPrimarySite: [
+      'Colon',
+      'Rectosigmoid junction',
+      'Rectum',
+    ],
+    byTissueOrOrganOfOrigin: [
+      'Appendix',
+      'Ascending colon',
+      'Cecum',
+      'Colon, NOS',
+      'Descending colon',
+      'Hepatic flexure of colon',
+      'Overlapping lesion of colon',
+      'Rectosigmoid junction',
+      'Rectum, NOS',
+      'Sigmoid colon',
+      'Splenic flexure of colon',
+      'Transverse colon',
+    ],
+  },
+  Esophagus: {
+    byPrimarySite: ['Esophagus'],
+    byTissueOrOrganOfOrigin: [
+      'Abdominal esophagus',
+      'Cervical esophagus',
+      'Esophagus, NOS',
+      'Lower third of esophagus',
+      'Middle third of esophagus',
+      'Overlapping lesion of esophagus',
+      'Thoracic esophagus',
+      'Upper third of esophagus',
+    ],
+  },
+  Eye: {
+    byPrimarySite: ['Eye and adnexa'],
+    byTissueOrOrganOfOrigin: [
+      'Choroid',
+      'Ciliary body',
+      'Conjunctiva',
+      'Cornea, NOS',
+      'Eye, NOS',
+      'Lacrimal gland',
+      'Orbit, NOS',
+      'Overlapping lesion of eye and adnexa',
+      'Retina',
+    ],
+  },
+  'Head and Neck': {
+    byPrimarySite: [
+      'Accessory sinuses',
+      'Base of tongue',
+      'Floor of mouth',
+      'Gum',
+      'Hypopharynx',
+      'Larynx',
+      'Lip',
+      'Nasal cavity and middle ear',
+      'Nasopharynx',
+      'Oropharynx',
+      'Other and ill-defined sites in lip, oral cavity and pharynx',
+      'Other and ill-defined sites',
+      'Other and unspecified major salivary glands',
+      'Other and unspecified parts of mouth',
+      'Other and unspecified parts of tongue',
+      'Palate',
+      'Parotid gland',
+      'Pyriform sinus',
+      'Tonsil',
+      'Trachea',
+    ],
+    byTissueOrOrganOfOrigin: [
+      'Accessory sinus, NOS',
+      'Anterior 2/3 of tongue, NOS',
+      'Anterior floor of mouth',
+      'Anterior surface of epiglottis',
+      'Anterior wall of nasopharynx',
+      'Base of tongue, NOS',
+      'Border of tongue',
+      'Branchial cleft',
+      'Cheek mucosa',
+      'Commissure of lip',
+      'Dorsal surface of tongue, NOS',
+      'Ethmoid sinus',
+      'External lip, NOS',
+      'External lower lip',
+      'External upper lip',
+      'Floor of mouth, NOS',
+      'Frontal sinus',
+      'Glottis',
+      'Gum, NOS',
+      'Hard palate',
+      'Head, face or neck, NOS',
+      'Hypopharyngeal aspect of aryepiglottic fold',
+      'Hypopharynx, NOS',
+      'Laryngeal cartilage',
+      'Larynx, NOS',
+      'Lateral floor of mouth',
+      'Lateral wall of nasopharynx',
+      'Lateral wall of oropharynx',
+      'Lingual tonsil',
+      'Lip, NOS',
+      'Lower gum',
+      'Major salivary gland, NOS',
+      'Maxillary sinus',
+      'Middle ear',
+      'Mouth, NOS',
+      'Mucosa of lip, NOS',
+      'Mucosa of lower lip',
+      'Mucosa of upper lip',
+      'Nasal cavity',
+      'Nasopharynx, NOS',
+      'Oropharynx, NOS',
+      'Overlapping lesion of accessory sinuses',
+      'Overlapping lesion of floor of mouth',
+      'Overlapping lesion of hypopharynx',
+      'Overlapping lesion of larynx',
+      'Overlapping lesion of lip, oral cavity and pharynx',
+      'Overlapping lesion of lip',
+      'Overlapping lesion of major salivary glands',
+      'Overlapping lesion of nasopharynx',
+      'Overlapping lesion of other and unspecified parts of mouth',
+      'Overlapping lesion of palate',
+      'Overlapping lesion of tongue',
+      'Overlapping lesion of tonsil',
+      'Overlapping lesions of oropharynx',
+      'Palate, NOS',
+      'Parotid gland',
+      'Pharynx, NOS',
+      'Postcricoid region',
+      'Posterior wall of hypopharynx',
+      'Posterior wall of nasopharynx',
+      'Posterior wall of oropharynx',
+      'Pyriform sinus',
+      'Retromolar area',
+      'Soft palate, NOS',
+      'Sphenoid sinus',
+      'Subglottis',
+      'Sublingual gland',
+      'Submandibular gland',
+      'Superior wall of nasopharynx',
+      'Supraglottis',
+      'Tongue, NOS',
+      'Tonsil, NOS',
+      'Tonsillar fossa',
+      'Tonsillar pillar',
+      'Trachea',
+      'Upper Gum',
+      'Uvula',
+      'Vallecula',
+      'Ventral surface of tongue, NOS',
+      'Vestibule of mouth',
+      'Waldeyer ring',
+    ],
+  },
+  Kidney: {
+    byPrimarySite: ['Kidney'],
+    byTissueOrOrganOfOrigin: ['Kidney, NOS'],
+  },
+  Liver: {
+    byPrimarySite: ['Liver and intrahepatic bile ducts'],
+    byTissueOrOrganOfOrigin: ['intrahepatic bile duct', 'Liver'],
+  },
+  Lung: {
+    byPrimarySite: ['Bronchus and lung'],
+    byTissueOrOrganOfOrigin: [
+      'Lower lobe, lung',
+      'Lung, NOS',
+      'Main bronchus',
+      'Middle lobe, lung',
+      'Overlapping lesion of lung',
+      'Upper lobe, lung',
+    ],
+  },
+  'Lymph Nodes': {
+    byPrimarySite: ['Lymph nodes'],
+    byTissueOrOrganOfOrigin: [
+      'Intra-abdominal lymph nodes',
+      'Intrathoracic lymph nodes',
+      'Lymph node, NOS',
+      'Lymph nodes of axilla or arm',
+      'Lymph nodes of head, face and neck',
+      'Lymph nodes of inguinal region or leg',
+      'Lymph nodes of multiple regions',
+      'Pelvic lymph nodes',
+    ],
+  },
+  'Nervous System': {
+    byPrimarySite: [
+      'Meninges',
+      'Peripheral nerves and autonomic nervous system',
+      'Spinal cord, cranial nerves, and other parts of central nervous system',
+    ],
+    byTissueOrOrganOfOrigin: [
+      'Acoustic nerve',
+      'Autonomic nervous system, NOS',
+      'Cauda equina',
+      'Cerebral meninges',
+      'Cranial nerve, NOS',
+      'Meninges, NOS',
+      'Nervous system, NOS',
+      'Olfactory nerve',
+      'Optic nerve',
+      'Overlapping lesion of brain and central nervous system',
+      'Overlapping lesion of peripheral nerves and autonomic nervous system',
+      'Peripheral nerves and autonomic nervous system of abdomen',
+      'Peripheral nerves and autonomic nervous system of head, face, and neck',
+      'Peripheral nerves and autonomic nervous system of lower limb and hip',
+      'Peripheral nerves and autonomic nervous system of pelvis',
+      'Peripheral nerves and autonomic nervous system of thorax',
+      'Peripheral nerves and autonomic nervous system of trunk, NOS',
+      'Peripheral nerves and autonomic nervous system of upper limb and shoulder',
+      'Spinal cord',
+      'Spinal meninges',
+    ],
+  },
+  'Not Reported': {
+    byPrimarySite: ['Not Reported', 'unknown'],
+    byTissueOrOrganOfOrigin: ['Not Reported', 'unknown'],
+  },
+  'Other and Ill-defined Sites': {
+    byPrimarySite: [
+      'Anus and anal canal',
+      'Gallbladder',
+      'Other and ill-defined digestive organs',
+      'Other and ill-defined sites within respiratory system and intrathoracic organs',
+      'Other and ill-defined sites',
+      'Other and unspecified female genital organs',
+      'Other and unspecified male genital organs',
+      'Other and unspecified urinary organs',
+      'Other endocrine glands and related structures',
+      'Penis',
+      'Placenta',
+      'Renal pelvis',
+      'Retroperitoneum and peritoneum',
+      'Unknown primary site',
+      'Ureter',
+      'Vagina',
+      'Vulva',
+    ],
+    byTissueOrOrganOfOrigin: [
+      'Abdomen, NOS',
+      'Anal canal',
+      'Anus, NOS',
+      'Aortic body and other paraganglia',
+      'Body of penis',
+      'Broad ligament',
+      'Carotid body',
+      'Clitoris',
+      'Cloacogenic zone',
+      'Craniopharyngeal duct',
+      'Endocrine gland, NOS',
+      'Epididymis',
+      'Fallopian tube',
+      'Female genital tract, NOS',
+      'Gallbladder',
+      'Gastrointestinal tract, NOS',
+      'Glans penis',
+      'Ill-defined sites within respiratory system',
+      'Intestinal tract, NOS',
+      'Labium majus',
+      'Labium minus',
+      'Lower limb, NOS',
+      'Male genital organs, NOS',
+      'Other ill-defined sites',
+      'Other specified parts of female genital organs',
+      'Other specified parts of male genital organs',
+      'Overlapping lesion of digestive system',
+      'Overlapping lesion of endocrine glands and related structures',
+      'Overlapping lesion of female genital organs',
+      'Overlapping lesion of ill-defined sites',
+      'Overlapping lesion of male genital organs',
+      'Overlapping lesion of penis',
+      'Overlapping lesion of rectum, anus and anal canal',
+      'Overlapping lesion of respiratory system and intrathoracic organs',
+      'Overlapping lesion of retroperitoneum and peritoneum',
+      'Overlapping lesion of urinary organs',
+      'Overlapping lesion of vulva',
+      'Parametrium',
+      'Parathyroid gland',
+      'Paraurethral gland',
+      'Penis, NOS',
+      'Peritoneum, NOS',
+      'Pineal gland',
+      'Pituitary gland',
+      'Placenta',
+      'Prepuce',
+      'Renal pelvis',
+      'Retroperitoneum',
+      'Round ligament',
+      'Scrotum, NOS',
+      'Specified parts of peritoneum',
+      'Spermatic cord',
+      'Thorax, NOS',
+      'Unknown primary site',
+      'Upper limb, NOS',
+      'Upper respiratory tract, NOS',
+      'Ureter',
+      'Urethra',
+      'Urinary system, NOS',
+      'Uterine adnexa',
+      'Vagina, NOS',
+      'Vulva, NOS',
+    ],
+  },
+  Ovary: {
+    byPrimarySite: ['Ovary'],
+    byTissueOrOrganOfOrigin: ['Ovary'],
+  },
+  Pancreas: {
+    byPrimarySite: ['Pancreas'],
+    byTissueOrOrganOfOrigin: [
+      'Body of pancreas',
+      'Head of pancreas',
+      'Islets of Langerhans',
+      'Other specified parts of pancreas',
+      'Overlapping lesion of pancreas',
+      'Pancreas, NOS',
+      'Pancreatic duct',
+      'Tail of pancreas',
+    ],
+  },
+  Pleura: {
+    byPrimarySite: ['Heart, mediastinum, and pleura'],
+    byTissueOrOrganOfOrigin: [
+      'Anterior mediastinum',
+      'Heart',
+      'Mediastinum, NOS',
+      'Overlapping lesion of heart, mediastinum and pleura',
+      'Pleura, NOS',
+      'Posterior mediastinum',
+    ],
+  },
+  Prostate: {
+    byPrimarySite: ['Prostate gland'],
+    byTissueOrOrganOfOrigin: ['Prostate gland'],
+  },
+  Skin: {
+    byPrimarySite: ['Skin'],
+    byTissueOrOrganOfOrigin: [
+      'External ear',
+      'Eyelid',
+      'Overlapping lesion of skin',
+      'Skin of lip, NOS',
+      'Skin of lower limb and hip',
+      'Skin of other and unspecified parts of face',
+      'Skin of scalp and neck',
+      'Skin of trunk',
+      'Skin of upper limb and shoulder',
+      'Skin, NOS',
+    ],
+  },
+  'Soft Tissue': {
+    byPrimarySite: ['Connective, subcutaneous and other soft tissues'],
+    byTissueOrOrganOfOrigin: [
+      'Connective, Subcutaneous and other soft tissues of abdomen',
+      'Connective, Subcutaneous and other soft tissues of head, face, and neck',
+      'Connective, Subcutaneous and other soft tissues of lower limb and hip',
+      'Connective, Subcutaneous and other soft tissues of pelvis',
+      'Connective, Subcutaneous and other soft tissues of thorax',
+      'Connective, Subcutaneous and other soft tissues of trunk, NOS',
+      'Connective, Subcutaneous and other soft tissues of upper limb and shoulder',
+      'Connective, Subcutaneous and other soft tissues, NOS',
+      'Overlapping lesion of connective, subcutaneous and other soft tissues',
+    ],
+  },
+  Stomach: {
+    byPrimarySite: ['Small intestine', 'Stomach'],
+    byTissueOrOrganOfOrigin: [
+      'Body of stomach',
+      'Cardia, NOS',
+      'Duodenum',
+      'Fundus of stomach',
+      'Gastric antrum',
+      'Greater curvature of stomach, NOS',
+      'Ileum',
+      'Jejunum',
+      'Lesser curvature of stomach, NOS',
+      'Meckel diverticulum',
+      'Overlapping lesion of small intestine',
+      'Overlapping lesion of stomach',
+      'Pylorus',
+      'Small intestine, NOS',
+      'Stomach, NOS',
+    ],
+  },
+  Testis: {
+    byPrimarySite: ['Testis'],
+    byTissueOrOrganOfOrigin: [
+      'Descended testis',
+      'Testis, NOS',
+      'Undescended testis',
+    ],
+  },
+  Thymus: {
+    byPrimarySite: ['Thymus'],
+    byTissueOrOrganOfOrigin: ['Thymus'],
+  },
+  Thyroid: {
+    byPrimarySite: ['Thyroid gland'],
+    byTissueOrOrganOfOrigin: ['Thyroid gland'],
+  },
+  Uterus: {
+    byPrimarySite: ['Corpus uteri', 'Uterus, NOS'],
+    byTissueOrOrganOfOrigin: [
+      'Corpus uteri',
+      'Endometrium',
+      'Fundus uteri',
+      'Isthmus uteri',
+      'Myometrium',
+      'Overlapping lesion of corpus uteri',
+      'Uterus, NOS',
+    ],
+  },
 };
 
-export const HUMAN_BODY_ALL_ALLOWED_SITES = [
-  'Adrenal Gland',
-  'Bile Duct',
-  'Bladder',
-  'Blood',
-  'Bone',
-  'Bone Marrow',
-  'Brain',
-  'Breast',
-  'Cervix',
-  'Colorectal',
-  'Esophagus',
-  'Eye',
-  'Head and Neck',
-  'Kidney',
-  'Liver',
-  'Lung',
-  'Lymph Nodes',
-  'Nervous System',
-  'Ovary',
-  'Pancreas',
-  'Pleura',
-  'Prostate',
-  'Skin',
-  'Soft Tissue',
-  'Stomach',
-  'Testis',
-  'Thymus',
-  'Thyroid',
-  'Uterus',
-];
+export const HUMAN_BODY_MAPPER = category => Object.entries(HUMAN_BODY_MAPPINGS).reduce(
+  (mainAcc, [sapiensLabel, byCategories]) => ({
+    ...mainAcc,
+    ...byCategories[category].reduce(
+      (acc, categoryKey) => ({
+        ...acc,
+        [categoryKey.toLowerCase() || sapiensLabel.toLowerCase()]: sapiensLabel,
+      }), {},
+    ),
+  }), {},
+);
+
+export const HUMAN_BODY_SITES_MAP = HUMAN_BODY_MAPPER('byPrimarySite');
+export const HUMAN_BODY_TOOS_MAP = HUMAN_BODY_MAPPER('byTissueOrOrganOfOrigin');
+
+export const HUMAN_BODY_ALL_ALLOWED_SITES = Object.keys(HUMAN_BODY_MAPPINGS)
+  .filter(site => !['Not Reported', 'Other and Ill-defined Sites'].includes(site));
 
 export const MAX_SET_SIZE = 50000;
 
@@ -342,6 +751,9 @@ export const IMPACT_SHORT_FORMS = {
     modifier: 'MR',
   },
 };
+
+export const DEBUGGING = localStorage.REACT_APP_DEBUGGING ||
+  process.env.REACT_APP_DEBUGGING;
 
 export const IS_DEV = process.env.NODE_ENV === 'development';
 
@@ -401,6 +813,20 @@ export const DEV_USER_CA = [ // controlled access mock
 //   localStorage.REACT_APP_DISPLAY_CDAVE ||
 //   process.env.REACT_APP_DISPLAY_CDAVE ||
 //   false;
+
+export const AWG_TOKEN_EXPIRY = (
+  localStorage.REACT_APP_AWG_TOKEN_EXPIRY ||
+  process.env.REACT_APP_AWG_TOKEN_EXPIRY ||
+  5 // Default timeout for token renewal by Fence queries
+) * 60 * 1000; // to milliseconds
+
+export const AWG_TOKEN_RENEWAL_INTERVAL = (
+  (DEBUGGING && ( // this polling should only be enabled for testing
+    localStorage.AWG_TOKEN_RENEWAL_INTERVAL ||
+    process.env.AWG_TOKEN_RENEWAL_INTERVAL
+  )) ||
+  0 // if none is set, do not automate renewal at all
+) * 60 * 1000; // to milliseconds
 
 export const CLINICAL_FIELD_BLACKLIST = [
   'state',
@@ -470,35 +896,31 @@ export const capitalisedTerms = {
 };
 
 export const CATEGORY_COLORS = {
-  'ethnicity': {
+  ethnicity: {
     'hispanic or latino': 'rgb(255,150,148)', // pink
     'not hispanic or latino': 'rgb(215,40,40)', // red
     'not reported': 'rgb(255,189,122)', // yellow
   },
-  'gender': {
-    'female': 'rgb(220,96,156)', // pink
-    'male': 'rgb(67,6,147)', // purple
+  gender: {
+    female: 'rgb(220,96,156)', // pink
+    male: 'rgb(67,6,147)', // purple
   },
-  'race': {
+  race: {
     'american indian or alaska native': 'rgb(153, 223, 139)', // light green
-    'asian': 'rgb(30, 117, 179)', // dark blue
+    asian: 'rgb(30, 117, 179)', // dark blue
     'black or african american': 'rgb(175, 200, 233)', // light blue
     'native hawaiian or other pacific islander': 'rgb(44, 160, 44)', // dark green
     'not reported': 'rgb(255, 189, 122)', // light orange
-    'white': 'rgb(255, 127, 15)', // dark orange
+    white: 'rgb(255, 127, 15)', // dark orange
   },
-  'vital_status': {
-    'alive': 'rgb(22,147,192)', // blue
-    'dead': 'rgb(138,0,0)', // red
+  vital_status: {
+    alive: 'rgb(22,147,192)', // blue
+    dead: 'rgb(138,0,0)', // red
   },
 };
 
 export const DISPLAY_SUMMARY_PAGE = localStorage.REACT_APP_DISPLAY_SUMMARY_PAGE ||
   process.env.REACT_APP_DISPLAY_SUMMARY_PAGE ||
-  false;
-
-export const DISPLAY_GENE_EXPRESSION = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION ||
-  process.env.REACT_APP_DISPLAY_GENE_EXPRESSION ||
   false;
 
 export const DISPLAY_10K = localStorage.REACT_APP_DISPLAY_10K ||
@@ -512,6 +934,6 @@ export const DISPLAY_DAVE_CA = localStorage.REACT_APP_DISPLAY_DAVE_CA ||
   process.env.REACT_APP_DISPLAY_DAVE_CA ||
   false;
 
-export const DISPLAY_SCRNA_SEQ = localStorage.REACT_APP_DISPLAY_SCRNA_SEQ ||
-  process.env.REACT_APP_DISPLAY_SCRNA_SEQ ||
+export const MOCK_SCRNA_DATA = localStorage.REACT_APP_MOCK_SCRNA_DATA ||
+  process.env.REACT_APP_MOCK_SCRNA_DATA ||
   false;

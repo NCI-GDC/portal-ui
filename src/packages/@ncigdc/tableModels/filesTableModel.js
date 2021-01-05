@@ -77,10 +77,12 @@ const filesTableModel = [
         {total > 1 && (
           <RepositoryCasesLink
             query={{
-              filters: makeFilter(
-                [{ field: 'files.file_id', value: [fileId] }],
-                false,
-              ),
+              filters: makeFilter([
+                {
+                  field: 'files.file_id',
+                  value: [fileId],
+                },
+              ]),
             }}
           >
             {total.toLocaleString()}

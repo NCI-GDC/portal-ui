@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 // import { graphql } from 'react-relay';
 import {
   compose,
@@ -7,6 +8,7 @@ import {
   withState,
 } from 'recompose';
 
+import { fetchApi } from '@ncigdc/utils/ajax';
 import {
   processStream,
 //   streamedXSVtoJSON,
@@ -57,12 +59,19 @@ export default (Component: ReactClass<*>) =>
       //     .catch(error => console.error(error));
       // },
       getWholeTsv: ({
+        analysisInfo: { file_id },
         setData,
         setLoading,
       }) => async () => {
         // const file = await import('./stubData/seurat.tsv');
         // const { body: stream } = await fetch(`http://localhost:3000${file}`);
-        const { body: stream } = await fetch('https://raw.githubusercontent.com/NCI-GDC/portal-ui/PRTL-3173/src/packages/%40ncigdc/modern_components/SCRNASeq/stubData/seurat.tsv');
+
+        const { body: stream } = await fetchApi(
+          `data/${file_id}`,
+          {
+            fullResponse: true,
+          },
+        );
 
         const tsvToJSON = wholeXSVtoJSON(
           'EnhancedSCRNASeq.relay',

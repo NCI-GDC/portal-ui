@@ -1,0 +1,305 @@
+.inchlib {
+  &-toolbar {
+    list-style-type: none;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 99;
+
+    &_item {
+      display: inline-block;
+      position: relative;
+    }
+
+    &_btn {
+      background-color: #fff;
+      border-radius: 4px;
+      border: 1px solid rgb(200,200,200);
+      color: #333;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      height: 28px;
+      line-height: 20px;
+      margin: 0 2px;
+      outline: none;
+      padding: 0 12px;
+      position: relative;
+    }
+
+    &_btn:hover {
+      background-color: rgb(0, 138, 224);
+      border-color: rgb(0, 138, 224);
+      color: #fff;
+    }
+
+    &_btn.no-hover:hover {
+      background-color: #fff;
+      border-color: rgb(200,200,200);
+      color: #333;
+    }
+
+    &_btn-disabled {
+      background-color: #706f6f;
+      border-color: #706f6f;
+      color: #fff;
+    }
+
+    &_btn-disabled:hover {
+      background-color: #706f6f;
+      border-color: #706f6f;
+      color: #fff;
+    }
+
+    &_btn-legend {
+      text-align: left;
+      /* width needs to be the same as legend_width */
+      width: 170px;
+    }
+
+    &_btn-legend .fa {
+      line-height: 22px;
+      position: absolute;
+      right: 14px;
+      top: 0;
+    }
+  }
+
+  &-download {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 2px 5px 0px, rgba(0, 0, 0, 0.12) 0px 2px 10px 0px;
+    list-style-type: none;
+    min-width: 100px;
+    outline: currentcolor none medium;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 30px;
+    z-index: 200;
+
+    &_btn {
+      -webkit-appearance: none;
+      appearance: none;
+      background-color: #fff;
+      border: none;
+      outline: currentcolor none medium;
+      padding: 0.6rem 1rem;
+      text-align: right;
+      width: 100%;
+    }
+
+    &_btn:hover {
+      background-color: rgb(245,245,245);
+      color: #262626;
+    }
+  }
+
+  &-modal {
+    /* center align the modals this way */
+    /* so the overlay can still be clicked on */
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid rgb(204, 204, 204);
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 8px;
+    display: flex;
+    flex-direction: column;
+    left: calc(50% - 250px);
+    padding: 0 2rem 2rem;
+    position: absolute;
+    top: 100px;
+    width: 500px;
+    z-index: 102;
+
+    &_content {
+      border-bottom: 1px solid #dedede;
+      border-top: 1px solid#dedede;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      margin: 0.5rem 0px 1rem;
+      outline: currentcolor none medium;
+      padding: 15px 0px;
+      position: relative;
+    }
+
+    &_actions {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      padding-top: 10px;
+      position: relative;
+    }
+
+    &_actions-btn {
+      background-color:#005083;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      color:#fff;
+      font-size: 14px;
+      outline: currentcolor none medium;
+      padding: 6px 12px;
+      transition: all 0.25s ease 0s;
+    }
+
+    &_actions-btn:first-child {
+      margin-right: 10px;
+    }
+
+    &_actions-btn:hover {
+      background-color: #008ae0;
+    }
+
+    /* MODAL - CATEGORIES */
+
+    &_categories-form_list {
+      font-size: 12px;
+      list-style-type: none;
+      margin-bottom: 10px;
+      padding: 5px 0;
+    }
+
+    &_categories-form_list-item {
+      float: left;
+      padding: 5px 0 5px 20px;
+      width: 50%;
+    }
+
+    &_categories-form_input {
+      float: left;
+      margin-left: -20px;
+      margin-right: 5px;
+    }
+
+    &_categories-form_label {
+      color: #3a3a3a;
+      display: inline-block;
+      font-size: 14px;
+      line-height: 1;
+      margin-bottom: 5px;
+      margin-left: -20px;
+      padding-left: 20px;
+    }
+
+    /* MODAL - HEATMAP */
+
+    &_heatmap-form {
+      margin: 0 -5px;
+    }
+
+    &_heatmap-gradient {
+      border: solid #D2D2D2 3px;
+      height: 25px;
+      width: 100%;
+    }
+
+    &_heatmap-label {
+      float: left;
+      margin: 5px;
+      position: relative;
+      width: 80px;
+    }
+
+    &_heatmap-label:nth-child(5n+1) {
+      clear: both;
+    }
+
+    &_heatmap-input {
+      height: 0;
+      opacity: 0;
+      position: absolute;
+      width: 0;
+    }
+
+    &_heatmap-gradient:hover {
+      cursor: pointer;
+    }
+
+    &_heatmap-input:checked + &_heatmap-gradient {
+      border-color: #008ae0;
+    }
+  }
+
+  &-legend {
+    background: #fff;
+    border-radius: 0 0 5px 5px;
+    border: 1px solid rgb(200,200,200);
+    border-top-width: 0;
+    font-size: 12px;
+    right: 2px;
+    padding: 10px 10px 0;
+    position: absolute;
+    top: 25px;
+    width: 170px;
+    z-index: 100;
+
+      &_list,
+      &_sublist {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      &_sublist {
+        margin-bottom: 5px;
+      }
+
+      &_sublist-item {
+        padding-left: 17px;
+        position: relative;
+      }
+
+      &_sublist-item-horizontal {
+        display: inline-block;
+        margin-right: 10px;
+      }
+
+      &_square,
+      &_gradient {
+        height: 12px;
+      }
+
+      &_square {
+        display: block;
+        left: 0;
+        position: absolute;
+        top: 2px;
+        width: 12px;
+      }
+
+      &_gradient {
+        display: inline-block;
+        width: 70px;
+      }
+  }
+
+  &-overlay {
+    background-color: #fff;
+    bottom: 0;
+    left: 0;
+    opacity: 0.7;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 101;
+
+    &_invisible {
+      opacity: 0;
+      z-index: 98;
+    }
+  }
+
+  &-loadingOverlay {
+    align-items: center;
+    color: rgb(0, 80, 131);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position:absolute;
+    top: 0;
+    z-index: 102;
+
+    .fa {
+      font-size: 32px;
+    }
+  }
+}

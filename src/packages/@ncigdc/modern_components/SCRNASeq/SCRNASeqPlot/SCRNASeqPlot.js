@@ -10,6 +10,7 @@ import {
   withProps,
   withState,
 } from 'recompose';
+import moment from 'moment';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import {
@@ -17,8 +18,8 @@ import {
   enterFullScreen,
   isFullScreen,
 } from '@ncigdc/utils/fullscreen';
+import { GlobalTooltip } from '@ncigdc/uikit/Tooltip';
 
-import { withLoader } from '@ncigdc/uikit/Loaders/Loader';
 import withSize from '@ncigdc/utils/withSize';
 
 import { DownloadButton, ToolbarButton } from '../toolbar';
@@ -34,18 +35,20 @@ const SCRNASeqPlot = ({
   dataWithMarkers,
   handleInitialize,
   handleToolbarClick,
+  isReloading,
   size: { height, width },
   uniqueGridClass,
 }) => {
+  const checkFullScreen = !!isFullScreen();
   const layoutParams = {
     dataType,
-    fullscreen: isFullScreen(),
-    ...isFullScreen() && { height },
+    fullscreen: checkFullScreen,
+    height,
     width,
   };
   return (
     <div
-      className="scrnaseq-plot"
+      className={`scrnaseq-plot${isReloading ? ' reloading' : ''}`}
       ref={r => {
         containerRefs[uniqueGridClass] = r;
       }}
@@ -66,6 +69,7 @@ const SCRNASeqPlot = ({
               onToolbarClick={handleToolbarClick}
               />
           )))}
+        {checkFullScreen && <GlobalTooltip />}
       </Row>
       <Plot
         config={utils.config}
@@ -81,6 +85,7 @@ export default compose(
   setDisplayName('EnhancedSCRNASeqPlot'),
   withState('graphDiv', 'setGraphDiv', ''),
   withState('uniqueGridClass', 'setUniqueGridClass', ''),
+  withState('isReloading', 'setIsReloading', false),
   withProps(({ data }) => ({
     dataWithMarkers: utils.getDataWithMarkers(data),
   })),
@@ -97,40 +102,41 @@ export default compose(
       data,
       dataType,
       graphDiv,
+      setIsReloading,
       size: { height, width },
       uniqueGridClass,
     }) => e => {
       e.persist();
       const name = e.target.getAttribute('data-name');
+      const checkFullScreen = !!isFullScreen();
       const layoutParams = {
         dataType,
-        fullscreen: isFullScreen(),
-        ...isFullScreen() && { height },
+        fullscreen: checkFullScreen,
+        height,
         width,
       };
       if (name === 'downloadImage') {
         const format = e.target.getAttribute('data-format');
         const scale = e.target.getAttribute('data-scale');
         Plotly.downloadImage(graphDiv, {
-          filename: 'scrnaseq',
+          filename: `scrnaseq-${dataType.toLowerCase().replace('-', '')}-${moment().format('YYYY-MM-DD-HHmmss')}`,
           format,
           scale,
         });
       } else if (name === 'fullscreen') {
-        if (isFullScreen()) {
+        if (checkFullScreen) {
           exitFullScreen();
         } else {
           enterFullScreen(containerRefs[uniqueGridClass]);
         }
         Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
       } else if (name === 'react') {
-        Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
+        setIsReloading(true, () => setIsReloading(false));
       } else {
         // use Plotly's built-in button functions
         ModeBarButtons[name].click(graphDiv, e);
       }
     },
   }),
-  withLoader,
   pure,
 )(SCRNASeqPlot);

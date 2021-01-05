@@ -1,20 +1,21 @@
 /* eslint-disable camelcase */
 
 import React, { Component } from 'react';
-import { isEqual } from 'lodash';
+// import { isEqual } from 'lodash';
 
 import { theme } from '@ncigdc/theme';
-import './inchlib';
 import { CATEGORY_COLORS } from '@ncigdc/utils/constants';
 
-import './inchlib/style.css';
+import './inchlib';
+import './inchlib/style.scss';
 
 const options = {
   button_color: theme.primary,
+  case_metadata_fields: ['case_id', 'submitter_id'],
   categories: {
     colors: CATEGORY_COLORS,
   },
-  case_metadata_fields: ['case_id', 'submitter_id'],
+  centering: 'geneExpression', // enables median centered heatmap display
   max_width: 1200,
   tooltip: {
     fill: '#fff',
@@ -34,39 +35,52 @@ const handleOverlayClickOut = ({ target }) => {
 };
 
 class GeneExpressionChart extends Component {
+  handlers = {}
+
   componentDidMount() {
-    const { data, handleClickInchlibLink } = this.props;
+    const {
+      handleClickInchlibLink,
+      handleFileDownloads,
+      handleLoading,
+      visualizationData,
+    } = this.props;
+    this.handlers = {
+      handleFileDownloads,
+      handleLoading,
+    };
     this.options = {
       ...options,
-      data,
+      data: visualizationData,
     };
     this.$el = $(this.el);
-    this.$el.InCHlib(this.options);
+    this.$el.InCHlib(this.options, this.handlers);
     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
     document.addEventListener('click', handleOverlayClickOut);
   }
 
-  componentDidUpdate(prevProps) {
-    // for viz demo
-    // unsure if data will update in final version
-    const { data, handleClickInchlibLink } = this.props;
-    if (!isEqual(data, prevProps.data)) {
-      // destroy inchlib
-      this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
-      this.$el.children().remove();
+  // not used currently.
+  // on analysis switch, component unmounts & mounts again.
+  // componentDidUpdate(prevProps) {
+  //   const { handleClickInchlibLink, visualizationData } = this.props;
+  //   if (!isEqual(visualizationData, prevProps.visualizationData)) {
+  //     this.destroyInchlib();
 
-      const nextOptions = {
-        ...this.options,
-        data,
-      };
-      this.$el.InCHlib(nextOptions);
-      this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
-    }
-  }
+  //     const nextOptions = {
+  //       ...this.options,
+  //       data: visualizationData,
+  //     };
+  //     this.$el.InCHlib(nextOptions, this.handlers);
+  //     this.el.addEventListener('clickInchlibLink', handleClickInchlibLink);
+  //   }
+  // }
 
   componentWillUnmount() {
+    this.destroyInchlib();
+  }
+
+  destroyInchlib() {
     const { handleClickInchlibLink } = this.props;
-    // destroy inchlib
+    this.$el.trigger('destroy.inchlib');
     this.el.removeEventListener('clickInchlibLink', handleClickInchlibLink);
     document.removeEventListener('click', handleOverlayClickOut);
     this.$el.children().remove();

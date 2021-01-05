@@ -1,10 +1,13 @@
 /* eslint-disable */
 /* tslint:disable */
 
-import $ from 'jquery';
 import Konva from 'konva';
 import Color from 'color';
 import { capitalize, each, round } from 'lodash';
+import moment from 'moment';
+import { jsPDF } from "jspdf";
+
+import ageDisplay, { getLowerAgeYears } from '@ncigdc/utils/ageDisplay';
 
 /**
   * InCHlib is an interactive JavaScript library which facilitates data
@@ -145,6 +148,7 @@ import { capitalize, each, round } from 'lodash';
       colors: {},
       defaults: [],
     },
+    centering: 'mean',
     column_dendrogram: false,
     column_metadata_colors: 'RdLrBu',
     column_metadata: false,
@@ -159,7 +163,7 @@ import { capitalize, each, round } from 'lodash';
       family: '"Helvetica Neue", Helvetica, Arial, sans-serif',
       size: 12,
     },
-    heatmap_colors: 'RdLrGr',
+    heatmap_colors: 'BuBkYl',
     heatmap_header: true,
     heatmap_part_width: 0.7,
     heatmap: true,
@@ -175,7 +179,7 @@ import { capitalize, each, round } from 'lodash';
     middle_percentile: 50,
     min_percentile: 0,
     min_row_height: 1,
-    png_padding: 20,
+    img_padding: 20,
     tooltip: {
       fill: '#fff',
       stroke: 'lightgrey',
@@ -183,7 +187,7 @@ import { capitalize, each, round } from 'lodash';
     },
   };
 
-  function InCHlib(element, options) {
+  function InCHlib(element, options, extHandlers) {
     const self = this;
 
     // basic plugin setup
@@ -192,6 +196,9 @@ import { capitalize, each, round } from 'lodash';
     self.options = $.extend({}, defaults, options);
     self._name = plugin_name;
     self.$element.attr('id', self._name);
+
+    // make external handlers available in subfunctions
+    self.extHandlers = extHandlers;
 
     // inchlib setup
     self.user_options = options || {};
@@ -202,7 +209,7 @@ import { capitalize, each, round } from 'lodash';
       self.options.max_width < element_width
       ? self.options.max_width
       : element_width;
-    
+
     self.options.legend_width = 170;
 
     self.options.width -= self.options.legend_width;
@@ -218,6 +225,7 @@ import { capitalize, each, round } from 'lodash';
     self.header_height = 150;
     self.footer_height = 70;
     self.dendrogram_heatmap_distance = 5;
+    self.axis_label_width = 100;
 
     self.min_size_draw_values = 20;
     self.column_metadata_row_height = self.min_size_draw_values;
@@ -238,6 +246,8 @@ import { capitalize, each, round } from 'lodash';
       sat: 25,
     };
 
+    self.toRGB = ({ r, g, b }) => `rgb(${r},${g},${b})`;
+
     self.get_days_to_death_color = val => {
       // create red & green values for RGB().
       // will result in a shade of blue.
@@ -245,22 +255,27 @@ import { capitalize, each, round } from 'lodash';
       const red_green = Math.floor(255 - (val / self.MAX_DAYS_TO_DEATH * 255));
       return isNaN(red_green) // i.e. val is "not reported"
         ? self.invalid_column_metadata_color
-        : `rgb(${red_green},${red_green},255)`;
+        : self.toRGB({ r: red_green, g: red_green, b: 255 });
     };
 
     self.get_age_at_diagnosis_color = val => {
       // create lightness value for HSL().
       // will result in a shade of green.
       // higher value = darker green.
-      const percentage = 1 - (val / self.MAX_AGE_AT_DIAGNOSIS);
+      const percentage = 1 - (getLowerAgeYears(val) / self.MAX_AGE_AT_DIAGNOSIS);
       const lightness = (percentage * (self.age_dx_colors.max_light - self.age_dx_colors.min_light)) + self.age_dx_colors.min_light;
+
       return isNaN(percentage) // i.e. val is "not reported"
         ? self.invalid_column_metadata_color
         : `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${lightness}%)`;
     }
 
     self.legend_id = `legend_${self._name}`;
-    self.legend_continuous_categories = ['age_at_diagnosis', 'days_to_death'];
+    self.legend_continuous_categories = [
+      'age_at_diagnosis',
+      // 'days_to_death'
+      // hide days to death from legend
+    ];
     self.legend_horizontal_categories = ['gender', 'vital_status'];
     self.legend_headings = [
       ...Object.keys(self.options.categories.colors),
@@ -274,8 +289,8 @@ import { capitalize, each, round } from 'lodash';
         min: `hsl(${self.age_dx_colors.hue},${self.age_dx_colors.sat}%,${self.age_dx_colors.max_light}%)`,
       },
       days: {
-        max: 'rgb(0,0,255)',
-        min: 'rgb(255,255,255)',
+        max: self.toRGB({ r: 0, g: 0, b: 255 }),
+        min: self.toRGB({ r: 255, g: 255, b: 255 }),
       },
     }
 
@@ -340,6 +355,23 @@ import { capitalize, each, round } from 'lodash';
     * @name InCHlib#colors
     */
     self.colors = {
+      BuBkYl: {
+        start: {
+          r: 0,
+          g: 0,
+          b: 255,
+        },
+        middle: {
+          r: 0,
+          g: 0,
+          b: 0,
+        },
+        end: {
+          r: 255,
+          g: 255,
+          b: 0,
+        },
+      },
       YlGn: {
         start: {
           r: 255,
@@ -755,6 +787,23 @@ import { capitalize, each, round } from 'lodash';
           b: 69,
         },
       },
+      GrBkRd: {
+        start: {
+          r: 35,
+          g: 139,
+          b: 69,
+        },
+        middle: {
+          r: 0,
+          g: 0,
+          b: 0,
+        },
+        end: {
+          r: 215,
+          g: 25,
+          b: 28,
+        },
+      },
     };
 
     /**
@@ -856,20 +905,34 @@ import { capitalize, each, round } from 'lodash';
 
       layer_below_toolbar: new Konva.Layer({
         y: self.toolbar_distance,
-      })
+        x: 25,
+      }),
+
+      axis_label: new Konva.Text({
+        align: 'center',
+        fill: self.hover_fill,
+        fontFamily: self.options.font.family,
+        fontSize: self.options.font.size,
+        fontStyle: '500',
+        width: self.axis_label_width,
+      }),
     };
 
     /**
     * Creates color steps for the heatmap.
     * @name InCHlib#color_steps
     */
-    self.color_steps = [
+    self.color_steps = (
+      under = self._get_color_for_value()(0),
+      middle = self._get_color_for_value()(0.5),
+      over = self._get_color_for_value()(1),
+    ) => [
       0,
-      self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
+      under,
       .5,
-      self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
+      middle,
       1,
-      self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
+      over,
     ];
 
     /**
@@ -877,15 +940,19 @@ import { capitalize, each, round } from 'lodash';
     * @name InCHlib#get_scale_values
     */
     self.get_scale_values = () => {
-      const [min, max, mid] = self.data_descs_all;
-      return [
-        min,
-        (((mid - min) / 2) + min),
-        mid,
-        (((max - mid) / 2) + mid),
-        max,
-      ]
-      .map(x => round(x, 1).toFixed(1));
+      const [min, max, mid] = self.data_descs_all.map(x => +round(x, 1).toFixed(1));
+
+      return (
+        ['median', 'geneExpression'].includes(self.options.centering)
+        ? [-3, 0, 3]
+        : [
+          min,
+          (((mid - min) / 2) + min),
+          mid,
+          (((+max - mid) / 2) + mid),
+          max,
+        ]
+      ).map(x => x.toString());
     };
 
     /**
@@ -895,8 +962,8 @@ import { capitalize, each, round } from 'lodash';
     self.toolbar_buttons = [
       {
         fa_icon: 'fa-undo',
-        label: 'Reset',
-        id: 'reset',
+        label: 'Reset Zoom Level',
+        id: 'reset_zoom_level',
       },
       {
         fa_icon: 'fa-paint-brush',
@@ -942,8 +1009,8 @@ import { capitalize, each, round } from 'lodash';
     const modal_actions = [
       modal_btn.clone()
         .attr('id', cancel_id)
-        .text(has_close_btn 
-          ? 'Close' 
+        .text(has_close_btn
+          ? 'Close'
           : 'Cancel'),
       ...has_close_btn || modal_btn.clone()
         .attr('id', save_id)
@@ -1017,12 +1084,18 @@ import { capitalize, each, round } from 'lodash';
     const form_id = `${self._name}_heatmap_form`;
 
     const color_scales = Object.keys(self.colors).map(color => {
-      const color_1 = self._get_color_for_value(0, 0, 1, 0.5, color);
-      const color_2 = self._get_color_for_value(0.5, 0, 1, 0.5, color);
-      const color_3 = self._get_color_for_value(1, 0, 1, 0.5, color);
+      const getColorforValue = self._get_color_for_value('modal', color);
+      const [min, mid, max] = self.get_scale_values();
+      const { middle } = self.colors[color];
+
+      const displayMedian = ['median', 'geneExpression'].includes(self.options.centering) && middle;
+
       const checked = self.options.heatmap_colors === color;
-      const scale = $(`<label class="inchlib-modal_heatmap-label"><input type="radio" class="inchlib-modal_heatmap-input" name="inchlib-color-scale" value="${color}"${checked ? ' checked' : ''}><div class="inchlib-modal_heatmap-gradient" style="background: linear-gradient(to right, ${color_1},${color_2},${color_3})"></div></label>`);
-      return scale;
+      const color_1 = getColorforValue(displayMedian ? min : 0);
+      const color_2 = getColorforValue(displayMedian ? mid : 0.5);
+      const color_3 = getColorforValue(displayMedian ? max : 1);
+
+      return  $(`<label class="inchlib-modal_heatmap-label"><input type="radio" class="inchlib-modal_heatmap-input" name="inchlib-color-scale" value="${color}"${checked ? ' checked' : ''}><div class="inchlib-modal_heatmap-gradient" style="background: linear-gradient(to right, ${color_1},${color_2},${color_3})"></div></label>`);
     });
 
     const heatmap_form = $(`<form id='${form_id}' class="inchlib-modal_heatmap-form"></form>`).append(color_scales);
@@ -1111,7 +1184,9 @@ import { capitalize, each, round } from 'lodash';
         .map(feature => feature
           .map(value => typeof value === 'number'
               ? value.toString()
-              : value.toLowerCase()
+              : typeof value === 'string'
+                ? value.toLowerCase()
+                : value
           ));
 
       self.column_metadata.visible = Array(self.column_metadata.features.length)
@@ -1274,9 +1349,12 @@ import { capitalize, each, round } from 'lodash';
         min = (self.options.min_percentile > 0)
           ? columns[i][self._hack_round(len * self.options.min_percentile / 100)]
           : Math.min.apply(null, columns[i]);
-        middle = (self.options.middle_percentile != 50)
-          ? columns[i][self._hack_round(len * self.options.middle_percentile / 100)]
-          : columns[i][self._hack_round((len - 1) / 2)];
+        middle = ['median', 'geneExpression'].includes(self.options.centering)
+          ? 0
+          : (self.options.middle_percentile != 50)
+            ? columns[i][self._hack_round(len * self.options.middle_percentile / 100)]
+            : columns[i][self._hack_round((len - 1) / 2)];
+
         data2descs[i] = {
           min,
           max,
@@ -1459,7 +1537,7 @@ import { capitalize, each, round } from 'lodash';
       self.options.column_dendrogram = false;
     }
     self._adjust_leaf_size(self.heatmap_array.length);
-  
+
     self.right_margin = 100;
 
     self._adjust_horizontal_sizes();
@@ -1490,7 +1568,7 @@ import { capitalize, each, round } from 'lodash';
       self.columns_start_index = 0;
       self._draw_column_dendrogram(self.column_root_id);
     }
-    
+
     self._draw_heatmap();
     self._draw_heatmap_header();
     self._draw_navigation();
@@ -1562,8 +1640,7 @@ import { capitalize, each, round } from 'lodash';
       const y1 = self._get_y1(node_neighbourhood, current_left_count, current_right_count);
       let y2 = self._get_y2(node_neighbourhood, current_left_count, current_right_count);
       let x1 = self._hack_round(self.distance - self.distance_step * node.distance);
-      x1 = (x1 == 0) ? 2 : x1;
-
+      x1 = (x1 === 0) ? 2 : x1;
 
       const x2 = x1;
       const left_distance = self.distance - self.distance_step * self.data.nodes[node.left_child].distance;
@@ -1573,7 +1650,9 @@ import { capitalize, each, round } from 'lodash';
         y2 += self.pixels_for_leaf / 2;
       }
 
-      self.dendrogram_layer.add(self._draw_horizontal_path(node_id, x1, y1, x2, y2, left_distance, right_distance));
+      const is_top_node = x === 0;
+
+      self.dendrogram_layer.add(self._draw_horizontal_path(node_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node));
       self._draw_row_dendrogram_node(node.left_child, left_child, current_left_count - node_neighbourhood.left_node.right_count, current_right_count + node_neighbourhood.left_node.right_count, left_distance, y1);
       self._draw_row_dendrogram_node(node.right_child, right_child, current_left_count + node_neighbourhood.right_node.left_count, current_right_count - node_neighbourhood.right_node.left_count, right_distance, y2);
     } else {
@@ -1596,13 +1675,13 @@ import { capitalize, each, round } from 'lodash';
 
   InCHlib.prototype._draw_stage_layer = function () {
     const self = this;
-    const { height, png_padding, width } = self.options;
+    const { height, img_padding, width } = self.options;
     self.stage_layer = new Konva.Layer();
     // drawing a large white background for PNG download.
 
     // PADDING
-    const padding = png_padding * 2;
-    const move_bg_to_center = png_padding * -1;
+    const padding = img_padding * 2;
+    const move_bg_to_center = img_padding * -1;
 
     // HEIGHT
     const min_height = 700;
@@ -1692,11 +1771,18 @@ import { capitalize, each, round } from 'lodash';
     return nodes2columns;
   };
 
+  InCHlib.prototype._check_top_node = function (id) {
+    return id.includes('_top_node');
+  }
+
   InCHlib.prototype._bind_dendrogram_hover_events = function (layer) {
     const self = this;
 
     layer.on('mouseover', function (evt) {
-      self._cursor_mouseover();
+      const is_top_node = self._check_top_node(evt.target.attrs.id);
+      if (!is_top_node) {
+        self._cursor_mouseover();
+      }
       self._dendrogram_layers_mouseover(this, evt);
     });
 
@@ -1742,6 +1828,8 @@ import { capitalize, each, round } from 'lodash';
     if (self.options.min_row_height > self.pixels_for_leaf) {
       self.pixels_for_leaf = self.options.min_row_height;
     }
+
+    self.heatmap_height = leaves * self.pixels_for_leaf;
   };
 
   InCHlib.prototype._adjust_horizontal_sizes = function (dimensions) {
@@ -2001,6 +2089,8 @@ import { capitalize, each, round } from 'lodash';
       self.heatmap_overlay.destroyChildren();
       self.heatmap_overlay.draw();
     });
+
+    self._redraw_axis_labels();
   };
 
   InCHlib.prototype._draw_heatmap_row = function (node_id, x1, y1) {
@@ -2015,9 +2105,11 @@ import { capitalize, each, round } from 'lodash';
     let text;
     let text_value;
     let col_index;
-  
-    const [ ensembl_id, hgnc_symbol ] = self.metadata.nodes[node_id];
-  
+
+    let [ ensembl_id, hgnc_symbol ] = self.metadata.nodes[node_id];
+
+    hgnc_symbol = hgnc_symbol && hgnc_symbol.toUpperCase();
+
     // draw heatmap cells
     for (var i = 0, len = self.on_features.data.length; i < len; i++) {
       col_index = self.on_features.data[i];
@@ -2025,10 +2117,17 @@ import { capitalize, each, round } from 'lodash';
       y2 = y1;
       value = node.features[col_index];
       text_value = value;
-  
+
       if (value !== null) {
-        color = self._get_color_for_value(value, self.data_descs[col_index].min, self.data_descs[col_index].max, self.data_descs[col_index].middle, self.options.heatmap_colors);
-  
+        color = self._get_color_for_value('heatmap')(
+          value,
+          self.data_descs[col_index].min,
+          self.data_descs[col_index].max,
+          ['median', 'geneExpression'].includes(self.options.centering)
+            ? 0
+            : self.data_descs[col_index].middle,
+        );
+
         line = self.objects_ref.heatmap_line.clone({
           stroke: color,
           points: [
@@ -2045,14 +2144,14 @@ import { capitalize, each, round } from 'lodash';
         });
         row.add(line);
       }
-  
+
       x1 = x2;
     }
-  
+
     // don't draw gene symbol column if it's empty
     x2 = x1;
     y2 = y1;
-  
+
     if (self.current_draw_values) {
       text = self.objects_ref.heatmap_value.clone({
         text: hgnc_symbol,
@@ -2060,7 +2159,7 @@ import { capitalize, each, round } from 'lodash';
       });
       const width = text.getWidth();
       x2 = x1 + width + 10;
-      
+
       line = self.objects_ref.heatmap_line.clone({
         // gene ensembl_id for creating links
         ensembl_id,
@@ -2079,7 +2178,7 @@ import { capitalize, each, round } from 'lodash';
         // on top of the text
         stroke: '#fff',
       });
-  
+
       const y = self._hack_round(y1 - self.value_font_size / 2);
       text.position({
         x: x1 + 5,
@@ -2093,7 +2192,7 @@ import { capitalize, each, round } from 'lodash';
       });
     }
     x1 = x2;
-  
+
     return row;
   };
 
@@ -2161,7 +2260,7 @@ import { capitalize, each, round } from 'lodash';
   };
 
   InCHlib.prototype._format_category_name = function (title) {
-    return title.split('_').map(word => 
+    return title.split('_').map(word =>
       word === 'at' || word === 'to' ? word : capitalize(word)
     ).join(' ');
   };
@@ -2343,13 +2442,20 @@ import { capitalize, each, round } from 'lodash';
 
     const toolbar_ul = $(`<ul class="inchlib-toolbar"></ul>`);
     const toolbar_buttons = self.toolbar_buttons.map(btn => {
-      const is_button_disabled = btn.id === 'reset' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
-      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}${is_button_disabled ? ' inchlib-toolbar_btn-disabled' :''}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}">`;
+      const is_button_disabled = btn.id === 'reset_zoom_level' && (self.zoomed_clusters.row.length === 0 && self.zoomed_clusters.column.length === 0);
+      const open_button = `<li class="inchlib-toolbar_item"><button type="button" class="inchlib-toolbar_btn inchlib-toolbar_btn-${btn.id}${is_button_disabled ? ' inchlib-toolbar_btn-disabled' :''}" data-inchlib-id="${btn.id}" data-inchlib-tooltip="${btn.label}" data-test="${btn.id}-button">`;
+
+      const label = `<span${
+        btn.id === 'legend' ? '' : ` class="sr-only"`
+      }>${btn.label}</span>`
+
+      const icon = `<i aria-hidden="true" class="fa ${
+        btn.id === 'legend'? btn.fa_icon[0] : btn.fa_icon
+      }" focusable="false"></i>`;
+
       const close_button = '</button></li>';
-      const contents = btn.id === 'legend'
-      ? `${btn.label}<i class="fa ${btn.fa_icon[0]}"></i>`
-      : `<i class="fa ${btn.fa_icon}"></i>`;
-      return `${open_button}${contents}${close_button}`;
+
+      return `${open_button}${label}${icon}${close_button}`;
     })
     .join('');
 
@@ -2378,7 +2484,7 @@ import { capitalize, each, round } from 'lodash';
   InCHlib.prototype._toolbar_click = function (button) {
     const self = this;
     const id = button.attr('data-inchlib-id');
-    if (id === 'reset') {
+    if (id === 'reset_zoom_level') {
       self.redraw();
     } else if (id === 'edit_heatmap_colors') {
       self._draw_heatmap_modal();
@@ -2446,43 +2552,77 @@ import { capitalize, each, round } from 'lodash';
 
   InCHlib.prototype._draw_download_menu = function () {
     const self = this;
-    const overlay = self._draw_overlay(true);
+    const width = self.stage.width();
+    const height = self.stage.height();
+    const { handleFileDownloads = () => {} } = self.extHandlers;
+    const loading_div = $(`<div class="inchlib-loadingOverlay" style="width: ${width}px; height: ${height}px;"></div>`)
+      .html(
+        '<h2>Preparing download...</h2>' +
+        '<i class="fa fa-spinner fa-pulse"></i>'
+      );
     const download_options = [
+      {
+        id: 'download-pdf',
+        label: 'PDF',
+      },
       {
         id: 'download-png',
         label: 'PNG',
       },
-      // {
-      //   id: 'download-json',
-      //   label: 'JSON',
-      // },
+      {
+        id: 'download-tsv',
+        label: 'TSV',
+      },
     ];
 
-    const download_ul = $(`<ul class="inchlib-download"></ul>`);
-
-    const download_lis = download_options.map(option => {
-      const open_li = `<li class="inchlib-download_item"><button type="button" class="inchlib-download_btn" data-inchlib-id="${option.id}">`;
-      const close_li = '</button></li>';
-      const contents = option.label;
-      return `${open_li}${contents}${close_li}`;
-    })
-    .join('');
-
-    download_ul.html(download_lis);
-    $('.inchlib-toolbar_btn-download').parent().append(download_ul);
-
-    $('.inchlib-download_btn').click(function() {
-      if ($(this).attr('data-inchlib-id') === 'download-png') {
-        self._download_png();
-      }
-    });
-
-    overlay.click(function() {
-      overlay.fadeOut().remove();
+    const clickOutOverlay = self._draw_overlay(true);
+    const hideClickOutOverlay = () => {
+      clickOutOverlay.remove();
       $('.inchlib-download').remove();
+    }
+
+    clickOutOverlay.click(hideClickOutOverlay);
+
+    const visualDownloadFeedback = (button, handler) => {
+      const loadingOverlay = self._draw_overlay();
+      const format = button.html();
+      button.html(`Processing ${format}...`).css('background-color', '#CCC');
+      self.$element.prepend(loading_div);
+
+      setTimeout(() => {
+        handler
+          .call(self, format.toLowerCase())
+          .then(() => {
+            hideClickOutOverlay();
+            loadingOverlay.fadeOut().remove();
+            loading_div.fadeOut().remove();
+          });
+      }, 50);
+    }
+
+    const downloadUL = $(`<ul class="inchlib-download"></ul>`);
+
+    const downloadLIs = download_options.map(option => {
+      const start = `<li class="inchlib-download_item"><button type="button" class="inchlib-download_btn" data-inchlib-id="${option.id}">`;
+      const end = '</button></li>';
+      const contents = option.label;
+
+      return `${start}${contents}${end}`;
+    }).join('');
+
+    downloadUL.html(downloadLIs);
+    $('.inchlib-toolbar_btn-download').parent().append(downloadUL);
+
+    $('.inchlib-download_btn').click(function () {
+      visualDownloadFeedback(
+        $(this),
+        ['pdf', 'png'].includes($(this).attr('data-inchlib-id').slice(-3))
+          ? self._download_img
+          : handleFileDownloads
+      )
     });
   };
-  
+
   InCHlib.prototype._draw_navigation = function () {
     const self = this;
     self.navigation_layer = new Konva.Layer();
@@ -2498,17 +2638,14 @@ import { capitalize, each, round } from 'lodash';
   InCHlib.prototype._update_color_scale = function () {
     const self = this;
     const color_scale = self.navigation_layer.find(`#${self._name}_color_scale`);
+    const getColorValue = self._get_color_for_value();
 
-    self.color_steps = [
-      0,
-      self._get_color_for_value(0, 0, 1, 0.5, self.options.heatmap_colors),
-      0.5,
-      self._get_color_for_value(0.5, 0, 1, 0.5, self.options.heatmap_colors),
-      1,
-      self._get_color_for_value(1, 0, 1, 0.5, self.options.heatmap_colors),
-    ];
+    color_scale.fillLinearGradientColorStops(self.color_steps(
+      getColorValue(0),
+      getColorValue(0.5),
+      getColorValue(1)
+    ));
 
-    color_scale.fillLinearGradientColorStops(self.color_steps);
     self.navigation_layer.draw();
     self._redraw_heatmap_scale();
   };
@@ -2517,7 +2654,7 @@ import { capitalize, each, round } from 'lodash';
     const self = this;
     const node = self.data.nodes[path_id];
     if (node.count != 1) {
-      self.dendrogram_layer.find(`#${path_id}`)[0].stroke(color);
+      self.dendrogram_layer.find(`#${path_id}, #${path_id}_top_node`)[0].stroke(color);
       self._highlight_path(node.left_child, color);
       self._highlight_path(node.right_child, color);
     } else {
@@ -2530,7 +2667,7 @@ import { capitalize, each, round } from 'lodash';
     const self = this;
     const node = self.column_dendrogram.nodes[path_id];
     if (node.count != 1) {
-      self.column_dendrogram_layer.find(`#col${path_id}`)[0].stroke(color);
+      self.column_dendrogram_layer.find(`#col${path_id}, #col${path_id}_top_node`)[0].stroke(color);
       self._highlight_column_path(node.left_child, color);
       self._highlight_column_path(node.right_child, color);
     } else {
@@ -2602,38 +2739,45 @@ import { capitalize, each, round } from 'lodash';
     });
   };
 
-  InCHlib.prototype._highlight_cluster = function (path_id) {
+  InCHlib.prototype._highlight_cluster = function (path_id, id) {
     const self = this;
     const previous_cluster = self.last_highlighted_cluster;
+    const is_top_node = self._check_top_node(id);
 
     if (previous_cluster) {
       self.unhighlight_cluster();
     }
 
-    if (previous_cluster === path_id) {
-      self._zoom_cluster(path_id);
-    } else {
-      self.last_highlighted_cluster = path_id;
-      self._highlight_path(path_id, self.dendrogram_active_color);
-      self._draw_cluster_layer(path_id);
+    if (!is_top_node) {
+      if (previous_cluster === path_id) {
+        self._zoom_cluster(path_id);
+      } else {
+        self.last_highlighted_cluster = path_id;
+        self._highlight_path(path_id, self.dendrogram_active_color);
+        self._draw_cluster_layer(path_id);
+      }
     }
+
     self.dendrogram_layer.draw();
   };
 
-  InCHlib.prototype._highlight_column_cluster = function (path_id) {
+  InCHlib.prototype._highlight_column_cluster = function (path_id, id) {
     const self = this;
     const previous_cluster = self.last_highlighted_column_cluster;
+    const is_top_node = self._check_top_node(id);
     if (previous_cluster) {
       self.unhighlight_column_cluster();
     }
-    if (previous_cluster === path_id) {
-      self._get_column_ids(path_id);
-      self._zoom_column_cluster(path_id);
-    } else {
-      self.last_highlighted_column_cluster = path_id;
-      self._highlight_column_path(path_id, self.dendrogram_active_color);
-      self.current_column_ids.sort((a, b) => { return a - b; });
-      self._draw_column_cluster_layer(path_id);
+    if (!is_top_node) {
+      if (previous_cluster === path_id) {
+        self._get_column_ids(path_id);
+        self._zoom_column_cluster(path_id);
+      } else {
+        self.last_highlighted_column_cluster = path_id;
+        self._highlight_column_path(path_id, self.dendrogram_active_color);
+        self.current_column_ids.sort((a, b) => { return a - b; });
+        self._draw_column_cluster_layer(path_id);
+      }
     }
     self.column_dendrogram_layer.draw();
   };
@@ -3004,17 +3148,19 @@ import { capitalize, each, round } from 'lodash';
       const x1 = self._get_x1(node_neighbourhood, current_left_count, current_right_count);
       let x2 = self._get_x2(node_neighbourhood, current_left_count, current_right_count);
       let y1 = self._hack_round(self.vertical_distance - self.vertical_distance_step * node.distance);
-      y1 = (y1 == 0) ? 2 : y1;
+      y1 = (y1 === 0) ? 2 : y1;
       const y2 = y1;
 
       if (right_child.count == 1) {
         x2 -= self.pixels_for_dimension / 2;
       }
 
+      const is_top_node = x === 0 && y === 0;
+
       const left_distance = self.vertical_distance - self.vertical_distance_step * self.column_dendrogram.nodes[node.left_child].distance;
       const right_distance = self.vertical_distance - self.vertical_distance_step * self.column_dendrogram.nodes[node.right_child].distance;
 
-      self.column_dendrogram_layer.add(self._draw_vertical_path(node_id, x1, y1, x2, y2, left_distance, right_distance));
+      self.column_dendrogram_layer.add(self._draw_vertical_path(node_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node));
       self._draw_column_dendrogram_node(node.left_child, left_child, current_left_count - node_neighbourhood.left_node.right_count, current_right_count + node_neighbourhood.left_node.right_count, left_distance, y1);
       self._draw_column_dendrogram_node(node.right_child, right_child, current_left_count + node_neighbourhood.right_node.left_count, current_right_count - node_neighbourhood.right_node.left_count, right_distance, y2);
     } else {
@@ -3050,7 +3196,7 @@ import { capitalize, each, round } from 'lodash';
     return (self.heatmap_distance + self.on_features.data.length * self.pixels_for_dimension) - x;
   };
 
-  InCHlib.prototype._draw_vertical_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance) {
+  InCHlib.prototype._draw_vertical_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node) {
     const self = this;
     const path_group = new Konva.Group({});
     const path = self.objects_ref.node.clone({
@@ -3064,14 +3210,14 @@ import { capitalize, each, round } from 'lodash';
         x2,
         right_distance,
       ],
-      id: `col${path_id}`,
+      id: `col${path_id}${is_top_node ? '_top_node' : ''}`,
     });
     const path_rect = self.objects_ref.node_rect.clone({
       x: x2 - 1,
       y: y1 - 1,
       width: x1 - x2 + 2,
       height: self.header_height - y1,
-      id: `col_rect${path_id}`,
+      id: `col_rect${path_id}${is_top_node ? '_top_node' : ''}`,
       path,
       path_id,
     });
@@ -3080,7 +3226,7 @@ import { capitalize, each, round } from 'lodash';
     return path_group;
   };
 
-  InCHlib.prototype._draw_horizontal_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance) {
+  InCHlib.prototype._draw_horizontal_path = function (path_id, x1, y1, x2, y2, left_distance, right_distance, is_top_node) {
     const self = this;
     const path_group = new Konva.Group({});
     const path = self.objects_ref.node.clone({
@@ -3094,7 +3240,7 @@ import { capitalize, each, round } from 'lodash';
         right_distance,
         y2,
       ],
-      id: path_id,
+      id: `${path_id}${is_top_node ? '_top_node' : ''}`,
     });
 
     const path_rect = self.objects_ref.node_rect.clone({
@@ -3102,7 +3248,7 @@ import { capitalize, each, round } from 'lodash';
       y: y1 - 1,
       width: self.distance - x1,
       height: y2 - y1,
-      id: [path_id, 'rect'].join('_'),
+      id: `${[path_id, 'rect'].join('_')}${is_top_node ? '_top_node' : ''}`,
       path,
       path_id,
     });
@@ -3119,78 +3265,18 @@ import { capitalize, each, round } from 'lodash';
     }
 
     overlay = $(`<div class="inchlib-overlay${invisible
-      ? ' inchlib-overlay_invisible' 
+      ? ' inchlib-overlay_invisible'
       : ''}"></div>`);
     self.$element.append(overlay);
 
     return overlay;
   };
 
-  InCHlib.prototype._download_png = function () {
+  InCHlib.prototype._download_img = function (img_format) {
     const self = this;
-    const overlay = self._draw_overlay();
     const zoom = 3;
-    const width = self.stage.width();
-    const height = self.stage.height();
-    const { png_padding } = self.options;
-
-    overlay.click(function() {
-      overlay.fadeOut().remove();
-    });
-
-    const loading_div = $(`<div style="width: ${width}px; height: ${height}px; display: flex; align-items: center; justify-content: center;"></div>`).html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-    self.$element.after(loading_div);
-    self.$element.hide();
-
-    self._draw_legend_for_png();
-
-    // setup height
-    const min_height = 600;
-    // labels on the bottom get cut off without this
-    const bottom_padding = 50;
-    const height_full = height + bottom_padding;
-    const get_height = height_full < min_height
-      ? min_height
-      : height_full;
-
-    const padding = png_padding * 2;
-
-    const png_height = (get_height + padding) * zoom;
-    const png_width = (width + png_padding) * zoom;
-
-    self.stage.width(png_width);
-    self.stage.height(png_height);
-    self.stage.scale({
-      x: zoom,
-      y: zoom,
-    });
-    self.stage.x(padding);
-    self.stage.y(padding);
-    self.stage.draw();
-    self.navigation_layer.hide();
-    self.stage.toDataURL({
-      quality: 1,
-      callback(dataUrl) {
-        downloadURI(dataUrl, 'gene-expression.png');
-        self.stage.width(width);
-        self.stage.height(height);
-        self.stage.scale({
-          x: 1,
-          y: 1,
-        });
-        self.stage.x(0);
-        self.stage.y(0);
-        self.stage.draw();
-        loading_div.fadeOut().remove();
-        self.$element.show();
-        self.navigation_layer.show();
-        self.navigation_layer.draw();
-        self._delete_layers([
-          self.legend_png_layer,
-        ]);
-        overlay.trigger('click');
-      },
-    });
+    const { img_padding } = self.options;
+    const is_png = img_format === 'png'; // png or pdf
 
     // function from https://stackoverflow.com/a/15832662/512042
     function downloadURI(uri, name) {
@@ -3201,6 +3287,84 @@ import { capitalize, each, round } from 'lodash';
       link.click();
       document.body.removeChild(link);
     }
+
+    return new Promise((resolve, reject) => {
+      const width = self.stage.width();
+      const height = self.stage.height();
+      const img_file_name = `gene-expression-values.${
+        moment().format('YYYY-MM-DD-HHmmss')
+      }.${img_format}`;
+
+      $.multitask.add(() => {
+        self._draw_legend_for_img(is_png);
+
+        // setup height
+        const min_height = 600;
+        // labels on the bottom get cut off without this
+        const bottom_padding = 50;
+        const height_full = height + bottom_padding;
+        const get_height = height_full < min_height
+          ? min_height
+          : height_full;
+
+        const double_padding = img_padding * 2;
+
+        const img_height = is_png
+          ? (get_height + double_padding) * zoom
+          : (get_height + img_padding) * zoom;
+        const img_width = is_png
+          ? (width + img_padding) * zoom
+          : (width + double_padding) * zoom;
+
+        self.stage.width(img_width);
+        self.stage.height(img_height);
+        self.stage.scale({
+          x: zoom,
+          y: zoom,
+        });
+        self.stage.x(is_png ? double_padding : img_padding * 3);
+        self.stage.y(0);
+        self.stage.draw();
+        self.navigation_layer.hide();
+
+        self.stage.toDataURL({
+          quality: 1,
+          callback(dataURL) {
+            if (is_png) {
+              downloadURI(
+                dataURL,
+                img_file_name
+              );
+            } else {
+              var imgPdf = new jsPDF({
+                format: 'letter',
+                unit: 'in',
+              });
+              imgPdf.addImage(dataURL, 'PNG', 0, -0.25, 8.5, 0, '', 'none');
+              imgPdf.save(img_file_name);
+            }
+
+            self.stage.width(width);
+            self.stage.height(height);
+            self.stage.scale({
+              x: 1,
+              y: 1,
+            });
+            self.stage.x(0);
+            self.stage.y(0);
+            self.stage.draw();
+            self.$element.show();
+            self.navigation_layer.show();
+            self.navigation_layer.draw();
+            self._delete_layers([
+              self.legend_img_layer,
+            ]);
+          }
+        });
+
+        resolve();
+      }, self);
+    });
   };
 
   InCHlib.prototype._draw_legend_for_screen = function() {
@@ -3211,12 +3375,12 @@ import { capitalize, each, round } from 'lodash';
         .map(name => {
           if (self.legend_continuous_categories.includes(name)) {
             return `<li class="inchlib-legend_list-item"><strong>${self._format_category_name(name)}</strong>
-            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.split('_')[0]}"></span> ${self.legend_gradient_upper_value(name)}</li></ul></li>`
+            <ul class="inchlib-legend_sublist"><li class="inchlib-legend_list-item">0 <span class="inchlib-legend_gradient inchlib-legend_gradient-${name.split('_')[0]}"></span> ${self.legend_gradient_upper_value(name)} ${name === 'age_at_diagnosis' ? 'years' : 'days'}</li></ul></li>`
           } else {
             const legend_list = Object.keys(self.options.categories.colors[name])
               .map(value => `<li class="inchlib-legend_sublist-item${
                 self.legend_horizontal_categories
-                  .includes(name) 
+                  .includes(name)
                     ? ' inchlib-legend_sublist-item-horizontal'
                     : ''
                 }"><span class='inchlib-legend_square' style='background: ${self.options.categories.colors[name][value]}'></span> ${value}</li>`)
@@ -3239,8 +3403,50 @@ import { capitalize, each, round } from 'lodash';
     });
   };
 
+  InCHlib.prototype._redraw_axis_labels = function () {
+    const self = this;
+    self._delete_layers([
+      self.axis_labels_layer,
+    ]);
+    self._draw_axis_labels();
+  };
+
+  InCHlib.prototype._draw_axis_labels = function () {
+    const self = this;
+    self.axis_labels_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.stage.add(self.axis_labels_layer);
+
+
+    const column_count = Object.values(self.heatmap_layer.children[0].children)
+      .filter(hm_child => hm_child &&
+        hm_child.attrs &&
+        hm_child.attrs.hgnc_symbol).length;
+    const heatmap_cells_width = column_count * self.pixels_for_dimension;
+    const x_axis_x = self.heatmap_distance - (self.axis_label_width / 2) + (heatmap_cells_width / 2);
+
+    const x_axis_label = self.objects_ref.axis_label.clone({
+      text: 'Cases',
+      x: x_axis_x,
+      y: -20
+    });
+
+    const y_axis_y = self.column_metadata_height + self.header_height + (self.heatmap_height / 2) + (self.axis_label_width / 2) + 10;
+
+    const y_axis_label = self.objects_ref.axis_label.clone({
+      rotation: -90,
+      text: 'Genes',
+      x: -20,
+      y: y_axis_y,
+    });
+
+    self.axis_labels_layer.add(x_axis_label, y_axis_label);
+    self.axis_labels_layer.draw();
+  }
+
   InCHlib.prototype._draw_heatmap_scale = function() {
     const self = this;
+    const isMedianCentered = ['median', 'geneExpression'].includes(self.options.centering);
+
     self.heatmap_scale_layer = self.objects_ref.layer_below_toolbar.clone({x: 5 })
     self.stage.add(self.heatmap_scale_layer);
 
@@ -3254,8 +3460,6 @@ import { capitalize, each, round } from 'lodash';
     let scale_x = 0;
     let scale_y = 0;
 
-    const scale_height = 125;
-
     const scale_heading = new Konva.Text({
       fill: self.hover_fill,
       fontFamily: self.options.font.family,
@@ -3265,19 +3469,34 @@ import { capitalize, each, round } from 'lodash';
       y: scale_y,
     });
 
-    scale_y += 25;
+    const modularOffset = isMedianCentered ? 2 : 1.5; // how many times is it tall as it is wide
+    const scale_values = self.get_scale_values();
+    const scale_width = 25;
+    const scale_height = (scale_values.length - 1) * (scale_width * modularOffset); // for visual modularity
 
-    const scale_width = 20;
+    const { middle } = self.colors[self.options.heatmap_colors];
+    const min = scale_values[0];
+    const mid = scale_values[Math.round((scale_values.length - 1) / 2)];
+    const max = scale_values[scale_values.length - 1];
+
+    const getColorforValue = self._get_color_for_value('scale');
+    const displayMedian = isMedianCentered && middle;
+
+    scale_y += scale_width;
 
     const scale_gradient = new Konva.Rect({
-      fillLinearGradientColorStops: self.color_steps,
+      fillLinearGradientColorStops: self.color_steps(
+        getColorforValue(displayMedian ? max : 0),
+        getColorforValue(displayMedian ? mid : 0.5),
+        getColorforValue(displayMedian ? min : 1),
+      ),
       fillLinearGradientEndPoint: {
         x: scale_x,
-        y: scale_y + 90,
+        y: scale_height,
       },
       fillLinearGradientStartPoint: {
         x: scale_x,
-        y: scale_y,
+        y: 0,
       },
       linecap: 'square',
       height: scale_height,
@@ -3287,58 +3506,52 @@ import { capitalize, each, round } from 'lodash';
       x: scale_x,
       y: scale_y,
     });
+
     scale_group.add(scale_gradient, scale_heading);
 
     // add ticks to heatmap scale
+    const tickPosition = (i, offset = 0) =>
+      (scale_width * modularOffset * i) +
+      scale_y + offset;
 
     scale_x += scale_width;
 
-    for (var i = 0, ticks_count = 5; i < ticks_count; i++) {
-      const tick = new Konva.Rect({
+    // reverse, as in "from positive to negative"
+    scale_values.reverse().forEach((text, i) => {
+      // ticks
+      scale_group.add(new Konva.Rect({
         stroke: 'grey',
         strokeWidth: 1,
-        width: 10,
+        width: 6,
         x: scale_x,
-        y: Math.round(scale_y + (scale_height * (0.25 * i))),
-      });
-      scale_group.add(tick);
-    }
+        y: tickPosition(i),
+      }));
 
-    // add values to heatmap scale
-
-    scale_x += 15;
-
-    const scale_values = self.get_scale_values();
-
-    scale_y -= 5;
-    const scaleY_int = Math.floor(scale_height / scale_values.length) + 6;
-
-    for (let i = 0; i < scale_values.length; i++) {
-      const text = scale_values[i];
-      const scale_text = new Konva.Text({
+      // values
+      scale_group.add(new Konva.Text({
         fill: self.hover_fill,
         fontFamily: self.options.font.family,
-        fontStyle: '500', 
+        fontStyle: '500',
         text,
-        x: scale_x,
-        y: scale_y,
-      });
-      scale_group.add(scale_text);
-      scale_y += scaleY_int;
-    }
+        x: scale_x + 15,
+        y: tickPosition(i, -6),
+      }));
+    });
 
     self.heatmap_scale_layer.add(scale_group);
     self.heatmap_scale_layer.draw();
   }
 
-  InCHlib.prototype._draw_legend_for_png = function() {
+  InCHlib.prototype._draw_legend_for_img = function(is_png) {
     const self = this;
-    self.legend_png_layer = self.objects_ref.layer_below_toolbar.clone();
-    self.stage.add(self.legend_png_layer);
+    self.legend_img_layer = self.objects_ref.layer_below_toolbar.clone();
+    self.stage.add(self.legend_img_layer);
 
-    const legend_width = 150;
+    const legend_width = 170;
     const legend_y = -20;
-    const legend_x = self.stage.width() - (legend_width + 5);
+    const legend_x = self.stage.width() - (is_png
+      ? legend_width + 5
+      : legend_width);
 
     // create legend
 
@@ -3400,7 +3613,7 @@ import { capitalize, each, round } from 'lodash';
 
         const max = new Konva.Text({
           fill: self.hover_fill,
-          text: self.legend_gradient_upper_value(heading),
+          text: `${self.legend_gradient_upper_value(heading)} ${heading === 'age_at_diagnosis' ? 'years' : 'days'}`,
           x: x + 95,
           y,
         });
@@ -3409,7 +3622,7 @@ import { capitalize, each, round } from 'lodash';
         y += 25;
       } else {
         const legend_list = Object.keys(self.options.categories.colors[heading]);
-        
+
         for (let n = 0; n < legend_list.length; n++) {
           const value = legend_list[n];
           const text = value;
@@ -3417,8 +3630,8 @@ import { capitalize, each, round } from 'lodash';
             fill: self.options.categories.colors[heading][value],
             height: 12,
             width: 12,
-            x, 
-            y, 
+            x,
+            y,
           });
           const legend_text = new Konva.Text({
             fill: self.hover_fill,
@@ -3445,8 +3658,8 @@ import { capitalize, each, round } from 'lodash';
       y: legend_y,
     })
 
-    self.legend_png_layer.add(legend, legend_title, legend_group);
-    self.legend_png_layer.draw();
+    self.legend_img_layer.add(legend, legend_title, legend_group);
+    self.legend_img_layer.draw();
   };
 
   InCHlib.prototype._redraw_heatmap_scale = function() {
@@ -3459,16 +3672,18 @@ import { capitalize, each, round } from 'lodash';
 
   InCHlib.prototype._dendrogram_layers_click = function (layer, evt) {
     const self = this;
-    const { path_id } = evt.target.attrs;
-    layer.fire('mouseout', layer, evt);
-    self._highlight_cluster(path_id);
+    const { path_id, id } = evt.target.attrs;
+    const is_top_node = self._check_top_node(id);
+    if (!is_top_node) layer.fire('mouseout', layer, evt);
+    self._highlight_cluster(path_id, id);
   };
 
   InCHlib.prototype._column_dendrogram_layers_click = function (layer, evt) {
     const self = this;
-    const { path_id } = evt.target.attrs;
-    layer.fire('mouseout', layer, evt);
-    self._highlight_column_cluster(path_id);
+    const { path_id, id } = evt.target.attrs;
+    const is_top_node = self._check_top_node(id);
+    if (!is_top_node) layer.fire('mouseout', layer, evt);
+    self._highlight_column_cluster(path_id, id);
   };
 
   InCHlib.prototype._dendrogram_layers_mousedown = function (layer, evt) {
@@ -3487,7 +3702,6 @@ import { capitalize, each, round } from 'lodash';
 
   InCHlib.prototype._dendrogram_layers_mouseout = function (layer, evt) {
     const self = this;
-    self.path_overlay.destroy();
     // remove tooltip
     self.dendrogram_hover_layer.destroyChildren();
     self.dendrogram_hover_layer.draw();
@@ -3501,37 +3715,48 @@ import { capitalize, each, round } from 'lodash';
     self.dendrogram_hover_layer.draw();
   };
 
-  InCHlib.prototype._get_color_for_value = function (value, min, max, middle, color_scale) {
+  InCHlib.prototype._get_color_for_value = function (origin, color_scale) {
     const self = this;
-    const color = self.colors[color_scale];
-    let c1 = color.start;
-    let c2 = color.end;
 
-    if (value > max) {
-      return `rgb(${c2.r},${c2.g},${c2.b})`;
-    }
+    return (value, min = 0, max = 1, middle = 0.5) => {
+      const color = self.colors[color_scale || self.options.heatmap_colors];
+      let c1 = color.start;
+      let c2 = color.end;
 
-    if (min == max || value < min) {
-      return `rgb(${c1.r},${c1.g},${c1.b})`;
-    }
+      const useMedian = ['median', 'geneExpression'].includes(self.options.centering) && color.middle;
 
-    if (color.middle !== undefined) {
-      if (value >= middle) {
-        min = middle;
-        c1 = color.middle;
-        c2 = color.end;
-      } else {
-        max = middle;
-        c1 = color.start;
-        c2 = color.middle;
+      let bottom = useMedian ? -3 : min;
+      let top = useMedian ? 3 : max;
+      middle = useMedian ? 0 : middle;
+
+      if (value <= bottom || min === max) {
+        return self.toRGB({r: c1.r, g: c1.g, b: c1.b });
       }
-    }
 
-    const position = (value - min) / (max - min);
-    const r = self._hack_round(c1.r + (position * (c2.r - c1.r)));
-    const g = self._hack_round(c1.g + (position * (c2.g - c1.g)));
-    const b = self._hack_round(c1.b + (position * (c2.b - c1.b)));
-    return `rgb(${r},${g},${b})`;
+      if (value >= top) {
+        return self.toRGB({r: c2.r, g: c2.g, b: c2.b });
+      }
+
+      if (color.middle !== undefined) {
+        if (value >= middle) {
+          bottom = middle;
+          c1 = color.middle;
+          c2 = color.end;
+        } else {
+          top = middle;
+          c1 = color.start;
+          c2 = color.middle;
+        }
+      }
+
+      const position = useMedian
+        ? (value - bottom) / (top - bottom)
+        : (value - min) / (max - min);
+      const r = self._hack_round(c1.r + (position * (c2.r - c1.r)));
+      const g = self._hack_round(c1.g + (position * (c2.g - c1.g)));
+      const b = self._hack_round(c1.b + (position * (c2.b - c1.b)));
+      return self.toRGB({ r, g, b });
+    }
   };
 
   InCHlib.prototype._get_font_size = function (text_length, width, height, max_font_size) {
@@ -3638,39 +3863,34 @@ import { capitalize, each, round } from 'lodash';
       ? self.column_dendrogram.nodes[path_id]
       : self.data.nodes[path_id];
 
-    const is_featured = is_column
-      ? path_id === self.last_highlighted_column_cluster
-      : path_id === self.last_highlighted_cluster;
-
     const genes_or_cases = is_column
       ? 'cases'
       : 'genes';
 
-    const clicks = is_featured
+    const is_highlighted = is_column
+      ? path_id === self.last_highlighted_column_cluster
+      : path_id === self.last_highlighted_cluster;
+
+    const clicks = is_highlighted
       ? 'Click'
       : 'Double-click';
 
     // center tooltip on the dendrogram line
     let tooltip_x = x + (width / 2);
 
-    // find outermost dendrogram line:
-    // check if the tooltip text matches the number of rows/cols visible
-    const gene_count = self.heatmap_layer.children
-      .filter(child => child.attrs.class !== 'column_metadata')
-      .length;
-    const case_count = self.heatmap_layer.children[0].children.length;
-
-    const is_outermost_line = count === (is_column ? case_count : gene_count);
+    const is_top_node = self._check_top_node(id);
 
     const tooltip = self.objects_ref.tooltip_label.clone({
       x: x + (width / 2),
       y,
       id: 'dendrogram_label',
-      opacity: is_outermost_line ? 0 : 1,
+      opacity: 1,
     });
 
-    // leave space for the zoom_icon
-    const tooltip_text = `        ${clicks} to zoom ${count} ${genes_or_cases}`;
+    // leave space for the zoom_icon on inner dendrograms
+    const tooltip_text = `${is_top_node
+      ? ''
+      : `        ${clicks} to zoom `}${count} ${genes_or_cases}`;
 
     tooltip.add(
       self.objects_ref.tooltip_tag.clone({ pointerDirection: 'down' }),
@@ -3681,19 +3901,19 @@ import { capitalize, each, round } from 'lodash';
     // move it over to the right
     const half_width = tooltip.width() / 2;
     if (!is_column) {
+      tooltip.x(x + 10);
       const current_tooltip_x = tooltip.x();
-      const half_width = tooltip.width() / 2;
       const difference = half_width - current_tooltip_x;
       if (difference > 0) {
         tooltip_x = current_tooltip_x + difference + 5;
         tooltip.x(tooltip_x);
       }
     }
-    const zoom_x = tooltip_x - half_width - 3;
+    const zoom_x = tooltip.x() - half_width - 3;
     const zoom_y = y - 39;
 
     const zoom_icon = self.objects_ref.zoom_icon.clone({
-      opacity: +(!is_outermost_line), // integer value of boolean's opposite
+      opacity: +(!is_top_node), // integer value of boolean's opposite
       x: zoom_x,
       y: zoom_y,
     });
@@ -3745,13 +3965,15 @@ import { capitalize, each, round } from 'lodash';
     const { name, value } = attrs;
 
     const header_text = self.heatmap_header.includes(header_value)
-      ? `Case: ${self._get_submitter_id(header_value)}, Gene: ${attrs.hgnc_symbol}`
+      ? `Case: ${self._get_submitter_id(header_value)}, Gene: ${attrs.hgnc_symbol.toUpperCase()}`
       // below: column_metadata tooltip
       : self._format_category_name(header_value);
 
-    const tooltip_value = typeof value === 'undefined'
-      ? name
-      : value;
+    const tooltip_value = header_value === 'age_at_diagnosis'
+      ? ageDisplay(name)
+      : typeof value === 'undefined'
+        ? name || 'N/A'
+        : `Value: ${typeof value === 'number' ? value.toFixed(4) : value}`;
 
     const tooltip_text = [header_text, tooltip_value].join('\n');
 
@@ -3851,29 +4073,85 @@ import { capitalize, each, round } from 'lodash';
     */
   InCHlib.prototype.init = function () {
     const self = this;
-    // setTimeout is used to force synchronicity in canvas
-    const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
-    self.$element.after(loading_div);
-    self.$element.hide();
-
-    setTimeout(function () {
+    self._bind_events();
+    if (self.extHandlers.handleLoading) {
       self.read_data(self.options.data);
       self.draw();
-    }, 50);
+      // Future implementation: passing a string here could update the message in the loader. "Loading heatmap"
+      self.extHandlers.handleLoading(false);
+    } else {
+      // setTimeout is used to force synchronicity in canvas
+      const loading_div = $('<div style="width: 300px; height: 300px; display: flex; align-items: center; justify-content: center;"></div>').html('<i class="fa fa-spinner fa-pulse" style="font-size: 32px"></i>');
+      self.$element.after(loading_div);
+      self.$element.hide();
 
-    setTimeout(function () {
-      loading_div.fadeOut().remove();
-      self.$element.show();
-    }, 50);
+      setTimeout(function () {
+        self.read_data(self.options.data);
+        self.draw();
+      }, 50);
+
+      setTimeout(function () {
+        loading_div.fadeOut().remove();
+        self.$element.show();
+      }, 50);
+    }
   };
 
-  $.fn[plugin_name] = function (options) {
+  InCHlib.prototype._bind_events = function() {
+    const self = this;
+    self.$element.bind('destroy.inchlib', function() {
+      self._delete_all_layers();
+      self._unbind_events();
+      $.removeData(this, 'plugin_' + plugin_name);
+    });
+  }
+
+  InCHlib.prototype._unbind_events = function() {
+    const self = this;
+    self.$element.unbind('.inchlib');
+  }
+
+  $.fn[plugin_name] = function (options = {}, extHandlers = {}) {
     // note: this plugin only supports ONE instance
     return this.each(function () {
       if ($.data(this, 'plugin_' + plugin_name)) {
         $.removeData(this, 'plugin_' + plugin_name);
       }
-      $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options));
+      $.data(this, 'plugin_' + plugin_name, new InCHlib(this, options, extHandlers));
     })
+  };
+
+  $.multitask = {
+    _timer: null,
+    _queue: [],
+    add: function(fn, context, time) {
+      var setTimer = function(time) {
+          $.multitask._timer = setTimeout(function() {
+              time = $.multitask.add();
+              if ($.multitask._queue.length) {
+                  setTimer(time);
+              }
+          }, time || 2);
+      }
+
+      if (fn) {
+          $.multitask._queue.push([fn, context, time]);
+          if ($.multitask._queue.length == 1) {
+              setTimer(time);
+          }
+          return;
+      }
+
+      var next = $.multitask._queue.shift();
+      if (!next) {
+          return 0;
+      }
+      next[0].call(next[1] || window);
+      return next[2];
+    },
+    clear: function() {
+      clearTimeout($.multitask._timer);
+      $.multitask._queue = [];
+    }
   };
 })(jQuery);

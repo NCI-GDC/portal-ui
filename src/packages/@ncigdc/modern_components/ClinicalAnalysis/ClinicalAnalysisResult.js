@@ -87,20 +87,21 @@ const CopyAnalysisModal = compose(
     onClose={() => {
       const created = new Date().toISOString();
       const id = created;
+
       dispatch(
         addAnalysis({
           ...analysis,
           created,
           id,
           name: modalInputValue,
-        })
-      ).then(() => {
-        push({
-          query: {
-            analysisId: id,
-            analysisTableTab: 'result',
-          },
-        });
+        }),
+      );
+
+      push({
+        query: {
+          analysisId: id,
+          analysisTableTab: 'result',
+        },
       });
     }}
     title="Copy Analysis"

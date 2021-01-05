@@ -23,6 +23,9 @@ const DemoButton = ({
   analysis,
   style,
   disabled = false,
+  validation: {
+    availability = () => {},
+  },
 }) => {
   const pushToResultTab = id =>
     push({
@@ -31,7 +34,7 @@ const DemoButton = ({
         analysisId: id,
       },
     });
-  const onDemo = type => {
+  const onDemo = async () => {
     const id = `demo-${type}`;
     const existingDemo = analysis.find(a => a.id === id);
     if (existingDemo) {
@@ -41,32 +44,39 @@ const DemoButton = ({
             value: demoData.displayVariables,
             property: 'displayVariables',
             id,
-          })
+          }),
         );
       }
+
       pushToResultTab(id);
     } else {
       dispatch(
         addAnalysis({
-          id,
-          type: type,
           created: new Date().toISOString(),
           ...demoData,
+          ...type === 'gene_expression' && {
+            validationResults: await availability(demoData.sets),
+          },
+          id,
+          type,
         }),
-      ).then(() => {
-        pushToResultTab(id);
-      });
+      );
+
+      pushToResultTab(id);
     }
   };
 
   return (
     <Tooltip
-      style={style}
       Component={
         demoData && <div style={{ maxWidth: 240 }}>{demoData.message}</div>
       }
-    >
-      <Button onClick={() => demoData && onDemo(type)} disabled={disabled}>
+      style={style}
+      >
+      <Button
+        disabled={disabled}
+        onClick={() => demoData && onDemo()}
+        >
         Demo
       </Button>
     </Tooltip>

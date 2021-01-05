@@ -33,12 +33,6 @@ layoutDefaults.axisStyles = {
 export const buttonList = {
   // plotly's built-in buttons:
   // https://github.com/plotly/plotly.js/blob/master/src/components/modebar/buttons.js
-  downloadAnalysis: {
-    // custom button
-    faClass: 'fa-download',
-    label: 'Analysis Downloads',
-    name: 'downloadAnalysis',
-  },
   downloadImage: {
     // custom button
     faClass: 'fa-download',
@@ -66,7 +60,7 @@ export const buttonList = {
   zoom: {
     attr: 'dragmode',
     faClass: 'fa-search',
-    label: 'Zoom',
+    label: 'Click and drag to zoom',
     name: 'zoom2d',
     val: 'zoom',
   },

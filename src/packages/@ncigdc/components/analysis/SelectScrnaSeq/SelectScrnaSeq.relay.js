@@ -4,43 +4,42 @@ import { compose, pure, setDisplayName } from 'recompose';
 
 import Query from '@ncigdc/modern_components/Query';
 
+import { MOCK_SCRNA_DATA } from '@ncigdc/utils/constants';
+
 export const scrnaSeqFilters = {
   content: [
     {
-      op: "in",
+      op: 'in',
       content: {
-        field: "files.analysis.workflow_type",
-        value: [
-          "Seurat - 10x Chromium",
-          "Seurat - Smart-Seq2"
-        ]
-      }
+        field: 'files.analysis.workflow_type',
+        value: MOCK_SCRNA_DATA
+          ? ['MuSE', 'VarScan2']
+          : ['Seurat - 10x Chromium', 'Seurat - Smart-Seq2'],
+      },
     },
     {
-      op: "in",
+      op: 'in',
       content: {
-        field: "files.data_format",
-        value: [
-          "tsv"
-        ]
-      }
+        field: 'files.data_format',
+        value: MOCK_SCRNA_DATA ? ['vcf'] : ['tsv'],
+      },
     },
     {
-      op: "in",
+      op: 'in',
       content: {
-        field: "files.data_type",
-        value: [
-          "Single Cell Analysis"
-        ]
-      }
-    }
+        field: 'files.data_type',
+        value: MOCK_SCRNA_DATA
+          ? ['Raw Simple Somatic Mutation']
+          : ['Single Cell Analysis'],
+      },
+    },
   ],
-  op: "and",
+  op: 'and',
 };
 
 const variables = {
   cases_offset: 0,
-  cases_size: 99,
+  cases_size: MOCK_SCRNA_DATA ? 5 : 99,
   cases_sort: [],
   filters: scrnaSeqFilters,
   score: 'annotations.annotation_id',
@@ -53,11 +52,10 @@ export default (Component) =>
   )((props) => {
     return (
       <Query
-        parentProps={props}
-        name="SelectScrnaSeqCases"
-        minHeight={387}
-        variables={variables}
         Component={Component}
+        minHeight={387}
+        name="SelectScrnaSeqCases"
+        parentProps={props}
         query={graphql`
           query SelectScrnaSeq_relayQuery(
             $cases_size: Int
@@ -73,9 +71,6 @@ export default (Component) =>
                     edges {
                       node {
                         case_id
-                        demographic {
-                          gender
-                        }
                         disease_type
                         primary_site
                         project {
@@ -90,6 +85,7 @@ export default (Component) =>
             }
           }
         `}
-      />
+        variables={variables}
+        />
     );
   });

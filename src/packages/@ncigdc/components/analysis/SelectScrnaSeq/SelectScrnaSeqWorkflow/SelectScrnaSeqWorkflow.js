@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React from 'react';
 import { compose, pure, setDisplayName } from 'recompose';
 
@@ -14,16 +15,22 @@ const SelectScrnaSeqWorkflow = ({
   return (
     <div>
       {workflowTypes.map(({
-        node: { analysis: { workflow_type }, file_id }
+        node: { analysis: { workflow_type }, file_id },
       }) => (
         <label
           key={file_id}
-          style={{ display: 'block', marginBottom: 10 }}
+          style={{
+            display: 'block',
+            marginBottom: 10,
+          }}
           >
           <input
             aria-describedby="scrnaseq-select-workflow-description"
             name="scrnaseq-select-workflow"
-            onChange={e => setSelectedFile({ file_id, workflow_type })}
+            onChange={() => setSelectedFile({
+              file_id,
+              workflow_type,
+            })}
             type="radio"
             value={file_id}
             />
@@ -31,7 +38,7 @@ const SelectScrnaSeqWorkflow = ({
         </label>
       ))}
     </div>
-  )
+  );
 };
 
 export default enhance(SelectScrnaSeqWorkflow);

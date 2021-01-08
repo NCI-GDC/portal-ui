@@ -6,7 +6,6 @@ import { withTheme } from '@ncigdc/theme';
 import ClinicalDataAnalysis from '@ncigdc/theme/icons/ClinicalDataAnalysis';
 import { TSetTypes } from '@ncigdc/dux/sets';
 import ClinicalAnalysisContainer from '@ncigdc/modern_components/IntrospectiveType';
-import { DISPLAY_SCRNA_SEQ } from '@ncigdc/utils/constants';
 import GeneExpressionContainer from '@ncigdc/modern_components/GeneExpression';
 import SCRNASeq from '@ncigdc/theme/icons/SCRNASeq';
 import SCRNASeqContainer from '@ncigdc/modern_components/SCRNASeq';
@@ -673,58 +672,55 @@ const availableAnalysis: [TAnalysis] = [
     },
   },
   // Single Cell RNA Sequencing
-  ...DISPLAY_SCRNA_SEQ && [
-    // copied from clinical analysis and lightly modified
-    // TODO: replace with real demoData, a real icon, etc
-    {
-      demoData: {
-        filters: {
-          'demo-pancreas': {
-            content: [
-              {
-                content: {
-                  field: 'cases.primary_site',
-                  value: ['Pancreas'],
-                },
-                op: 'in',
+  {
+    demoData: {
+      filters: {
+        'demo-pancreas': {
+          content: [
+            {
+              content: {
+                field: 'cases.primary_site',
+                value: ['Pancreas'],
               },
-            ],
-            op: 'and',
-          },
+              op: 'in',
+            },
+          ],
+          op: 'and',
         },
-        message: 'Demo showing UMAP, t-SNE, PCA plots generated from single cell RNA sequencing data for a sample case.',
-        name: 'Demo SCRNA-SEQ',
-        sets: {
-          case: {
-            'demo-pancreas': 'Pancreas',
-          },
-        },
-        type: 'scrna_seq',
       },
-      description: 'Display a demo of different clustering visualizations for single cell RNA sequencing data.',
-      Icon: withTheme(({ style }) => (
-        <div>
-          <SCRNASeq
-            style={{
-              width: 80,
-              height: 80,
-              ...style,
-            }}
-            />
-        </div>
-      )),
-      label: 'Single Cell RNA Sequencing',
-      ResultComponent: props => (
-        <SCRNASeqContainer
-          {...props}
-          />
-      ),
-      setTypes: ['case'],
+      message: 'Demo showing UMAP, t-SNE, PCA plots generated from single cell RNA sequencing data for a sample case.',
+      name: 'Demo SCRNA-SEQ',
+      sets: {
+        case: {
+          'demo-pancreas': 'Pancreas',
+        },
+      },
       type: 'scrna_seq',
-      validateSets: sets => sets &&
-        ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
     },
-  ],
+    description: 'Display a demo of different clustering visualizations for single cell RNA sequencing data.',
+    Icon: withTheme(({ style }) => (
+      <div>
+        <SCRNASeq
+          style={{
+            width: 80,
+            height: 80,
+            ...style,
+          }}
+          />
+      </div>
+    )),
+    isBeta: true,
+    label: 'Single Cell RNA Sequencing',
+    ResultComponent: props => (
+      <SCRNASeqContainer
+        {...props}
+        />
+    ),
+    setTypes: ['case'],
+    type: 'scrna_seq',
+    validateSets: sets => sets &&
+      ['case'].every((t: any) => Object.keys(sets[t] || {}).length === 1),
+  },
 ];
 
 export default availableAnalysis;

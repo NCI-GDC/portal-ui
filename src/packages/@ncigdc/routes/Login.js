@@ -7,14 +7,12 @@ import {
 } from 'recompose';
 import queryString from 'query-string';
 
-import { AUTH, FENCE } from '@ncigdc/utils/constants';
 import { fetchUser } from '@ncigdc/dux/auth';
-import {
-  clearAWGSession,
-  createAWGSession,
-} from '@ncigdc/utils/auth/awg';
+import awgLogo from '@ncigdc/theme/images/logo-GDC-AWG-portal.png';
 import Button from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
+import { createAWGSession } from '@ncigdc/utils/auth/awg';
+import { AUTH, FENCE } from '@ncigdc/utils/constants';
 import openAuthWindow from '@ncigdc/utils/openAuthWindow';
 import withRouter from '@ncigdc/utils/withRouter';
 
@@ -108,7 +106,7 @@ const LoginRoute = () => (
       <div>
         <img
           alt="NCI GDC AWG Portal"
-          src="https://i.imgur.com/O33FmeE.png"
+          src={awgLogo}
           style={{ width: 525 }}
           />
       </div>

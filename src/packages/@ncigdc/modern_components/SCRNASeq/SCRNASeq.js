@@ -1,33 +1,26 @@
+/* eslint-disable camelcase */
 import { isEqual } from 'lodash';
 import {
   compose,
   lifecycle,
   pure,
   setDisplayName,
-  withHandlers,
   withProps,
   withPropsOnChange,
 } from 'recompose';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
+import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
+import Chip from '@ncigdc/uikit/Chip';
 
 import SCRNASeqPlot from './SCRNASeqPlot';
-import { buttonList } from './SCRNASeqPlot/utils';
 import './styles.scss';
-import {
-  DownloadButton,
-} from './toolbar';
+import AnalysisDownloadsButton from './AnalysisDownloadsButton';
 
 const enhance = compose(
   setDisplayName('EnhancedSCRNASeq'),
   pure,
-  withHandlers({
-    handleAnalysisClick: () => {
-      console.log('clicked analysis dropdown item');
-    },
-  }),
   withPropsOnChange(
     (
       {
@@ -47,7 +40,6 @@ const enhance = compose(
     analysisInfo: {
       case_id,
       disease_type,
-      gender,
       primary_site,
       project_id,
       submitter_id,
@@ -81,9 +73,9 @@ const enhance = compose(
       {
         name: '# Cells',
         text: plotsDataList[0].data
-          .reduce((arr, curr) => arr += curr.x.length, 0)
-      }
-    ]
+          .reduce((arr, curr) => arr += curr.x.length, 0),
+      },
+    ],
   })),
   lifecycle({
     componentDidMount() {
@@ -97,8 +89,8 @@ const enhance = compose(
 );
 
 const SCRNASeq = ({
+  analysisInfo: { case_id },
   analysisTable,
-  handleAnalysisClick,
   loading,
   plotsDataList,
 }) => (
@@ -120,20 +112,35 @@ const SCRNASeq = ({
           marginBottom: 20,
         }}
         >
-        <h1
-          style={{
-            margin: '0 0 10px 0',
-          }}
-          >
-          Single Cell RNA Sequencing
-        </h1>
+        <div>
+          <h1
+            style={{
+              alignItems: 'center',
+              display: 'flex',
+              marginBottom: 20,
+            }}
+            >
+            Single Cell RNA Sequencing
+            <Chip
+              label="BETA"
+              style={{
+                marginLeft: '1rem',
+              }}
+              />
+          </h1>
+          <div
+            style={{
+              fontStyle: 'italic',
+              marginBottom: 20,
+            }}
+            >
+            Demo showing UMAP, t-SNE, PCA plots generated from single cell RNA sequencing data for a sample case.
+          </div>
+        </div>
 
         <Row>
           {loading || (
-            <DownloadButton
-              onAnalysisClick={handleAnalysisClick}
-              {...buttonList.downloadAnalysis}
-              />
+            <AnalysisDownloadsButton case_id={case_id} />
           )}
         </Row>
       </Row>
@@ -156,7 +163,10 @@ const SCRNASeq = ({
                   ))}
                 </tbody>
               )}
-              style={{ marginBottom: 20, maxWidth: 500 }}
+              style={{
+                marginBottom: 20,
+                maxWidth: 500,
+              }}
               />
             <div className="scrnaseq-row">
               {plotsDataList.length > 0

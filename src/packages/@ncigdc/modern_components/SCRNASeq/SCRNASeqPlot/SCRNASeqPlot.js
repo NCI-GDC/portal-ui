@@ -10,6 +10,7 @@ import {
   withProps,
   withState,
 } from 'recompose';
+import moment from 'moment';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import {
@@ -17,6 +18,7 @@ import {
   enterFullScreen,
   isFullScreen,
 } from '@ncigdc/utils/fullscreen';
+import { GlobalTooltip } from '@ncigdc/uikit/Tooltip';
 
 import withSize from '@ncigdc/utils/withSize';
 
@@ -33,6 +35,7 @@ const SCRNASeqPlot = ({
   dataWithMarkers,
   handleInitialize,
   handleToolbarClick,
+  isReloading,
   size: { height, width },
   uniqueGridClass,
 }) => {
@@ -45,7 +48,7 @@ const SCRNASeqPlot = ({
   };
   return (
     <div
-      className="scrnaseq-plot"
+      className={`scrnaseq-plot${isReloading ? ' reloading' : ''}`}
       ref={r => {
         containerRefs[uniqueGridClass] = r;
       }}
@@ -66,6 +69,7 @@ const SCRNASeqPlot = ({
               onToolbarClick={handleToolbarClick}
               />
           )))}
+        {checkFullScreen && <GlobalTooltip />}
       </Row>
       <Plot
         config={utils.config}
@@ -81,6 +85,7 @@ export default compose(
   setDisplayName('EnhancedSCRNASeqPlot'),
   withState('graphDiv', 'setGraphDiv', ''),
   withState('uniqueGridClass', 'setUniqueGridClass', ''),
+  withState('isReloading', 'setIsReloading', false),
   withProps(({ data }) => ({
     dataWithMarkers: utils.getDataWithMarkers(data),
   })),
@@ -97,6 +102,7 @@ export default compose(
       data,
       dataType,
       graphDiv,
+      setIsReloading,
       size: { height, width },
       uniqueGridClass,
     }) => e => {
@@ -113,7 +119,7 @@ export default compose(
         const format = e.target.getAttribute('data-format');
         const scale = e.target.getAttribute('data-scale');
         Plotly.downloadImage(graphDiv, {
-          filename: 'scrnaseq',
+          filename: `scrnaseq-${dataType.toLowerCase().replace('-', '')}-${moment().format('YYYY-MM-DD-HHmmss')}`,
           format,
           scale,
         });
@@ -125,8 +131,7 @@ export default compose(
         }
         Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
       } else if (name === 'react') {
-        // react = hard reset of the whole plot
-        Plotly.react(graphDiv, data, utils.getLayout(layoutParams));
+        setIsReloading(true, () => setIsReloading(false));
       } else {
         // use Plotly's built-in button functions
         ModeBarButtons[name].click(graphDiv, e);

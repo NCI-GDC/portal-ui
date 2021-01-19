@@ -1,3 +1,4 @@
+ARG registry=docker.osdc.io
 FROM node:13 as builder
 
 COPY ./ /portal
@@ -18,7 +19,7 @@ RUN export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD` && export REACT_AP
 RUN npm install
 RUN npm run build
 
-FROM quay.io/ncigdc/nginx-extras:1.2.0
+FROM ${registry}/ncigdc/nginx-extras:1.2.0
 
 RUN rm -v /etc/nginx/sites-enabled/default
 

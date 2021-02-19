@@ -147,7 +147,7 @@ export type TProps = {
     doc_type: String,
     field: String,
     full: String,
-    type: 'id' | 'string' | 'long',
+    type: 'id' | 'string' | 'long' | 'float' | 'double',
   }>,
   handleSelectFacet: Function,
   handleResetFacets: Function,

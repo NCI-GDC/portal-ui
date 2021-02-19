@@ -49,7 +49,7 @@ const fieldNameToTitle = fieldName => fieldName
   )
   .join(' ');
 
-const getFacetType = facet => {
+export const getFacetType = facet => {
   if (_.includes(facet.field, 'datetime')) {
     return 'datetime';
   } if (facet.type === 'terms') {
@@ -67,7 +67,7 @@ const getFacetType = facet => {
     ], idSuffix => _.includes(facet.field, idSuffix))
   ) {
     return 'exact';
-  } if (facet.type === 'long' || facet.type === 'float') {
+  } if (facet.type === 'long' || facet.type === 'float' || facet.type === 'double') {
     return 'range';
   }
   return 'terms';

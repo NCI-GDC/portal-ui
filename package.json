@@ -142,7 +142,8 @@
     "chokidar": "^3.0.0"
   },
   "optionalDependencies": {
-    "fsevents": "^2.0.7"
+    "fsevents": "^2.0.7",
+    "@stjude/proteinpaint": "1.7.0"
   },
   "engines": {
     "node": ">=13.2.0"

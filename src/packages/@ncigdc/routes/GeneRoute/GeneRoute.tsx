@@ -20,31 +20,31 @@ import { replaceFilters } from '@ncigdc/utils/filters';
 import { match as IMatch } from 'react-router';
 import { Location as ILocation } from 'history';
 import { isEmpty } from 'lodash';
-// import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
+import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
 // import { runproteinpaint } from '@stjude/proteinpaint';
-// const PpLolliplot = await import('@stjude/proteinpaint').then(module => module.wrappers.PpLolliplot).catch(() => undefined);
+// const { PpLolliplot } = runproteinpaint.wrappers;
 
 /**
  * Attempt to load proteinpaint.  If it doesn't exists, fallback to GeneLolliplot
  */
-// const Lolliplot = LoadableWithLoading({
-//   loader: () => import('@stjude/proteinpaint').then(module => {
-//     return module.runproteinpaint.wrappers.PpLolliplot;
-//   }).catch(() => {
-//     return GeneLolliplot;
-//   }),
-// });
-
-const loadLolliplot = () => {
-  try {
-    // eslint-disable-next-line
-    const pp = require('@stjude/proteinpaint');
-    return pp.runproteinpaint.wrappers.PpLolliplot;
-  } catch (e) {
+const Lolliplot = LoadableWithLoading({
+  loader: () => import('@stjude/proteinpaint').then(module => {
+    return module.runproteinpaint.wrappers.PpLolliplot;
+  }).catch(() => {
     return GeneLolliplot;
-  }
-};
-const Lolliplot = loadLolliplot();
+  }),
+});
+
+// const loadLolliplot = () => {
+//   try {
+//     // eslint-disable-next-line
+//     const pp = require('@stjude/proteinpaint');
+//     return pp.runproteinpaint.wrappers.PpLolliplot;
+//   } catch (e) {
+//     return GeneLolliplot;
+//   }
+// };
+// const Lolliplot = loadLolliplot();
 
 const GeneRoute = ({
   match,
@@ -143,7 +143,7 @@ const GeneRoute = ({
               marginTop: '2rem',
             }}
             >
-            <Lolliplot basepath="http://proteinpaint1.gdc.cancer.gov:3000" filters={filters} geneId={geneId} />
+            <Lolliplot basepath="http://localhost:3001" filters={filters} geneId={geneId} />
           </Column>
           <Column
             style={{

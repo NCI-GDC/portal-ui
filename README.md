@@ -20,6 +20,8 @@
 - [Installation](#installation)
 - [Tests](#tests)
 - [Development](#development)
+- [Optionals](#optionals)
+- [Setup pre-commit hook to check for secrets](#setup-pre-commit-hook-to-check-for-secrets)
 - [Contributing](#contributing)
 
 ## Technologies
@@ -84,6 +86,17 @@ localStorage.REACT_APP_API = 'https://api.gdc.cancer.gov/v0/'
 <img src="http://i.imgur.com/5dQYvoW.png" />
 
 
+## Optional Dependencies
+
+We are integrating ProteinPaint into the data portal. This package is avaiable to the GDC,
+but it is not publicly available. For this reason, we need to make it an optional dependency.  
+Additionally, we will need to make it a conditional import in the portal code.
+
+Unfortunately, webpack 3 doesn't appear to support this use case. Instead, it will try to 
+resolve the dependency at bundle-time, which fails when the optional dependency is not
+available. This might be specific to ES modules.
+
+
     
 ## Setup pre-commit hook to check for secrets
 
@@ -105,7 +118,6 @@ detect-secrets scan --update .secrets.baseline
 ```
 detect-secrets audit .secrets.baseline
 ```
-
 
 ## Contributing
 

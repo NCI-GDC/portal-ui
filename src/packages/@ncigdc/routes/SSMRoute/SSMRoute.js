@@ -9,7 +9,7 @@ import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import { makeFilter } from '@ncigdc/utils/filters';
 import Heading from '@ncigdc/uikit/Heading';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
-import { SsmLolliplot } from '@ncigdc/modern_components/Lolliplot';
+// import { SsmLolliplot } from '@ncigdc/modern_components/Lolliplot';
 import SsmSummary from '@ncigdc/modern_components/SsmSummary';
 import SsmExternalReferences from '@ncigdc/modern_components/SsmExternalReferences';
 import ConsequencesTable from '@ncigdc/modern_components/ConsequencesTable';
@@ -19,6 +19,28 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import createSsmSummary from '@ncigdc/modern_components/SsmSummary/SsmSummary.relay';
 import Exists from '@ncigdc/modern_components/Exists';
+// import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
+import { runproteinpaint } from '@stjude/proteinpaint';
+
+const { PpLolliplot } = runproteinpaint.wrappers;
+
+// const Lolliplot = LoadableWithLoading({
+//   loader: () => import('@stjude/proteinpaint').then(module => {
+//     return module.runproteinpaint.wrappers.PpLolliplot;
+//     // const Plot = ({ ssmId }) => {
+//     //   return <PP basepath="http://localhost:3001" ssm_id={ssmId} />;
+//     // };
+//     // Plot.displayName = 'PpLolliplot';
+//     // return Plot;
+//   }).catch(() => {
+//     return SsmLolliplot;
+//     // const Plot = ({ ssmId }) => {
+//     //   return <SsmLolliplot mutationId={ssmId} ssmId={ssmId} />;
+//     // };
+//     // Plot.displayName = 'SsmLolliplot';
+//     // return Plot;
+//   }),
+// });
 
 const DnaChange = createSsmSummary(
   ({
@@ -64,7 +86,7 @@ const CancerDistributionTitle = ({ cases = 0, projects = [], filters }) => (
       >
       {projects.length.toLocaleString()}
     </ProjectsLink>
-&nbsp; PROJECTS
+    &nbsp; PROJECTS
   </div>
 );
 
@@ -154,7 +176,7 @@ const SSMRoute = ({ match, ssmId = match.params.id, filters }) => {
             marginTop: '2rem',
           }}
           >
-          <SsmLolliplot mutationId={ssmId} ssmId={ssmId} />
+          <PpLolliplot basepath="http://localhost:3001" ssm_id={ssmId} />
         </Column>
       </FullWidthLayout>
     </Exists>

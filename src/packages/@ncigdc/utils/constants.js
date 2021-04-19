@@ -937,3 +937,11 @@ export const DISPLAY_DAVE_CA = localStorage.REACT_APP_DISPLAY_DAVE_CA ||
 export const MOCK_SCRNA_DATA = localStorage.REACT_APP_MOCK_SCRNA_DATA ||
   process.env.REACT_APP_MOCK_SCRNA_DATA ||
   false;
+
+export const DISPLAY_SCRNA_SEQ = localStorage.REACT_APP_DISPLAY_SCRNA_SEQ ||
+  process.env.REACT_APP_DISPLAY_SCRNA_SEQ ||
+  false;
+
+export const DISPLAY_GENE_EXPRESSION = localStorage.REACT_APP_DISPLAY_GENE_EXPRESSION ||
+  process.env.REACT_APP_DISPLAY_GENE_EXPRESSION ||
+  false;

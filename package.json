@@ -8,7 +8,7 @@
   },
   "homepage": "https://portal.gdc.cancer.gov/",
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
+    "preinstall": "npm i npm-force-resolutions@0.0.3 && npx npm-force-resolutions",
     "start": "concurrently --kill-others 'npm run start-ui' 'npm run relay -- --watch'",
     "start-ui": "BROWSER=none react-app-rewired start --scripts-version react-scripts-ts",
     "build": "npm run relay && react-app-rewired build --scripts-version react-scripts-ts",
@@ -71,6 +71,7 @@
     "memoizee": "0.4.14",
     "moment": "2.24.0",
     "multisort": "0.5.3",
+    "npm-force-resolutions": "0.0.3",
     "oncogrid": "3.0.0",
     "openseadragon": "2.4.2",
     "plotly.js": "1.53.0",

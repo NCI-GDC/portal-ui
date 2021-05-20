@@ -1,5 +1,5 @@
 {
-  "version": "1.27.0",
+  "version": "1.28.0",
   "repository": "NCI-GDC/portal-ui",
   "name": "portal-ui",
   "author": {
@@ -8,7 +8,7 @@
   },
   "homepage": "https://portal.gdc.cancer.gov/",
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
+    "force-resolve": "npx npm-force-resolutions",
     "start": "concurrently --kill-others 'npm run start-ui' 'npm run relay -- --watch'",
     "start-ui": "BROWSER=none react-app-rewired start --scripts-version react-scripts-ts",
     "build": "npm run relay && react-app-rewired build --scripts-version react-scripts-ts",

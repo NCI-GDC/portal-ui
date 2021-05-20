@@ -25,6 +25,7 @@ import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
 import DownloadFile from '@ncigdc/components/DownloadFile';
 import DownloadClinicalDropdown from '@ncigdc/modern_components/DownloadClinicalDropdown/';
 import { makeFilter } from '@ncigdc/utils/filters';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const styles = {
   common: theme => ({
@@ -93,13 +94,15 @@ export default compose(
         title={(
           <Row style={{ justifyContent: 'space-between' }}>
             <span>Clinical</span>
-            <DownloadClinicalDropdown
-              buttonStyles={visualizingButton}
-              filters={caseFilter}
-              inactiveText="Download"
-              jsonFilename={`clinical.case-${submitterId}-${projectId}.${timestamp()}.json`}
-              tsvFilename={`clinical.case-${submitterId}-${projectId}.${timestamp()}.tar.gz`}
+            <Tooltip Component={<span>Download JSON for Complete Set</span>}>
+              <DownloadClinicalDropdown
+                buttonStyles={visualizingButton}
+                filters={caseFilter}
+                inactiveText="Download Complete Set of Clinical Data"
+                jsonFilename={`clinical.case-${submitterId}-${projectId}.${timestamp()}.json`}
+                tsvFilename={`clinical.case-${submitterId}-${projectId}.${timestamp()}.tar.gz`}
               />
+            </Tooltip>
           </Row>
         )}
         >

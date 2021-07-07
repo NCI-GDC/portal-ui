@@ -43,10 +43,12 @@ const EntityPageHorizontalTable = ({
   tableHeadingStyle = {},
   ...props
 }) => {
+  console.log('EntityPageHorizontalTable');
   return (
     <Column
       className={props.className || 'test-entity-table-wrapper'}
       style={{
+        display: 'block',
         flexWrap: 'wrap',
         overflow: 'auto',
         ...style,

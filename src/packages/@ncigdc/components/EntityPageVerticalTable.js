@@ -43,7 +43,6 @@ const EntityPageVerticalTable = ({
       id={id}
       style={{
         display: 'block',
-        flexWrap: 'wrap',
         ...style,
       }}
       >

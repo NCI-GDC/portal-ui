@@ -37,7 +37,6 @@ const EntityPageVerticalTable = ({
       color: theme.greyScale2,
     },
   };
-  console.log('EntityPageVerticalTable');
   return (
     <Column
       className={`${className} test-entity-table-wrapper`}

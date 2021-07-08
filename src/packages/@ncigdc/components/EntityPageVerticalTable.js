@@ -42,7 +42,7 @@ const EntityPageVerticalTable = ({
       className={`${className} test-entity-table-wrapper`}
       id={id}
       style={{
-        flexWrap: 'wrap',
+        display: 'block',
         ...style,
       }}
       >

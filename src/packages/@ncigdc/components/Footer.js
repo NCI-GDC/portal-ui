@@ -94,6 +94,10 @@ export default compose(
           <ExternalLink href="https://gdc.cancer.gov/support">
             Support
           </ExternalLink>
+          <span> | </span>
+          <ExternalLink href="https://www.hhs.gov/vulnerability-disclosure-policy/index.html">
+            HHS Vulnerability Disclosure
+          </ExternalLink>
         </div>
         <div style={styles.innerContainer}>
           <ExternalLink href="https://www.hhs.gov/">

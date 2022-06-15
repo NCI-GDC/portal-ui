@@ -91,6 +91,10 @@ export default compose(
             FOIA
           </ExternalLink>
           <span> | </span>
+          <ExternalLink href="https://www.hhs.gov/vulnerability-disclosure-policy/index.html">
+            HHS Vulnerability Disclosure
+          </ExternalLink>
+          <span> | </span>
           <ExternalLink href="https://gdc.cancer.gov/support">
             Support
           </ExternalLink>

@@ -8,7 +8,7 @@ export default ({
   name,
   pollInterval = 600,
   winUrl = `${AUTH}?next=${location.origin}`,
-  winStyle = 'width=800, height=600',
+  winStyle = 'width=1000, height=800',
 }) =>
   new Promise((resolve, reject) => {
     if (IS_DEV || DEV_USER) return resolve('localhost');

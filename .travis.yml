@@ -4,7 +4,7 @@ language: node_js
 node_js:
 - '13'
 os: linux
-dist: trusty
+dist: focal
 group: edge
 services:
 - docker

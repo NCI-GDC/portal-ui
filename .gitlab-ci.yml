@@ -8,12 +8,13 @@ stages:
   - test
   - build
 
+variables:
+  npm_config_registry: https://nexus.osdc.io/repository/npm-all/
+
 Test:
   allow_failure: true
   stage: test
   image: docker.osdc.io/ncigdc/jenkins-agent:node
-  variables:
-    npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   script:
     - bash -c "npm install && npm run lint && npm test"
 

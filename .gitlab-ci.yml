@@ -46,3 +46,33 @@ Build awg-portal:
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
     - docker build -t ${DOCKER_RELEASE_REGISTRY}/awgportal:${LOWERCASE_BRANCH_NAME}-${CI_COMMIT_SHORT_SHA} -f awgportal.Dockerfile . --build-arg http_proxy=http://cloud-proxy:3128 --build-arg https_proxy=http://cloud-proxy:3128
     - docker push ${DOCKER_RELEASE_REGISTRY}/awgportal:${LOWERCASE_BRANCH_NAME}-${CI_COMMIT_SHORT_SHA}
+
+Build portal-ui latest:
+  only:
+    - master
+  stage: build
+  services:
+    - docker:${DOCKER_VERSION}-dind
+  tags:
+    - dind
+  image: docker:${DOCKER_VERSION}-dind
+  before_script:
+    - apk add git bash
+  script:
+    - docker build -t ${DOCKER_RELEASE_REGISTRY}/portal-ui:latest -f portal.Dockerfile . --build-arg http_proxy=http://cloud-proxy:3128 --build-arg https_proxy=http://cloud-proxy:3128
+    - docker push ${DOCKER_RELEASE_REGISTRY}/portal-ui:latest
+
+Build awg-portal latest:
+  only:
+    - master
+  stage: build
+  services:
+    - docker:${DOCKER_VERSION}-dind
+  tags:
+    - dind
+  image: docker:${DOCKER_VERSION}-dind
+  before_script:
+    - apk add git bash
+  script:
+    - docker build -t ${DOCKER_RELEASE_REGISTRY}/awgportal:latest -f awgportal.Dockerfile . --build-arg http_proxy=http://cloud-proxy:3128 --build-arg https_proxy=http://cloud-proxy:3128
+    - docker push ${DOCKER_RELEASE_REGISTRY}/awgportal:latest

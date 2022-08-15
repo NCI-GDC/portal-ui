@@ -42,6 +42,8 @@ import {
 
 import Portal from './Portal';
 
+
+// datadog
 import { datadogRum } from '@datadog/browser-rum';
 
 datadogRum.init({

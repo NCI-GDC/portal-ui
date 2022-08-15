@@ -42,24 +42,6 @@ import {
 
 import Portal from './Portal';
 
-import { datadogRum } from '@datadog/browser-rum';
-
-datadogRum.init({
-    applicationId: 'c94f127b-dd40-44b7-9c28-17632610a9c6',
-    clientToken: 'pub20202bcc06c0249365fd3445a71f7004',
-    site: 'datadoghq.com',
-    service:'portal-ui',
-    env:'dev',
-    // Specify a version number to identify the deployed version of your application in Datadog 
-    // version: '1.0.0',
-    sampleRate: 100,
-    premiumSampleRate: 100,
-    trackInteractions: true,
-    defaultPrivacyLevel:'mask-user-input'
-});
-    
-datadogRum.startSessionReplayRecording();
-
 // if (process.env.NODE_ENV !== 'production') {
 //   const { whyDidYouUpdate } = require('why-did-you-update');
 //   whyDidYouUpdate(React);

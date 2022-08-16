@@ -8,12 +8,13 @@ stages:
   - test
   - build
 
+variables:
+  npm_config_registry: https://nexus.osdc.io/repository/npm-all/
+
 Test:
   allow_failure: true
   stage: test
   image: docker.osdc.io/ncigdc/jenkins-agent:node
-  variables:
-    npm_config_registry: https://nexus.osdc.io/repository/npm-all/
   script:
     - bash -c "npm install && npm run lint && npm test"
 
@@ -29,7 +30,7 @@ Build portal-ui:
   script:
     - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
-    - docker build -t ${DOCKER_RELEASE_REGISTRY}/portal-ui:${LOWERCASE_BRANCH_NAME}-${CI_COMMIT_SHORT_SHA} -f portal.Dockerfile . --build-arg http_proxy=http://cloud-proxy:3128 --build-arg https_proxy=http://cloud-proxy:3128
+    - docker build -t ${DOCKER_RELEASE_REGISTRY}/portal-ui:${LOWERCASE_BRANCH_NAME}-${CI_COMMIT_SHORT_SHA} -f portal.Dockerfile .
     - docker push ${DOCKER_RELEASE_REGISTRY}/portal-ui:${LOWERCASE_BRANCH_NAME}-${CI_COMMIT_SHORT_SHA}
 
 Build awg-portal:
@@ -44,5 +45,35 @@ Build awg-portal:
   script:
     - export CLEAN_BRANCH_NAME=${CI_COMMIT_BRANCH/\//_}
     - export LOWERCASE_BRANCH_NAME="$(bash -c 'tr "[:upper:]" "[:lower:]" <<< "$CLEAN_BRANCH_NAME"')"
-    - docker build -t ${DOCKER_RELEASE_REGISTRY}/awgportal:${LOWERCASE_BRANCH_NAME}-${CI_COMMIT_SHORT_SHA} -f awgportal.Dockerfile . --build-arg http_proxy=http://cloud-proxy:3128 --build-arg https_proxy=http://cloud-proxy:3128
+    - docker build -t ${DOCKER_RELEASE_REGISTRY}/awgportal:${LOWERCASE_BRANCH_NAME}-${CI_COMMIT_SHORT_SHA} -f awgportal.Dockerfile .
     - docker push ${DOCKER_RELEASE_REGISTRY}/awgportal:${LOWERCASE_BRANCH_NAME}-${CI_COMMIT_SHORT_SHA}
+
+Build portal-ui latest:
+  only:
+    - master
+  stage: build
+  services:
+    - docker:${DOCKER_VERSION}-dind
+  tags:
+    - dind
+  image: docker:${DOCKER_VERSION}-dind
+  before_script:
+    - apk add git bash
+  script:
+    - docker build -t ${DOCKER_RELEASE_REGISTRY}/portal-ui:latest -f portal.Dockerfile .
+    - docker push ${DOCKER_RELEASE_REGISTRY}/portal-ui:latest
+
+Build awg-portal latest:
+  only:
+    - master
+  stage: build
+  services:
+    - docker:${DOCKER_VERSION}-dind
+  tags:
+    - dind
+  image: docker:${DOCKER_VERSION}-dind
+  before_script:
+    - apk add git bash
+  script:
+    - docker build -t ${DOCKER_RELEASE_REGISTRY}/awgportal:latest -f awgportal.Dockerfile .
+    - docker push ${DOCKER_RELEASE_REGISTRY}/awgportal:latest

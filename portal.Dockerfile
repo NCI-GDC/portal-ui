@@ -11,7 +11,8 @@ ENV REACT_APP_GDC_DISPLAY_SLIDES=true \
     REACT_APP_API="https://portal.gdc.cancer.gov/auth/api/v0/" \
     GDC_BASE="/" \
     REACT_APP_WEBSITE_NAME=GDC \
-    NODE_PATH=src/packages
+    NODE_PATH=src/packages \
+    npm_config_registry="https://nexus.osdc.io/repository/npm-all/"
 
 
 RUN export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD` && export REACT_APP_COMMIT_TAG=`git tag -l --points-at HEAD`
@@ -19,7 +20,7 @@ RUN export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD` && export REACT_AP
 RUN npm install
 RUN npm run build
 
-FROM ${registry}/ncigdc/nginx-extras:1.2.0
+FROM ${registry}/ncigdc/nginx-extras:2.0.1
 
 RUN rm -v /etc/nginx/sites-enabled/default
 

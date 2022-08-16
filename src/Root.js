@@ -60,6 +60,8 @@ datadogRum.init({
     defaultPrivacyLevel:'mask-user-input'
 });
 
+datadogRum.startSessionReplayRecording();
+
 // if (process.env.NODE_ENV !== 'production') {
 //   const { whyDidYouUpdate } = require('why-did-you-update');
 //   whyDidYouUpdate(React);
@@ -265,7 +267,6 @@ const RelaySetup = compose(
 ));
 
 const Root = (rootProps: mixed) => (
-  datadogRum.startSessionReplayRecording();
   <Provider store={store}>
     <PersistGate loading={<Loader />} persistor={persistor}>
       <Router>

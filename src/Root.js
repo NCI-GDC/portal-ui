@@ -60,6 +60,7 @@ datadogRum.init({
     defaultPrivacyLevel:'mask-user-input'
 });
 
+// session replay start
 datadogRum.startSessionReplayRecording();
 
 // if (process.env.NODE_ENV !== 'production') {

@@ -18,9 +18,6 @@ ENV REACT_APP_GDC_DISPLAY_SLIDES=true \
 RUN export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD` && export REACT_APP_COMMIT_TAG=`git tag -l --points-at HEAD`
 
 RUN npm install
-RUN npm update @datadog/browser-rum
-RUN npm install @types/node@latest
-RUN npm install @types/hoist-non-react-statics@latest
 RUN npm run build
 
 FROM ${registry}/ncigdc/nginx-extras:2.0.1

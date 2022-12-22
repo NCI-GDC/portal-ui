@@ -16,6 +16,8 @@ include:
 stages:
   - test
   - build
+  - release
+  - deploy
 
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
@@ -60,12 +62,10 @@ build:awg-portal:
     - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/awgportal:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f awgportal.Dockerfile .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/awgportal:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
 
-build:portal-ui:latest:
+release:portal-ui:latest:
   only:
     - master
-  needs:
-    - build:portal-ui
-  stage: build
+  stage: release
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -76,12 +76,10 @@ build:portal-ui:latest:
     - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
 
-build:awg-portal:latest:
+release:awg-portal:latest:
   only:
     - master
-  needs:
-    - build:awg-portal
-  stage: build
+  stage: release
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -92,10 +90,10 @@ build:awg-portal:latest:
     - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/awgportal:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/awgportal:latest
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/awgportal:latest
 
-build:portal-ui:tag:
+release:portal-ui:tag:
   only:
     - tags
-  stage: build
+  stage: release
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -106,10 +104,10 @@ build:portal-ui:tag:
     - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
 
-build:awg-portal:tag:
+release:awg-portal:tag:
   only:
     - tags
-  stage: build
+  stage: release
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:

@@ -127,7 +127,7 @@
     "react-app-rewire-scss": "1.0.2",
     "react-app-rewired": "1.6.2",
     "react-outside-click-handler": "1.2.3",
-    "react-scripts-ts": "3.1.0",
+    "react-scripts-ts": "4.0.8",
     "react-test-renderer": "16.1.1",
     "relay-compiler": "1.4.1",
     "source-map-loader": "0.2.4",

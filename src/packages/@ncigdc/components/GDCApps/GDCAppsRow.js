@@ -73,15 +73,6 @@ const GDCAppsRow = () => (
       />
 
     <AppLink
-      appName="legacy-archive"
-      description="Legacy Archive"
-      drawnRange={11}
-      href="https://portal.gdc.cancer.gov/legacy-archive"
-      imgWidth={29}
-      title="GDC Legacy Archive"
-      />
-
-    <AppLink
       appName="publications"
       description="Publications"
       href="https://gdc.cancer.gov/about-data/publications"

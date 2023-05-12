@@ -128,15 +128,6 @@ const GDCAppsDropdown = () => (
           width="55%"
           />
 
-        <AppLink
-          appName="legacy-archive"
-          description="Legacy Archive"
-          drawnRange={11}
-          href="https://portal.gdc.cancer.gov/legacy-archive"
-          imgWidth={BUTTON_WIDTH}
-          title="GDC Legacy Archive"
-          width="40%"
-          />
 
         <AppLink
           appName="publications"
@@ -145,7 +136,7 @@ const GDCAppsDropdown = () => (
           imgSrc={publicationsImg}
           imgWidth={BUTTON_WIDTH}
           title="GDC Publications"
-          width="55%"
+          width="42%"
           />
       </Container>
     </DropdownContent>

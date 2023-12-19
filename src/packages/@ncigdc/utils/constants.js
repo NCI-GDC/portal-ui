@@ -25,6 +25,8 @@ export const SLIDE_IMAGE_ENDPOINT =
 export const AWG =
   localStorage.REACT_APP_AWG || process.env.REACT_APP_AWG || false;
 
+export const GDC_BASE = localStorage.GDC_BASE || process.env.GDC_BASE || AWG ? "/" : "/v1"
+
 export const IS_AUTH_PORTAL =
   localStorage.REACT_APP_IS_AUTH_PORTAL ||
   process.env.REACT_APP_IS_AUTH_PORTAL ||

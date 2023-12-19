@@ -6,7 +6,6 @@
     "name": "OICR",
     "url": "https://github.com/NCI-GDC/"
   },
-  "homepage": "https://portal.gdc.cancer.gov/",
   "scripts": {
     "force-resolve": "npx npm-force-resolutions",
     "start": "concurrently --kill-others 'npm run start-ui' 'npm run relay -- --watch'",

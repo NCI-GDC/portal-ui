@@ -1,5 +1,4 @@
 ARG registry=docker.osdc.io
-ARG GDC_BASE_PATH=/v1
 
 FROM node:13 as builder
 
@@ -11,8 +10,7 @@ ENV REACT_APP_GDC_DISPLAY_SLIDES=true \
     REACT_APP_SLIDE_IMAGE_ENDPOINT="/auth/api/v0/tile/" \
     REACT_APP_GDC_AUTH="/auth/" \
     REACT_APP_API="/auth/api/v0/" \
-    GDC_BASE=${GDC_BASE_PATH} \
-    PUBLIC_URL=${GDC_BASE_PATH} \
+    GDC_BASE="/" \
     REACT_APP_WEBSITE_NAME=GDC \
     NODE_PATH=src/packages
 

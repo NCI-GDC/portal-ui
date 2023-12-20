@@ -7,6 +7,7 @@ export REACT_APP_COMMIT_TAG=`git tag -l --points-at HEAD`
 export REACT_APP_API="/auth/api/v0/"
 export REACT_APP_GDC_AUTH="/auth/"
 export GDC_BASE="/v1"
+export PUBLIC_URL="/v1"
 export NODE_ENV=production
 export REACT_APP_COMMIT_HASH=$TRAVIS_COMMIT
 unset REACT_APP_AWG_TOKEN_EXPIRY

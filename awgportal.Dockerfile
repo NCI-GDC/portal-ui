@@ -1,5 +1,4 @@
 ARG registry=docker.osdc.io
-ARG GDC_BASE_PATH=/
 
 FROM node:13 as builder
 
@@ -12,8 +11,7 @@ ENV REACT_APP_WEBSITE_NAME=GDC \
     REACT_APP_FENCE="https://portal.awg.gdc.cancer.gov/fence/"\
     REACT_APP_GDC_AUTH="https://portal.awg.gdc.cancer.gov/auth/"\
     REACT_APP_AWG_LOGIN_EXPIRY=20 \
-    GDC_BASE=${GDC_BASE_PATH} \
-    PUBLIC_URL=${GDC_BASE_PATH} \
+    GDC_BASE="/" \
     REACT_APP_AWG=true \
     REACT_APP_IS_AUTH_PORTAL=true \
     # REACT_APP_GDC_DISPLAY_SLIDES=true \

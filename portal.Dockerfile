@@ -1,5 +1,4 @@
 ARG registry=docker.osdc.io
-
 FROM node:13 as builder
 
 COPY ./ /portal

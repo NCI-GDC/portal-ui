@@ -30,9 +30,9 @@ module.exports = function override(config, env) {
     config,
   );
 
-  if (env === 'production' && config.output && config.output.publicPath) {
-    config.output.publicPath = process.env.GDC_BASE;
-  }
+  // if (env !== "development" && config.output && config.output.publicPath) {
+  config.output.publicPath = process.env.GDC_BASE;
+  //}
 
   config = rewireDefinePlugin(config, env, {
     __VERSION__: JSON.stringify(version),

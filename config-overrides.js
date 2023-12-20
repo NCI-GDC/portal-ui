@@ -55,7 +55,5 @@ module.exports = function override(config, env) {
   env === 'development' && (config.devtool = 'eval-source-map');
   config = rewireReactHotLoader(config, env);
 
-
-
   return config;
 };

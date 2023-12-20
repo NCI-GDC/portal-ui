@@ -30,10 +30,6 @@ module.exports = function override(config, env) {
     config,
   );
 
-  // if (env !== "development" && config.output && config.output.publicPath) {
-  config.output.publicPath = "/v1";
-  //}
-
   config = rewireDefinePlugin(config, env, {
     __VERSION__: JSON.stringify(version),
     "process.env.PUBLIC_URL": JSON.stringify(

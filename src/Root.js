@@ -250,7 +250,7 @@ const RelaySetup = compose(
 const Root = (rootProps: mixed) => (
   <Provider store={store}>
     <PersistGate loading={<Loader />} persistor={persistor}>
-      <Router>
+      <Router basename={GDC_BASE}>
         <RelaySetup {...rootProps} />
       </Router>
     </PersistGate>

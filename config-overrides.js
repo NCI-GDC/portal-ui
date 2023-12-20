@@ -31,7 +31,7 @@ module.exports = function override(config, env) {
   );
 
   // if (env !== "development" && config.output && config.output.publicPath) {
-  config.output.publicPath = process.env.GDC_BASE;
+  config.output.publicPath = "/v1";
   //}
 
   config = rewireDefinePlugin(config, env, {

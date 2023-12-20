@@ -55,9 +55,7 @@ module.exports = function override(config, env) {
   env === 'development' && (config.devtool = 'eval-source-map');
   config = rewireReactHotLoader(config, env);
 
-  if (env === 'production' && config.output && config.output.publicPath) {
-    config.output.publicPath = process.env.GDC_BASE;
-  }
+
 
   return config;
 };

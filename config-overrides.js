@@ -32,6 +32,9 @@ module.exports = function override(config, env) {
 
   config = rewireDefinePlugin(config, env, {
     __VERSION__: JSON.stringify(version),
+    "process.env.PUBLIC_URL": JSON.stringify(
+      env === "production" ? process.env.PUBLIC_URL : "/",
+    ),
   });
 
   config = rewireProvidePlugin(config, env, {

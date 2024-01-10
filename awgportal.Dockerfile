@@ -21,7 +21,6 @@ ENV REACT_APP_WEBSITE_NAME=GDC \
 
 RUN export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD` && export REACT_APP_COMMIT_TAG=`git tag -l --points-at HEAD`
 
-RUN npm install
 RUN npm run build
 
 FROM ${registry}/ncigdc/nginx-extras:1.2.0

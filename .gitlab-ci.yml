@@ -31,7 +31,6 @@ workflow:
     - when: always
 
 test:
-  allow_failure: true
   stage: test
   image: docker.osdc.io/node:13
   script:

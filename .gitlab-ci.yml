@@ -54,6 +54,8 @@ build:
         -f $DOCKER_FILE . \
         --progress=plain
     - docker push -a $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME
+  except:
+    - tags
 
 release:latest:
   only:

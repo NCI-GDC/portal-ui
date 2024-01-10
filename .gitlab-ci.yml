@@ -53,8 +53,13 @@ build:
       - IMAGE_NAME: portal-ui-awg
         DOCKER_FILE: awgportal.Dockerfile
   script:
-    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f $DOCKER_FILE .
-    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+    - |
+      docker build \
+        --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" \
+        -t $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} \
+        -t $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_SHA \
+        -f $DOCKER_FILE .
+    - docker push -a $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME
 
 release:portal-ui:latest:
   only:

@@ -47,9 +47,12 @@ build:
   image: docker:${DOCKER_VERSION}-dind
   parallel:
     matrix:
-      - IMAGE_NAME: [ portal-ui, portal-ui-awg]
+      - IMAGE_NAME: portal-ui
+        DOCKER_FILE: portal.Dockerfile
+      - IMAGE_NAME: portal-ui-awg
+        DOCKER_FILE: awgportal.Dockerfile
   script:
-    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f portal.Dockerfile .
+    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f $DOCKER_FILE .
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
 
 release:portal-ui:latest:

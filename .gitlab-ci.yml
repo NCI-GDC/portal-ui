@@ -40,27 +40,19 @@ test:
     - npm run lint
     - npm test
 
-build:portal-ui:
+build:
   stage: build
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
     - dind
   image: docker:${DOCKER_VERSION}-dind
+  parallel:
+    matrix:
+      - IMAGE_NAME: [ portal-ui, portal-ui-awg]
   script:
-    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f portal.Dockerfile .
-    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-
-build:awg-portal:
-  stage: build
-  services:
-    - docker:${DOCKER_VERSION}-dind
-  tags:
-    - dind
-  image: docker:${DOCKER_VERSION}-dind
-  script:
-    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/awgportal:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f awgportal.Dockerfile .
-    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/awgportal:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+    - docker build --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" -t $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f portal.Dockerfile .
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
 
 release:portal-ui:latest:
   only:

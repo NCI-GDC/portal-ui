@@ -35,7 +35,7 @@ test:
   stage: test
   image: docker.osdc.io/node:13
   before_script:
-    - npm install -f
+    - npm install
   script:
     - npm run lint
     - npm test

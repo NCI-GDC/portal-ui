@@ -11,16 +11,9 @@ stages:
   - release
   - deploy
 
-variables:
-  npm_config_registry: https://nexus.osdc.io/repository/npm-all/
-  DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_SHORT_SHA}
-
-workflow:
-  rules:
-    - if: $CI_COMMIT_TAG
-      variables:
-        DEPLOY_SERVICE_TAG: ${CI_COMMIT_BRANCH}-${CI_COMMIT_TAG}
-    - when: always
+pre-commit:
+  except:
+    - tags
 
 test:
   stage: test

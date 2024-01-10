@@ -1,10 +1,10 @@
 ARG registry=docker.osdc.io
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
 FROM node:13 as builder
-
-COPY ./ /portal
-
+ARG NPM_REGISTRY
 WORKDIR /portal
+
+COPY . .
 
 ENV REACT_APP_GDC_DISPLAY_SLIDES=true \
     REACT_APP_SLIDE_IMAGE_ENDPOINT="/auth/api/v0/tile/" \
@@ -14,7 +14,6 @@ ENV REACT_APP_GDC_DISPLAY_SLIDES=true \
     REACT_APP_WEBSITE_NAME=GDC \
     NODE_PATH=src/packages \
     npm_config_registry=$NPM_REGISTRY
-
 
 RUN export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD` && export REACT_APP_COMMIT_TAG=`git tag -l --points-at HEAD`
 

@@ -1,10 +1,11 @@
 ARG registry=docker.osdc.io
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
 FROM node:13 as builder
+ARG NPM_REGISTRY
 
 WORKDIR /portal
 
-COPY ./ /portal
+COPY . .
 
 ENV REACT_APP_WEBSITE_NAME=GDC \
     REACT_APP_API="https://portal.awg.gdc.cancer.gov/auth/api" \

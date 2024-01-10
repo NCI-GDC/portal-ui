@@ -61,7 +61,7 @@ build:
         -f $DOCKER_FILE .
     - docker push -a $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME
 
-release:portal-ui:latest:
+release:latest:
   only:
     - master
   stage: release
@@ -70,24 +70,13 @@ release:portal-ui:latest:
   tags:
     - dind
   image: docker:${DOCKER_VERSION}-dind
+  parallel:
+    matrix:
+      - IMAGE_NAME: [portal-ui, portal-ui-awg]
   script:
-    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-    - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
-    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:latest
-
-release:awg-portal:latest:
-  only:
-    - master
-  stage: release
-  services:
-    - docker:${DOCKER_VERSION}-dind
-  tags:
-    - dind
-  image: docker:${DOCKER_VERSION}-dind
-  script:
-    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/awgportal:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-    - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/awgportal:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} $DOCKER_RELEASE_REGISTRY/ncigdc/awgportal:latest
-    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/awgportal:latest
+    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_SHA
+    - docker tag $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_SHA $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:latest
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:latest
 
 release:portal-ui:tag:
   only:

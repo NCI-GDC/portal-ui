@@ -29,6 +29,8 @@ test:
     - npm ci
     - npm run lint
     - npm test
+  except:
+    - tags
 
 build:
   stage: build

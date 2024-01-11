@@ -1,6 +1,6 @@
 include:
   - project: nci-gdc/gitlab-templates
-    ref: master
+    ref: 0.6.1
     file:
       - templates/global/full.yaml
       - templates/deployments/salt-service.yaml

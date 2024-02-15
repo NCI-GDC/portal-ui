@@ -1,4 +1,4 @@
-FROM quay.io/ncigdc/nginx-extras:1.2.0
+FROM quay.io/ncigdc/nginx-extras:3.0.0
 
 RUN rm -v /etc/nginx/sites-enabled/default
 

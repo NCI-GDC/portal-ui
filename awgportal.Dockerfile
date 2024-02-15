@@ -1,7 +1,6 @@
-ARG registry=docker.osdc.io
-ARG NPM_REGISTRY="https://registry.npmjs.org/"
+ARG BASE_CONTAINER_REGISTRY=docker.osdc.io/ncigdc
 FROM node:13 as builder
-ARG NPM_REGISTRY
+ARG NPM_REGISTRY="https://registry.npmjs.org/"
 
 WORKDIR /portal
 
@@ -25,7 +24,7 @@ RUN export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD` && export REACT_AP
 RUN npm ci
 RUN npm run build
 
-FROM ${registry}/ncigdc/nginx-extras:1.2.0
+FROM ${BASE_CONTAINER_REGISTRY}/nginx-extras:${BASE_CONTAINER_VERSION}
 
 RUN rm -v /etc/nginx/sites-enabled/default
 

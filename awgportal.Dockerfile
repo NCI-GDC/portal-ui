@@ -1,4 +1,5 @@
 ARG BASE_CONTAINER_REGISTRY=docker.osdc.io/ncigdc
+ARG BASE_CONTAINER_VERSION=3.0.0
 FROM node:13 as builder
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
 

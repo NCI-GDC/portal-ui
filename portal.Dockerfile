@@ -13,7 +13,6 @@ ENV REACT_APP_GDC_DISPLAY_SLIDES=true \
     REACT_APP_API="/auth/api/v0/" \
     GDC_BASE="/v1" \
     PUBLIC_URL="/v1" \
-    NODE_ENV=production \
     REACT_APP_WEBSITE_NAME=GDC \
     NODE_PATH=src/packages \
     npm_config_registry=$NPM_REGISTRY

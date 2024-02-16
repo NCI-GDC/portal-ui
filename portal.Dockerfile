@@ -23,5 +23,11 @@ RUN npm ci
 RUN npm run build
 
 FROM ${BASE_CONTAINER_REGISTRY}/nginx-extras:${BASE_CONTAINER_VERSION}
+ARG NAME=portal-ui
+
+LABEL org.opencontainers.image.title=${NAME} \
+      org.opencontainers.image.description="${NAME} container image" \
+      org.opencontainers.image.source="https://github.com/NCI-GDC/portal-ui" \
+      org.opencontainers.image.vendor="NCI GDC"
 
 COPY --from=builder /portal/build /usr/share/nginx/html

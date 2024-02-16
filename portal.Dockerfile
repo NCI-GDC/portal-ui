@@ -23,6 +23,4 @@ RUN npm run build
 
 FROM ${BASE_CONTAINER_REGISTRY}/nginx-extras:${BASE_CONTAINER_VERSION}
 
-RUN rm -v /etc/nginx/sites-enabled/default
-
 COPY --from=builder /portal/build /usr/share/nginx/html

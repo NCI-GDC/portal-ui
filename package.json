@@ -1,12 +1,11 @@
 {
-  "version": "1.30.4",
+  "version": "2.0.0",
   "repository": "NCI-GDC/portal-ui",
   "name": "portal-ui",
   "author": {
     "name": "OICR",
     "url": "https://github.com/NCI-GDC/"
   },
-  "homepage": "https://portal.gdc.cancer.gov/",
   "scripts": {
     "force-resolve": "npx npm-force-resolutions",
     "start": "concurrently --kill-others 'npm run start-ui' 'npm run relay -- --watch'",

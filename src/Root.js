@@ -36,6 +36,7 @@ import Loader from '@ncigdc/uikit/Loaders/Loader';
 import {
   API,
   AWG,
+  GDC_BASE,
   IS_AUTH_PORTAL,
   IS_DEV,
 } from '@ncigdc/utils/constants';
@@ -249,7 +250,7 @@ const RelaySetup = compose(
 const Root = (rootProps: mixed) => (
   <Provider store={store}>
     <PersistGate loading={<Loader />} persistor={persistor}>
-      <Router>
+      <Router basename={GDC_BASE}>
         <RelaySetup {...rootProps} />
       </Router>
     </PersistGate>

@@ -94,7 +94,7 @@ A hotfix is a [branch](#branches) that uses `master` as a base instead of `next`
   * :arrow_up: `:arrow_up:` when upgrading dependencies
   * :arrow_down: `:arrow_down:` when downgrading dependencies
   * :shirt: `:shirt:` when removing linter warnings
-  * :recycle: `:wrench:` when refactoring
+  * :recycle: `:recycle:` when refactoring
   * :wrench: `:wrench:` when updating tooling
 
   start with one of the following emojis to add your commit to the change log:

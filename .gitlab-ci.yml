@@ -1,6 +1,6 @@
 include:
   - project: nci-gdc/gitlab-templates
-    ref: 0.6.1
+    ref: 0.7.0
     file:
       - templates/global/full.yaml
       - templates/deployments/salt-service.yaml
@@ -42,6 +42,11 @@ build:
     - |
       docker build \
         --build-arg "NPM_REGISTRY=https://nexus.osdc.io/repository/npm-all/" \
+        --build-arg BASE_CONTAINER_REGISTRY \
+        --build-arg BASE_CONTAINER_VERSION \
+        --label org.opencontainers.image.created="$(date -Iseconds)" \
+        --label org.opencontainers.image.revision="${CI_COMMIT_SHA}" \
+        --label org.opencontainers.image.ref.name="${IMAGE_NAME}:${CI_COMMIT_REF_NAME/\//_}" \
         -t $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} \
         -t $DOCKER_RELEASE_REGISTRY/ncigdc/$IMAGE_NAME:$CI_COMMIT_SHA \
         -f $DOCKER_FILE . \

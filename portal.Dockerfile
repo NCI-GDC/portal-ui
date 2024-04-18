@@ -22,7 +22,7 @@ RUN export REACT_APP_COMMIT_HASH=`git rev-parse --short HEAD` && export REACT_AP
 RUN npm ci
 RUN npm run build
 
-FROM ${BASE_CONTAINER_REGISTRY}/nginx-extras:${BASE_CONTAINER_VERSION}
+FROM ${BASE_CONTAINER_REGISTRY}/nginx:${BASE_CONTAINER_VERSION}
 ARG NAME=portal-ui
 
 LABEL org.opencontainers.image.title=${NAME} \

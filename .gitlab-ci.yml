@@ -3,6 +3,9 @@ include:
     ref: 0.7.0
     file:
       - templates/global/full.yaml
+  - project: nci-gdc/gitlab-templates
+    ref: feat/DEV-2630-test
+    file:
       - templates/deployments/salt-service.yaml
 
 stages:

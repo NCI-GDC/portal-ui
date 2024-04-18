@@ -4,7 +4,7 @@ include:
     file:
       - templates/global/full.yaml
   - project: nci-gdc/gitlab-templates
-    ref: feat/DEV-2630-test
+    ref: 0.7.8
     file:
       - templates/deployments/salt-service.yaml
 

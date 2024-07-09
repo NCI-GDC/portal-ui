@@ -1,3 +1,5 @@
+portal-ui was retired in June 2024
+
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commitlogoColor=white)](https://github.com/pre-commit/pre-commit)
 
 ---
